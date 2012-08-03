@@ -1,8 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: 6522 Interrupt Identification</TITLE>
 <META name="description" content="6502 assembly program to identify 6522 interrupt sources.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Identifying 6522 Internal Interrupt Sources</FONT>&nbsp;<FONT SIZE=-1>from 6502 Applications</FONT>
@@ -46,7 +45,7 @@ ONEOF7    ASL A
           BMI TIMER2
           ASL A
           ...
-</PRE> 
+</PRE>
 The program checks successively bit 6, bit 5, bit 4, etc., by simply shifting the contents of the accumulator left by one bit position every time.  It should be noted that the order in which the shifts occur establish a priority of the interrupts within the device.  Using the program as shown above, Timer 1 will have the highest priority, then Timer 2, etc.  The user might want to asign different priorities to the interrupts by testing the bits in a different order.
 <P><FONT SIZE=-1>Last page update: October 17, 2000.</FONT>
 </BODY></HTML>

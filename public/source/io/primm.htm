@@ -2,8 +2,7 @@
 <META name="description" content="Store text to be printed inline with
 your 6502 assembly code.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Print Immediate (PRIMM)</FONT>&nbsp;<FONT SIZE=-1>from
@@ -32,16 +31,16 @@ to be printed will be loaded into the accumulator prior to the call.
 
 <P>The version below was obtained from disassembling the Commodore 128
 KERNAL ROM.  It can also be found in a few other Commodore computers such
-as the Plus/4 and 16 but is surprisingly absent in the VIC-20 and C64. 
+as the Plus/4 and 16 but is surprisingly absent in the VIC-20 and C64.
 
 <UL>
-<PRE> 
-PRIMM: PHA           
+<PRE>
+PRIMM: PHA
        TYA
-       PHA        
+       PHA
        TXA
-       PHA      
-       TSX           
+       PHA
+       TSX
        INX
        INX
        INX
@@ -74,10 +73,10 @@ PRIM3  TYA		; copy index
        INX
        STA $0100,X
        PLA
-       TAX         
+       TAX
        PLA
-       TAY          
-       PLA           
+       TAY
+       PLA
        RTS
 </PRE>
 </UL>
@@ -88,7 +87,7 @@ he condensed it into this version.
 <UL>
 <PRE>
 PRIMM:
-	PHA     		; save A  
+	PHA     		; save A
 	TYA			; copy Y
 	PHA  			; save Y
 	TXA			; copy X
@@ -135,12 +134,12 @@ This alternate version was provided by Ross Archer.
 <PRE>
 DPL = $00
 DPH = $01
-	
+
 ;Put the string following in-line until a NULL out to the console
 PUTSTRI pla			; Get the low part of "return" address
                                 ; (data start address)
-        sta     DPL     
-        pla 
+        sta     DPL
+        pla
         sta     DPH             ; Get the high part of "return" address
                                 ; (data start address)
         ; Note: actually we're pointing one short
@@ -149,12 +148,12 @@ PSINB   ldy     #1
         inc     DPL             ; update the pointer
         bne     PSICHO          ; if not, we're pointing to next character
         inc     DPH             ; account for page crossing
-PSICHO  ora     #0              ; Set flags according to contents of 
+PSICHO  ora     #0              ; Set flags according to contents of
                                 ;    Accumulator
-        beq     PSIX1           ; don't print the final NULL 
+        beq     PSIX1           ; don't print the final NULL
         jsr     CHAROUT         ; write it out
         jmp     PSINB           ; back around
-PSIX1   inc     DPL             ; 
+PSIX1   inc     DPL             ;
         bne     PSIX2           ;
         inc     DPH             ; account for page crossing
 PSIX2   jmp     (DPL)           ; return to byte following final NULL

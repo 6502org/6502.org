@@ -1,8 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: Day of the Week</TITLE>
 <META name="description" content="Computes the day of the week from (almost) any given date.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Day of the Week</FONT>&nbsp;<FONT SIZE=-1>by Paul Guertin</FONT>
@@ -30,7 +29,7 @@ By Paul Guertin (<A HREF="mailto:pg@sff.net">pg@sff.net</A>), 18 August 2000.<BR
 
 TMP      EQU $6          ; Temporary storage
 
-WEEKDAY: 
+WEEKDAY:
          CPX #3          ; Year starts in March to bypass
          BCS MARCH       ; leap year problem
          DEY             ; If Jan or Feb, decrement year

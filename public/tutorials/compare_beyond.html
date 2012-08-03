@@ -2,8 +2,8 @@
 <meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="An extensive tutorial on the 6502 microprocessor's
 compare instructions."> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
-BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+<BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
 alt="[Return to Main Page]"></A><BODY> <FONT size=+1>Beyond 8-bit Unsigned Comparisons</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR>
@@ -367,57 +367,57 @@ Example 4.1.1: a 16-bit unsigned comparison which branches to LABEL2 if
 NUM1 < NUM2
 <pre>
            LDA NUM1H  ; compare high bytes
-           CMP NUM2H   
+           CMP NUM2H
            BCC LABEL2 ; if NUM1H &lt; NUM2H then NUM1 &lt; NUM2
            BNE LABEL1 ; if NUM1H &lt;&gt; NUM2H then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1L  ; compare low bytes
            CMP NUM2L
            BCC LABEL2 ; if NUM1L &lt; NUM2L then NUM1 &lt; NUM2
-    LABEL1 
+    LABEL1
 </pre>
 Example 4.1.2: a 16-bit unsigned comparison which branches to LABEL2 if
 NUM1 >= NUM2
 <pre>
            LDA NUM1H  ; compare high bytes
-           CMP NUM2H   
+           CMP NUM2H
            BCC LABEL1 ; if NUM1H &lt; NUM2H then NUM1 &lt; NUM2
            BNE LABEL2 ; if NUM1H &lt;&gt; NUM2H then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1L  ; compare low bytes
            CMP NUM2L
            BCS LABEL2 ; if NUM1L &gt;= NUM2L then NUM1 &gt;= NUM2
-    LABEL1 
+    LABEL1
 </pre>
 Example 4.1.3: a 24-bit unsigned comparison which branches to LABEL2 if
 NUM1 < NUM2
 <pre>
            LDA NUM1H  ; compare high bytes
-           CMP NUM2H   
+           CMP NUM2H
            BCC LABEL2 ; if NUM1H &lt; NUM2H then NUM1 &lt; NUM2
            BNE LABEL1 ; if NUM1H &lt;&gt; NUM2H then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1M  ; compare middle bytes
-           CMP NUM2M   
+           CMP NUM2M
            BCC LABEL2 ; if NUM1M &lt; NUM2M then NUM1 &lt; NUM2
            BNE LABEL1 ; if NUM1M &lt;&gt; NUM2M then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1L  ; compare low bytes
            CMP NUM2L
            BCC LABEL2 ; if NUM1L &lt; NUM2L then NUM1 &lt; NUM2
-    LABEL1 
+    LABEL1
 </pre>
 Example 4.1.4: a 24-bit unsigned comparison which branches to LABEL2 if
 NUM1 >= NUM2
 <pre>
            LDA NUM1H  ; compare high bytes
-           CMP NUM2H   
+           CMP NUM2H
            BCC LABEL1 ; if NUM1H &lt; NUM2H then NUM1 &lt; NUM2
            BNE LABEL2 ; if NUM1H &lt;&gt; NUM2H then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1M  ; compare middle bytes
-           CMP NUM2M  
+           CMP NUM2M
            BCC LABEL1 ; if NUM1M &lt; NUM2M then NUM1 &lt; NUM2
            BNE LABEL2 ; if NUM1M &lt;&gt; NUM2M then NUM1 &gt; NUM2 (so NUM1 &gt;= NUM2)
            LDA NUM1L  ; compare low bytes
            CMP NUM2L
            BCS LABEL2 ; if NUM1L &gt;= NUM2L then NUM1 &gt;= NUM2
-    LABEL1 
+    LABEL1
 </pre>
 There are times when comparing one byte at a time is the fastest way to
 perform an unsigned comparison.  Consider an unsigned comparison of two
@@ -550,7 +550,7 @@ as will bit 7 of the accumulator.  Specifically, after:
 <pre>
           SEC       ; prepare carry for SBC
           SBC NUM   ; A-NUM
-          BVC LABEL ; if V is 0, N eor V = N, otherwise N eor V = N eor 1 
+          BVC LABEL ; if V is 0, N eor V = N, otherwise N eor V = N eor 1
           EOR #$80  ; A = A eor $80, and N = N eor 1
     LABEL
 </pre>
@@ -648,7 +648,7 @@ returns N = 1, which is correct since $80 (-128) < $10 (16), but:
         SED
         SEC
         LDA #$10
-        SBC #$80 
+        SBC #$80
         BVC LABEL ; $10 - $80 = $30, V = 1 since 16 - (-128) = 144
         EOR #$80  ; $30 eor $80 = $B0, so N = 1
   LABEL
@@ -864,7 +864,7 @@ NN2     JSR SUCMP  ; Verify that the signed and unsigned comparisons agree
         INC N1
         BMI NN1
 
-        LDA #0    
+        LDA #0
         STA ERROR  ; All tests pass, so store 0 in ERROR
 TEST1   RTS
 
@@ -899,4 +899,4 @@ SUCMP3  RTS
 </body>
 </html>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+

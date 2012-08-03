@@ -2,9 +2,7 @@
 <META name="description" content="How to divide a 32-bit number by a
 16-bit number in 6502 assembly.">
 </HEAD>
-<BODY
-BACKGROUND="../../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../../index.html"><IMG SRC="../../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Division (32-bit)</FONT>&nbsp;<FONT SIZE=-1>by
@@ -29,7 +27,7 @@ data stack indexing.  The Forth-specific header structure is not shown in
 any of these.
 <P>
 To start, the 32-bit dividend is in N+2 (byte 2), N+3 (byte 1, or hi
-byte), N+4 (byte 4, or lo byte), & N+5 (byte 3). 
+byte), N+4 (byte 4, or lo byte), & N+5 (byte 3).
 <P>
 <CENTER><IMG SRC="dividend.gif" width="404" height="228"></CENTER>
 <P>
@@ -312,7 +310,7 @@ HEADER "UM/MOD", NOT_IMMEDIATE          ; ( ud u -- rem quot )
         STA     5,X
 
  end$:  INX             ; When you're done, show one less cell on data stack,
-        INX             ; (INX INX is exactly what the Forth word DROP does) 
+        INX             ; (INX INX is exactly what the Forth word DROP does)
         JMP     SWAP    ; and swap the two top cells to put quotient on top.
                         ; (Actually you'll jump to the beginning of SWAP's
                         ; executable code.  Assembler label "SWAP" is at SWAP's
@@ -334,7 +332,7 @@ things much faster.
 
 <P>
 Begin with accumulator already in 16-bit mode and the processor in native
-mode.  
+mode.
 
 <P>The macros shown first here are much more readable than their
 one-line contents.

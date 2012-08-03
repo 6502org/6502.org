@@ -1,8 +1,8 @@
 <HTML><HEAD><TITLE>6502.org Tutorials: The Overflow (V) Flag Explained</TITLE>
 <meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="A tutorial describing the operation of the 6502's V Flag."> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
-BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+<BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
 alt="[Return to Main Page]"></A><BODY> <FONT size=+1>The Overflow (V) Flag Explained</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR>
@@ -72,7 +72,7 @@ Note: for the sake of brevity, the overflow flag will be referred to as V.
     <i>Benny was the only guy that ever used it that I knew, he did the tightest
     loop possible in a piece of disk drive code.</i>
   </p>
-</blockquote> 
+</blockquote>
 
 <p>
 <a name="2"><b>2 INSTRUCTIONS THAT AFFECT V</b></a>
@@ -257,7 +257,7 @@ range, as the following examples illustrate:
   ADC #$01
 
   CLC      ; 1 + -1 = 0, returns C = 1
-  LDA #$01 
+  LDA #$01
   ADC #$FF
 
   CLC      ; 127 + 1 = 128, returns C = 0
@@ -277,7 +277,7 @@ complement overflow.  A few examples are in order:
   ADC #$01
 
   CLC      ; 1 + -1 = 0, returns V = 0
-  LDA #$01 
+  LDA #$01
   ADC #$FF
 
   CLC      ; 127 + 1 = 128, returns V = 1
@@ -498,7 +498,7 @@ so:
   V = 0 when U1 - U2 &gt;= -128 and U1 - U2 &lt;= 127
   V = 1 when U1 - U2 &lt;  -128 or  U1 - U2 &gt;  127
 </pre>
-thus:  
+thus:
 <pre>
   V = 0 when (65280 + U1) - U2 &gt;= 65152 and (65280 + U1) - U2 &lt;= 65407
   V = 1 when (65280 + U1) - U2 &lt;  65152 or  (65280 + U1) - U2 &gt;  65407
@@ -555,7 +555,7 @@ ADD  CPY #1   ; Set carry when Y = 1, clear carry when Y = 0
      LDA S1   ; Test twos complement addition
      ADC S2
      LDX #0   ; Initialize X to 0
-     BVC ADD1 
+     BVC ADD1
      INX      ; Increment X if V = 1
 ADD1 CPY #1   ; Set carry when Y = 1, clear carry when Y = 0
      LDA U1   ; Test unsigned addition
@@ -563,7 +563,7 @@ ADD1 CPY #1   ; Set carry when Y = 1, clear carry when Y = 0
      BCS ADD3 ; Carry is set if U1 + U2 &gt;= 256
      BMI ADD2 ; U1 + U2 &lt; 256, A &gt;= 128 if U1 + U2 &gt;= 128
      INX      ; Increment X if U1 + U2 &lt; 128
-ADD2 RTS      
+ADD2 RTS
 ADD3 BPL ADD4 ; U1 + U2 &gt;= 256, A &lt;= 127 if U1 + U2 &lt;= 383 ($17F)
      INX      ; Increment X if U1 + U2 &gt; 383
 ADD4 RTS
@@ -589,7 +589,7 @@ SUB1 CPY #1   ; Set carry when Y = 1, clear carry when Y = 0
      PHA      ; Save the low byte of result on the stack
      LDA #$FF
      SBC #$00 ; result = (65280 + U1) - U2, 65280 = $FF00
-     CMP #$FE 
+     CMP #$FE
      BNE SUB4 ; Branch if result &gt;= 65280 ($FF00) or result &lt; 65024 ($FE00)
      PLA      ; Get the low byte of result
      BMI SUB3 ; result &lt; 65280 ($FF00), A &gt;= 128 if result &gt;= 65152 ($FE80)

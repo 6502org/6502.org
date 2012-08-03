@@ -1,10 +1,9 @@
-
-<meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <HTML><HEAD><TITLE>www.6502.org: Tutorials: Compare Instructions</TITLE>
+<meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="A tutorial on the 6502 microprocessor's
 compare instructions."> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
-BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+<BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
 alt="[Return to Main Page]"></A><BODY> <FONT size=+1>6502 Compare
 Instructions</FONT>&nbsp;<FONT SIZE=-1>from 6502 Software Design, Updated by Bruce Clark</FONT>
@@ -44,7 +43,7 @@ instructions serve only one purpose; they provide information that can be
 tested by a subsequent branch instruction.  For example, to branch if the
 contents of a register are less than an immediate or memory value, you
 would follow the compare instruction with a Branch on Carry Clear (BCC)
-instruction, as shown by the following: 
+instruction, as shown by the following:
 <p><b>Example: Comparing Memory to the Accumulator</b>
 <table cellpadding="20"
 cellspacing="0" border="1"> <tr><td bgcolor=white><pre>
@@ -60,7 +59,7 @@ THERE                ;Execute this if Accumulator is less than location $20.
         .
 </pre></tr></td></table>
 <p>
-The table below lists the branch instruction(s) that should follow the 
+The table below lists the branch instruction(s) that should follow the
 compare instruction, for each register/data relationship.  In this table,
 THERE represents the label of the instruction executed if the branch test
 succeeds and HERE represents the label of te instruction executed if the
@@ -79,7 +78,7 @@ with another, by loading one into a register (A, X, or Y).
 <tr><td>Register is greater than or equal to data</td><td>BCS  THERE</td><td>BPL  THERE</td></tr>
 </table>
 <p>
-The next example contains a routine that tests whether the contents of two 
+The next example contains a routine that tests whether the contents of two
 memory locations are identical, and sets a flag in memory to so indicate.
 <p>
 <p>
@@ -105,7 +104,7 @@ of two values in the higher memory location.
 <tr><td bgcolor=white><pre>
 ;This routine arranges two numbers in locations $20 and $21 in
 ;order of value, with the lower-valued number in location $20.
-   
+
         LDA  $21     ;Load second number into accumulator
         CMP  $20     ;Compare the numbers
         BCS  DONE    ;DONE if first is less than or equal to second.
@@ -128,8 +127,8 @@ EQGT3 based its branch decision on!
 <b>Example: A Three-Way Decision Routine</b>
 <table cellpadding="20" cellspacing="0" border="1">
 <tr><td bgcolor=white><pre>
-;This routine stores the contents of the accumulator into location 
-;$20, $21, or $22, depending upon whether the accumulator holds a 
+;This routine stores the contents of the accumulator into location
+;$20, $21, or $22, depending upon whether the accumulator holds a
 ;value les than 3, equal to 3, or grather than 3, respectively.
 
         CMP  #03     ;Compare accumulator to 3
@@ -152,7 +151,7 @@ these registers are being employed as count-up counters.  In these cases,
 CPX or CPY is used to compare the count against a maximum value of 255 (decimal)
  in memory.  The next example is a routine that will move up to 256
 consecutive memory bytes, with the CPX instruction doing the "all bytes
-moved" check each time a byte is moved.  
+moved" check each time a byte is moved.
 <p>
 <b>Example: A Multiple-Byte Move Routine</b>
 <table cellpadding="20" cellspacing="0" border="1">
@@ -171,11 +170,11 @@ NXTBYT  LDA  $20,X   ;Load next byte
 <p>
 The compare instructions compare two "entire" 8-bit values.  There are situations,
 however, when you will need to test one or more individual bits in a memory
-location.  This can be done by masking out the unwanted bits with an AND 
+location.  This can be done by masking out the unwanted bits with an AND
 instruction.  However, in the process of masking-out the unwanted bits, the AND
 instruction destroys the mask contained in the accumulator.  Certainly, the
 mask could be reloaded, but this requires additional processor time and
-additional instructions.  The same job can be done, without altering the 
+additional instructions.  The same job can be done, without altering the
 accumulator, by executing a BIT instruction.  A tutorial on the BIT instruction can also
 be found in the <a href="tutorials.htm">Tutorials</a> section of 6502.org.
 <P><FONT SIZE=-1>Last Updated December 1, 2002.</FONT>

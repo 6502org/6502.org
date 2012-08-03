@@ -2,7 +2,7 @@
 <META name="description" content="Ruud Baltissen's source code for the KIM-1 monitor ROM.">
 </HEAD>
 <A HREF="http://www.6502.org"><IMG SRC="../../mainlink.jpg" align=right border=0 alt="[Return to Main Page]"></A>
-<BODY BACKGROUND="/graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <P><FONT SIZE=+1>Ruud Baltissen's KIM-1 Source Code</FONT>
 <BR clear=all><A HREF="\oldmicro\buildkim\buildkim.htm">
 <A HREF="buildkim.htm">[Up to Build Your Own KIM-1]</A>
@@ -13,14 +13,14 @@
 ;
 ;
 ; The sourcecode is copied from 'KIM-1 MANUAL' released by MOS Technologies
-; and this means that someone probably has the copyrights of it. Until 
+; and this means that someone probably has the copyrights of it. Until
 ; someone clears the mess around 'who owns what from Commodore', leave this
 ; remark in the sourcecode as a sign of acknowledgement and respect in case
 ; you intend to use it for your own purposes.
 ;
 ;
-; I have checked the SRC line by line and added some comment of my own. At 
-; this moment it does not mean that it is without faults. I only will be 
+; I have checked the SRC line by line and added some comment of my own. At
+; this moment it does not mean that it is without faults. I only will be
 ; sure about that until I have compiled the SRC and found no differences
 ; with the original BIN.
 ;
@@ -129,7 +129,7 @@ DUMPT3  lda     #4      ; EOT-char
 	jsr     OUTCHT
 	dex
 	bne     DUMPT3
-;  
+;
 	lda     #0      ; display 0000
 	sta     POINTL
 	sta     POINTH
@@ -397,7 +397,7 @@ PACKT2  rol
 	ldy     #0      ; set the zero-flag
 	rts
 ;
-; Y=0 at this point, done in label RDBIT4 
+; Y=0 at this point, done in label RDBIT4
 PACKT3  iny     ; Y:=1 = invalid hex char
 	rts
 ;
@@ -434,7 +434,7 @@ RDBIT2  bit     SBD
 ;
 	sec
 	sbc     CLKRDT
-	ldy     #$FF    
+	ldy     #$FF
 	sty     CLK64T
 ;
 	ldy     #7
@@ -498,7 +498,7 @@ SAVEB   sty     YREG
 ;
 ; NMI and IRQ are called via RAM-vector. This enables the programmer
 ; to insert his own routines.
-; Comment: is not initialised anywhere, so any accidental NMI or IRQ 
+; Comment: is not initialised anywhere, so any accidental NMI or IRQ
 ;  can lead to disaster !
 NMIT    jmp     (NMIV)
 IRQT    jmp     (IRQV)
@@ -554,7 +554,7 @@ READ    jsr     GETCH   ; get char from TTY
 	cmp     #1      ; 1 has no meaning for TTY
 	beq     TTYKB   ; 1 = KB-mode ->
 
-	jsr     PACK    
+	jsr     PACK
 	jmp     SCAN
 ;
 ; Main routine for keyboard and display
@@ -591,9 +591,9 @@ GETK    jsr     GETKEY
 ;
 ; One of the hexidecimal buttons has been pushed
 DATA    asl             ; move LSB key number to MSB
-	asl     
-	asl     
-	asl     
+	asl
+	asl
+	asl
 	sta     TEMP    ; store for datamode
 	ldx     #4
 
@@ -707,7 +707,7 @@ DUMP1   jsr     CRLF
 ; Check if POINTL/H >= EAL/H
 	lda     POINTL
 	cmp     EAL
-; 
+;
 	lda     POINTH
 	sbc     EAH
 	bcc     DUMP4   ; no ->
@@ -774,7 +774,7 @@ GOEXEC  ldx     SPUSER  ; user user defined stack
 	ldx     XREG
 	ldy     YREG
 	lda     ACC
-	rti             ; start program 
+	rti             ; start program
 ;
 ; Take care if TTY-input
 SCAN    cmp     #$20    ; open new cell
@@ -874,7 +874,7 @@ GET1    bit     SAD     ; check if TTY-mode
 ;
 ; By delaying another half bit time, you read the bit in the middle
 ; of every bit.
-GET5    jsr     DEHALF  ; delay 1/2 bit time 
+GET5    jsr     DEHALF  ; delay 1/2 bit time
 GET2    lda     SAD
 	and     #$80    ; mask bit 7
 	lsr     CHAR    ; shift last result
@@ -920,7 +920,7 @@ OUTCH   sta     CHAR
 	ldx     #8      ; send character
 OUT1    lda     SBD
 	and     #$FE    ; clear bit 0
-	lsr     CHAR    ; shift byte 
+	lsr     CHAR    ; shift byte
 	adc     #0      ; add Carry = former bit 0
 	sta     SBD     ; output bit
 	jsr     DELAY
@@ -988,7 +988,7 @@ AKA     stx     SBD     ; enable output = select row
 ; Output to 7-segment-display
 SCAND   ldy     #0      ; POINTL/POINTH = address on display
 	lda     (POINTL),Y      ; get data from this address
-	sta     INH     ; store in INH = 
+	sta     INH     ; store in INH =
 SCANDS  lda     #$7F    ; PA0..PA6 := output
 	sta     PADD
 
@@ -1055,7 +1055,7 @@ KEYIN1  asl             ; shift A until
 ;
 ; Comment: bit 7 is always 0 so Carry is always 0 the first time
 ;  and allowing Y to become 0 (key $FF does not exist)
-	iny     
+	iny
 	bpl     KEYIN1  ; always ->
 
 KEYIN2  txa
@@ -1063,14 +1063,14 @@ KEYIN2  txa
 	lsr             ; A := row+1
 	tax             ; X := actual row+1
 	tya
-	bpl     KEYIN4  ; always, because Y<7 -> 
+	bpl     KEYIN4  ; always, because Y<7 ->
 
 ;
 ; Add 7 to A for every row above 0 to get actual key number
 KEYIN3  clc
 	adc     #7      ; add (X-1) times 7 to A
 KEYIN4  dex             ; countdown to 0
-	bne     KEYIN3  
+	bne     KEYIN3
 
 	rts             ; A is always < 21 eg. < $15
 ;

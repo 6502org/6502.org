@@ -1,8 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: 8-bit Bubble Sort</TITLE>
 <META name="description" content="A 6502 assembly language bubble sort routine for a list containing 8-bit elements.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Bubble Sort (for 8-Bit Elements)</FONT><FONT SIZE=-1> from 6502 Software Design</FONT>
@@ -26,7 +25,7 @@ The example not only demonstrates how the bubble sort algorithm operates, but it
 <P>The subroutine (SORT8) sorts unordered lists that are comprised of 8-bit elements.  As in the previous examples in this chapter, the starting addres is contained in locations $30 (low-address byte) and $31 (high-address byte).  The length of the list is contained in the first byte of the list.  Since a byte is 8 bits wide, the list can contain up to 255 elements.
 <PRE>
 ;THIS SUBROUTINE ARRANGES THE 8-BIT ELEMENTS OF A LIST IN ASCENDING
-;ORDER.  THE STARTING ADDRESS OF THE LIST IS IN LOCATIONS $30 AND 
+;ORDER.  THE STARTING ADDRESS OF THE LIST IS IN LOCATIONS $30 AND
 ;$31.  THE LENGTH OF THE LIST IS IN THE FIRST BYTE OF THE LIST.  LOCATION
 ;$32 IS USED TO HOLD AN EXCHANGE FLAG.
 
@@ -45,10 +44,10 @@ NXTEL    LDA ($30),Y   ;FETCH ELEMENT
          PHA           ; BY SAVING LOW BYTE ON STACK.
          LDA ($30),Y   ; THEN GET HIGH BYTE AND
          DEY           ; STORE IT AT LOW ADDRESS
-         STA ($30),Y   
+         STA ($30),Y
          PLA           ;PULL LOW BYTE FROM STACK
          INY           ; AND STORE IT AT HIGH ADDRESS
-         STA ($30),Y 
+         STA ($30),Y
          LDA #$FF      ;TURN EXCHANGE FLAG ON (= -1)
          STA $32
 CHKEND   DEX           ;END OF LIST?

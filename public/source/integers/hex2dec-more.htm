@@ -2,8 +2,7 @@
 <META name="description" content="More 6502 assembly routines that convert an 8-bit hex
 number and returns a 10-bit decimal (BCD) number.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>More Hexadecimal to Decimal Conversion</FONT><FONT SIZE=-1> by Andrew Jacobs</FONT>
@@ -51,7 +50,7 @@ BINBCD8:	SED		; Switch to decimal mode
 		STA BCD+0
 		STA BCD+1
 		LDX #8		; The number of source bits
-		
+
 CNVBIT:		ASL BIN		; Shift out one bit
 		LDA BCD+0	; And add into result
 		ADC BCD+0
@@ -62,13 +61,13 @@ CNVBIT:		ASL BIN		; Shift out one bit
 		DEX		; And repeat for next bit
 		BNE CNVBIT
 		CLD		; Back to binary
-		
+
 		BRK		; All Done.
-		
+
 ; A test value to be converted
 
 		.ORG $0300
-		
+
 BIN		.DB  234
 BCD		.DS  2
 </PRE>
@@ -94,7 +93,7 @@ BINBCD16:	SED		; Switch to decimal mode
 		STA BCD+1
 		STA BCD+2
 		LDX #16		; The number of source bits
-		
+
 CNVBIT:		ASL BIN+0	; Shift out one bit
 		ROL BIN+1
 		LDA BCD+0	; And add into result
@@ -109,17 +108,16 @@ CNVBIT:		ASL BIN+0	; Shift out one bit
 		DEX		; And repeat for next bit
 		BNE CNVBIT
 		CLD		; Back to binary
-		
+
 		BRK		; All Done.
-		
+
 ; A test value to be converted
 
 		.ORG $0300
-		
+
 BIN		.DW  12345
 BCD		.DS  3
 </pre>
 <FONT SIZE=-1>Last page update: March 2, 2007.</FONT>
 </BODY></HTML>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

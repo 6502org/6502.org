@@ -1,8 +1,8 @@
 <HTML><HEAD><TITLE>6502.org Tutorials: Investigating Interrupts</TITLE>
 <meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="An tutorial describing the operation of the 6502's interrupt capabilities"> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
-BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+<BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
 alt="[Return to Main Page]"></A><BODY> <FONT size=+1>Investigating Interrupts</FONT>&nbsp;<FONT SIZE=-1>by Garth Wilson</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Primers]</A> <P><HR>
@@ -112,7 +112,7 @@ timer's hardware limitations make it unable to go long enough between roll-overs
 case, although the job will only be to increment a two-byte variable, using it only to mark elapsed time for other routines to
 refer to.)
 </ul>
-<i>Scenario C:</i> Now suppose you have both scenario A and scenario B at the same time.  
+<i>Scenario C:</i> Now suppose you have both scenario A and scenario B at the same time.
 <ul>
 You can see that running A, when you don't
 know exactly how fast the data will be arriving, could really mess up the software timing required in B.  It gets worse when
@@ -1228,15 +1228,15 @@ off-the-shelf 65C02 running at maximum speed any serious competition.
 <p>
 The single capital letters in parentheses below indicate, to the best of my understanding, what part of the interrupt time is
 being measured, in terms of Figure 8.  Some of the information came from ST Microelectronics applications note AN910, at
-<a 
-href="http://www.st.com/stonline/books/pdf/docs/5039.pdf">www.st.com/stonline/books/pdf/docs/5039.pdf</a>.  
+<a
+href="http://www.st.com/stonline/books/pdf/docs/5039.pdf">www.st.com/stonline/books/pdf/docs/5039.pdf</a>.
 Those are noted by "ST" beside them.  Other figures come from data books, either
 on my shelves or online.  Frequencies shown in MHz are the maximum speeds as far as I have information.  cy=clocks, unless
 otherwise noted.  Avg=average.
 <p>
 <table cellpadding="2" cellspacing="2" border="1">
 <tr>
-	<td>1802</td><td>RCA</td>  
+	<td>1802</td><td>RCA</td>
 	<td>? Most instructions take 16 clocks (6.4&mu;s), some, 24 (9.6&mu;s).  2.5MHz @ 5V.</td>
 </tr><tr>
 	<td>8080</td><td>Intel</td>
@@ -1298,7 +1298,7 @@ otherwise noted.  Avg=average.
 </tr><tr>
 	<td>68000</td><td>Motorola</td>
 	<td>46 clocks or 2.875&mu;s minimum @ 16MHz (B)+(C)?.  Has a very complex interrupt system.</td>
-</tr><tr>	
+</tr><tr>
 	<td>6800</td><td>Motorola</td>
 	<td>(C)=13 clocks, including pushing the index register and both accumulators.  RTI (E) takes 10 clocks.  2MHz.</td>
 </tr><tr>
@@ -1323,7 +1323,7 @@ otherwise noted.  Avg=average.
 	<td>68HC16</td><td>Motorola</td>
 	<td>2.25&mu;s for interrupt+return (C)+(E) @ 16MHz.  ST<br>
                 Instructions 2-38 cy, or 0.125-2.375&mu;s.  Avg 6-7 cy, or around 0.4&mu;s.</br>
-</tr><tr>                
+</tr><tr>
 	<td>PIC16</td><td>Microchip</td>
 	<td>(C)=8 clocks (2 instruction cycles), and RETFIE (E) is also 8 clocks; but this doesn't
                 even include saving and restoring the status register.  That's an extra, rather mickey-mouse
@@ -1368,7 +1368,7 @@ otherwise noted.  Avg=average.
 		<td>Normal latency (C) 7 clocks (0.35&mu;s) min, 14 clocks (0.7&mu;s) max (A)+(C).  RTI 6 cy (0.3&mu;s).  20MHz.<br>
                 Instructions 2-7 cy, or 0.1-0.35&mu;s.  Avg 4 cy, or 0.2&mu;s.<br>
                 Special case:  IRQ from WAIt instrucion with interrupt-disable bit I set:  no more than 1 cy (0.05&mu;s!)</td>
-</tr></table>               
+</tr></table>
 </pre>
 <P><FONT SIZE=-1>Last Updated June 6, 2004.</FONT>
 </body>

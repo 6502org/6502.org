@@ -2,8 +2,8 @@
 <meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="An extensive tutorial on the 6502 microprocessor's
 compare instructions."> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
-BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+<BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
 alt="[Return to Main Page]"></A><BODY> <FONT size=+1>Decimal Mode</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR>
@@ -256,7 +256,7 @@ SBC #$34 ; After this instruction, C = 0, A = $87)
 
 <p>The carry flag allows BCD addition and subtraction to be extended beyond 8
 bits as easily as binary addition and subtraction.  For example:</p>
-  
+
 <pre>
 SED       ; Decimal mode (BCD addition: NUM3 = NUM1 + NUM2)
 CLC
@@ -406,13 +406,13 @@ ADC #$00 ; 2 cycles on the 6502 and 65816, 3 cycles on the 65C02
 SED         ; 2 cycles
 LDX #$FF    ; 2 cycles
 SBC $01FF,X ; 5 cycles on the 6502 and 65816, 6 cycles on the 65C02
-</pre>  
+</pre>
 
 <p>Note the SBC $01FF,X instruction takes 4 cycles for Absolute,X addressing,
 plus 1 cycle for a page boundary crossing (for a total of 5 cycles on the
 6502 and 65816), plus 1 more cycle on the 65C02, for a total of 6 cycles on
 the 65C02.</p>
-  
+
 <p>So, programs that depend on exact timing (i.e. a specific number of cycles),
 should be aware that ADC and SBC will have different cycle counts in decimal
 mode on the 65C02 than on the 6502.  On the other hand, this difference can
@@ -477,7 +477,7 @@ SBC NUM2H
 <p>the C flag will be 0 if NUM1 < NUM2, and the C flag will be 1 if NUM1 >=
 NUM2, if NUM1 and NUM2 represent (valid) BCD numbers or if they represent
 unsigned binary numbers.</p>
-  
+
 <p>
 <a name="5"><b>5 INTERRUPTS (INCLUDING BRK) AND DECIMAL MODE</b></a>
 <p>On the 6502, a BRK instruction, an IRQ interrupt, and an NMI interrupt do not
@@ -576,7 +576,7 @@ any instances where there is any dependence on undocumented behavior.
 
 <p>
 <a name="7"><b>7 DECIMAL MODE APPLICATIONS</b></a>
-    
+
 <p>
 BCD can be a convenient representation for hardware.  For example, a 74HC160
 is a 4-bit BCD counter that counts from 0 to 9 and then rolls over.  A
@@ -598,7 +598,7 @@ For example, in a game it's often desirable to update a score or a counter
 that displays the time remaining as quickly as possible, especially in an
 arcade-style game where graphics and sound effects must be handled also.  Any
 time saved could be used for additional action or other features.
-</p>      
+</p>
 
 <p>
 Another example is fixed point and floating point math routines.  For
@@ -649,8 +649,8 @@ subtracted, and C represents the value of the carry flag beforehand.  A
 represents the accumulator, but note that B represents the operand (e.g. a
 memory location), and does not refer to a 65816 register.  In fact, all
 cases, including valid cases, are covered.
-</p>  
-  
+</p>
+
 <p>
 In the tables, "bin" means that flag is the same as in binary mode.  For
 example, in binary mode:
@@ -668,12 +668,12 @@ the accumulator is $9A, and the Z flag is clear.  Since the Z flag after ADC
 on the 6502 is "bin", that means the decimal mode Z flag is clear.  Thus, to
 predict the value of the Z flag, simply perform the ADC using binary
 arithmetic.
-</p>    
+</p>
 
 <p>
 "dec" means that the flag is based on the BCD accumulator result.  For
 example, after:
-</p>  
+</p>
 
 <pre>
 SED      ; decimal mode: 99 + 1
@@ -702,7 +702,7 @@ A few other notes:
 
 <p>
 ADC B: A = A+B+C
-</p>      
+</p>
 
 <table>
   <tr>
@@ -771,7 +771,7 @@ ADC B: A = A+B+C
 3c. A = (A &amp; $F0) - (B &amp; $F0) + AL<br/>
 3d. If A &lt; 0, then A = A - $60<br/>
 3e. The accumulator result is the lower 8 bits of A<br/>
-</p>  
+</p>
 
 <p>Seq. 4:</p>
 <p>
@@ -838,11 +838,11 @@ BCS NEXT1
 CMP #$A0
 BCS NEXT1
     </pre>
-    
+
     <p>
     Note that CMP #$0A and CMP #$A0 should be used instead of replacing INC N1
     (and likewise for INC N2) with:
-    </p>  
+    </p>
 
     <pre>
 SED
@@ -876,7 +876,7 @@ comparison from COMPARE (lines [8] through [9], inclusive)
     Note that this program is not optimized for space or speed.  Instead, it was
     written to be modular, and with clarity in mind.
   </p>
-  
+
   <pre>
 ; Verify decimal mode behavior
 ;
@@ -1159,7 +1159,7 @@ the same in emulation (e flag = 1) and native (e flag = 0) modes.  All code
 below assumes native mode, and that the accumulator and carry flag beforehand
 are the same.  This includes both valid and undocumented behavior.
 </p>
-    
+
 <p>
 N2 and the N, V, Z, and C flags of:
 </p>
@@ -1195,8 +1195,8 @@ XBA
 ADC N1+1 ; then add high bytes
 ORA N2   ; use all 16 bits of the result to determine the Z flag
 </pre>
-  
-<p>  
+
+<p>
 N2 and the N, V, Z, and C flags of:
 </p>
 
@@ -1256,4 +1256,4 @@ ORA N2
 
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+

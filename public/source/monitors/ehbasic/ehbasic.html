@@ -1,9 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: Enhanced 6502 BASIC</TITLE>
 <META name="description" content="An advanced BASIC interpreter for the 6502 microprocessor.">
 </HEAD>
-<BODY
-BACKGROUND="../../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../../index.html"><IMG SRC="../../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>Enhanced 6502 BASIC</FONT>&nbsp;<FONT SIZE=-1>by Lee Davison</FONT>
@@ -25,12 +23,12 @@ Repository]</A>
   <CENTER>
     <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
       <TR>
-        <TD>-142</TD> 
-        <TD>96.3</TD> 
-        <TD>0.25</TD> 
+        <TD>-142</TD>
+        <TD>96.3</TD>
+        <TD>0.25</TD>
         <TD>-136.42E-3</TD>
-        <TD>-1.3E7</TD> 
-        <TD>1</TD> 
+        <TD>-1.3E7</TD>
+        <TD>1</TD>
       </TR>
     </TABLE>
   </CENTER>
@@ -44,12 +42,12 @@ Repository]</A>
   <CENTER>
     <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
       <TR>
-        <TD>%101010</TD> 
-        <TD>-$FFE0</TD> 
-        <TD>$A0127BD</TD> 
-        <TD>-%10011001</TD> 
+        <TD>%101010</TD>
+        <TD>-$FFE0</TD>
+        <TD>$A0127BD</TD>
+        <TD>-%10011001</TD>
         <TD>%00001010</TD>
-        <TD>$0A</TD> 
+        <TD>$0A</TD>
       </TR>
     </TABLE>
   </CENTER>
@@ -65,11 +63,11 @@ Repository]</A>
   <CENTER>
     <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
       <TR>
-        <TD>"Hello world"</TD> 
-        <TD>"-136.42E-3"</TD> 
-        <TD>"+----+----+"</TD> 
-        <TD>"[Y/n]"</TD> 
-        <TD>"Y"</TD> 
+        <TD>"Hello world"</TD>
+        <TD>"-136.42E-3"</TD>
+        <TD>"+----+----+"</TD>
+        <TD>"[Y/n]"</TD>
+        <TD>"Y"</TD>
       </TR>
     </TABLE>
   </CENTER>
@@ -90,14 +88,14 @@ Repository]</A>
   <CENTER>
     <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
       <TR>
-        <TD>A</TD> 
-        <TD>A$</TD> 
+        <TD>A</TD>
+        <TD>A$</TD>
         <TD>NAME$</TD>
-        <TD>x2LIM</TD> 
-        <TD>y</TD> 
+        <TD>x2LIM</TD>
+        <TD>y</TD>
         <TD>colour</TD>
-        <TD>s1</TD> 
-        <TD>s2</TD> 
+        <TD>s1</TD>
+        <TD>s2</TD>
       </TR>
     </TABLE>
   </CENTER>
@@ -255,7 +253,7 @@ Repository]</A>
     </TABLE>
   </CENTER>
  </BLOCKQUOTE>
- 
+
   <UL>
     <LI>Anything in upper case is part of the command/function structure and must be present
     <LI>Anything in lower case enclosed in < > is to be supplied by the user
@@ -500,9 +498,9 @@ Repository]</A>
   <A name=NULL>
   <B>NULL &#60;n&#62;</B>
   <BLOCKQUOTE>
-    Sets the number of null characters printed by BASIC after every carriage 
+    Sets the number of null characters printed by BASIC after every carriage
     return. n may be specified in the range 0 to 255.
-  </BLOCKQUOTE> 
+  </BLOCKQUOTE>
 
   <A name=INC>
   <B>INC &#60;var&#62;[,var]...</B>
@@ -576,12 +574,12 @@ Repository]</A>
   <BLOCKQUOTE>
     Marks the end of a DO .. LOOP loop. There are three possible variations on the
     LOOP command ..
-    
+
     <BLOCKQUOTE>
       <P>
         <B>LOOP</B>
         <BLOCKQUOTE>
-          Repeats forever. With just this command control is passed back to the next 
+          Repeats forever. With just this command control is passed back to the next
           command (line) after the DO.
         </BLOCKQUOTE>
       <P>
@@ -606,14 +604,14 @@ Repository]</A>
   <BLOCKQUOTE>
     Outputs the value of each expressions. If the list of expressions to  be output
     does not end with a comma or a semi-colon, then a carriage return and linefeed
-    is output after the values. 
-	
+    is output after the values.
+
     <P>Expressions on the line can be separated with either a semi-colon, causing the
     next expression to follow immediately, or a comma which will advance the output
     to the next tab stop before continuing to print. If there are no expressions and
     no comma or semi-colon after the PRINT statement then a carriage return and
     linefeed is output.
-	
+
     <P>When entering a program line, or immediate statement, PRINT can be abbreviated
     to ? .
   </BLOCKQUOTE>
@@ -893,7 +891,7 @@ Repository]</A>
 
   <A name=TAN>
   <B>TAN(&#60;expression&#62;)</B>
-  <BLOCKQUOTE>  
+  <BLOCKQUOTE>
     Returns the tangent of &#60;expression&#62;.
   </BLOCKQUOTE>
 
@@ -1057,7 +1055,7 @@ Repository]</A>
   executing a program, will be followed by "in line <n>" where <n> is the number
   of the line in which the error occurred.
 
-  <P><I>NEXT without FOR</I> 
+  <P><I>NEXT without FOR</I>
   <BLOCKQUOTE>
     NEXT has been encountered and no matching FOR could be found.
   </BLOCKQUOTE>

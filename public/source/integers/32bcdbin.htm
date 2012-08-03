@@ -1,8 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: BCD-Binary (32-bit)</TITLE>
 <META name="description" content="6502 assembly routine for converting 32-bit binary numbers to BCD and vice versa.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
 border=0 alt="[Return to Main Page]"></A>
 <P><FONT SIZE=+1>BCD to Binary Conversion (32-bit)</FONT><FONT SIZE=-1> from 6502 Software Design, Expanded by Greg</FONT>
@@ -10,11 +9,11 @@ border=0 alt="[Return to Main Page]"></A>
 <BR clear=all><P>
 <HR>
 <P><B>BCD to Binary Conversion (32-bit)</B>
-<P>These are routines that I expanded from the 6502 Software Design book by Leo J. Scanlon. Anyone may contact me for questions or comments at greg@ntown.com.         
+<P>These are routines that I expanded from the 6502 Software Design book by Leo J. Scanlon. Anyone may contact me for questions or comments at greg@ntown.com.
 <PRE>
-;This routine converts a packed 8 digit BCD value in memory loactions  
-;BINARY to BINARY+3 to a binary value with the dp value in location 
-;EXP and stores it in locations BCD to BCD+3. It Then packs the dp value 
+;This routine converts a packed 8 digit BCD value in memory loactions
+;BINARY to BINARY+3 to a binary value with the dp value in location
+;EXP and stores it in locations BCD to BCD+3. It Then packs the dp value
 ;in the MSBY high nibble location BCD+3.
 BCD_BIN:   stz     BINARY+3 ;Reset MSBY
            jsr     NXT_BCD  ;Get next BCD value
@@ -94,8 +93,8 @@ MPY10:     sta     TEMP2    ;Save digit just entered
 
 
 
-;This program takes a 4 byte binary value from locations BINARY to 
-;BINARY+3, converts it to packed BCD and stores it in locations BCD 
+;This program takes a 4 byte binary value from locations BINARY to
+;BINARY+3, converts it to packed BCD and stores it in locations BCD
 ;to BCD+3 and puts the dp value in location EXP.
 BIN_BCD:   lda     BINARY+3 ;Get MSBY
            and     #$f0     ;Filter out low nibble

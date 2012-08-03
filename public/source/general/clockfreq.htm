@@ -1,9 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: Calculation of clock frequency</TITLE>
 <META name="description" content="Calculation of clock frequency in 6502 assembly.">
 </HEAD>
-<BODY BACKGROUND="../../graph.gif" BGCOLOR="white"
-TEXT="black" LINK="#0000EE"
-VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <A HREF="../../index.html"><IMG SRC="../../mainlink.jpg"
 align=right
 border=0 alt="[Return to Main Page]"></A>
@@ -17,7 +15,7 @@ SIZE=-1>by Leo Nechaev</FONT>
 This program calculates the clock frequency of 6502-based system. The result is stored in location 'Ticks' to 'Ticks+3' in BCD representation ('Ticks' - 2 symbols before decimal point, 'Ticks+1' to 'Ticks+3' - 6 symbols after point), then result is sent
 via UART to the host (usually PC with some kind of terminal programm).
 <p>
-With minimal modifications (deleting 'SED' and 'CLD' instructions, changing ticks constants [from BCD to binary format], 
+With minimal modifications (deleting 'SED' and 'CLD' instructions, changing ticks constants [from BCD to binary format],
 deleting 'terminal' subroutines) it may be used to determine real speed of processor.
 <PRE>
 rgConfig        =       $6000   ; write: D6=1 - NMI is off, D6=0 - NMI is on

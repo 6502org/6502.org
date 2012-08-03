@@ -2,71 +2,71 @@
 <META name="description" content="A technical document describing the KIM-1 microcomputer.">
 </HEAD>
 <A HREF="http://www.6502.org"><IMG SRC="/mainlink.jpg" align=right border=0 alt="[Return to Main Page]"></A>
-<BODY BACKGROUND="/graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <P><FONT SIZE=+1>What is the KIM-1?</FONT><FONT SIZE=-1> by Ruud Baltissen</FONT>
 <BR clear=all><A HREF="../trainers.htm">[Up to Early Microcomputers and Trainers]</A>
 <BR clear=all><P>
 <HR>
-<B> <FONT COLOR="#FF0000"> DISCLAIMER <br></FONT> </B> 
+<B> <FONT COLOR="#FF0000"> DISCLAIMER <br></FONT> </B>
 <UL>
 <LI>All names with a copyright are acknowledged.
 <LI>Some information is derived from deduction after reading a lot of documents and can be unreliable due to the lack of real proof.
-<LI>If the reader uses information from this document to write software or build 
-hardware, then it is on his own account. I cannot be held responsible for blowing 
+<LI>If the reader uses information from this document to write software or build
+hardware, then it is on his own account. I cannot be held responsible for blowing
 up your computer, mother-in-law or whatever; it will always be your own fault.
 <LI>I'm not a sexist, with 'he' and 'him' I also mean 'she' and 'her'.
 </UL>
-<p><B>Copyrights</B> 
-<UL>This page may contain material which is not mine. But the policy of TULIP, the 
-owner of the rights of Commodore, is that they don't mind as long as it is not 
-commercial. 
-<p>So you may copy every bit on this page for non-commercial use but, regarding 
-the above, I won't take any responsebility. I hope you enjoy it. If you use it, 
+<p><B>Copyrights</B>
+<UL>This page may contain material which is not mine. But the policy of TULIP, the
+owner of the rights of Commodore, is that they don't mind as long as it is not
+commercial.
+<p>So you may copy every bit on this page for non-commercial use but, regarding
+the above, I won't take any responsebility. I hope you enjoy it. If you use it,
 just give me at least some credit like "Stolen from Ruud" :-)
 </UL>
 
-<HR><p><B> What is the KIM-1?<p> </B> 
+<HR><p><B> What is the KIM-1?<p> </B>
 
 <img align=left hspace=8 src="kim-1.gif">
-The KIM-1 is the first computer developed by Commodore, or better, MOS. MOS was an 
+The KIM-1 is the first computer developed by Commodore, or better, MOS. MOS was an
 IC producing factory which Commodore took over to be sure of a constant supply of ICs.
- Commodore produced calculators before but I don't consider a calculator the same as a 
+ Commodore produced calculators before but I don't consider a calculator the same as a
 computer as long as you cannot program it. The KIM-1 has 1152 bytes of RAM, 2048 bytes
-of ROM and 30 I/O-lines. Some of these lines are used to drive six 7-segment 
+of ROM and 30 I/O-lines. Some of these lines are used to drive six 7-segment
 LED-displays and others are used to read the little hexadecimal keyboard.
 
-<p>The <A HREF="#manuals">manuals</A> state that the KIM-1 can be connected to a 
-serial teletyper/teleprinter in full duplex mode. The KIM-1 has the capability to 
+<p>The <A HREF="#manuals">manuals</A> state that the KIM-1 can be connected to a
+serial teletyper/teleprinter in full duplex mode. The KIM-1 has the capability to
 adjust automatically for a wide variety of data rates. (10 CPS, 15 CPS, 30 CPS etc...)
  {** Personal note: I think 1 CPS is +/- 10 Baud **} The KIM-1 was originally developed
- to be connected to these teletypers by means of two current-loop-connections. The 
+ to be connected to these teletypers by means of two current-loop-connections. The
 current used may be 20 or 60 mA. But I can imagine that nowadays these teletypers are
 very hard to find. A small manual named "<A HREF="#manuals">KIM-1 HINTS</A>" gives us
-a solution in the form of a little circuit which enables you to connect a teletyper 
+a solution in the form of a little circuit which enables you to connect a teletyper
 with a RS232-interface. I can hear you think: "I don't have a RS232-teletyper either!".
 But if you are able to read this document, you posses a computer capable of emulating
 one. I'm thinking of programs like PROCOMM or KERMIT for the PC and NOVATERM for the
-C64. 
+C64.
 
 <p>A computer without the possibility to load or store programs is not very good at all.
- The KIM-1 has the ability to load and store programs on papertape and/or 
-cassette recorder. As paper-tape readers/punchers are hard to find as well, I think 
-the average KIM-owner is limited to the recorder. 
+ The KIM-1 has the ability to load and store programs on papertape and/or
+cassette recorder. As paper-tape readers/punchers are hard to find as well, I think
+the average KIM-owner is limited to the recorder.
 
-<p><B>The Hardware<p></B> 
-The well-known 6502 is the heart of the KIM-1 and doesn't need any 
-further explanation. 
+<p><B>The Hardware<p></B>
+The well-known 6502 is the heart of the KIM-1 and doesn't need any
+further explanation.
 
-<p>The 1K of RAM is comprised of eight 6102s. The 6102 is the MOS-equivalent 
+<p>The 1K of RAM is comprised of eight 6102s. The 6102 is the MOS-equivalent
 of the 2102 which is a 1K*1 RAM.
 
-<p>The 6530 is a different and quite complicated story. This IC contains 64 bytes of 
-RAM, 1024 bytes of ROM, a timer and 16 I/O-lines. For more information I advise you 
-to read my <A HREF="/hardware/ruud6530.htm">6530 document</A>. 
+<p>The 6530 is a different and quite complicated story. This IC contains 64 bytes of
+RAM, 1024 bytes of ROM, a timer and 16 I/O-lines. For more information I advise you
+to read my <A HREF="/hardware/ruud6530.htm">6530 document</A>.
 
 <p>A closer look at my KIM-1 <A HREF="kim.gif">schematic</A> will reveal that only 8 KB is
-decoded by a 74145, 4-to-10-multiplexer. This means that the whole configuration is 
-mirrored another 7 times within the 64 KB boundary. 
+decoded by a 74145, 4-to-10-multiplexer. This means that the whole configuration is
+mirrored another 7 times within the 64 KB boundary.
 
 <P>Within the 8 KB-boundary the system looks like this:
 
@@ -87,103 +87,103 @@ K7   $1C00 - $1FFF    1024 bytes ROM of 6530-002
 K0..K7 = output lines from 74145
 </PRE>
 <P>Notice the way how the I/O- and RAM-areas are arranged within the area $1400-$17FF.
-If you study the schematics, you won't find any logic who is taking care of it; 
-this is done inside the 6530. Even if you forget the internal ROM for a moment, it 
+If you study the schematics, you won't find any logic who is taking care of it;
+this is done inside the 6530. Even if you forget the internal ROM for a moment, it
 means that you cannot exchange the 6530s with each other like the 6526 CIAs in a C64.
-<P>As you can see there is one undefined area (not mentioned at all in any manual): 
-$1400 - $16FF. Exploring my KIM I found out the area is free. You also can see that 
-each I/O-area is 64 bytes large. In these cases there are three mirrors of each 
-I/O-area. 
-<p>All the DOUT-lines (Data OUT) of the RAM-ICs are buffered by a tristate buffer, 
-the 74125. The schematic reveals that the RAMs do have a CS-line but as I don't have 
-any information about these ICs, I cannot explain the extra use of these 
+<P>As you can see there is one undefined area (not mentioned at all in any manual):
+$1400 - $16FF. Exploring my KIM I found out the area is free. You also can see that
+each I/O-area is 64 bytes large. In these cases there are three mirrors of each
+I/O-area.
+<p>All the DOUT-lines (Data OUT) of the RAM-ICs are buffered by a tristate buffer,
+the 74125. The schematic reveals that the RAMs do have a CS-line but as I don't have
+any information about these ICs, I cannot explain the extra use of these
 74125-buffers.
-<p>The Reset- and NMI-input can be triggered by the user by means of a switch. A 
-556 takes care of debouncing both switches. 
+<p>The Reset- and NMI-input can be triggered by the user by means of a switch. A
+556 takes care of debouncing both switches.
 
-<p>The KIM-1 can be switched to the Single Step Mode. The 6502 generates a (H) at 
-the SYNC-output every time it fetches an opcode. This signal is used to generate a 
-NMI. On its turn the NMI-routine interrupts the momentary program and does its job. 
-In this case it means it runs after the executing of every single machine code. This 
-enables the user to see the contents of several registers, including the flags, after 
-each step checking if they contain the value as he expected them to have. If it is 
-the wrong value then there could be a flaw in software software or even hardware. 
+<p>The KIM-1 can be switched to the Single Step Mode. The 6502 generates a (H) at
+the SYNC-output every time it fetches an opcode. This signal is used to generate a
+NMI. On its turn the NMI-routine interrupts the momentary program and does its job.
+In this case it means it runs after the executing of every single machine code. This
+enables the user to see the contents of several registers, including the flags, after
+each step checking if they contain the value as he expected them to have. If it is
+the wrong value then there could be a flaw in software software or even hardware.
 
-<p>It is obvious that the part of the KERNEL which contains the NMI-routine has to 
-be masked out. Otherwise every opcode of this routine will trigger the NMI on its 
-turn, causing the 6502 to startup another NMI-routine etc... This is prevented by 
-masking out the upper half of the ROM-area by means of a 7401. This also means we 
-cannot single-step in this area but I only can say that we have to give the 
-programmers of the KIM at least some credit :-) 
+<p>It is obvious that the part of the KERNEL which contains the NMI-routine has to
+be masked out. Otherwise every opcode of this routine will trigger the NMI on its
+turn, causing the 6502 to startup another NMI-routine etc... This is prevented by
+masking out the upper half of the ROM-area by means of a 7401. This also means we
+cannot single-step in this area but I only can say that we have to give the
+programmers of the KIM at least some credit :-)
 
 <p><B>The Display and Keyboard</B>
-<P>PA0..PA6, PB1..PB4 and a 74145 are used to decode the keyboard and to activate 
-the display. Outputs 0..2 of the 74145 control the rows of the keyboard. PA0..PA6 
-read the columns. When a key is pushed, and the right row is probed, then the 
+<P>PA0..PA6, PB1..PB4 and a 74145 are used to decode the keyboard and to activate
+the display. Outputs 0..2 of the 74145 control the rows of the keyboard. PA0..PA6
+read the columns. When a key is pushed, and the right row is probed, then the
 corresponding input of port A is driven (L).
 
-<P>Outputs 4..9 control which one of the six 7-segments-displays will be activated 
-by means of a transistor. PA0..PA6, now functioning in the output mode, control 
-which segments of that display will light up. 
+<P>Outputs 4..9 control which one of the six 7-segments-displays will be activated
+by means of a transistor. PA0..PA6, now functioning in the output mode, control
+which segments of that display will light up.
 
 <P><B>Connecting a Cassette Recorder</B>
-<P>You can connect a normal cassette recorder to the KIM (ie. NO datasette!). A bit 
-is stored as small beep of a certain frequency. To store a '0' the KIM stores 6 
-pulses 414 usec (top-top) on tape. To store a '1' it stores 9 pulses of 276 usec. 
-(or ~2415 Hz / ~3650 Hz). The KIM generates the pulses onboard. A simple RC-network 
+<P>You can connect a normal cassette recorder to the KIM (ie. NO datasette!). A bit
+is stored as small beep of a certain frequency. To store a '0' the KIM stores 6
+pulses 414 usec (top-top) on tape. To store a '1' it stores 9 pulses of 276 usec.
+(or ~2415 Hz / ~3650 Hz). The KIM generates the pulses onboard. A simple RC-network
 smoothens the shapes of the pulses a little bit. To read the data the received signal
-first goes through a Phase-Locked-Loop circuit. This circuit measures the frequency 
-and informs the KIM about it with sending a (L) or (H) to input PB7. 
+first goes through a Phase-Locked-Loop circuit. This circuit measures the frequency
+and informs the KIM about it with sending a (L) or (H) to input PB7.
 
 <P><B>Connecting a Terminal</B>
-<P>As mentioned, you can connect a terminal to the KIM with its onboard serial 
-interface. The source code revealed it must be one using 7 bits and no parity. The 
-baudrate is detected by the KIM itself but I can imagine there has to be a lower- 
-and upperlimit to the baudrate it can work with. The serial interface is of the 
-'current loop' type. This means that not the voltage level of a line defines whether 
-a '0' or '1' is transmited (like RS232), but if there is a current or not flowing 
-through the circuit. 
+<P>As mentioned, you can connect a terminal to the KIM with its onboard serial
+interface. The source code revealed it must be one using 7 bits and no parity. The
+baudrate is detected by the KIM itself but I can imagine there has to be a lower-
+and upperlimit to the baudrate it can work with. The serial interface is of the
+'current loop' type. This means that not the voltage level of a line defines whether
+a '0' or '1' is transmited (like RS232), but if there is a current or not flowing
+through the circuit.
 
-<P> 'Current loop' is often used in an industrial environment. The current is used 
-to activate a LED inside an opto-coupler which on its turn addresses the receiving 
-device. The advantage of this system is galvanic discoupling: seen from a electric 
-point of view the devices aren't connected together. Electronic noise in one circuit 
-cannot disturb another circuit. 
+<P> 'Current loop' is often used in an industrial environment. The current is used
+to activate a LED inside an opto-coupler which on its turn addresses the receiving
+device. The advantage of this system is galvanic discoupling: seen from a electric
+point of view the devices aren't connected together. Electronic noise in one circuit
+cannot disturb another circuit.
 
-<P>The KIM does not use an optocoupler to detect the current. In this case the 
-current activates a transistor which on its turn activates PA7 via a NAND-gate. This 
-gate can be used to block the input. 
+<P>The KIM does not use an optocoupler to detect the current. In this case the
+current activates a transistor which on its turn activates PA7 via a NAND-gate. This
+gate can be used to block the input.
 
-<P>The originator of a signal has also to supply the current. The KIM simply 
+<P>The originator of a signal has also to supply the current. The KIM simply
 uses a resistor to limit the current. A NAND-gate with an open collector output takes
-care of closing or not closing the circuit. A line from the input takes care of the 
-fact that the NAND only operates when there is no input signal. In this way only a 
-half-duplex communication is possible. 
+care of closing or not closing the circuit. A line from the input takes care of the
+fact that the NAND only operates when there is no input signal. In this way only a
+half-duplex communication is possible.
 
 <P><A NAME="manuals"</A><B>The Original Manuals<p>
-</B>Recently I bought an original KIM-1 rev. D with the Commodore logo on it. It 
-came with several manuals. With the exception of one, I scanned them to make them 
-available in electronic format: 
+</B>Recently I bought an original KIM-1 rev. D with the Commodore logo on it. It
+came with several manuals. With the exception of one, I scanned them to make them
+available in electronic format:
 <P><UL>
-<LI>Hardware manual: ASCII <A HREF="hard-asc.zip">(hard-asc.zip)</A> or 
+<LI>Hardware manual: ASCII <A HREF="hard-asc.zip">(hard-asc.zip)</A> or
 IBM Graphics <A HREF="hard-dos.zip">(hard-dos.zip)</A> version
 
-<LI>User manual: ASCII <A HREF="user-asc.zip">(user-asc.zip)</A> or 
+<LI>User manual: ASCII <A HREF="user-asc.zip">(user-asc.zip)</A> or
  IBM Graphics <A HREF="user-dos.zip">(user-dos.zip)</A> version
 
 <LI>Programming manual (N/A)
 
-<LI>Hints: ASCII <A HREF="hint-asc.zip">(hint-asc.zip)</A> or 
+<LI>Hints: ASCII <A HREF="hint-asc.zip">(hint-asc.zip)</A> or
 IBM Graphics <A HREF="hint-dos.zip">(hint-dos.zip)</A> version
 </UL>
-<B>Source Code for the ROM<p></B> 
+<B>Source Code for the ROM<p></B>
 The source code is available to <A HREF="kim-src.htm">browse online</A> or you can
-download it as a text file: <A HREF="kim-src.asm">kim-src.asm</A>. Because the original listings provided 
-little, and even confusing information, I added my own comments as well. 
+download it as a text file: <A HREF="kim-src.asm">kim-src.asm</A>. Because the original listings provided
+little, and even confusing information, I added my own comments as well.
 
-<P><B>Building Your Own KIM-1</B><P> 
-Can this be done? I think: YES! Why build such an old computer? Ask the guys who 
-still fly in those World War I airplanes: because it's fun!  Enough talk: read this <A HREF="buildkim.htm">document</A>! 
+<P><B>Building Your Own KIM-1</B><P>
+Can this be done? I think: YES! Why build such an old computer? Ask the guys who
+still fly in those World War I airplanes: because it's fun!  Enough talk: read this <A HREF="buildkim.htm">document</A>!
 <P>Send your comments and feedback to Ruud Baltissen, <A HREF="mailto:ruud">g.j.p.a.a.baltissen@kader.hobby.nl</A>.
 
 <P><HR>
