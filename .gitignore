@@ -1,0 +1,10 @@
+.DS_Store
+.redcar
+*.pyc
+/config/database.yml
+/db/*.sql
+/log/*
+/public/javascripts/cache
+/public/stylesheets/cache
+/public/help/users
+/tmp/*
