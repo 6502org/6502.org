@@ -1,0 +1,549 @@
+<HTML>
+<HEAD>
+	<TITLE>RS-232 Primer</TITLE>
+	<META NAME="KEYWORDS" CONTENT="RS-232, tutorial, primer, 6551, 65c51, baud rate, start bit, stop bit, parity, line driver, null modem, big 8">
+</HEAD>
+<BODY>
+<H1>Introduction to RS-232</H1>
+
+<P>It may seem rather late to be putting up an RS-232 primer in this day of PCs
+that come without RS-232 (COM) ports, but RS-232 still has a lot of
+uses from vintage computers to new simple serial connections that can
+be completely created, hacked, and controlled by the technician or
+hobbyist.</P>
+
+<P>The RS-232 so-called standard has been around for over three decades.
+In spite of the confusion it produces, it is still a popular
+workhorse.  It may seem like too many things about this
+&quot;standard&quot; are not standard at all. Unfortunately,
+much of what RS-232 started getting used for immediately (and is
+still used for today) is not what it was originally specified for,
+which is connecting modems (data communications equipment, or DCE) to
+other things like computers, terminals, and printers (data terminal
+equipment, or DTE). We will give an RS-232 introduction here,
+starting with the most basic elements, which are enough to be useful
+for simple data communications. We will leave the
+troubleshooting of more complex problems to the reader, referring to
+a list of RS-232 books at the end.</P>
+
+<P>In RS-232, data is sent on a wire as a series of positive and negative
+voltages, one bit at a time (hence the word &quot;serial&quot;).
+Each frame begins with a start bit, which is followed by five to
+eight data bits (sent low bit first), followed by an optional parity
+bit for error-checking, and ending with one to two stop bits.
+Take figure 1 for example:</P>
+
+<center>
+<IMG ALT="RS-232 waveform" SRC="/tutorials/rs232/figure_1.gif">
+</center>
+
+<P>The first thing that you'll probably think looks wrong here is that the
+ones are the low voltage, and the zeroes are high.  It's not
+this way at the UART pins, but the line drivers and receivers invert
+it.  Logic 1 is also called &quot;mark&quot;.  &quot;UART&quot;
+here stands for &quot;universal asynchronous receiver/transmitter&quot;.
+Do not confuse this with the line drivers and receivers. The
+UART takes care of shifting the bytes in and out, generating the
+timing and the various housekeeping bits, detecting errors, and so
+on.  The line drivers and receivers are nothing but inverters
+that also serve as voltage translators between TTL logic levels and
+the &plusmn;10V (give or take a few volts) actually used on RS-232
+lines. On a schematic diagram they are represented by the
+inverter symbol.</P>
+
+<P>Before the frame can begin, the line has to be marking; ie, sending the
+voltage corresponding to &quot;1&quot;. The transition to the
+0, also called &quot;space&quot;, for the start bit tells the
+receiver when the frame is beginning, essentially starting its
+timer. This time reference edge is important because the only
+way the receiver knows which bit it should be receiving at any given
+time is by how long ago the start bit began. This is why it's
+called &quot;asynchronous&quot;. There's no separate clock line
+to tell when the next bit is ready to read.&nbsp; The receiver bears
+the responsibility of keeping time so it knows which bit it is
+receiving. Obviously the transmitter and receiver have to agree
+on how long a bit will last. That's where the baud rate comes
+in. More on that later.</P>
+
+<P>After the eight data bits shown above, we have the parity bit. In
+this case, it's even parity. That means there has to be an even
+number of ones between the start bit and the stop bit. If there
+are an odd number of ones in the data bits, the parity bit gets set
+to make the number of ones even. The purpose is to check for
+errors. Obviously if you have two wrong bits (even if one of
+them is the parity bit itself), parity error-checking could be
+fooled; but it's pretty highly unlikely that you'll have <I>two</I>
+wrong bits in the same frame if the data link seems to be working at
+all. Use of the parity bit is optional and not very common.
+If the data line is producing errors because of severe interference
+or any other reason, the UART will be reporting framing errors
+anyway.</P>
+
+<P>The receiver looks for a &quot;1&quot; stop bit at the end of the frame.
+A framing error is reported when that stop bit doesn't come when the
+receiver expects it. The problem could be that the transmitter
+and receiver aren't set for the same speed, number of data bits, or
+whether or not to use a parity bit, or the cable may be picking up
+severe interference or simply be too long for the chosen speed,
+resulting in a very wobbly triangle wave instead of a clean set of
+high and low voltages resembling square waves. The RS-232
+standard suggests that cables should not be more than 50 feet long.
+You can go much, much longer if necessary, but it may mean slowing
+the baud rate way down to get dependable data transfer.</P>
+
+<P>It's most common to use a single stop bit when using 7 or 8 data bits.
+1&frac12; or 2 stop bits are generally used when the frame is very
+short from using only 5 or 6 data bits. After the full stop bit
+time, the next start bit can begin any time-- assuming the receiver
+hasn't told the transmitter that it's not ready for more data yet.
+More on that later. If the transmitter is set for more stop
+bits than the receiver is, it will not cause any problems. The
+receiver will see the extra time marking as nothing more than a
+little blank time between frames. But if the receiver is
+expecting more stop bits than the transmitter is sending, an error
+condition is generated.</P>
+
+<P>The MS-DOS command you might recognize as one that was relatively common
+and typical for setting up a com port on a PC, &quot;<code>MODE
+COM2: 9600,N,8,1</code>&quot; sets com2 up for 9600 baud, no parity
+bit, 8 data bits, and 1 stop bit.</P>
+
+<P>As you can see, a two-wire connection consisting of signal and ground is
+enough to transfer data in one direction. Since the voltages
+are high, and the source and load impedance are rather low, and the
+rise and fall times are not very fast for the length and capacitance
+of the cable we would probably be using to transfer data across a
+workbench, we can enjoy the fact that almost any cheap cable will
+do-- even lamp cord. Adding one wire (to get three) is enough
+to have data going both directions, even simultaneously. The
+only caveat we have if more wires are not used is that the receiver
+must always be ready to receive data as fast as the transmitter will
+send it (unless a software protocol is used for the two ends to tell
+each other when they are or aren't ready for more data. Such
+software handshaking will not be discussed here.)</P>
+
+<P>We already mentioned framing errors and parity errors. If the
+receiving end cannot process the data as fast as it's coming, a byte
+which the processor has not yet read from the UART's receive buffer
+could get overwritten by a new byte coming in. Then the UART
+would signal an overrun error. These three-- the parity error,
+the framing error, and the overrun error-- are the three that the
+6551 reports.&nbsp; The 6551 UART is also called an ACIA, for
+&quot;asynchronous communications interface adapter&quot;.</P>
+
+<P>We should mention that although UARTs are mentioned throughout this
+introduction, it is possible (as you probably already figured out) to
+do the UART job in software, doing what we call &quot;bit-banging&quot;
+with individual parallel port bits of I/O ICs like the 6522. I
+believe the Commodore 64 did it with a 6526. This should only
+be considered a last resort however.  Using a real UART is much
+easier from the programming perspective, allows higher speeds, and
+allows the processor to work on other things between byte
+transmissions or receptions. Don't confuse asynchronous serial
+(like RS-232) and synchrnous serial (like SPI, &mu;Wire, and I&sup2;C).
+Synchronous serial interfaces with their separate clock line usually
+do not have the tight timing requirements that RS-232 does, so
+they're much easier to bit-bang if you have to, and to do so at
+comparatively high speeds.</P>
+
+<P>Back to baud rate. The baud rate on this kind of communications
+interface is generally the same as the number of bits per second,
+since RS-232 doesn't use different levels to try to encode more than
+one bit per time period. 9600 bits per second (bps), or 9600
+baud, is one of the more common baud rates. Most UARTs have
+speeds as slow as 50 bps in their standard choices. Above 150
+bps, you keep doubling the number to get up to the next common baud
+rate: 150, 300, 600, 1200, 2400, 4800, 9600, and 19200. The
+&quot;standard&quot; RS-232 rates between these numbers (1800, 3600,
+7200, 14400) are rarely used.</P>
+
+<P>Since we're talking about bits per second, the amount of time, in seconds,
+for each bit is 1/baud. At 9600 baud, you get 104.2
+microseconds per bit. If the speed of the transmitter and
+receiver disagree by more than 2-3%, the errors will start showing
+up. 5% would be a half bit time by the end of the frame.
+If the transmitting end were 1% below the intended speed and the
+receiving end were 1% above the intended speed, you would have just
+about all the error the system could tolerate and keep working
+reliably under ideal conditions. To avoid problems in this
+area, the UARTs' speed is normally crystal-controlled for accuracy.</P>
+
+<P>The maximum speed allowed by the original RS-232 specification was
+20kbps; but by speeding up the rise and fall times and keeping the
+cables short, some products like <A HREF="http://www.divaauto.com/">Diva
+Automation's</A> SuprChip (which uses the 6502) run RS-232 at up to
+half a megabaud (500,000bps) or even more. The 6551's highest
+standard baud rate with a standard 1.8432MHz crystal or external
+oscillator is 19.2kbps, but it can go to apparently at least 125kbps
+if you use the 16x external clock. This is the only way for it
+to give the 31.25kbps required for MIDI (musical instrument digital
+interface).</P>
+
+<P>If you use the common configuration of start bit, 8 data bits, no parity
+bit, and 1 stop bit, you have 10 bits in a frame, so the number of
+bytes transferred per second is generally the baud rate divided by 10
+if there are no delays between frames. 9600 baud makes for a
+maximum data transfer rate of just under a thousand bytes per second.</P>
+
+<P>In order to make the receiving part of the UART more immune to random spikes
+and other interference, many UARTs (including the 6551) sample the
+received data voltage many times per bit period, and then &quot;take
+a vote,&quot; so to speak. This improves the trustworthiness of
+the received data.</P>
+
+<P>The transmitting standard goes like this: Logic 0 is +5V to +15V.
+Logic 1 is -5V to -15V. -5V to +5V is the transition area.
+Transmitters can handle indefinite shorts to each other or to ground
+without damage.</P>
+
+<P>If the line driver (remember this is normally not in the same package with
+the UART) does not derive its own high voltages by way of some sort
+of switched-capacitor power supply voltage booster or take power from
+the receiving lines, then running the line drivers on &plusmn;12V
+power supplies is pretty standard. The line drivers in
+inexpensive ICs such as the 1488 and MC145406 need these
+higher-voltage positive and negative voltage power supplies.
+Others like the MC145407 and the well-known MAX232 derive their own
+high voltages on-chip from the +5V. For low-power hand-held
+applications where battery power is saved at all costs, it is also
+possible to power the line drivers with power taken from the
+receivers' input signals. A unit designed like this would have
+to be connected to another computer that will supply the power.
+Obviously it won't work if it is connected to another one of the same
+which also supplies no power, especially if you have a hand-held
+terminal with no power supply of its own other than the RS-232
+inputs.</P>
+
+<P>The receiving standard goes like this: Logic 0 is +3V to +25V.
+Logic 1 is -3V to -25V.&nbsp; -3V to +3V is transition area.
+Specified impedance for one receiver load is 3K&Omega; to 7K&Omega;.
+One output can usually drive quite a few inputs (and LEDs for
+troubleshooting).</P>
+
+<P>To reduce problems with noise and interference, the receiver usually has
+some hysteresis to keep its output steady at the last valid logic
+level while the input is crossing that transition area, and then
+outputs a fast edge to the UART when it does go to the other logic
+level.</P>
+
+<P>Again, remember that logic 1 = true = &quot;mark&quot; = hi = negative
+voltage, as mixed up as that may seem; and logic 0 = false = &quot;space&quot;
+= lo = positive voltage. I have found Jameco's 7-LED tester
+(cat. no. 26729) to be very helpful in quickly troubleshooting basic
+RS-232 problems. Each of the seven major lines is connected
+through a resistor to a bi-color LED to ground. The LED lights
+up green if the voltage is above ground (meaning a logic 0), and red
+if the voltage is below ground (meaning a logic 1). When no
+data is going across but all handshaking lines are in the true state
+(ie, both ends are ready to send and receive), the TD (transmit data)
+and RD (receive data) LEDs will be red, and all the others will be
+green.</P>
+
+<P>Ok, so we mentioned other connections besides ground and one for data each
+direction. You might wonder why the DB-25 connectors that are
+so commonly used for RS-232 have so many (25) connections.
+What's the point? Well, actually they are all defined in the
+standard except for four (pins 9, 10, 18, and 25) that are reserved.
+It's rare to see more than &quot;the big 8&quot; in use though.</P>
+
+<P>Remember we had alluded to ways for one piece of equipment to tell the other
+one whether or not it is ready to accept more data. This is
+often done in hardware, using more wires. &quot;The big 8&quot;
+include not only a ground wire and a pair of wires for data (one
+going each direction), but also two pairs of &quot;handshaking&quot;
+lines, and one other line which is normally only used by modems.
+The big 8 (plus one more) are:</P>
+
+<center>
+<IMG SRC="/tutorials/rs232/figure_4.jpg" BORDER=0>
+</center>
+
+<P>The signal names and DB-25 pin numbers shown are for DTE, which basically
+means everything except modems. The signal abbreviations at the
+UART itself have the bar over them (meaning negative, or inverted
+logic) for all but TD, RD, and RI. Remember that the line
+drivers and receivers that go between the UART and the cable are also
+inverters.</P>
+
+<P>There are many other UARTs other than the 6551, and unfortunately
+California Micro Devices just discontinued hundreds of products
+including the seven or so in the 65 family; but since this
+description is on www.6502.org and many of the hobbyists here are
+still using this UART (or ACIA) which is part of the 65 family (and
+will be for a long time), it should be helpful and appropriate to add
+its corresponding pin numbers to the chart. WDC plans to
+re-introduce the 65c51.</P>
+
+<P>Here's the idea. RTS was originally for putting a half-duplex modem
+into transmit mode. In other words, the computer is saying, &quot;I
+have data to send. Please get ready to send it for me.&quot;
+CTS told the computer when the modem was ready to send (possibly
+having had to wait to finish receiving some data first). Well,
+like so much of today's RS-232 implementations, that specification
+broke down. The function that RTS more commonly takes on today
+is to tell the device at the other end of the line, &quot;Go ahead
+and send data. I'm ready to take it.&quot; Then the
+function that CTS more commonly takes on is to know if the device at
+the other end of the line is ready to receive data.</P>
+
+<P>DTR was used by many DTE devices to take the modem on- and off-line.
+One effect is that it can tell the modem whether the computer (or
+DTE) is able to accept an incoming call.  DSR tells the DTE that
+the modem is connected, powered up, and ready to go; ie, not in talk,
+test, or dial mode.  When neither end of the line is connected
+to an actual modem, these lines generally tell the device at each end
+that the device at the other end is ready for business.  So in
+that case, what becomes of the difference between these and RTS/CTS?
+Not much; but if the sending end tends to send data faster than the
+receiving end can process it, the receiving end will be constantly
+toggling its RTS output, not its DTR output. The RTS output
+will go to the sender's CTS input to turn the data-sending off and on
+such that we don't get the overrun errors previously mentioned.
+Many of the newer UARTs do not implement DSR and DTR, only TD
+RD, and RTS &amp; CTS.</P>
+
+<P>DCD is used to let the computer know that the modem is receiving a carrier
+of adequate quality for dependable communication. RI may be
+used by an auto-answer modem to tell the computer that there's a ring
+signal on the phone line. The computer may then use DTR to tell
+the modem to answer the call. In the case where neither end of
+the line has a modem on it, DCD is often just connected to DSR, and
+RI is left unconnected.</P>
+
+<P>The 6551 ACIA (UART) will not send data if CTS is not true, and it won't
+receive if DCD is not true. This doesn't mean you absolutely
+have to use CTS and DCD. If you only want a two- or three-wire
+interface with no hardware handshaking, then ground these inputs so
+the 6551 will run.</P>
+
+<P>A note should be made here regarding CTS and the 6551. An applications
+note I have here for the Synertek NMOS 6551, as well as the '87
+Rockwell data book's NMOS 6551 pages say that transmission of an
+already-started frame will stop immediately when CTS\ is taken false,
+the byte will be lost, and the TD line will go to marking. The
+same Rockwell book says that the CMOS 65c51 will finish the
+already-started byte before halting transmission after CTS\ goes
+false. The other data sheets I have only say CTS\ must be true
+for the ACIA to transmit, without giving details of what happens when
+CTS\ is taken false in the middle of a frame. My expectation
+then is that regardless of brand, the CMOS ones generally will finish
+the frame whereas the NMOS ones won't. If it matters in your
+use, you will want to experiment with the particular brand of 6551
+you have in order to make sure your program operates it correctly so
+as not to lose data. If the NMOS 6551 is interrupted during a
+frame transmission, the program will have to give it the same byte
+again to transmit when CTS\ goes true.</P>
+
+<P>The 6551's other three handshaking lines don't necessarily have to be
+used either; but the inputs should not be left unconnected.  It
+would be best to ground them if they're not connected to line
+receivers. If you're making the computer, you may want to use
+pin headers so you can put jumpers on the appropriate pairs of pins
+to select whether or not to use CTS and DCD. If you're using
+the full complement of hardware handshaking, you'll want those inputs
+to be fed from the connector pins through the line receivers.
+Otherwise, you'll want one or both to artificially be held true by
+grounding them.</P>
+
+<!--- XXX right -->
+<IMG SRC="/tutorials/rs232/figure_3b.jpg" ALT="(null-modem connections)">
+<I>Figure 2: Null modem connections</I>
+
+<p>Now you see the fun beginning.
+There's room for confusion at every turn.  Welcome to the world
+of RS-232. It may all look like a disaster, but it's usually
+not really that hard to get things working together. As we said
+before, most RS-232 implementations today don't have a modem at
+either end of the line. Both ends of the line are generally
+DTE. You no doubt noticed that if the connections are made
+straight across, you'll have the TD output of one device connected to
+the TD output of another. Likewise, the RD inputs of the two
+will be connected together, and the handshaking lines, the same.</P>
+
+<P>Obviously you'll need to cross the TD and RD lines so an output goes to an
+input and vice-versa. What should be almost as easily understood above is 
+that the same can be done with RTS and CTS.
+It may not be quite as clear, but generally the same can be done with
+DTR and DSR. But instead of having cables that cross the lines
+between connectors at the ends and other cables that don't (to serve
+as extension cords), one way to get things straight is to insert a
+null modem somewhere along the line.</P>
+
+<P>A null modem is simply a pair of connectors that cross these lines, as in
+Figure 2.</P>
+
+<!-- TODO alignment -->
+<IMG SRC="/tutorials/rs232/null-modem25.jpg" ALT="(DB-25 null modem)">
+<I>Illustration 1: A DB-25 null modem</I></FONT></P>
+
+<IMG SRC="/tutorials/rs232/null-modem9.jpg" ALT="(DB-9 null modem)">
+<I>Illustration 2: A DB-9 null modem</I></FONT></P>
+
+<P>If you're making your own computer board and anticipate the need, you
+might add pin headers to make the more common DB-25 or DB-9 connector
+pinouts selectable by putting the shorting blocks onto the right
+pairs of header pins.  It could be done with DIP switches too,
+but they take more room.</P>
+
+<!-- TODO alignment -->
+<P><IMG SRC="/tutorials/rs232/gendrchg.jpg">
+<I>Illustration 3: Gender changers, female at both ends.</I>
+
+<P>Another
+frequent problem is simply the connector genders.&nbsp; Gender
+changers are easily available with either two female connectors or
+two male connectors.  Adapters are also easily available to go
+from DB-25 to DB-9.</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+
+<!-- TODO alignment -->
+<IMG SRC="/tutorials/rs232/bnb_breakout_box.jpg">
+<I>Illustration	5: B&amp;B Electronics break-out box</I>
+
+<P>If you need to &quot;trick&quot; the interface more than this and need to do
+some experimenting to figure it all out before making up a special
+cable with unconventional connections, you can use a break-out box.
+These give you the possibility of trying various connections quickly
+and without soldering.  They usually have an array of LEDs on
+them as well so you can immediately see what effects you're
+producing. <A HREF="http://www.jameco.com/">Jameco</A> has
+various inexpensive RS-232 break-out boxes and testers. See
+their cat. no. 26729, 11181, 14285, and 25945.</P>
+
+<!-- TODO alignment -->
+<IMG SRC="/tutorials/rs232/Assmann_breakout.gif">
+<I>Illustration 6: Assmann break-out box</I>
+
+<p>Consider these simple examples of how the LEDs help to quickly troubleshoot 
+a connection. If one end of the cable is connected to a COM port on a PC and 
+the PC's handshaking outputs' LEDs are red, you probably forgot to set up the
+PC's port. If the only LEDs to light up are those for the
+outputs of the device at one end of the cable, it probably means you
+need to insert or remove a null modem, because outputs are talking to
+outputs and inputs are listening to inputs, instead of vice-versa.
+If data does not keep going, you may see the a CTS or RTS LED light
+up red, possibly meaning that your program is taking in enough data
+to fill a buffer in RAM, but then not processing that data-- or maybe
+it processes it but you forgot to make it update the buffer pointers
+and tell the UART that it's ok to accept more data. 
+</p>
+
+<!-- TODO alignment -->
+<IMG SRC="/root/My%20Computer/My%20Documents/65xx/RS232/232minitester.jpg">
+<I>Illustration 7: RS-232 mini-tester</I>
+
+<p>On the Jameco RS-232 mini-tester at right, the unlit RD LED shows that 
+the data-line transmitter at the other end is not connected.</P>
+
+<o>Many UARTs today (for example, the MAX3100) only implement TD, RD, RTS,
+and CTS, as this is usually enough.&nbsp; If you're using one of
+these UARTs and really need the other lines, you would have to get
+those by using a few I/O bits of a parallel port of another IC like a
+6522 VIA.</p>
+
+<P>Remember
+the line drivers and receivers go <I>between</I> the DB-25 connector
+and the UART. The voltages on the connector side are generally
+&plusmn;10V (give or take a few volts), whereas the voltages at the
+UART pins are TTL levels. The line drivers and receivers are
+also inverters, and they generally are much more immune to damage
+from static discharge than the UART is.</P>
+
+<P>The well known Maxim MAX232 has two line drivers and two line receivers.
+It is popular because it is one of the first widely available line
+driver and receiver ICs that derived its own high voltages from the
++5V supply so the user didn't have to provide more than one power
+supply voltage.</P>
+
+<P>It should be noted however that there are many other line drivers and
+receivers.  Before the MAX232 came along, hobbyists usually used
+the $.27 14-pin 1488 (75188) quad line driver and $.23 1489 (75189)
+quad line receiver, or the MC145406, an $.88 16-pin IC with three of
+each. (These are Jameco's prices for qantities of 1-9, at the
+time of this writing.) With a 1488/1489 pair, you have four
+line drivers and four line receivers, just as you have with <I>two</I>
+of the MAX232's at $2.19 each. The extra power supplies needed
+by the 1488 and MC145406 are often available on the board anyway for
+other things like op amp supplies for D/A and A/D converters.
+Again, remember the voltages are not critical. For example, if
+you have +9V and -7V, it should work. The positive voltage
+might just be the 5V regulator's input. You might already have
+the negative voltage for LCD bias.</P>
+
+<P>It should be noted here that the 1489 has an extra input pin for each of
+the four receivers. This can be used for changing the input
+threshold voltage or for increasing input noise immunity. In
+most cases, these pins can be left unconnected.</P>
+
+<P>It should also be noted here that each of three of the four line drivers
+in the 1488 have two inputs. If either one is pulled low, the
+output will go to the high voltage. In most cases, the extra
+input can be left unconnected.</P>
+
+<H2>Construction:</H2>
+<P>Unfortunately the DB-9 &amp; -25 pin spacing is .109&quot; and rows 
+are staggered so they don't fit nicely into .1&quot;-grid perfboard. 
+The pins of a right-angle DB-9 can sometimes be bent enough to get them into 
+the holes in the perfboard, but you won't be so lucky with the DB-25.
+One way to solve the problem is to use a soldercup DB-25 that is intended to be
+mounted on a cable, and mount it on the board a tiny L-bracket at
+each end, then solder to the connector.</P>
+
+<!-- TODO alignment -->
+<IMG SRC="/tutorials/rs232/IDC-DB9.jpg" 
+<I>Illustration 8: IDCs on ribbon cable: pin header to DB-9</I>
+
+<p>Another solution is to put a
+dual-row pin header on the board, and then prepare a ribbon cable
+with a standard 26-contact IDC (insulation-displacement connector) at
+one end and a DB-25 that's made to be mounted on ribbon cable at the
+other end. For three-wire interfaces (with no hardware
+handshaking), I have even used 3-conductor mini phone jacks and
+plugs, using the tip for output, the center ring for input, and the
+sleeve for ground. It's not standard, but it sure takes less
+room on the board!</p> 
+
+<p>The interrupts primer has some example 6502 code at
+<A HREF="http://www.6502.org/tutorials/interrupts.html#3.1">http://www.6502.org/tutorials/interrupts.html#3.1</A>
+on running an RS-232 receive buffer using a 6551, and on setting up
+the 6551 for the job.</FONT></P>
+
+<P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif">As a
+final word, I might add that once you have working RS-232 ports on
+your project, you can connect to a wide range of devices not limited
+to just the obvious PC interface, mouse input, etc..&nbsp; Companies
+like <A HREF="http://www.bb-elec.com/">B&amp;B Electronics</A> and <A HREF="http://www.sealevel.com/">Sealevel Systems</A> make
+interface convertors that will translate RS-232 to IEEE-488, RS-422,
+RS-485, and other standard interfaces.</FONT></P>
+
+<P><B>Bibliography</B></P>
+<P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif">The
+RS-232 Solution<BR>by Joe Campbell<BR>&copy; 1984<BR>Sybex Computer
+Books, in Alameda, CA</FONT></P>
+
+<P>Datatracker
+DT-4 Operator's Manual and Interfacing Guide, version 3.0, Oct
+1986<BR>Datatran Corporation in Denver, CO<BR>Chapter 3 gives RS-232
+background. I expect the manuals of several other RS-232<BR>break-out
+boxes and testers would also have similar explanations.</P>
+
+<P>Other books that should prove helpful:</P>
+<P>Data Communications: A Comprehensive Approach<BR>by Gilbert Held and Ray
+Sarch<BR>McGraw-Hill Publications Co.</P>
+
+<P>Understanding
+Data Communications<BR>by George E Friend, John L. Fike, H. Charles
+Baker, and John C. Bellamy<BR>Texas Instruments</P>
+
+<P>RS-232
+Made Easy: Connecting Computers, Printers, Terminals, and Modems<BR>by
+Martin D. Seyer<BR>Prentice Hall Inc.</P>
+
+<P>Computer
+Communications Techniques<BR>by E. G. Brooner and Phil Wells<BR>Howard
+W. Sams &amp; Co., Inc.</P>
+</P>
+
+</BODY>
+</HTML>

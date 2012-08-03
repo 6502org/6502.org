@@ -1,0 +1,433 @@
+<html><head><title>6502.org: Source: Zero-Overhead Forth Interrupt Service</title>
+<meta name="description" content="High-level Forth interrupt response that will still work in most typical indirect-threaded systems not using preemptive multitasking">
+<style>
+          body {
+            font-family: helvetica, arial, sans-serif;
+            margin: 0 1em;
+            padding-bottom: 3ex;
+          }
+          p, li {
+            text-align: justify;
+          }
+          pre {
+            padding: 0.8ex 0.5em 0.8ex 1.5em;
+            border-left: 3px solid #009ae1;
+            margin: 0.5ex 5em 0.5ex 0;
+            background-color: #ddd;
+          }
+          h1, h2, h3, h4 {
+            font-family: verdana, helvetica, arial, sans-serif;
+            color: #00326e;
+          }
+          ul {
+            list-style: disc outside;
+          }
+          em.highlight {
+            font-style: normal;
+            font-weight: bold;
+            color: red;
+          }
+</style></head><body>
+<p></p><h3>Zero-Overhead Forth Interrupt Service on 65C02</h3>
+Garth Wilson (<script type="text/javascript">eval(unescape('%64%6f%63%75%6d%65%6e%74%2e%77%72%69%74%65%28%27%3c%61%20%68%72%65%66%3d%22%6d%61%69%6c%74%6f%3a%77%69%6c%73%6f%6e%6d%69%6e%65%73%40%64%73%6c%65%78%74%72%65%6d%65%2e%63%6f%6d%22%20%3e%77%69%6c%73%6f%6e%6d%69%6e%65%73%40%64%73%6c%65%78%74%72%65%6d%65%2e%63%6f%6d%3c%2f%61%3e%27%29%3b'))</script>) 1994, revised Dec 2003 for 6502.org
+<hr>        
+
+<p>A number of good articles have been published on providing Forth interrupt response.  Without invalidating the work of
+others, I wanted to meet the challenge of accomplishing high-level Forth interrupt response in a much simpler way that
+would still work in most typical indirect-threaded systems not using preemptive multitasking.</p>
+
+<p>I was told by several people that it couldn't be done, which of course only fueled my fire.  The result I've been using
+for thirteen years now is described here.  I wanted it in 1990 for the production automated test equipment (ATE) I
+designed and programmed, which you can see <a href="http://www.6502.org/users/garth/projects.php?project=6">here</a>.  The RS-232 input from
+the PC for software development was handled at 9600 bps through a 65C51 ACIA entirely by interrupts in high-level Forth
+on a 2MHz 65C02.</p>
+
+<p>One man told me that he always does interrupts in assembly for speed, so he wasn't very interested in high-level Forth
+interrupt service.  The nice thing here is that when you eliminate the overhead, you get some of the speed back.</p>
+
+<p>It is not the purpose of this short article to provide all the details, but rather the concept and what makes it
+possible.</p>
+
+<p>The zero-overhead interrupt support is very simple, adds only about 100 bytes to your overall code, and can be nested--
+ie, you can allow a higher-priority interrupt to interrupt the servicing of a lower-priority one-- as many interrupt
+levels deep as you wish.  No additional stacks are required.  It's another natural for Forth.  As usual for interrupts,
+some assembly is required, but very little.</p>
+
+<p>I call it "zero-overhead" interrupt response because when an interrupt occurs, the Forth system moves right into the
+interrupt-service routine (ISR) just as if it were part of the normal code.  Here's the summary:  it is as if a new
+word was suddenly inserted into the executing code-- a word whose stack effect is ( -- ).</p>
+
+<p>To illustrate, suppose we had an interrupt service routine (word) which, for the sake of simplicity, only consisted of:</p>
+<pre>
+: ISR  ( -- )  1 COUNTER +!  SYSRTI  ;
+</pre>
+
+<p>and Forth was executing the 2 in the line,</p>
+
+<pre>
+PRINTER  2 SPACES  BOLD_ON
+</pre>
+
+<p>when an interrupt was requested.  Although slightly faster-- yes, <i>faster!</i>-- the effect would otherwise be the same as
+if there were no interrupts and the line had said,</p>
+
+<pre>
+PRINTER  2  INC_COUNTER  SPACES  BOLD_ON
+</pre>
+
+<p>where <code>INC_COUNTER</code> had been defined as</p>
+
+<pre>
+: INC_COUNTER  ( -- )  1 COUNTER +!  ;
+</pre>
+
+<p>like ISR above.  As you can see, the main program and the interrupt can both execute without interfering with each
+other, even though they both use the same stacks and other basic resources.</p>
+
+<p>So how is it done?  The coordination that avoids the overhead requirement is done in <code>NEXT</code>, indirect-threaded Forth's
+inner loop.</p>
+
+<p>It is not necessary to save anything before executing the ISR or restore anything afterward.  The only exception is
+that the <code>SYSRTI</code> above is like an ordinary <code>unnest</code> (or <code>EXIT</code> , <code>SEMIS</code> , <code>;S</code> , etc., whatever it is called in your system)
+except that it also restores the ability to accept interrupts if appropriate.  You may even decide to omit the <code>SYSRTI</code> .
+If you do use the <code>SYSRTI</code> , the semicolon after it has no effect at run time.</p>
+
+<p>Since servicing the interrupt does not require saving things, the interrupt service routine does not need any more
+stack space than other Forth words.  Assuming we already had enough stack space to run Forth normally (we actually have
+plenty on the 6502), we shouldn't need to worry about running out just because of the interrupts.</p>
+
+<p>The possible disadvantage with this method is that a primitive (i.e., code definition) cannot be interrupted.  Whatever is requesting service
+must wait until the current primitive is finished.  This would only be a problem <i>if</i> you have primitives that take a
+long time to execute, and <i>if</i> those primitives are used at the times interrupt service is requested, and <i>if</i> the
+interrupt can't wait that long.</p>
+
+<p>Otherwise, consider that it will typically take many primitives to service the interrupt, and it would be an
+insignificant delay to wait for one primitive in the main program to finish executing.  It typically takes far less
+time to finish the currently executing primitive than to do all the register-saving and other setups required by other
+methods of high-level-language interrupt service.</p>
+
+<p>The only return-from-interrupt overhead that is almost necessary with this method is that of re-enabling interrupts.
+If you don't need this done on a return from interrupt, the interrupt service routine can be a normal colon definition
+(or secondary), ending with the standard <code>unnest</code> compiled by ; (semicolon), and there will be absolutely zero overhead
+for return from interrupt too.</p>
+
+<p>Here comes the assembly.  We have to make some small changes in <code>NEXT</code>, indirect-threaded Forth's inner loop, that
+basically amount to polling.  These changes slow down the Forth execution by about one-thirtieth; however the absence
+of a big overhead penalty means that you'll get far more than this one-thirtieth back if interrupts come often.</p>
+
+<p>In the Forth-83 system where I have implemented this on a 65C02, a couple of machine-language instructions added to <code>NEXT</code>
+load a byte from memory while simultaneously examining it to see whether it is zero or not.  A branch is taken if
+appropriate.  The choices are either to continue on as usual in <code>NEXT</code>, or to load the word pointer <code>W</code> with the interrupt
+vector instead of with the contents of the address pointed to by the instruction pointer <code>IP</code>.</p>
+
+<p>Some of the time taken by the extra pair of machine-language instructions is saved by the fact that we only allow two
+values for the byte which is fetched to see if interrupt service is necessary.  These are values we would have to load
+into the processor's <code>Y</code> register anyway, even if we could somehow execute the right part of <code>NEXT</code> without testing.</p>
+
+<p>If there is an interrupt to service, the new part of <code>NEXT</code> also turns off the bit in memory which records that there is
+interrupt service due.  This takes less time than incrementing the instruction pointer; and loading the interrupt
+vector into the word pointer <code>W</code> requires no indirect addressing.  This means that the <code>nest</code> (or <code>DOCOL</code> , etc.) instruction
+in the interrupt handler actually gets executed <i>sooner</i> than the next instruction in the main code would have been
+executed had there been no interrupt!</p>
+
+<p>My original version of <code>NEXT</code> (before interrupt service implementation) was right out of the public-domain FIG-Forth 6502
+assembly source, like Listing One-A.</p>
+
+
+<p><i>Listing One-A:  Original version of <code>NEXT</code> (no interrupt support)</i>
+<pre>
+NEXT:   LDY  #1     ; Load Y for indirect indexing.  Next, load accumulator      
+        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.    
+        STA  W+1    ; Store it in hi byte of word pointer.                       
+                                                                                 
+        DEY         ; Decrement Y to 0.  Some primitives expect Y to contain 0.  
+        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction  
+        STA  W      ; pointer, and store that in lo byte of word pointer.        
+                                                                                 
+        CLC         ; Now advance the IP.  Start addition with carry flag clear. 
+        LDA  IP     ; Load accumulator with instruction pointer lo byte,         
+        ADC  #2     ; add two to it, and                                         
+        STA  IP     ; store it back where you got it.                            
+                                                                                 
+        BCC  next1  ; If the addition above didn't cause a carry, branch around  
+        INC  IP+1   ; the incrementing of the hi byte.  Otherwise, increment.    
+ next1: JMP  W-1    ; Jump to where it says JMP (W), so we get a doubly indirect 
+ ;----------------  ; jump.                                                      
+</pre>
+
+<p><i>Listing One-B:  <code>NEXT</code> modified for interrupt support</i></p>
+<pre>
+NEXT:   LDY  irqnot ; Load Y with 0 if interrupt requested, otherwise 1.         
+        BEQ  runISR ; Branch if interrupt requested, else continue here.         
+                    ; Y=1 now for indirect indexing.  Load accumulator           
+        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.    
+        STA  W+1    ; Store it in the hi byte of the word pointer.               
+                                                                                 
+        DEY         ; Decrement Y to 0.  Some primitives will need Y to be 0.    
+        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction  
+        STA  W      ; pointer, and store that in lo byte of word pointer.        
+                                                                                 
+        CLC         ; Now advance the IP.  Start addition with carry flag clear. 
+        LDA  IP     ; Load accumulator with instruction pointer lo byte,         
+        ADC  #2     ; add two to it,                                             
+        STA  IP     ; and store it back where you got it.                        
+                                                                                 
+        BCS  inc_hi ; If the above addition caused a carry, branch to increment  
+        JMP  W-1    ; hi byte of instruction pointer.  Else you're done.  Do it  
+                    ; with two JMP's because a branch not taken saves a cycle.   
+inc_hi: INC  IP+1   ; Increment hi byte of instruction pointer.                  
+        JMP  W-1    ; You're done.                                               
+ ;-----------------                                                              
+                       ; If interrupt was requested, run this part instead.      
+runISR: INC  irqnot    ; Set irqnot=1, meaning no further Forth interrupt        
+                       ; service requested after this yet.                       
+        LDA  FIRQVEC+1 ; Load the word pointer with the address pointed to       
+        STA  W+1       ; by FIRQVEC , a new Forth user variable.                 
+        LDA  FIRQVEC   ; Load hi byte first, then lo byte.  FIRQVEC is a RAM     
+        STA  W         ; address which holds the Forth interrupt request         
+                       ; vector CFA.                                             
+        JMP  W-1       ; Jump to where it says JMP (W), so we get a              
+ ;-----------------    ; doubly indirect jump.                                   
+</pre>
+
+<p>After the modification, <code>NEXT</code> looks like the code in Listing One-B.  Notice how much shorter the code is for responding
+to an interrupt than for continuing on with the next instruction in the main Forth code!  This makes the relative
+interrupt response time very short.  We no longer have to increment the instruction pointer when going to the
+interrupt-handling word.  If we did, the latter would be <i>replacing</i> the next Forth instruction in the main code
+instead of <i>delaying</i> it.</p>
+
+<p>You will need a piece of machine code at the address pointed to by the machine-recognized interrupt vector location.
+If interrupts are enabled, this piece of code will be executed like any other short machine-language ISR as soon as the
+hardware interrupt-request line goes true and the currently executing machine-language instruction finishes.  This code
+only needs to put a byte in memory which can later be tested by <code>NEXT</code>, and disable the machine interrupt response so
+that the same code doesn't get executed over and over.  Mine looks like Listing Two.<p>
+
+<p><i>Listing Two:  This registers the interrupt request for <code>NEXT</code>.</i></p>
+<pre>
+irqrouting:          ; Machine-recognized interrupt vector at FFFE points here.  
+     JMP  (MIRQVEC)  ; Jump to address pointed to by the machine-language        
+                     ; interrupt vector MIRQVEC , which is initially setirq.     
+                                                                                 
+setirq:              ; Use to record IRQ for NEXT.  Put this address in MIRQVEC. 
+     STZ  irqnot     ; Record that interrupt was req'ed by storing 0 in irqnot.  
+     STA  tempA      ; Temporarily save accumulator in tempA to restore below.   
+        PLA          ; Pull saved processor status byte off the &mu;P stack,        
+        ORA  #4      ; set the bit corresponding to the interrupt disable,       
+        PHA          ; and push the revised status byte back on the stack.       
+     LDA  tempA      ; Restore the accumulator content.                          
+     RTI             ; Return from interrupt.  &mu;P status gets restored modified. 
+</pre>
+
+<p>Next, you will need Forth primitives that enable and disable interrupting.  I call them <code>IRQOK</code> and <code>NOIRQ</code> .  Another
+primitive, <code>IRQOK?</code> , returns my interrupt-disable flag.  See Listing Three.</p>
+
+<p><i>Listing Three:   Interrupt-disable flag support words</i></p>
+<pre>
+CODE IRQOK  ( -- )  ; Compile header for IRQOK .  Since it's 
+       CLI          ; a primitive, the CFA points here to CLI
+       JMP NEXT     ; instruction.  All done now so jump out.
+                                                             
+CODE NOIRQ  ( -- )  ; Compile the header for NOIRQ .   The   
+       SEI          ; only instruction is SEI, then you go   
+       JMP NEXT     : back to NEXT for the next Forth word.  
+                                                             
+CODE IRQOK?   ( -- f )  ; f=0 means interrupts are disabled. 
+       PHP              ; Bring processor status register    
+       PLA              ; contents into accumulator.         
+       AND  #4          ; Look at only the I bit.            
+       BEQ  1$          ; If clear, branch to put true flag  
+       JMP  PUSH-FALSE  ; on the data stack.  Else false.    
+ 1$:   JMP  PUSH-TRUE   ; These branch to NEXT when done.    
+</pre>
+
+<p>A byte in RAM called <code>irqok?</code> (lower case) is used as a flag to record whether or not Forth interrupts are being allowed.
+<code>irqok?</code>  is checked by <code>SYSRTI</code> , my Forth return-from-interrupt word.  When a peripheral requests an interrupt, <code>setirq</code> (in
+Listing Two) disables further interrupting but leaves <code>irqok?</code> alone so the interrupt permission status will be correctly
+restored at the end of the ISR.</p>
+
+<p>You will usually leave interrupts disabled while the Forth interrupt service word is executing, and re-enable them when
+the interrupt service word finishes.  <code>SYSRTI</code> is nothing more than <code>unnest</code> preceded by a few machine-language
+instructions to examine the content of <code>irqok?</code> and set or clear the processor's interrupt-disable bit accordingly.  If
+you don't ever need to change the value of that bit immediately upon return, you can omit <code>SYSRTI</code> , and the service word
+can be like any other colon definition.  (If you do use <code>SYSRTI</code> , remember to follow it with the semicolon if you haven't
+made <code>SYSRTI</code> do all the compile-time jobs that ; does.)  My <code>SYSRTI</code> looks like the code in Listing Four.</p>
+
+
+<p><i>Listing Four:  Forth return-from-interrupt</i></p>
+<pre>
+CODE SYSRTI   ( -- )   ; Lay header and code field down.                         
+       SEI             ; Start with interrupting disabled.                       
+       LDA  irqok?     ; Load & test byte at addr IRQOK? to see if IRQs are ok.  
+       BEQ  unnest+2   ; If not ok, don't execute next CLI instruction.          
+       CLI             ; Else clear interrupt disable flag.                      
+       BRA  unnest+2   ; Branch to body of unnest (1st addr after code field).   
+</pre>
+
+<p>To allow multiple-nested interrupts, an interrupt service word must re-enable interrupts (by invoking <code>IRQOK</code> ).  If you
+chose to do this, you might also want to push or otherwise save the content of <code>irqok?</code> and change it.  This is so each
+return from interrupt leaves the interrupt-disable flag in the appropriate state.  Of course if the flag is put back to
+the way it was just before the interrupt, it will always allow interrupts again.  This is what <code>SYSRTI</code> will give you
+unless there was something in the ISR that turned off <code>irqok?</code> .  The purpose of <code>irqok?</code> is to tell <code>SYSRTI</code> whether or not
+to re-enable interrupts.</p>
+
+<p>With indirect-threaded code, the average Forth primitive takes about 80 clocks to execute on the 65C02, including time
+spent in <code>NEXT</code>, the inner loop.  Since, on the average, an interrupt will hit in the middle of an executing primitive
+(paired with <code>NEXT</code>), and since <code>NEXT</code> is quicker at starting interrupt service than it is at normal code, the average
+interrupt latency will be about 90 clocks, or 6.4&mu;s at 14MHz.  All the 65C02's WDC is selling today are guaranteed to
+be able to run at least this fast.  The 6.4&mu;s includes the time taken by the short machine-language routine pointed to
+by the machine interrupt-request vector <code>MIRQVEC</code>.  Some other 8-bit processors cannot even achieve this kind of
+interrupt latency in machine language; so to do it in Forth with the 65C02 is excellent!  14MHz makes for about 175,000
+Forth primitives per second, but the 14MHz speed rating currently available turns out to be a conservative rating, and
+actual capability is generally much higher.  Again, this is for an indirect-threaded Forth implementation, which is
+probably the slowest of four or five methods but yields the most compact code, allows this simple interrupt method, and
+has some other advantages in interactive code development.</p>
+
+<p>A Forth interrupt service routine that only looks at a 65C51 ACIA might look like this:</p>
+<pre>
+: SYSIRQ  POLL_ACIA  DROP  SYSRTI  ;	( -- )
+</pre>
+<p>Since here we only have one possible source of interrupts, we can <code>DROP</code> the flag telling whether or not it was the ACIA
+that requested service.</p>
+
+<p>If we had several possible interrupt sources, our <code>SYSIRQ</code> might look like the code in Listing Five-A.  The
+highest-priority interrupt sources are polled first.  Once the source of the interrupt is found and serviced, the
+following polls in the ISR are skipped.  Again, each polling word called here leaves a flag on the data stack telling
+whether it was able to take care of the interrupt.</p>
+
+<p><i>Listing Five-A:  Interrupt handler that polls potential interrupt sources.</i>
+<pre>
+: SYSIRQ    ( -- )                                                        
+   POLL_TIMER     NOT  IF                                                 
+   POLL_ACIA      NOT  IF                                                 
+   POLL_KEYBOARD  NOT  IF                                                 
+   POLL_PRINTER   DROP  THEN  THEN  THEN                                  
+   SYSRTI      ;                                                          
+</pre>
+
+<p>Listing Five-B is an alternative that uses a support word.  <code>?EXIT</code> is just my word to factor out occurrences of
+<code>IF EXIT THEN</code> .  Any prioritized polling of interrupt sources can be put or called between <code>SYSIRQ</code> and <code>SYSRTI</code> above.</p>
+
+<p><i>Listing Five-B:  Alternative with a support word</i></p>
+<pre>
+: POLL      ( -- )                                                        
+   POLL_TIMER     ?EXIT                                                   
+   POLL_ACIA      ?EXIT                                                   
+   POLL_KEYBOARD  ?EXIT                                                   
+   POLL_PRINTER    DROP    ;                                              
+                                                                          
+: SYSIRQ   POLL   SYSRTI   ;     ( -- )                                   
+</pre>
+
+<p>To go a step further, the <code>?EXIT</code> could be made part of each polling word.</p>
+
+<p>Notice that the <code>SYSRTI</code> ends the two <code>SYSIRQ</code> examples of Listing-Five A and B, so the called polling words ( <code>POLL_TIMER</code> ,
+<code>POLL_ACIA</code> , etc.) themselves should just end with the normal semicolon like any other colon definition.</p>
+
+<p>Table One gives a summary of the changes and additions used to accomplish zero-overhead high-level Forth interrupt
+response.  A list of requirements is first, followed by a list of enhancements.</p>
+
+<p>Table One:  Summary of new code</p>
+<pre>
+Necessary:                                                                                                    
+NEXT    (Modified, not new.)  Inner loop for indirect-threaded model                                          
+irqnot  RAM byte to record whether or not an interrupt is pending.  Used by NEXT.                             
+NOIRQ   Primitive to  set  &mu;P interrupt disable bit  ( -- )   Just does SEI.                                  
+IRQOK   Primitive to clear &mu;P interrupt disable bit  ( -- )   Just does CLI.                                  
+setirq  Machine-language interrupt routine that puts 0 in irqnot to tell NEXT that an interrupt was requested.
+SYSIRQ  Colon definition for actual high-level interrupt service.  No special rules except that it usually    
+        will have SYSRTI just before the semicolon.  ( -- )                                                   
+RESET   (Modified, not new.)  Before the first execution of NEXT, put 1 in irqnot.                            
+COLD    (Modified, not new.)  Initialize all interrupt vectors.  Initialization of hardware is done before    
+        invoking IRQOK .                                                                                      
+                                                                                                              
+Optional:                                                                                                     
+IRQOK?  Primitive to read &mu;P interrupt disable bit     ( -- f )    Flag=0 means interrupts are disabled.      
+irqok?  RAM byte to record whether or not to restore interrupt capability upon return from interrupt.         
+SYSRTI  Primitive ( unnest version for return from interrupt).  Examines irqok? byte     ( -- )               
+MIRQVEC Variable containing an address used by the machine ISR for a jump indirect.  This allows installing   
+        higher-priority machine-language ISRs ahead of the Forth interrupt operations.  (More below.)         
+FIRQVEC Variable containing the Forth interrupt vector (actually a CFA).  If you have more than one high-     
+        level interrupt service word, put the CFA of one of them here.  NEXT uses it to load the word         
+        pointer W from in order to service the interrupt.                                                     
+</pre>
+
+<p>So far we have assumed we are servicing interrupts requested on the IRQ line.  If you want to service an interrupt on
+the NMI line, or transfer the idea to another processor with more interrupt inputs, each associated vector would put
+the appropriate interrupt handler address in the <code>FIRQVEC</code> variable.</p>
+
+<p>If you have hardware that prioritizes interrupts and gives the processor a byte to read to determine the source of an
+interrupt without polling, it may be appropriate to have a look-up table to convert the byte into a CFA of an interrupt
+handler.<p>
+
+<p>As mentioned in Table One, you can still install a machine-language ISR that will get priority over the Forth ISRs.
+If you want to add something to the machine-language IRQ routine, your routine must meet these requirements:</p>
+<ul>
+<li>At the end, your routine must leave <code>A</code>, <code>X</code>, and <code>Y</code> the way it found them.  (That's normal for ISRs.)</li>
+<li>The address of your routine must be stored in <code>MIRQVEC</code> .  Don't forget to restore <code>MIRQVEC</code> if you de-activate your routine.</li>
+<li>If your routine determines that the interrupt source it is responsible for was not the one that caused the interrupt,
+it must jump to <code>setirq</code>, whose address was in <code>MIRQVEC</code> when you booted up.</li>
+<li>If your routine did indeed take care of an interrupt, it must <i>not</i> jump to <code>setirq</code>, but rather end with <code>RTI</code>.</li>
+</ul>
+
+<p>Also:</p>
+<ul>
+<li>Disable interrupts temporarily to make sure an interrupt can't hit between the time you store the low byte of <code>MIRQVEC</code>
+        and when you store the high byte.  This would result in an invalid address being read, and you'd get a crash.</li>
+<li>If you remove your machine-language ISR, don't set the &mu;P interrupt-disable flag if there's anything in the Forth
+        ISR list that needs interrupts enabled.</li>
+</ul>
+
+<p>Your new ISR will get run before the IRQ ISR that was resident from boot-up.  The new one takes priority.</p>
+
+<p>The high-level Forth interrupt system I am using in my 65C02 Forth now allows up to 8 simultaneously "armed" ISRs, and
+has Forth words to install, prioritize, list, and delete ISRs on the fly.  This does add a little overhead so it's no
+longer "zero overhead," but still has no new stacks or separate sets of any variables etc..  The running through the
+list of installed ISRs can still be preceded by a single zero-overhead Forth ISR if desired, with this single
+zero-overhead Forth ISR's installation being similar to that shown above for machine-language ISRs.</p>
+
+<p>My 65816 Forth additionally affords a list of up to 8 machine-language ISRs that can be manipulated on the fly
+similarly to how the Forth ISRs are in the description above.  (I did not do this part on the 65C02 Forth because it is
+not as practical since entire 16-bit addresses cannot be handled all at once with the 6502's 8-bit registers, so little
+would be gained.)  The '816 Forth ISR system does allow for situations where if a problem is found by a
+machine-language ISR, you can transfer execution to a Forth ISR in order to use the Forth words for displaying, etc. to
+report the problem or access other system capabilities.</p>
+
+<p>Something I did in the '816 Forth to speed up <code>NEXT</code> was to integrate <code>W</code> and <code>IP</code> as actual operands of instructions in
+<code>NEXT</code>.  This eliminates a level of indirection and shortens the code.  It does however mean that <code>NEXT</code> must reside in the
+direct page (which I am keeping as zero page).  This means that if the bulk of the Forth kernel is in ROM, <code>NEXT</code> must be
+copied to RAM before running.  <code>NEXT</code> is only five instructions for IRQ however and seven for non-IRQ, so it takes up
+very little of my zero page.  There is a way to get the non-IRQ portion down to a total of four instructions.  However
+since the cycle count is not reduced and other small complications are incurred, I don't think it's worth it.  Unlike
+in 6502 Forth, my '816 <code>NEXT</code> does leave the carry flag alone, which I suppose means you could use it to streamline
+multiple-precision arithmetic operations.</p>
+
+<p>Since these extras in the Forth ISR system are not specifically related to the 6502 (or even 65816), they will not be
+explained here.  It is also not my purpose here to show all the variations that can be implemented on the '02 and '816,
+but to convey the basic idea in a functional way.  Once that is understood, programmer ingenuity along with the
+prerequisite familiarity with Forth will go a long way.  If you want to discuss it however, you can E-mail me at the
+address above.</p>
+
+<p>I do plan to post my very complete 65816 Forth source here on 6502.org and later possibly my 65C02 Forth as well, and
+these will have very detailed explanation of all the innards.  These are definitely not wimpy minimalist models.  They
+include things like trig, log, square root, clock, calendar, and alarm functions, hundreds of primitives (code
+definitions) for good performance, extended-precision arithmetic words, an assembler, extra string functions, and extra
+compiling, debugging, and developing tools.  It's modular, so you can select to include only the files you want.</p>
+
+<p>In the '816 Forth, <code>NEXT</code> does not poll to see if interrupt service has been requested like the '02 Forth <code>NEXT</code> does.  The
+common colon definitions end with <code>JMP (NEXTadr)</code> instead of <code>JMP NEXT</code>, and <code>NEXTadr</code> contains the address of the right part
+of <code>NEXT</code> to run, either for beginning interrupt service or for continuing on with the code it was already executing.</p>
+
+<p>I have not looked at whether this interrupt method would be practical with true multitasking.  For the type of work I
+do, the pseudo-multitasking I can get with interrupts has been adequate.  True multitasking is not that difficult in
+Forth on a 6502, but I expect that because of the stack space afforded by the 6502, both data and return stacks,
+running more than three or four tasks at once would require a lot of care.  I expect the zero-overhead interrupt method
+would work fine on multitasking systems as long as tasks are not switched during an ISR.  There shouldn't be any danger
+of that with round-robin cooperative multitasking.</p>
+
+<p>Hopefully it won't take too much head-scratching or meditation for all this to make sense.  It really is quite simple
+as high-level interrupt service methods go; and if multiple nesting doesn't make it irresistible, the elimination of
+separate stacks and other overhead certainly should.</p>
+
+<hr />
+<p><font size="-1">Last page update: January 30th, 2005.</font></p>
+</body></html>

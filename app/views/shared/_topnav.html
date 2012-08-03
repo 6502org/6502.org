@@ -1,0 +1,36 @@
+<table cellspacing="0" cellpadding="0" style="padding-top: 2px;">
+	<tr>
+  	<td width="100%" class="header" style="font-weight: bold;" nowrap>
+    <? if ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'home'): ?>
+    Welcome to 6502.org!
+    <? else: ?>
+  	<?= $this->title ?>
+    <? endif ?>
+  	</td>
+
+  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
+  	<td class="header" nowrap>
+  	  <?= $this->linkTo('Projects', ['controller' => 'contents', 'action' => 'homebuilt']) ?>
+    </td>
+
+  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
+  	<td class="header" nowrap>
+  	  <?= $this->linkTo('Code', ['controller' => 'contents', 'action' => 'repository']) ?>
+  	</td>
+
+  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
+  	<td class="header" nowrap>
+  	  <?= $this->linkTo('Resources', ['controller' => 'contents', 'action' => 'commercial']) ?>
+    </td>
+	
+  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
+  	<td class="header" nowrap>
+  	  <?= $this->linkTo('Tools', ['controller' => 'tools', 'action' => 'index']) ?>
+  	</td>
+	
+  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
+  	<td class="header" nowrap>
+  	  <?= $this->linkTo('Forum', 'http://forum.6502.org') ?>
+  	</td>
+	</tr>
+</table>

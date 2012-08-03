@@ -1,0 +1,109 @@
+<html><head><title>RDY-Generation for CMOS 65C02</title></head><body>
+<h1>RDY-Generation for CMOS 65C02 Microprocessors</h1>
+<p>This article describes a generic schematics for the generation of the RDY 
+line used by the 65C02 processor to hold bus accesses when the device is not
+ready.
+</p>
+<p>You think this is not necessary nowadays, where everything is way
+faster than the one or two MHz the 6502 runs at. Well, actually I recently
+found a chip that was too slow for my 2&nbsp;MHz 65C02 system, so I 
+developed this schematics.
+</p>
+<p>Please note that the schematics works for a CMOS 65C02 only - not an
+NMOS&nbsp;6502. This is due to two facts:
+<ol>
+<li>The NMOS version requires that the RDY signal is asserted during Phi1,
+i.e. when Phi2 is low. In this phase the CPU sets up the address and control
+lines for the access that is performed at Phi2. This schematics asserts
+RDY at Phi2, which works with the CMOS version, that only requires the 
+RDY 200ns before the end of Phi2.
+</li>
+<li>The NMOS version does not stop on write cylces. Instead it simply 
+performs the current and all directly consecutive writes - up to three
+in total in a 6502 - and only stops on the next read cylce.
+This schematics does not handle the write problem with the NMOS chips,
+it simply asserts RDY for all accesses.</li>
+</ol>
+<p>This schematics describes how I attached the Philips P8584 I2C controller
+to a 65C02 system. I found that the chip worked well with the system running
+on 1&nbsp;MHz, but not on 2&nbsp;MHz. It only started working when I used
+RDY to halt the CPU for a cycle when accessing the chip.
+</p>
+<p>This schematics creates the RDY signal, but a similar schematics can
+be used to create other clocked signals as well.
+</p>
+<h1>Signals</h1>
+<p>This section describes the signals as used in the schematics.</p>
+<ul>
+<li>Phi2: The CPU clock signal. When it is high, the CPU has put valid
+address and data (in case of write) lines on the bus. When Phi2 is low
+the CPU changes the address lines. Read happens at the falling edge of
+Phi2.</li>
+<li>/SEL_unclocked: This select signal is determined by decoding the
+CPU address lines. It goes low when the CPU puts the correct address 
+for access of the device on the address lines.
+This line is mostly used for read accesses when the CPU expects the
+data at the falling edge of Phi2, and the device does not need any specific
+timing. This line can still be used when RDY is asserted.
+</li>
+<li>/SEL_clocked: This line is the /SEL_unclocked line combined with the
+Phi2 clock. It is used for devices that need the Phi2 timing on write
+accesses. This line must be handled specially when RDY is asserted, as it
+goes inactive during Phi1.
+</li>
+<li>XRDY: This line is the internal RDY signal. It is low when the device
+is accessed and the RDY line should be asserted for this access.
+</li>
+<li>RDY: This is the CPU ready line.
+</li>
+<li>/NEWSEL: This is the final select signal as replacement for the
+/SEL_clocked line. It can be used for a device that requires the Phi2
+timing for the write access.
+</li>
+</ul>
+<h1>Schematics</h1>
+<p>The following diagram shows the schematics</p>
+<img src="rdy-schematics.png" />
+<p>The main IC used for the generation is the shift register 74LS164.
+It is clocked with the Phi2 clock signal, and shifts the /SEL_unclocked
+signal through its output signals.
+With a combination of the output signals the new XRDY signals is created.
+The timing diagrams below show how it works.
+</p>
+<p>This type of schematics can be used to create many types of
+signals, using different combinations of the shift register output values.
+Creating XRDY with Q1 and Q2 is only one example. Using Q3 instead of Q2
+for example would make the RDY pulse two clock cycles long, not one.
+You could also use a higher shift register clock and shift the Phi2
+signal through the shift register, and use combinations of the output
+signals e.g. for RAM timing signals.
+</p>
+<h1>Timing diagrams</h1>
+<p>This diagram shows the principle timing, but without RDY being pulled
+from XRDY.
+</p>
+<img src="rdy-timing1.png"/>
+<p>Phi2 shows the central CPU timing signal. Ax,R/W shows where the address
+lines and R/-W are stable. /SEL_unclocked is the select signal that is
+derived from the CPU address lines. /SEL_clocked is this select signal
+combined with Phi2.
+</p>
+<p>The Q1 and Q2 lines show how the /SEL_unclocked line is clocked through
+the shift register output lines. The XRDY line is cmbined from Q1 being low
+and Q2 being high.
+</p>
+<p>The following diagram shows the signals with the RDY line asserted from
+XRDY.</p>
+<img src="rdy-timing2.png"/>
+<p>The /SEL_clocked line now shows two active periods, as it is combined 
+with Phi2 that is going inactive during Phi1. Therefore the /NEWSEL line is 
+generated using the /SEL_clocked and XRDY line.
+</p><p>
+Note: it is important, that the Phi2 going high signals arrives a the
+AND-gate before the shift register and Q1/Q2 logic releases XRDY, so that
+there is no inactive spike on the /NEWSEL line. This is accomplished
+by the gate delay times.</p>
+<hr/>
+<p>(C) 2006 Andr&eacute; Fachat</p>
+</body>
+</html>

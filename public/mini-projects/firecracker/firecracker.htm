@@ -1,0 +1,240 @@
+<HTML>
+<TITLE>6502.org: How to: X-10 CM17A Interface</TITLE>
+<META name="description" content="Interface X-10's CM17A FireCracker to 
+your 6502-based project.">
+<p><b>X-10 CM17A Interface</b> by Mike Naberezny</p>
+
+<P><B>Introduction</B>
+<P>
+The FireCracker CM17A is a home automation control device sold in the
+United States by a company called <a href="http://www.x-10.com">X-10</a>.
+<P>
+X-10 sells a variety of plug-in modules for controlling lights and power 
+outlets.  The devices communicate by injecting a signal onto the home's
+power lines, so X-10 modules can be distributed throughout the house and
+controlled without any additional wiring.  A common X-10 device is usually
+something
+like an addressable switch called an "appliance module".  Each X-10 device
+is identified by a unique house code and unit code.  A command code
+instructs the devices to perform operations such as "on", "off", or "dim".
+
+<P>
+X-10 offers RF handheld remotes for controlling X-10 devices.  The
+remotes transmit a signal to a transceiver module which in turn transmits
+the control signals over the power line to the modules.  X-10 also sells a
+device called the FireCracker CM17A.  The FireCracker is an X-10 RF
+remote for PCs that allows a PC to control any X-10 device
+wirelessly.  The FireCracker looks like a small dongle that plugs into the
+serial port.  With some simple wiring and software, the FireCracker can be
+controlled by any 6502-based machine.
+
+<P><B>Interface</B>
+<p>The FireCracker is intended to plug into a PC serial port with its
+female DB9 connector.  It uses only three lines on this port: GND (pin 5),
+DTR (pin 4), and RTS (pin 7).  These lines may be directly connected to a
+VIA or similar I/O device by connecting a mating DB9 male and wiring up
+the ground and two signal lines like this:
+<P><center>
+<table cellspacing="0" cellpadding="5" border="1">
+<tr><td bgcolor="white"><b>FireCracker DB9</b></td>
+<td bgcolor="white"><b>6522 VIA</td></tr>
+<tr><td bgcolor="white">RTS (pin 4)</td>
+<td bgcolor="white">PB0 (pin 10)</td></tr>
+<tr><td bgcolor="white">DTR (pin 7)</td>
+<td bgcolor="white">PB1 (pin 11)</td></tr>
+<tr><td bgcolor="white">GND (pin 5)</td>
+<td bgcolor="white">Vss (pin 1)</td></tr>
+</table></center>
+
+<P><B>Programming</B>
+<P>
+Controlling the FireCracker requires a program that takes the X-10 House
+Code, Unit Address, and Command Code and translates them into a five-byte
+FireCracker command string.  More details about the <a
+href="http://www.geocities.com/ido_bartana/Firecracker_protocol.htm">FireCracker
+protocol</a> can be found on the web.  The FireCracker uses a
+two-wire connection and each bit of the command string must be
+"bit-banged" into it.  The program below
+is used to assemble and transmit the FireCracker command string.  The
+FireCracker will broadcast the RF signal to its transceiver upon receiving
+a correct command string.
+<P>
+<table cellpadding="8" cellspacing="0" border="1">
+<tr><td bgcolor="#FFFFFF">
+<pre>
+BYTE_TO_SEND	= $01
+HOUSE_CODE	= $02
+UNIT_CODE	= $03
+COMMAND		= $04
+
+		*=$700
+
+RESET_CM17A:    JSR CM17INIT            ;Initialize I/O
+                JSR RTS_LO
+                JSR DTR_LO              ;Remove power from CM17A
+                JSR PAUSE_50            ;Pause for 50ms
+                JSR RTS_HI      
+                JSR DTR_HI              ;Restore power to CM17A
+                RTS
+
+SEND_COMMAND:   LDA #$D5
+                STA BYTE_TO_SEND
+                JSR SEND_BYTE           ;Send first header byte
+
+                LDA #$AA
+                STA BYTE_TO_SEND
+                JSR SEND_BYTE           ;Send second header byte
+
+                LDX HOUSE_CODE
+                LDA HOUSE_TABLE,X
+                STA BYTE_TO_SEND        ;BYTE_TO_SEND = HOUSE_TABLE,HOUSE_CODE
+		
+                LDA #$09
+                CMP UNIT_CODE
+                BCS LOW_UNIT            ;If UNIT_CODE < 9 Then Goto LOW_UNIT
+
+                LDA #$04
+                CLC
+                ADC BYTE_TO_SEND	
+                STA BYTE_TO_SEND        ;BYTE_TO_SEND = BYTE_TO_SEND + 4
+
+LOW_UNIT:       JSR SEND_BYTE           ;Transmit data first byte
+                LDA #$20
+                STA BYTE_TO_SEND        ;BYTE_TO_SEND = #$20
+                LDA COMMAND
+                BEQ ADD_UNIT            ;If COMMAND = 0 Then Goto ADD_UNIT
+                LDA #$00
+                STA BYTE_TO_SEND        ;BYTE_TO_SEND = #$00
+                LDA COMMAND
+                CMP #$01
+                BEQ ADD_UNIT            ;If COMMAND = 1 Then Goto ADD_UNIT
+                LDA #$88
+                STA BYTE_TO_SEND        ;BYTE_TO_SEND = #$88
+		LDA COMMAND
+		CMP #$02
+		BEQ NO_UNIT		;If COMMAND = 2 Then Goto NO_UNIT
+		LDA #$98
+		STA BYTE_TO_SEND	;BYTE_TO_SEND = #$98
+		JMP NO_UNIT		;Goto NO_UNIT
+
+ADD_UNIT:	LDA #$09
+		CMP UNIT_CODE
+		BCS ADU2		;If UNIT_CODE < 9 Then Goto ADU2
+		LDA UNIT_CODE
+		SEC
+		SBC #$08
+		TAX
+		JMP AU3
+  ADU2:		LDX UNIT_CODE		;X = UNIT_CODE
+  ADD3:		LDA UNIT_TABLE,X
+		CLC
+		ADC BYTE_TO_SEND
+		STA BYTE_TO_SEND	;BYTE_TO_SEND = BYTE_TO_SEND + (UNIT_TABLE Data)
+NO_UNIT:	JSR SEND_BYTE		;Transmit second byte
+		LDA #$AD
+		STA BYTE_TO_SEND
+		JSR SEND_BYTE		;Transmit footer byte
+		RTS		
+
+SEND_BYTE:	LDA BYTE_TO_SEND
+		LDX #$08
+  SB1:		ROL
+		BCS SB2
+		JSR SEND_0
+		JMP SB3
+  SB2:		JSR SEND_1
+  SB3:		DEX
+		BNE SB1
+		RTS
+
+SEND_0:         JSR RTS_LO
+                JSR PAUSE_1
+                JSR RTS_HI
+                RTS
+
+SEND_1:         JSR DTR_LO
+                JSR PAUSE_1
+                JSR DTR_HI
+                RTS
+
+;Timing Routines
+PAUSE_1:        RTS        ;Routine to pause 1ms
+PAUSE_50:	RTS        ;Routine to pause 50ms
+
+;I/O Routines
+CM17INIT:       RTS        ;Initialize your I/O (data direction registers)
+DTR_HI:         RTS        ;Set CM17A's DTR line (pin 4) to high.
+DTR_LO:         RTS        ;Set CM17A's DTR line (pin 4) to low.
+RTS_HI:         RTS        ;Set CM17A's RTS line (pin 7) to high.
+RTS_LO:         RTS        ;Set CM17A's RTS line (pin 7) to low.
+
+HOUSE_TABLE:	.BYTE $60, $70, $40, $50, $80, $90, $A0, $B0, $E0, $F0, $C0
+		.BYTE $D0, $00, $10, $20, $30
+UNIT_TABLE:	.BYTE $00, $10, $08, $18, $40, $50, $48, $58
+</pre>
+</td></tr></table>
+<P>To use the program presented above you must add a few routines that
+will be specific to your hardware.  PAUSE_1 and PAUSE_50 will simply pause
+for one and fifty milliseconds, respectively.  This allows the FireCracker
+to keep up with the transmission.  CM17INIT will contain any
+initialization code required for the I/O, such as setting a VIA's data
+direction register.  The remaining routines, such as DTR_HI and RTS_LO,
+will set the line states of your I/O lines as indicated by the
+comments in the code.
+<p>
+To use the code, first call RESETCM17A which will reset the FireCracker
+by temporarily removing power from it.  This only needs to be done once in
+your program.  Next, the HOUSE_CODE, UNIT_CODE, and COMMAND variables need
+to be set.
+<p>
+The HOUSE_CODE is a number from 0-x (decimal), corresponding House Codes
+A-x.  The UNIT_CODE is a number from 0-x, corresponding to Unit Codes
+1-x.  The command codes are:
+<p><center>
+<table cellspacing="0" cellpadding="5" border="1">
+<tr><td bgcolor="white"><b>Description</b></td>
+<td bgcolor="white"><b>Command Code</td></tr>
+<tr><td bgcolor="white">Off</td>
+<td bgcolor="white">0</td></tr>
+<tr><td bgcolor="white">On</td>
+<td bgcolor="white">1</td></tr>
+<tr><td bgcolor="white">Bright</td>
+<td bgcolor="white">2</td></tr>
+<tr><td bgcolor="white">Dim</td>
+<td bgcolor="white">3</td></tr>
+</table></center>
+<p>For example, to turn an appliance module ON whose address is B2 (House
+Code "B", Unit Code "2"), set HOUSE_CODE=1, UNIT_CODE=1, and
+COMMAND=1.  Finally, calling SEND_COMMAND will construct the codes for the
+FireCracker and transmit them.  Here is an example of how to call these
+routines, again setting B2 ON:
+<p>
+<table cellpadding="8" cellspacing="0" border="1">
+<tr><td bgcolor="#FFFFFF">
+<pre>
+MAIN:		JSR RESETCM17A        ;Reset the FireCracker CM17A
+
+                LDA #01
+		STA HOUSE_CODE        ;Set the House Code (B)
+		
+		LDA #01
+		STA UNIT_CODE         ;Set the Unit Code (2)
+
+		LDA #01
+		STA COMMAND           ;Set the Command Code (On)
+
+		JSR SEND_COMMAND      ;Command FireCracker for B2 ON
+		RTS </pre></td></tr> </table> 
+
+<P><b>Conclusion</b> 
+<p>
+With your I/O routines and timing routines added, after this code is
+executed the appliance module at address B2 should turn ON.  Setting the
+COMMAND code to 0 (OFF)
+and calling SEND_COMMAND again will turn the module back OFF. <P> You now
+have all of the tools necessary to control almost any appliance or light
+with X-10 modules and your 6502-based project.  Add some timer code and
+you can easily turn appliances on and off with a schedule program.  Since
+the FireCracker is wireless, this will work with battery-operated projects
+like robots as well. 
+<P><FONT SIZE=-1>Last page update: November 28, 2002.</FONT>

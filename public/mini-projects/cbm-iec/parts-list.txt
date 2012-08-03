@@ -1,0 +1,9 @@
+Parts List
+
+Qty   Description
+1     7406
+3     1K 0.25w
+9     1N914
+5     Ferrite Bead
+1     7-pin header
+1     IEC connector (6-pin DIN)

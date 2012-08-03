@@ -1,0 +1,53 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: 6522 Interrupt Identification</TITLE>
+<META name="description" content="6502 assembly program to identify 6522 interrupt sources.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Identifying 6522 Internal Interrupt Sources</FONT>&nbsp;<FONT SIZE=-1>from 6502 Applications</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Identifying One of 7 Possible Internal Interrupts for the 6522</B>
+<P><CENTER>
+<TABLE border=0 cellpadding=1 cellspacing=2>
+<TD width=50 align=center>7</TD>
+<TD width=50 align=center>6</TD>
+<TD width=50 align=center>5</TD>
+<TD width=50 align=center>4</TD>
+<TD width=50 align=center>3</TD>
+<TD width=50 align=center>2</TD>
+<TD width=50 align=center>1</TD>
+<TD width=50 align=center>0</TD>
+</TABLE>
+
+<TABLE border=1 cellpadding=1 cellspacing=2>
+<TD width=50 align=center>IRQ(R)<BR>EN(R)</TD>
+<TD width=50 align=center>T1</TD>
+<TD width=50 align=center>T2</TD>
+<TD width=50 align=center>CB1</TD>
+<TD width=50 align=center>CB2</TD>
+<TD width=50 align=center>SR</TD>
+<TD width=50 align=center>CA1</TD>
+<TD width=50 align=center>CA2</TD>
+</TABLE>
+
+6522 Interrupt Flag Enable Register (IFR/IER)
+</CENTER>
+
+
+<P>Referring to the above figure, it can be seen that seven possible conditions may set an internal interupt in the IFR register of the 6522: T1, T2, CB1, CB2, RT, CA1, and CA2.  If all of the internal resources of the 6522 are used simultaneously, as is often the case, then all possibilities should be checked.  A simple program which will identify one out of 7 interrupts appears below:
+
+<PRE>
+ONEOF7    ASL A
+          BMI TIMER1
+          ASL A
+          BMI TIMER2
+          ASL A
+          ...
+</PRE> 
+The program checks successively bit 6, bit 5, bit 4, etc., by simply shifting the contents of the accumulator left by one bit position every time.  It should be noted that the order in which the shifts occur establish a priority of the interrupts within the device.  Using the program as shown above, Timer 1 will have the highest priority, then Timer 2, etc.  The user might want to asign different priorities to the interrupts by testing the bits in a different order.
+<P><FONT SIZE=-1>Last page update: October 17, 2000.</FONT>
+</BODY></HTML>
+

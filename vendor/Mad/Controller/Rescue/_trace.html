@@ -1,0 +1,45 @@
+<p><code>MAD_ROOT: <?php if (defined('MAD_ROOT')): ?><?php echo MAD_ROOT ?><?php else: ?>unset<?php endif ?></code></p>
+
+<div id="traces">
+  <div id="Application-Trace" style="display: block;">
+    <pre><code><?php 
+                  foreach($this->trace as $i => $frame) {
+                    $glue = ($i==0) ? ' in ' : ': ';
+                    echo "{$frame->fileStripped}({$frame->line})$glue{$frame->method}\n";
+                  }  
+               ?></code></pre>
+  </div>
+</div>
+
+<?php if ($this->extraction): ?>
+
+<p>
+  Extracted source (around 
+  <a href="<?php echo $this->trace[0]->url ?>">line #<?php echo $this->extraction->line ?></a>)
+</p>
+
+<pre class="extracted">
+<?php
+ end($this->extraction->source);
+ $width = strlen(key($this->extraction->source));
+
+ $rows = array();
+ foreach ($this->extraction->source as $line => $code) {
+     // link to each line nuber
+     $url = preg_replace('/line=\d+/', "line=$line", $this->trace[0]->url);
+     $num = '<a href="'.$url.'">'.str_repeat(' ', $width-strlen($line))."$line</a>: ";
+          
+     // add link to entire line of code in question
+     $code = htmlentities($code);
+     $sel  = '';
+     if ($line == $this->extraction->line) {    
+         $code = '<a href="'.$this->trace[0]->url.'">'.$code.'</a>';
+         $sel  = 'sel';
+     }
+
+     // wrap each row as a "line"
+     $rows[] = "<div class=\"line $sel\">{$num}{$code}</div>";
+ }
+ echo implode("", $rows);
+?></pre>
+<?php endif ?>

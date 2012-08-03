@@ -1,0 +1,74 @@
+<? $this->title = 'Development Tools' ?>
+<? $this->description = 'Tools for developing 6502 microprocessor programs on various platforms.' ?>
+
+<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
+	<tr>
+		<td><img src="/images/spacer.gif" width="10" alt=" "></td>
+		
+		<td width="100%" bgcolor="#ffffff" class="bodyblack" style="padding-top:15px;">
+
+    <p>
+      Today, almost all 6502 software is written on machines such as a PCs or UNIX
+      boxes. The finished program is then downloaded into the "target" 6502-based
+      computer. This has many advantages over writing code directly on the 6502
+      machine in either a limited assembly language or machine code. The use of an
+      advanced full-screen editor and the ability to utilize all of your target
+      machine's memory (due to no resident assembler or monitor) are just two
+      examples. Cross-developing your software can greatly speed your development
+      process and allow you more easily manage complex programs.
+    </p>
+    <p>
+    On these pages you will find a variety of useful tools to help you write and
+    test 6502 programs on other computers. Within the categories, every program
+    includes a brief description of its features and which platform it runs on.
+    Please send us 
+    <?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript']) ?>
+    with your comments and experiences with each program, and also if you have a tool you
+    feel should be include in these archives.
+    </p>
+
+
+		<p style="padding-top:20px;"><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+      <?= $this->linkTo('<b>Generic 6502 Emulation and Simulators</b>', ['action' => 'emu']) ?>
+  		<ul>
+    		<li>
+          There are many programs available here that allow you to test and
+          debug 6502 code on your computer without a "real" 6502. Please note
+          that this archive is for emulation of 65xx chips and is not intended
+          for machine-specific emulators (Commodore 64, Apple II, etc).
+   		  </li>
+  		</ul>	
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+		  <?= $this->linkTo('<b>Assemblers, Disassemblers, and Optimizers</b>', ['action' => 'asm']) ?>
+  		<a href="asm/"><b></b></a>
+  		<ul>
+    		<li>
+          Programs in this category allow you to write, assemble, optimize, or
+          disassemble 6502 code. Handy tools such as text editors which aid this type of
+          work are also included here. Some of the programs also support other popular
+          hobbyist microprocessors such as the Z80.
+        </li>
+  		</ul>	
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+      <?= $this->linkTo('<b>Compilers and Languages</b>', ['action' => 'lang']) ?>
+  		<ul>
+    		<li>
+          Programs in this category allow you to write, assemble, optimize, or
+          disassemble 6502 code. Handy tools such as text editors which aid this type of
+          work are also included here. Some of the programs also support other popular
+          hobbyist microprocessors such as the Z80.
+        </li>
+  		</ul>	
+	  </p>
+
+	</td>
+
+	<td><img src="/images/spacer.gif" height="1" width="10" alt=" "></td>
+	
+	</tr>
+
+	</table>

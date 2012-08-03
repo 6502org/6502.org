@@ -1,0 +1,80 @@
+<? $this->title = 'Documents Archive' ?>
+<? $this->description = 'A collection of useful documents pertaining to the 6502 microprocessor.' ?>
+
+<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
+	<tr>
+		<td width="100%" class="bodyblack" style="padding: 10px 10px 0px 10px;">
+
+    <?= $this->breadcrumbs() ?>
+
+    <? foreach ($this->mySections as $section): ?>
+			<div style="padding: 0px 0px 10px 15px; font-weight: bold;">
+				<IMG SRC="/images/files/folder_closed.gif" align=left alt="**">&nbsp;
+				  
+				  <a href="<?= $section['url'] ?>"><?= $section['title'] ?></a>
+
+          <? if (! empty($section['description'])): ?>
+  				    <div style="padding: 6px 0px 2px 20px; font-weight: normal;">
+  				      <?= $section['description'] ?>
+  				    </div>
+  				<? endif ?>
+			</div>
+		<? endforeach ?>
+
+		<div style="padding: 5px 0px 0px 15px;">		
+			<table cellpadding="0" cellspacing="0">
+			<? foreach ($this->mySection['items'] as $item): ?>
+				<tr>
+					<td>
+					  <?= $this->linkTo($this->imageTag("files/{$item['format']}.gif", ['border' => 0]), $item['url']) ?>
+					</td>
+					<td nowrap>&nbsp;&nbsp;<?= $item['title'] ?></td>
+					<td width="100%">&nbsp;</td>
+				</tr><tr>
+					<td>&nbsp;</td>
+					<td nowrap style="padding-bottom: 15px;">&nbsp;&nbsp;
+					  <a href="<?= $item['url'] ?>"><?= $item['filename'] ?></a> - 
+
+				    <? if ($item['pages'] > 0): ?><?= $item['pages'] ?> pages, <? endif ?>
+				    
+					  <? if ($item['size_kb'] > 0): ?><?= $item['size_kb'] ?>K<? endif ?>
+
+					</td>
+				</tr>
+			<? endforeach ?>
+			</table>
+		</div>
+		
+	</td>
+
+	<td style="padding: 0px 10px 250px 0px;">
+		<div style="width: 200px;">
+		<? if (count($this->mySections) > 0): ?>
+		<table cellpadding="0" cellspacing="0">
+			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
+			<tr><td class="boxtitle"><?= $this->mySection['title_sidebar']?> </td></tr>
+			<tr><td class="box">
+
+      <? foreach ($this->mySections as $section): ?>
+				&bull;&nbsp;<a href="<?= $section['url'] ?>"><?= $section['title_sidebar'] ?></a><br>
+      <? endforeach ?>
+			</td></tr>
+		</table>
+    <? endif ?>
+						
+		<table cellpadding="0" cellspacing="0">
+			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
+			<tr><td class="boxtitle">Submit New Documents</td></tr>
+			<tr><td class="box">
+				If you have a new or updated document that should be included in
+				our archives, please contact us via 
+        <?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript', 'style' => 'text-decoration: underline']) ?>.				
+			</td></tr>			
+		</table>	
+		</div>
+	</td>	
+
+	
+	</tr>
+
+</table>

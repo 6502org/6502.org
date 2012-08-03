@@ -1,0 +1,225 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<html><body bgcolor=white>
+<div align=center>
+<font face="serif" size="7">Frequency<br>counter</font>
+<i><br>M. Dohmen<br>
+R. Koekoek</i><br>
+
+<table cellpadding=10>
+<tr>
+<td width="60%" valign="top"><font size="4">The program described here can measure a frequency till, mind you, 100 kHz with an deviation of one alternation on 65536. The frequency is displayed on five digits. The program is written for the KIM, but is usable on other 6502 microcomputers, like the SYM and the Junior.
+Once started the program measures the frequency continuosly, when "6" is pressed and once when "0" is pressed.</font><br><br>
+
+<table><tr><td width="50%" valign="top"><big><bold>Overflow</bold></big><br><br>
+In this program a seldom used 6502 property is applied. This microprocessor has a SO (Set Overflow) pin 38, which can set the overflow-flag from the exterior. On most computers this is available via a connector (RO, pin E-5 on the KIM; SO, pin 14-c on the Junior). the overflow flag is set when the signal on this input goes from high to low.<br><br>
+<img src="buffer.jpg" width="220" height="352" alt="input protection" border="2" align="middle"><br>
+
+</td><td width="50%" valign="top">This gives a fast and direct access to the microprocessor without involving the rest of the computer. Once the overflow flag is set, only the software can influence it.<br>
+<br><big><bold>Buffering</bold></big><br><br>
+Because measuring is done directly into circuits, buffering and protection of the RO-input is necessary. The easyist way to realise this is via a Schmitt-trigger gate, the 7413. This gate is also being provided with a voltage and current protection according to the picture. This way signals of every shape can be measured if the level is around 2.5 V.<br>
+<br><big><bold>Operation</bold></big><br><br>
+The program starts on location 200 hex. First the interrupt vector is being set at the start address of the interrupt routine (0298 hex). Next the counter for the interrupts is initialised, then the readout is cleared. The timer is being set to 1/4 of a second, at which interrupts are allowed. For a complete cycle four interrupts are used which results in about 1 second. To make this timing accurate and trim the</td></tr></table>
+</td>
+<td width="30%" valign="top">measurement an extra delay routine of about 3 ms is in order. The accumulator, the carry- and overflow-flag are cleared, then the number of overflows are counted till the next interrupt. Counting is done binary with the least significant bits in the X-register, then the Y-register and the most significant bits in the accumulator. By keeping this routine as short as possible, the maximum frequency is about 100 kHz. The error occuring at 65536 pulses is arises when the X and Y-registers reach FFFF hex and the accumulator needs to be incremented. This makes the counting routine a little longer.<br>
+Whenever an interrupt occurs, the interrupt routine is being called. Her the timer is being restarted if this was not the fourth interrupt. If it was the fourth, the value is converted to decimal. This happens only now because counting in decimal happens in the accumulator and is more time consuming. Conversion from binary to decimal is done as follows: in the table there are respectively the decimal values of 1, 10, 100, 1.000 and 10.000. As long as the value is not negative, the 10.000 counter is incremented. The result is being put back in the original counter. If the result was negative, the value of the counter before the substraction is used and the next value from the table is substracted. This goes on till the counter reaches zero. The decimal value is kept in the readout registers. After the conversion
+</td></tr></table>
+<hr>
+<div align=left>Radio Bulletin</div><div align=right>january 1981</div>
+<hr size=5>
+<table cellpadding=10><tr>
+<td width="30%" valign="top">the display lights up and shows the value. Next the key is checked. If not, the preveous key value is used. If yes, the program stops measuring at a "0" and goes on displaying the frequency at a "6".<br>
+<br><big><bold>Adjustment</bold></big><br><br>
+The adjustment goes as follows. A dividing circuit, composed of two devide-by-10 deviders, is connected to the 1 MHz clock of the computer. The frequency at the output will be in the neighbourhood of 10 kHz. This signal is being fed to input and the
+
+</td>
+<td width="30%" valign="top">program is started. By modifying the values in memory locations 021C and 021E of the delay-routine, the readout is adjusted to 10.000. The devide-by-100 is used because then the accumulator is not yet active in the proces. This way the meter is most accurate. By connecting the devider between the buffer(7413) and the RO (SO) input the measurement is extended to 10 MHz. In order to make the timer work it's importand for the KIM to connect PB7 (A-15) and NMI (E-6) and for the Junior, NMI (12-C) and IRQ (12-A). The timer actualy generates interupts.</td>
+<td width="30%" valign="top"><big><bold>Modifications for the Junior</bold></big><br><br>
+The program in the listing is for the KIM. For the Junior the following changes apply:
+<pre>Adres    KIM    Junior
+0203     FB     7B
+0204     17     1A
+0208     FA     7A
+0209     17     1A
+0219     0F     FF
+021A     17     1A
+0283     1F     8E
+0284     1F     1D
+02A0     0F     FF
+02A1     17     1A
+</pre>
+</td></tr></table>
+<table cellspacing=10><tr><td valign=top><PRE><font size=1>
+         MICRO-WARE ASSEMBLER 65XX-1.0 PAGE 01
+0010:
+0020:               *****************************************
+0030:               *                                       *
+0040:               *          FREQUENCY COUNTER            *
+0050:               *          FOR THE 6502                 *
+0060:               *                                       *
+0070:               *       AUTHORS : M. DOHMEN             *
+0080:               *                 R. KOEKOEK            *
+0090:               *                                       *
+0100:               *****************************************
+0110:
+0120: 0200                 ORG   $0200
+0130:
+0140:               ZEROPAGE ADDRESSES
+0150:
+0160: 0200          INTCNT *     $00D0
+0170: 0200          ZEROP  *     $00D1
+0180: 0200          TEMPC  *     $00E0
+0190: 0200          TEMPB  *     $00E1
+0200: 0200          TEMPA  *     $00E2
+0210: 0200          INL    *     $00F8
+0220: 0200          INH    *     $00F9
+0230: 0200          POINTL *     $00FA
+0240: 0200          POINTH *     $00FB
+0250: 0200          CHAR   *     $00FE
+0260:
+0270:               TABLE
+0280:
+0290: 0200          TABLO  *     $02AF
+0300: 0200          TABHI  *     $02B0
+0310: 
+0320:               TIMERADDRESS
+0330:
+0340: 0200          TIMER  *     $170F
+0350:
+0360:               INTERRUPT VECTOR
+0370:
+0380: 0200          INTLO  *     $17FA
+0390: 0200          INTHI  *     $17FB
+0400:
+0410:               MONITOR SUBROUTINE
+0420:
+0430: 0200          SCANDS *     $1F1F
+0440:
+0450:               MAIN PROGRAM 
+0460:
+0470: 0200 A9 02    INIT   LDAIM $02
+0480: 0202 8D FB 17        STA   INTHI
+0490: 0205 A9 98           LDAIM $98    SET INTERRUPT VECTOR
+0500: 0207 8D FA 17        STA   INTLO
+0510: 020A A9 FC    START  LDAIM $FC    SET INTERRUPT COUNTER
+0520: 020C 85 D0           STA   INTCNT TO -4
+0530: 020E A9 00           LDAIM $00
+0540: 0210 85 F9           STA   INH    CLEAR DISPLAY AND
+0550: 0212 85 FA           STA   POINTL COUNTER
+0560: 0214 85 FB           STA   POINTH
+0570: 0216 A9 F5           LDAIM $F5    SET TIMER AND
+0580: 0218 8D 0F 17        STA   TIMER  ENABLE INTERRUPTS
+0590:
+0600:               EXTRA DELAY ROUTINE
+0610:
+0620: 021B A2 03           LDXIM $03    ADJUST THESE
+0630: 021D A0 00    BULOOP LDYIM $00    VALUES FOR
+0640: 021F 88       BILOOP DEY          REQUIRED PRECISION
+0650: 0220 D0 FD           BNE   BILOOP
+0660: 0222 CA              DEX
+0670: 0223 D0 F8           BNE   BULOOP
+0680:
+0690:               COUNT PROGRAM
+0700:
+0710: 0225 B8              CLV
+0720: 0226 18              CLC
+0730: 0227 98              TYA          CLEAR ACCU
+0740: 0228 50 FE    OVERFL BVC   OVERFL OVERFLOW SET?
+0750: 022A B8              CLV
+0760: 022B E8              INX          ADD 1 TO X
+0770: 022C D0 FA           BNE   OVERFL X = FF ?
+0780: 022E C8              INY          ADD 1 TO Y
+0790: 022F D0F7            BNE   OVERFL Y = FF ?
+0800: 0231 69 01           ADCIM $01    ADD 1 TO ACCU
+0810: 0233 D0 F3           BNE   OVERFL ACCU = FF?</td><td valign=top><PRE><font size=1>
+0820:
+0830:               BINARY TO DECIMAL CONVERSION
+0840:
+0850: 0235 85 E2    BINDEC STA   TEMPA  SAVE ACCU
+0860: 0237 84 E1           STY   TEMPB  SAVE Y
+0870: 0239 86 E0           STX   TEMPC  SAVE X
+0880: 023B A2 08           LDXIM $08    SET POINTER
+0890: 023D A5 E2    POS    LDA   TEMPA
+0900: 023C C9 00           CMPIM $00    IS COUNTER
+0910: 0241 D0 0C           BNE   SUBT   STILL BIGGER
+0920: 0243 A5 E1           LDA   TEMPB  THAN THE
+0930: 0245 DD B0 02        CMPAX TABHI  ACTUAL
+0940: 0248 D0 05           BNE   SUBT   VALUE
+0950: 024A A5 E0           LDA   TEMPC  IN THE
+0960: 024C DD AF 02        CMPAX TABLO  TABLE
+0970: 024F 90 2D    SUBT   BCC   NEXT   NO? GET NEXT TABLE VALUE
+0980: 0251 38              SEC          YES? SUBSTRACT
+0990: 0252 A5 E0           LDA   TEMPC  THE ACTUAL
+1000: 0254 FD AF 02        SBCAX TABLO  VALUE IN
+1010: 0257 85 E0           STA   TEMPC  THE TABLE
+1020: 0259 A5 E1           LDA   TEMPB  FROM
+1030: 025B FD B0 02        SBCAX TABHI  THE
+1040: 025E 85 E1           STA   TEMPB  VALUE IN
+1050: 0260 A5 E2           LDA   TEMPA  THE COUNTER
+1060: 0262 E9 00           SBCIM $00
+1070: 0264 85 E2           STA   TEMPA  AND PUT COUNTER BACK
+1080: 0266 8A              TXA          SAVE TABLEPOINTER
+1090: 0267 48              PHA          IN X ONTO THE STACK
+1100: 0268 4A              LSRA         FIND OUT IN WHICH DIGIT
+1110: 0269 4A              LSRA         THE COUNTERVALUE SHOULD COME
+1120: 026A AA              TAX          BY MEANS OF POINTER IN X
+1130:
+1140:               COUNTER VALUE IN DECIMAL TO DISPLAY
+1150:
+1160: 026B B0 04           BCS   TIENT  IS IT A DECADE?
+1170: 026D F6 F9           INCZX INH    NO? ADD ONE
+1180: 026F D0 09           BNE   NOG    AND RETURN
+1190: 0271 B5 F9    TIENT  LDAZX INH    GET PREVEOUS VALUE
+1200: 0273 69 0F           ADCIM $0F    AND ADD DECADE
+1210: 0275 95 F9           STAZX INH    DISPLAY
+
+0040: 027A 68       NOG    PLA          GET TABLEPOINTER FROM STACK
+0050: 027B AA              TAX          AND PUT THAT IN X
+0060: 027C 10 BF           BPL   POS    ALL READY?
+0070: 027E CA       NEXT   DEX          TABLE POINTER TO
+0080: 027F CA              DEX          NEXT VALUE
+0090: 0280 10 BB           BPL   POS    AND BACK
+0100: 0282 20 1F 1F DISPL  JSR   SCANDS DISPLAY COUNTER
+0110: 0285 D0 0B           BNE   KEY    KEY PRESSED?
+0120: 0287 A5 F8           LDA   INL    NO? GET PREVEOUS
+0130: 0289 D0 02           BNE   DI     WAS IT ZERO?
+0140: 028B C6 D1           DEC   ZEROP  NO? DISPLAY
+0150: 028D D0 F3    DI     BNE   DISPL  JA? KEEP DISPLAYING
+0160: 028F 4C 0A 02 BACK   JMP   START  RESTART
+0170: 0292 4A       KEY    LSRA
+0180: 0293 85 F8           STA   INL    SAVE KEY
+0190: 0295 4C 0A 02        JMP   START  RESTART
+0200:
+0210:               INTERRUPT ROUTINE
+0220:
+0230: 0298 48              PHA          SAVE ACCU
+0240: 0299 E6 D0           INC   INTCNT DECREMENT COUNTER
+0250: 029B F0 07           BEQ   VIER   FOURTH INTERRUPT?
+0260: 029D A9 F5           LDAIM $F5    NO, LOAD TIMER AND
+0270: 029F 8D 0F 17        STA   TIMER  ENABLE INTERRUPT
+0280: 02A2 68              PLA          GET ACCU BACK
+0290: 02A3 40              RTI          AND RETURN
+0300: 02A4 68       VIER   PLA          GET ACCU BACK
+0310: 02A5 85 FE           STA   CHAR   SAVE DATA
+0320: 02A7 68              PLA
+0330: 02A8 68              PLA          ADJUST STACK
+0340: 02A9 68              PLA
+0350: 02AA A5 FE           LDA   CHAR   GET DATA BACK
+0360: 02AC 4C 35 02        JMP   BINDEC CONVERT
+0370: 02AF 01              =     $01
+0380: 02B0 00              =     $00
+0390: 02B1 0A              =     $0A
+0400: 02B2 00              =     $00
+0410: 02B3 64              =     $64
+0420: 02B4 00              =     $00
+0430: 02B5 E8              =     $E8
+0440: 02B6 03              =     $03
+0450: 02B7 10              =     $10
+0460: 02B8 27              =     $27</td></tr></table>
+
+<hr>
+
+<div align=left>Radio Bulletin</div><div align=right>january 1981</div>
+
+<hr size=5>
+</PRE>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<head>
+ <TITLE>6502-65816 Adapter Board</TITLE>
+</head>
+<body bgcolor="#ffffff" link="#0000cc" vlink="#0000ff" alink="#cc0000">
+<FONT SIZE="+2"><b>6502-65816 Adapter Board</b></font><p>
+
+There has been some interest in using a WDC 65C816 processor in a system that was designed for a 6502. &nbsp;
+ However, the two are not pin for pin compatible. &nbsp; Some form of adapter is required. &nbsp;
+ With some suggestions from the users on the 6502 Forum, I created a working schematic for an adapter. &nbsp;
+ IC3 and IC4 are used to create the two-phased clock output PH1 and PH2 that the 65816 does not generate. &nbsp; 
+ IC2 is used to keep the data bus at high-impedance during PH1.  <p>
+
+Here is the Schematic:<br>
+<img src="schem.gif"><p>
+<hr>
+<p>
+<p>
+Now, the hard part. &nbsp; We wanted to keep the size of our adapter as small as possible. &nbsp; By using SOIC
+ versions of IC2,3,4, and the TQFP version of 65816, it became possible to squeeze the entire circuit into the
+ size of a DIP40. <p>
+
+Here is a picture of my layout:<br>
+<img src="conv.gif"><p>
+<hr>
+<p>
+<p>
+As you can see, there is not much room wasted! <p>
+
+If you are interested in building this adapter, the ExpressPCB schematic and layout files can be downloaded here:
+<a href="conv.zip">conv.zip</a><p>
+
+PLEASE NOTE: &nbsp; I have not actually built or tested this design. &nbsp; Use it at your own risk.<p>
+
+Daryl Rictor - April 16, 2004
+</body>
+</HTML>

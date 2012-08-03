@@ -1,0 +1,151 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Address Line Test</TITLE>
+<META name="description" content="A program to test address bus lines written in 6502 assembly language.">
+</HEAD>
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Address Line Test</FONT><FONT SIZE=-1> by Tony Gonzalez</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<p>The typical RAM test consists of reading and writing
+$AA and $55 to each memory location.  This works well
+for finding bad RAM locations.  However, it does not specifically find bad
+address lines.  This simple method does just that.
+
+<p>This code is a bit long, but purposely so to
+demonstrate how the technique works.  Calling the routine at
+WRTDATA writes an incremental number to fifteen RAM locations,
+with the address of each location unique to A0-A14.  
+<p>The program then falls through to RAMTEST1, which checks the
+RAM locations corresponding to A0-A7.  If successful, it then
+jumps to RAMTEST2 which checks A8-A14.  Note that A15 is not
+explicitly tested.  It's assumed that the routine is placed somewhere
+in ROM above the first 32K, so if the program executes correctly then A15
+must be functioning by default.
+<p>
+If the program succeeds, SUCCESS will clear the test bytes and
+return to the calling program.
+<p>
+If the program fails to see the correct data at any point, it branches
+to FOUNDBAD which in turn jumps to the error handler FAILURE, and
+the number of the address line under test (Axx) is preserved in
+the X register.
+<pre>
+          .ORG $E000
+
+;WRTDATA: Fill fifteen memory locations with unique, incremental
+;values, where each address uses a unique address line. 
+WRTDATA:  LDX #$0F
+          STX $4000     ;$4000 = #$0F  (for test of A14)
+          DEX
+          STX $2000     ;$2000 = #$0E  (for test of A13)
+          DEX
+          STX $1000     ;$1000 = #$0D  (for test of A12)
+          DEX
+          STX $0800     ;$0800 = #$0C  (for test of A11)
+          DEX
+          STX $0400     ;$0400 = #$0B  (for test of A10)
+          DEX
+          STX $0200     ;$0200 = #$0A  (for test of A9)
+          DEX
+          STX $0100     ;$0100 = #$09  (for test of A8)
+          DEX
+          STX $0080     ;$0080 = #$08  (for test of A7)
+          DEX
+          STX $0040     ;$0040 = #$07  (for test of A6)
+          DEX
+          STX $0020     ;$0020 = #$06  (for test of A5)
+          DEX
+          STX $0010     ;$0010 = #$05  (for test of A4)
+          DEX
+          STX $0008     ;$0008 = #$04  (for test of A3)
+          DEX
+          STX $0004     ;$0004 = #$03  (for test of A2)
+          DEX
+          STX $0002     ;$0002 = #$02  (for test of A1)
+          DEX          
+          STX $0001     ;$0001 = #$01  (for test of A0)
+
+;RAMTEST1: Check address lines A0-A7.
+;Routine is broken into RAMTEST1 and RAMTEST2 due to the limited range
+;of the relative branch instruction BNE.
+RAMTEST1: CPX $0001
+          BNE FOUNDBAD  ;A0 bad (not = #$01)?
+          INX
+          CPX $0002
+          BNE FOUNDBAD  ;A1 bad (not = #$02)?
+          INX
+          CPX $0004
+          BNE FOUNDBAD  ;A2 bad (not = #$03)?
+          INX
+          CPX $0008
+          BNE FOUNDBAD  ;A3 bad (not = #$04)?
+          INX
+          CPX $0010
+          BNE FOUNDBAD  ;A4 bad (not = #$05)?
+          INX
+          CPX $0020
+          BNE FOUNDBAD  ;A5 bad (not = #$06)?
+          INX
+          CPX $0040
+          BNE FOUNDBAD  ;A6 bad (not = #$07)?
+          INX
+          CPX $0080     ;A7 bad (not = #$08)?
+          BNE FOUNDBAD
+          JMP RAMTEST2
+          
+;FOUNDBAD: Called by either RAMTEST1 or RAMTEST2 if
+;an error was detected.  This is the jump to the error handler.
+FOUNDBAD: JMP FAILURE
+
+;RAMTEST2: Tests address lines A8-A14
+RAMTEST2: INX
+          CPX $0100
+          BNE FOUNDBAD  ;A8 bad (not = #$09)?
+          INX
+          CPX $0200
+          BNE FOUNDBAD  ;A9 bad (not = #$0A)?
+          INX
+          CPX $0400
+          BNE FOUNDBAD  ;A10 bad (not = #$0B)?
+          INX
+          CPX $0800
+          BNE FOUNDBAD  ;A11 bad (not = #$0C)?
+          INX
+          CPX $1000
+          BNE FOUNDBAD  ;A12 bad (not = #$0D)?
+          INX
+          CPX $2000
+          BNE FOUNDBAD  ;A13 bad (not = #$0E)?
+          INX
+          CPX $4000
+          BNE FOUNDBAD  ;A14 bad (not = #$0E)?
+
+;SUCCESS: Program completed with no errors detected.
+;
+SUCCESS:  LDX #$00      ;Optional: Clean up the test bytes by filling
+          STX $01       ;with #$00.
+          STX $02       
+          STX $04       
+          STX $08       
+          STX $10
+          STX $20
+          STX $40
+          STX $80
+          STX $0100
+          STX $0200
+          STX $0400
+          STX $0800
+          STX $1000
+          STX $2000
+          STX $4000	
+          RTS           
+
+FAILURE:  DEX           ;An error was detected.
+;	   .            
+;	   .            The address line under test (Axx) at the 
+;	   .            time of failure is in the X register.
+</pre>
+<P><FONT SIZE=-1>Last page update: April 4, 2004.</FONT>
+</BODY></HTML>

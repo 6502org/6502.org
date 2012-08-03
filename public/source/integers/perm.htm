@@ -1,0 +1,99 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Permuation Generator</TITLE>
+<META name="description" content="How to generate permutations in 6502 assembly.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Permutation Generator</FONT>&nbsp;<FONT SIZE=-1>by Paul Guertin</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Permutation Generator</B>
+<P>
+How to generate permutations in 6502 assembly.<BR>
+By Paul Guertin (<A HREF="mailto:pg@sff.net">pg@sff.net</A>), 19 August 2000.<BR>
+<P>
+If you have n distinct elements, there are n! ways of arranging them
+in order. For example, the 3!=6 permutations of the digits "123" are
+123, 213, 312, 132, 231, and 321.
+<P>
+Generating permutations is usually done with a recursive procedure, but
+here is a cute iterative routine that does it simply and efficiently.
+One caveat: permutations are not generated in lexicographical order,
+but in an order such that two successive permutations differ by exactly
+one swap (as in the list above).
+<P>
+To keep this routine as generic as possible, it calls two user-supplied
+subroutines: EXCHANGE, which swaps elements X and Y, and PROCESS, which
+does something with the permutation (such as print it). This way, you
+can easily permute any data set.
+<PRE>
+SIZE     EQU 4           ; Number of elements to permute
+TEMP     EQU $6          ; (1 byte) Temporary storage
+
+PERMGEN:
+         LDA #0          ; Clear the stack
+         LDX #SIZE-1
+CLRSTK   STA STK,X
+         DEX
+         BPL CLRSTK
+         BMI START       ; Do first permutation
+
+LOOP     LDA STK,X
+         STX TEMP
+         CMP TEMP        ; Swap two elements if stk,x < x
+         BCS NOEXCH      ; else just increment x
+         INC STK,X
+         TAY
+         TXA
+         LSR             ; Check whether x is even or odd
+         BCS XODD        ;  x odd  -> swap x and stk,x
+         LDY #0          ;  x even -> swap x and 0
+XODD     JSR EXCHANGE    ; Swap elements x and y (user-supplied)
+START    JSR PROCESS     ; Use the permutation (user-supplied)
+         LDX #1          ;
+         BNE LOOP        ; (always)
+
+NOEXCH   LDA #0          ; No exchange this pass,
+         STA STK,X       ; so we go up the stack
+         INX
+         CPX #SIZE
+         BCC LOOP        ; Loop until all permutations generated
+         RTS
+STK      DS  SIZE        ; Stack space (ds reserves "size" bytes)
+</PRE>
+<I>Example of use:
+<BR>print all permutations of integers {1, 2, ..., SIZE}</I>
+<PRE>
+EXAMPLE  LDX #SIZE-1     ; Set up ASCII digit string
+         CLC
+EINIT    TXA
+         ADC #"1"
+         STA DIGIT,X
+         DEX
+         BPL EINIT
+         JMP PERMGEN     ; Jump to permutation generator
+DIGIT    DS  SIZE
+</PRE>
+<I>Here are the two sub-routines:</I>
+<PRE>
+EXCHANGE LDA DIGIT,X     ; Swap two digits in the string
+         PHA
+         LDA DIGIT,Y
+         STA DIGIT,X
+         PLA
+         STA DIGIT,Y
+         RTS
+
+PROCESS  LDX #0          ; Print the digit string (Apple II specific)
+PLOOP    LDA DIGIT,X
+         JSR $FDED       ; Print accumulator as ASCII character
+         INX
+         CPX #SIZE
+         BCC PLOOP
+         JMP $FD8E       ; Print a carriage return
+</PRE>
+</FONT SIZE=-1>Last page update: August 19, 1999.</FONT>
+</BODY></HTML>
+

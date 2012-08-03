@@ -1,0 +1,167 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Print Immediate</TITLE>
+<META name="description" content="Store text to be printed inline with
+your 6502 assembly code.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Print Immediate (PRIMM)</FONT>&nbsp;<FONT SIZE=-1>from
+Commodore 128 KERNAL ROM</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P>
+<P><B>Print Immediate (PRIMM)</B>
+<P>
+This clever routine lets you inline data to be printed in your assembly
+code like this:
+<UL><PRE>
+	JSR PRIMM
+	.BYTE "This will be printed!",$00
+	RTS</PRE>
+</UL>
+To use it, insert your text to be printed immediately after the call to
+PRIMM, terminated by a null byte.  When the routine is finished the
+program counter will be pointing the instruction immediately following the
+text, in this case RTS.  The program is presented here in three different
+versions, all fully tested and functionally equivalent.  Each version
+requires two bytes in the zero-page, any two consecutive bytes will do.
+Change the call to CHAROUT to your character printing subroutine, the byte
+to be printed will be loaded into the accumulator prior to the call.
+
+<P>The version below was obtained from disassembling the Commodore 128
+KERNAL ROM.  It can also be found in a few other Commodore computers such
+as the Plus/4 and 16 but is surprisingly absent in the VIC-20 and C64. 
+
+<UL>
+<PRE> 
+PRIMM: PHA           
+       TYA
+       PHA        
+       TXA
+       PHA      
+       TSX           
+       INX
+       INX
+       INX
+       INX
+       LDA $0100,X
+       STA $BC
+       INX
+       LDA $0100,X
+       STA $BD
+       INC $BC
+       BNE PRIM1
+       INC $BD
+PRIM1  LDY #$00		; set index
+PRIM2  LDA ($BC),Y	; get byte from string
+       BEQ PRIM3	; exit if null (end of text)
+       JSR CHAROUT	; else display character
+       INY		; increment index
+       BNE PRIM2	; loop (exit if 256th character)
+PRIM3  TYA		; copy index
+       TSX
+       INX
+       INX
+       INX
+       INX
+       CLC
+       ADC $BC
+       STA $0100,X
+       LDA #$00
+       ADC $BD
+       INX
+       STA $0100,X
+       PLA
+       TAX         
+       PLA
+       TAY          
+       PLA           
+       RTS
+</PRE>
+</UL>
+
+Lee Davison was not impressed with the efficiency of the above routine so
+he condensed it into this version.
+
+<UL>
+<PRE>
+PRIMM:
+	PHA     		; save A  
+	TYA			; copy Y
+	PHA  			; save Y
+	TXA			; copy X
+	PHA  			; save X
+	TSX			; get stack pointer
+	LDA $0104,X		; get return address low byte (+4 to
+				;   correct pointer)
+	STA $BC			; save in page zero
+	LDA $0105,X		; get return address high byte (+5 to
+				;   correct pointer)
+	STA $BD			; save in page zero
+	LDY #$01		; set index (+1 to allow for return
+				;   address offset)
+PRIM2:
+	LDA ($BC),Y		; get byte from string
+	BEQ PRIM3		; exit if null (end of text)
+
+	JSR CHAROUT		; else display character
+	INY			; increment index
+	BNE PRIM2		; loop (exit if 256th character)
+
+PRIM3:
+	TYA			; copy index
+	CLC			; clear carry
+	ADC $BC			; add string pointer low byte to index
+	STA $0104,X		; put on stack as return address low byte
+				; (+4 to correct pointer, X is unchanged)
+	LDA #$00		; clear A
+	ADC $BD		; add string pointer high byte
+	STA $0105,X		; put on stack as return address high byte
+				; (+5 to correct pointer, X is unchanged)
+	PLA			; pull value
+	TAX  			; restore X
+	PLA			; pull value
+	TAY  			; restore Y
+	PLA  			; restore A
+	RTS
+</PRE>
+</UL>
+
+This alternate version was provided by Ross Archer.
+
+<UL>
+<PRE>
+DPL = $00
+DPH = $01
+	
+;Put the string following in-line until a NULL out to the console
+PUTSTRI pla			; Get the low part of "return" address
+                                ; (data start address)
+        sta     DPL     
+        pla 
+        sta     DPH             ; Get the high part of "return" address
+                                ; (data start address)
+        ; Note: actually we're pointing one short
+PSINB   ldy     #1
+        lda     (DPL),y         ; Get the next string character
+        inc     DPL             ; update the pointer
+        bne     PSICHO          ; if not, we're pointing to next character
+        inc     DPH             ; account for page crossing
+PSICHO  ora     #0              ; Set flags according to contents of 
+                                ;    Accumulator
+        beq     PSIX1           ; don't print the final NULL 
+        jsr     CHAROUT         ; write it out
+        jmp     PSINB           ; back around
+PSIX1   inc     DPL             ; 
+        bne     PSIX2           ;
+        inc     DPH             ; account for page crossing
+PSIX2   jmp     (DPL)           ; return to byte following final NULL
+</PRE>
+</UL>
+
+<P>
+<FONT SIZE=-1>Last page update: April 16, 2001.</FONT>
+</BODY></HTML>
+

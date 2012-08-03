@@ -1,0 +1,47 @@
+body			{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; color: #000000; background-color: #FFFFFF; margin: 0px 0px 0px 0px; }
+td				{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; color: #000000; background-color: #FFFFFF; vertical-align: top; text-align: left; }
+table 			{width: 100%; margin: 0px 0px 0px 0px; border-width: 0px 0px 0px 0px;}
+form			{margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;}
+p				{padding: 0px 0px 0px 0px; margin: 10px 0px 0px 0px;}
+li				{padding-bottom: 5px;}
+
+a:link			{font-family: verdana, helvetica, arial, sans-serif; font-size: 10px; text-decoration: none; color:#000000;}
+a:visited		{font-family: verdana, helvetica, arial, sans-serif; font-size: 10px; text-decoration: none; color:#000000;}
+a:hover			{font-family: verdana, helvetica, arial, sans-serif; font-size: 10px; text-decoration: none; color:#4682B4;}
+
+.smallblack 			{font-size: 9px;}
+.smallblack a:link		{font-size: 9px; text-decoration: underline;}
+.smallblack a:visited	{font-size: 9px; text-decoration: underline;}
+.smallblack a:hover		{font-size: 9px; text-decoration: underline; color:#4682B4; } 
+
+.bodyblack 				{font-size: 12px;}
+.bodyblack a:link		{font-size: 12px; text-decoration: underline;}
+.bodyblack a:visited	{font-size: 12px; text-decoration: underline;}
+.bodyblack a:hover		{font-size: 12px; text-decoration: underline; color:#4682B4; } 
+
+.navblack 			{font-size: 10px;}
+.navblack a:link	{font-size: 10px;}
+.navblack a:visited	{font-size: 10px;}
+.navblack a:hover	{font-size: 10px; color:#4682B4; } 
+
+.textbox 		{ font-family: verdana, helvetica, arial, sans-serif; font-size: 10px; font-weight: normal; color: #000000; border-style: solid; border-width: 1px; border-color:#000000;}
+
+.code		{	font-family: Courier, 'Courier New', sans-serif; font-size: 11px; color: #006600;
+				background-color: #FAFAFA; border: #D1D7DC 1px solid; }
+
+td.banner {	background-color: #336699; padding: 4px 0px 4px 4px; }
+
+td.header { font-size: 10px; padding: 4px 10px 2px 4px; 
+			border-bottom: #bbbbbb 1px solid; background-color: #eeeeee; }
+
+td.footer { font-size: 9px; padding: 5px 6px 5px 6px;
+    		border-top: #bbbbbb 1px solid; border-bottom: #bbbbbb 1px solid; background-color: #eeeeee; }
+	
+td.boxtitle 	{ 	background-color : #336699; color : #FFFFFF;
+					font-weight : bold; font-size: 10px; text-align : left;
+					padding: 5px 2px 3px 5px; }
+
+td.box			{ 	background-color : #EEEEEE;
+					border: #336699 2px solid; 
+					padding: 5px 2px 5px 5px;
+					font-size: 10px; }

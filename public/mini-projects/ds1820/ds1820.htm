@@ -1,0 +1,302 @@
+<TITLE>www.6502.org: How to: DS1820 digital temperature sensor</TITLE>
+<META name="description" content="Interface a DS1820 device to your
+6502-based computer.">
+
+<P><b>Using the DS1820 Digital Temperature Sensor (Thermometer)</b> by Leo Nechaev
+
+<P><B>Introduction</B>
+<P>
+The DS1820 is a digital temperature sensor (thermometer) from <A HREF="http://www.dalsemi.com">Dallas
+Semiconductor</A>. These are its main features:</P>
+<ul>
+<li>Unique '1-Wire' interface requires only one port pin for communication
+<li>Requires no external components
+<li>Can be powered from data line
+<li>Zero standby power required
+<li>Measures temperatures from -55°C to +125°C in 0.5°C increments. Fahrenheit equivalent is -67°F to +257°F in 0.9°F increments
+<li>Temperature is read as 9-bit digital value
+<li>Converts temperature to digital word in 200 ms (typical)
+</ul>It is a good solution to temperature measuring of air or something else.
+<P>
+<B>Interface</B>
+<P>
+The three pins of the DS1820 are: GND, DQ (serial input/output - data
+line), VDD (optional +5VDC, this device can be powered from data line, but
+we shall use the standard power circuit). DQ may be connected to open
+drain (or open collector) output with input feature, and this output pin
+MUST have a pull-up resistor of approximately 5Kohm. 
+<p>
+<B>Programming</B>
+<p>
+I use the <A HREF="http://www.6502.org/crossdev/asm/index.htm">MXASS</A>
+0.28 assembler . It is an excellent assembler with cool things like local
+labels and much more. If you use other assembler, take care when renaming
+local labels and/or long labels.
+<p>
+Registers defining:
+<pre>
+rgConfig = $6000   ; Write: D7 - output open drain pin with inversion
+rgStatus = $6000   ; Read:  D7 - input pin without inversion
+</pre>
+Temperature measuring:
+<pre>
+tmpMeasure
+        jsr     tmpInit     ; DS1820 initializing  
+        jsr     tmpInitCRC  ; CRC initializing
+        lda     #$CC        ; "Skip ROM" command
+        jsr     tmpWrite    ; write command to the DS1820
+        lda     #$44        ; "Convert temperature" command
+        jsr     tmpWrite
+        jsr     tmpDelay    ; small delay
+        jsr     tmpDelay
+        jsr     tmpDelay
+        jsr     tmpWaitForReady ; waiting for the end of conversion
+        jsr     tmpInit
+        lda     #$CC
+        jsr     tmpWrite
+        lda     #$BE            ; "Read scratchpad" command
+        jsr     tmpWrite
+        ldy     #0
+-       jsr     tmpRead         ; read 9 bytes of data,
+        sta     tmpBuffer,y     ; store them in buffer,
+        jsr     tmpUpdateCRC    ; and calculate CRC
+        iny
+        cpy     #9
+        bne     -
+        jsr     tmpInit
+        lda     tmpCRC          ; if CRC is wrong
+        bne     tmpMeasure      ; then repeat process
+        rts
+
+tmpBuffer
+        .br     9,0             ; Our buffer
+</pre>
+Used subroutines, all time delays are designed for clock frequency 2MHz :
+<pre>
+tmpInit
+        jsr     tmpSetZero        ; setting ZERO on data line
+        ldx     #0
+-       dex                       ; Delay for approx. ~640 microseconds.
+        bne     -
+        jsr     tmpSetOne         ; recovering ONE on data line
+        jsr     tmpWaitForReady
+        jsr     tmpWaitForReply   ; waiting for reply from DS1820
+        jsr     tmpWaitForReady
+        rts
+
+tmpSetOne
+        lda     #0
+        sta     rgConfig
+        rts
+
+tmpSetZero
+        lda     #$80
+        sta     rgConfig
+        rts
+
+tmpWaitForReady
+-       bit     rgStatus
+        bpl     -
+        rts
+
+tmpWaitForReply
+-       bit     rgStatus
+        bmi     -
+        rts
+
+tmpDelay
+        nop             ; time delay is less than 15 microseconds
+        nop
+        nop
+        nop
+        rts
+
+tmpWrite                ; writting byte to the device
+        ldx     #8      ; 8 times
+-       lsr             ; bit-by-bit (in carry)
+        pha
+        jsr     tmpWriteBit
+        pla
+        dex
+        bne     -
+        rts
+
+tmpWriteBit
+        php
+        jsr     tmpSetZero
+        jsr     tmpDelay
+        plp
+        bcc     +
+        jsr     tmpSetOne
++       jsr     tmpDelay
+        jsr     tmpDelay
+        jsr     tmpDelay
+        jsr     tmpSetOne
+        jsr     tmpWaitForReady
+        rts
+
+tmpRead               ; reading byte from the device
+        ldx     #8    ; 8 times
+-       pha
+        jsr     tmpReadBit
+        pla
+        ror           ; bit-by-bit (in carry)
+        dex
+        bne     -
+        rts
+
+tmpReadBit
+        jsr     tmpSetZero
+        jsr     tmpSetOne
+        lda     rgConfig
+        asl
+        php
+        jsr     tmpDelay
+        jsr     tmpDelay
+        jsr     tmpDelay
+        jsr     tmpWaitForReady
+        plp
+        rts
+
+tmpInitCRC
+        lda     #0
+        sta     tmpCRC
+        rts
+
+tmpUpdateCRC
+        eor     tmpCRC
+        tax
+        lda     TableCRC,x
+        sta     tmpCRC
+        rts
+
+tmpCRC  .db     0
+
+TableCRC
+        .db      0, 94, 188, 226, 97, 63, 221, 131
+        .db      194, 156, 126, 32, 163, 253, 31, 65
+        .db      157, 195, 33, 127, 252, 162, 64, 30
+        .db      95, 1, 227, 189, 62, 96, 130, 220
+        .db      35, 125, 159, 193, 66, 28, 254, 160
+        .db      225, 191, 93, 3, 128, 222, 60, 98
+        .db      190, 224, 2, 92, 223, 129, 99, 61
+        .db      124, 34, 192, 158, 29, 67, 161, 255
+        .db      70, 24, 250, 164, 39, 121, 155, 197
+        .db      132, 218, 56, 102, 229, 187, 89, 7
+        .db      219, 133, 103, 57, 186, 228, 6, 88
+        .db      25, 71, 165, 251, 120, 38, 196, 154
+        .db      101, 59, 217, 135, 4, 90, 184, 230
+        .db      167, 249, 27, 69, 198, 152, 122, 36
+        .db      248, 166, 68, 26, 153, 199, 37, 123
+        .db      58, 100, 134, 216, 91, 5, 231, 185
+        .db      140, 210, 48, 110, 237, 179, 81, 15
+        .db      78, 16, 242, 172, 47, 113, 147, 205
+        .db      17, 79, 173, 243, 112, 46, 204, 146
+        .db      211, 141, 111, 49, 178, 236, 14, 80
+        .db      175, 241, 19, 77, 206, 144, 114, 44
+        .db      109, 51, 209, 143, 12, 82, 176, 238
+        .db      50, 108, 142, 208, 83, 13, 239, 177
+        .db      240, 174, 76, 18, 145, 207, 45, 115
+        .db      202, 148, 118, 40, 171, 245, 23, 73
+        .db      8, 86, 180, 234, 105, 55, 213, 139
+        .db      87, 9, 235, 181, 54, 104, 138, 212
+        .db      149, 203, 41, 119, 244, 170, 72, 22
+        .db      233, 183, 85, 11, 136, 214, 52, 106
+        .db      43, 117, 151, 201, 74, 20, 246, 168
+        .db      116, 42, 200, 150, 21, 75, 169, 247
+        .db      182, 232, 10, 84, 215, 137, 107, 53
+</pre>
+Next subroutine converts read raw binary data into text string with deleting non-significant zeros. The pointer to location of string must be in X (LSB) and Y(MSB), and string must have size of 7 bytes or more (1 symbol - sign, up to 3 symbols - before point, 1 symbol - decimal point, 1 symbols - after point, 1 byte - zero [end of string]) :
+<pre>
+
+tcAdr  =  $F0   ; MUST be in zeropage
+
+tmpConvert
+        stx     tcAdr
+        sty     tcAdr+1
+        lda     #0
+        sta     tcIndex
+        lda     tmpBuffer+1
+        bpl     +
+        eor     #$ff
+        sta     tmpBuffer+1
+        lda     tmpBuffer
+        eor     #$ff
+        clc
+        adc     #1
+        sta     tmpBuffer
+        lda     tmpBuffer+1
+        adc     #0
+        sta     tmpBuffer+1
+        lda     #"-"
+        jsr     tcPrint
++       lda     #0
+        sta     tmpTemp
+        sta     tmpTemp+1
+        lda     tmpBuffer
+        lsr     tmpBuffer+1
+        ror
+        tax
+        beq     +
+-       sed
+        clc
+        lda     tmpTemp
+        adc     #1
+        sta     tmpTemp
+        lda     tmpTemp+1
+        adc     #0
+        sta     tmpTemp+1
+        cld
+        dex
+        bne     -
++       lda     tmpTemp+1
+        and     #1
+        beq     +
+        inx
+        ora     #$30
+        jsr     tcPrint
++       lda     tmpTemp
+        pha
+        lsr
+        lsr
+        lsr
+        lsr
+        cmp     #0
+        beq     +
+-       inx
+        ora     #$30
+        jsr     tcPrint
+        jmp     *+7
++       cpx     #0
+        bne     -
+        pla
+        and     #$0f
+        ora     #$30
+        jsr     tcPrint
+        lda     #"."
+        jsr     tcPrint
+        lda     #"0"
+        lsr     tmpBuffer
+        bcc     +
+        lda     #"5"
++       jsr     tcPrint
+        lda     #0
+        jsr     tcPrint
+        rts
+
+tmpTemp
+        .br     2,0
+
+tcPrint
+        ldy     tcIndex
+        sta     (tcAdr),y
+        inc     tcIndex
+        rts
+
+tcIndex
+        .db     0
+
+</pre>
+
+<P><FONT SIZE=-1>Last page update: November 14, 2000.</FONT>
+

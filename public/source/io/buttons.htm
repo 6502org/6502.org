@@ -1,0 +1,58 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Push-Button Counter</TITLE>
+<META name="description" content="Demonstrates how to count switch closures with debouncing.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Counting Push-Button Switch Closures, With Debouncing</FONT><FONT SIZE=-1> from 6502 Software Design</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P>
+<PRE>
+;THIS ROUTINE COUNTS CLOSURES ON PUSH-BUTTON NO. 1 UNTIL 
+;PUSH-BUTTON SWITCH NO. 2 IS PUSHED.  PUSH-BUTTON SWITCH
+;NO. 1 IS CONNECTED TO VIA PIN PA2, PUSH-BUTTON SWITCH
+;NO. 2 IS CONECTED TO VIA PIN PA7.  THE CLOSURE COUNT IS
+;HELD IN MEMORY LOCATION $40.  THE 6522 VIA IS AT $A000
+;AND THE TIMER ROUTINE ASSUMES A 1 MHZ CLOCK.
+
+        LDA #$00        ;CLEAR PERIPHERAL CONTROL REGISTER
+        STA $A00C
+        STA $A003       ;MAKE PORT A INPUTS
+        STA $40         ;CLOSURE COUNT = 0
+CHKBTN  LDA $A001       ;READ PORT A
+        BPL DONE        ;DONE IF BUTTON NO. 2 IS PUSHED (PA7 = 0)
+        AND #$04        ;IS BUTTON NO. 1 PUSHED (PA2 = 0)?
+        BNE CHKBTN      ;NO. WAIT UNTIL IT IS.
+        INC $40         ;YES. INCREMENT CLOSURE COUNT.
+        JSR DLY10       ;WAIT 10 MILLISECONDS TO DEBOUNCE
+CHKREL  LDA $A001       ;READ PORT A AGAIN
+        AND #$04        ;IS BUTTON NO. 1 STILL CLOSED?
+        BEQ CHKREL      ;YES. WAIT FOR RELEASE
+        JSR DLY10       ;NO. DEBOUNCE THE KEY OPENING
+        JMP CHKBTN      ; AND WAIT FOR NEXT CLOSURE
+DONE     *
+         *
+         *
+
+;THE FOLLOWING SUBROUTINE USES TIMER 1 TO GENERATE A 10 MS
+;DEBOUNCE TIME DELAY, BY WRITING 10,000 ($2710) INTO
+;THE COUNTERS.
+
+DLY10    LDA #$00       ;SET TI ONE-SHOT MODE, WITH NO PB7
+         STA $A00B
+         LDA #$10       ;WRITE COUNT LSBY
+         STA $A004
+         LDA #$27       ;WRITE COUNT MSBY AND START TIMER
+         STA $A005
+         LDA #$40       ;SELECT T1 INTERRUPT MASK
+CHKT1    BIT $A00D      ;HAS T1 COUNTED DOWN?
+         BEQ CHKT1      ;NO. WAIT UNTIL IT HAS
+         LDA $A004      ;YES. CLEAR T1 INTERRUPT FLAG
+         RTS            ; AND RETURN
+</PRE>
+<FONT SIZE=-1>Last page update: August 5, 1999.</FONT>
+</BODY></HTML>
+

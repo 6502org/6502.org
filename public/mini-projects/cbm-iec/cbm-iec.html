@@ -1,0 +1,101 @@
+<html><head>
+	<meta name="description" content="The Shell Sort is a highly-efficient sorting algorithm. This 6502 implementation can sort a large number (>32,000) of 16-bit elements.">
+	
+	<title>6502.org: Mini-Projects: Commodore IEC Serial Interface</title><style>
+		body 			{ font-family: helvetica, arial, sans-serif; margin: 0 1em; padding-bottom: 3ex; }
+		p, li 			{ text-align: justify; }
+		pre 			{ padding: 0.8ex 0.5em 0.8ex 1.5em; border-left: 3px solid #009ae1; margin: 0.5ex 5em 0.5ex 0; background-color: #ddd; }
+		h1, h2, h3, h4 	{ font-family: verdana, helvetica, arial, sans-serif; color: #00326e; }
+		ul 				{ list-style: disc outside; }
+		em.highlight 	{ font-style: normal; font-weight: bold; color: red; }
+	</style></head>
+<body>
+<p></p><h3>Commodore IEC Serial Interface</h3>
+by Richard Cini, 30 Nov 2004
+<hr>
+
+<h4>Introduction</h4>
+<p>This project is an implementation of Commodore's IEC serial bus for homebuilt 6502-based systems with a 6522 VIA.  It allows
+Commodore printers and disk drives to be directly utilized by a homebuilt machine.  The hardware and software were adapted from
+the Commodore VIC-20 home computer.  The project presented here should work on almost any 6502-based system. Daryl Rictor's
+popular SBC-2 board was used to test the project.</p>
+
+<h4>Interface Hardware</h4>
+<p>The physical connection interface for the Commodore serial IEC bus is a 6-pin circular DIN connector 
+(AMP 212045-1 (shielded), Singatron 2DJ-0196PA02, CUI SDS-60J, or equivalent). Electrically, the serial 
+IEC bus is a three-wire bi-directional serial bus (clock, data, and "attention") plus system ground and 
+reset signals. Each signal line is driven by the VIA through a 7406 high-current open-collector inverter/driver, 
+with the output pulled-up to Vcc through 1kW resistors. 1N914 diodes on the signal lines act as voltage clamps. 
+The signal then passes through ferrite beads for increased noise immunity.</p>
+
+<p>The attached peripherals are daisy-chained together using 3-foot long 6-conductor shielded cables with a 6-pin circular 
+male DIN connector (Singatron YE-1156, CUI SD-60, or equivalent) on either end.</p>
+
+<a href="cbm_iec.pdf">Download Interface Schematic (PDF)</a>
+
+
+<h4>CBM-IEC BIOS and SBC-2 Integration</h4>
+
+
+<h4>History of this Project</h4>
+<p>This project came about through a request by Mike Naberezny as a result of two of my ongoing Commodore-related projects, 
+a 6502-based EBX form factor single-board computer and the Commodore Kernal disassembly project (for the eventual use 
+with my SBC). The Kernal project has been the subject of a series of articles in C=Hacking e-zine over the last few years.</p>
+
+<p>The first computer I ever owned was a VIC-20 back in 1980. I have always liked the functionality and feature set of the 
+somewhat quirky Commodore hardware. In my early computing years, I programmed these machines at the lowest level, and I 
+became "one" with the hardware and firmware. When I went to college in 1985, I bought a Macintosh 512k (a "Fat Mac") and 
+a few years later, an IBM PC. The VIC was shelved forever - or at least until I joined the hobby of "classic" or "vintage" 
+computer collecting.</p>
+
+<p>After Commodore finally closed its doors in 1994, I found that there was a lack of direct information on the VIC-20 Kernal. 
+I thought that there might be value in having usable source code for future 6502-based SBCs that I might build. Additionally, 
+Commodore peripherals are cheap, plentiful, and very functional for all sorts of homebrewed projects.</p>
+
+<p>In 1995, I attempted to contact the trustee of Commodore's bankruptcy estate to try to purchase the source code and related 
+materials, but I never heard anything from them. I'm sure my request went into a circular file somewhere inside the law firm 
+of Kaye, Scholer as the assets were sold to Escom and then ultimately to Gateway after Escom's 1996 receivership. After this 
+effort concluded I decided to produce a workable source module myself using nothing more than available printed information, 
+a copy of the ROM from my own machine and lots of time.</p>
+
+<p>So, over a long period of time, I painstakingly scanned a printed ROM disassembly and edited it to produce a source file that 
+compiled into a working ROM. I concluded that the original Commodore programmers were highly skilled in that they squeezed all 
+that they could out of the allocated 7k of ROM space for the Kernal. In the process I found only about 64 bytes of unused ROM 
+space.</p>
+
+<p>Mike contacted me towards the end of 2002 with a project that would make use of the Kernal code. As I was between projects 
+(primarily my Altair32 Emulator), I jumped at the chance to make another meaningful contribution to the hobby. Mike's project 
+is to use Daryl Rictor's SBC2 65C02-based single-board computer and a Commodore serial IEC disk drive as a data logger.</p>
+
+<h4>About Porting the VIC-20's IEC Routines</h4>
+<p>The serial routines on the VIC-20 are embedded in the VIC-20 Kernal ROM, and clearly there is much code in the Kernal
+that isn't needed for this application. The VIC-20 Kernal source code is of course tied closely to the original hardware 
+and its peculiarities, and to date had never been used on anything other than the VIC-20.  The first to go was the code that supported the screen and keyboard.  Next was the cassette tape code, but extricating this code was much 
+tougher since it is interwoven with the code I needed to retain to support the IEC port (particularly in the <code>OPEN, INPUT, 
+OUTPUT, LOAD,</code> and <code>SAVE</code> commands).</p>
+
+<p>The code was then cleaned up to make it more modularized.  The original programmers relied on tricks
+to minimize wasted bytes, including exiting routines through unrelated routines. It was felt that the use of a few more bytes was 
+worth improving code readability and maintainability, costing no more than 32 bytes or so to accomplish this goal. Other 
+modifications included reconfiguring the VIA port bits so that they were all assigned to one chip (in the VIC-20, IEC 
+requirements were met by combining spare pins on its two VIAs).</p>
+
+<p>Lastly, I had to ensure that I had space in RAM to accommodate program variable requirements. In total, the serial IEC 
+code only requires about 64 bytes of RAM, but it has to share space with the native EhBASIC interpreter and a system 
+monitor/assembler. With some effort, I was ultimately able to squeeze my requirements into the memory space. The Commodore DOS 
+interpreter requires another 36 bytes for a grand total of about 100 bytes of RAM usage.</p>
+
+<p>When the initial modifications were completed, the code size was reduced from the original 7k to 1.4k - an 80% reduction. 
+Adding a DOS command interpreter raised the memory footprint to its current size of about 3.2k.</p>
+
+<h4>Building the Interface</h4>
+
+<ul>
+<li>Prototype notes and pictures here</li>
+<li>Insert notes about SBC2.6 and link to layout here.</li>
+</ul>
+
+<h4>Source Code</h4>
+
+<hr>
+</body></html>

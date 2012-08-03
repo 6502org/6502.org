@@ -1,0 +1,210 @@
+<!doctype html public "-//IETF//DTD HTML//EN//2.0">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="Generator" content="Microsoft Publisher 97">
+<title>Prioritised Interrupts</title>
+</head>
+<body bgcolor="#ffffff" link="#0000ff" vlink="#ff0000" text="#000000" >
+<a name=Page1></a>
+  
+  <table border=0 cellpadding=0 cellspacing=0>
+    <tr>
+      <td width=4 height=9></td>
+      <td width=5></td>
+      <td width=701></td>
+      <td width=6></td>
+      <td width=4></td>
+    </tr>
+    <tr>
+      <td height=183></td>
+      <td></td>
+      <td width=701 height=183 colspan=1 rowspan=1 valign=top align=left>
+        
+        <table border=0 cellpadding=0 cellspacing=0>
+          <tr>
+            <td width=4 height=4></td>
+            <td width=693></td>
+            <td width=4></td>
+          </tr>
+          <tr>
+            <td height=176></td>
+            <td width=693 height=176 valign=top align=left>
+
+<p align=justify><B><font face="Arial" size=3>Prioritised Interrupts for 6502, 65C02 and 65C816</B> </font><font face="Arial" size=2>By Paul Fellingham (smiler@g7fjc.fsnet.co.uk)</font><B><font face="Arial" size=5><br>
+</B></font><font face="Arial" size=3><br>
+</font><font face="Arial" size=2>In larger systems, where there are several devices that could potentially interrupt, polling each device to see if it was the cause of the interrupt can take considerable time.<br>
+<br>
+Most newer processors have &#39;Vectored Interrupt&#39; capabilities. The processor generates an Interrupt Acknowledge signal and the interrupting device sends back a byte identifying itself. The processor uses this byte to get the interrupt service routine address from a table of addresses.<br>
+<br>
+With just two 74HC logic devices, it is possible to implement something similar on the 6502, 65C02 or 65C816. The circuit is shown below.</p></font>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td height=4></td>
+            <td colspan=2></td>
+          </tr>
+        </table>
+
+
+
+      </td>
+      <td colspan=2></td>
+    </tr>
+    <tr>
+      <td height=4></td>
+      <td colspan=4></td>
+    </tr>
+    <tr>
+      <td height=452></td>
+      <td width=712 height=452 colspan=3 rowspan=1 valign=top align=left>
+        <img width=712 height=452 border=0 src="img0.gif">
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td height=5></td>
+      <td colspan=4></td>
+    </tr>
+    <tr>
+      <td height=881></td>
+      <td></td>
+      <td width=701 height=881 colspan=1 rowspan=1 valign=top align=left>
+        
+        <table border=0 cellpadding=0 cellspacing=0>
+          <tr>
+            <td width=4 height=4></td>
+            <td width=693></td>
+            <td width=4></td>
+          </tr>
+          <tr>
+            <td height=873></td>
+            <td width=693 height=873 valign=top align=left>
+
+<p align=left><font face="Arial" size=2>Note - the IRQ line numbers don&#39;t match the 74HC148 input numbers. This is because the 74HC148 has active low outputs. With the circuit as shown, the value read by the processor is the number of the IRQ line multiplied by 2.<br>
+<br>
+When any of the 8 interrupt lines is pulled low, the 74HC148 priority encoder pulls its GS pin low. This is connected to the CPU&#39;s IRQ line and causes an interrupt.<br>
+<br>
+The interrupt inputs are prioritised, with IRQ0 having the highest priority and IRQ7 having the lowest priority.<br>
+<br>
+It might seem that the latch is unnecessary and a 3-state buffer could be used instead. However, interrupts are not synchronous to the CPU clock. If the interrupt lines changed just as phase-2 went low when the CPU was reading the IRQ port, the CPU could read garbled data and jump to the wrong address. By latching the IRQ value when phase-2 goes high, we guarantee the data will be valid when the CPU reads it.<br>
+<br>
+After pushing registers onto the stack, the processor reads the input port. This gives the number of the highest priority IRQ line that is currently active. The CPU can then use this number to identify the interrupting device. Suitable code for the 65C02 and 65C816 (with 8-bit index) is as follows<br>
+</font><font face="Courier New" size=2><br>
+IRQ&nbsp; &nbsp; &nbsp;  PHX<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LDX&nbsp;  IRQPORT<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; JMP&nbsp;  (IRQTABLE,X)<br>
+<br>
+IQRTABLE&nbsp; Address of service routine for IRQ0<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Address of service routine for IRQ1<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Address of service routine for IRQ2<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ...<br>
+</font><font face="Arial" size=2><br>
+This pushes X onto the stack, then loads the value from the IRQ port into X. This is then used, with indexed indirect addressing, to jump to the start of the appropriate interrupt service routine via a jump table.<br>
+<br>
+With the NMOS 6502, which does not have the preindexed indirect JMP instruction, the following code is required.<br>
+<br>
+</font><font face="Courier New" size=2>IRQ&nbsp; &nbsp; &nbsp; PHA<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  TXA<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  PHX<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  LDX&nbsp; &nbsp; IRQPORT<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  LDA&nbsp; &nbsp; IRQTABLE,X<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  STA&nbsp; &nbsp; TEMP<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  INX<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  LDA&nbsp; &nbsp; IRQTABLE,X<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  STA&nbsp; &nbsp; TEMP+1<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  JMP&nbsp; &nbsp; (TEMP)<br>
+<br>
+IQRTABLE&nbsp; Address of service routine for IRQ0<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Address of service routine for IRQ1<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Address of service routine for IRQ2<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ...<br>
+</font><font face="Arial" size=2><br>
+This copies the interrupt handler address from the table to a temporary location, then jumps indirectly via this location. <br>
+<br>
+Note that the IRQ port inputs the active IRQ on D1..D3 rather than D0..D2. This automatically multiples the IRQ value by 2 to match the spacing of the jump table.<br>
+<br>
+After an interrupt service routine has finished and executes RTI, if a lower priority interrupt is still active, the processor will be interrupted again. This time, reading the IRQ port will see the lower priority interrupt and the processor will<br>
+service the second device.<br>
+<br>
+Note - In order for lower priority interrupts to be seen when two devices interrupt simultaneously, this circuit requires a level sensitive interrupt input on the processor. As a result, it can be used with IRQ on the 65C02 and 65C816 but not with NMI, which is edge-sensitive.</p></font>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td height=4></td>
+            <td colspan=2></td>
+          </tr>
+        </table>
+
+
+
+      </td>
+      <td colspan=2></td>
+    </tr>
+    <tr>
+      <td height=4></td>
+      <td colspan=4></td>
+    </tr>
+    <tr>
+      <td height=600></td>
+      <td width=712 height=600 colspan=3 rowspan=1 valign=top align=left>
+        <img width=712 height=600 border=0 src="img1.gif">
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td height=4></td>
+      <td colspan=4></td>
+    </tr>
+    <tr>
+      <td height=254></td>
+      <td></td>
+      <td width=701 height=254 colspan=1 rowspan=1 valign=top align=left>
+        
+        <table border=0 cellpadding=0 cellspacing=0>
+          <tr>
+            <td width=4 height=4></td>
+            <td width=693></td>
+            <td width=4></td>
+          </tr>
+          <tr>
+            <td height=246></td>
+            <td width=693 height=246 valign=top align=left>
+
+<p align=center><center><B><font face="Arial" size=2>Prioritised interrupts with minimum interrupt level mask</B><br>
+</center></p><p align=left><br>
+The above circuit, a modification of the original, allows the masking out of interrupts below a particular priority level. A second latch is used to store the interrupt priority level. The current active level is compared with the priority level using a magnitude comparator. This generates an CPU interrupt only when the active interrupt level is lower than that set in the priority latch. (Remember, lower level numbers have higher priority)<br>
+<br>
+A value of 8 written to the priority latch will enable all interrupts.<br>
+A value of 5 written to the priority latch will enable IQR0 - IRQ4. IRQ5 - IRQ7 will be disabled.<br>
+A value of 3 written to the priority latch will enable IQR0 - IRQ2. IRQ3 - IRQ7 will be disabled.<br>
+A value of 0 written to the priority latch will disable all interrupts.<br>
+<br>
+Using this circuit, a long interrupt handler could re-enable higher priority interrupts while lower proirity interrupts would have to wait until the handler has finished. <br>
+<br>
+The code given above for interrupt handler selection is equally suitable for use with this circuit.</p></font>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td height=4></td>
+            <td colspan=2></td>
+          </tr>
+        </table>
+
+
+
+      </td>
+      <td colspan=2></td>
+    </tr>
+    <tr>
+      <td height=61></td>
+      <td colspan=4></td>
+    </tr>
+  </table>
+
+</body>
+</html>
+

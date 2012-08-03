@@ -1,0 +1,448 @@
+<TITLE>www.6502.org: How to: Data Pod</TITLE>
+<META name="description" content="A serial EEPROM storage device for
+homebuilt computers.">
+
+<P><b>Data Pod</b> by Samir Lohani
+
+<HR>
+<P>
+
+<p>The <strong>Data Pod</strong>&nbsp; (or <b>DPOD</b>) is a
+pluggable serial EEPROM based secondary storage for use with PCs and
+microcomputer boards. Early microcomputers such as KIM, SYM
+provided a cassette interface for secondary storage. Having built
+a 65C02 based microcomputer board , I was reluctant to provide
+for the obsolete cassette interface or an extensive Floppy drive interface for
+secondary storage and porting of programs and data. The data pod module was
+therefore designed to provide nonvolatile secondary storage
+(presently 64K bytes) which can be connected to the microcomputer
+board as well as to modern PCs via the serial port. This has
+proved extremely useful for transporting programs and data from
+IDE running on PC to the microcomputer board much like a PCMCIA
+flash card used with laptops.</p>
+
+<p>The data pod has been designed to connect to the PC RS232 serial port or to the
+microcomputer I/O ports without any glue logic. When connected to
+RS232 serial port, the unit withstands the harshest RS232 levels
+/ transients. The unit draws its power from the RS232 port and is
+hot-pluggable. When connected to the (65(C)02) microcomputer board, no
+additional interface hardware is required. Other than +5V and 0V
+, only three free port lines are required (the cassette interface also required
+three port lines for data-in, data-out and motor-relay). These can be connected
+directly to port pins (Port A or Port B of PIA / VIA chip) or to buffered port pins
+where available or simply to the 3&nbsp; port lines (2 output + 1 input port line) of
+the existing cassette interface. The interface is compatible to TTL / CMOS /
+Open
+drain port lines. All connections are made through the 9 pin
+connector on the DPOD board. There is no separate connector for
+power supply. Further in both the above configurations, the unit
+is protected against wrong connections ( which is fairly common
+in the RS232 world) and ESD damages.</p>
+
+<p>This board can also be used as a generic I2C interface. By connecting a PCF
+8574 IC, the interface may be turned into a 8 bit I/O port, or it may be used to
+program the DS 1621 Thermostat chip of Dallas semiconductors. Several more
+applications of the circuit can be easily thought of.</p>
+
+<hr>
+
+<b>Photographs of the DPOD:</b>
+
+<p>&nbsp;</p>
+
+<p><img src="dpodfiles/view2.jpg" width="320" height="240"><img
+src="dpodfiles/connected.jpg" width="320" height="240"></p>
+
+<p align="center"><em>The DPOD board is constructed as a compact
+card</em></p>
+
+<p align="center">&nbsp;</p>
+
+<p align="left"><em></em>&nbsp;<img
+src="dpodfiles/size.jpg" width="320" height="240"><img
+src="dpodfiles/size2.jpg" width="320" height="240"></p>
+
+<p align="center"><i>These photos illustrate the size of DPOD board</i></p>
+<p align="center">&nbsp;</p>
+<p align="center"><img
+src="dpodfiles/eeprom.jpg" width="320" height="240"></p>
+<p align="center"><i>A close-up of the serial EEPROM fitted in DPOD (here ATMEL
+24C512)</i></p>
+
+<hr>
+
+<h3 style="margin-top: 0; margin-bottom: 0" align="left"><b>
+<u>
+Features:</u></b>
+</h3>
+
+<ul>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Connects to PCs via the serial port (COM1/COM2)</li>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Interfacing circuit incorporates protective
+features for:<br>
+    &nbsp; - Wrong connections / use of wrong cable<br>
+    &nbsp; - Over-voltage / Non standard RS232 levels<br>
+    &nbsp; - Software error - hardware ensures that if Vcc to IC is not
+switched on , all inputs to IC are disabled.<br>
+    &nbsp; - ESD protection</li>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Supports 'hot-plugging' to the serial port&nbsp;
+    ( no need to
+switch PC supply off )</li>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Circuit designed to connect to most microcomputer ports
+directly without any 'glue-logic' or voltage converters</li>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Can also be used as a serial
+    EEPROM programmer, I2C interface, Programmable data / program cartridge for microcomputers</li>
+  <li>
+    <p style="margin-top: 0; margin-bottom: 0">Driver software written in C.</li>
+</ul>
+<hr>
+
+<h3 style="line-height: 100%; margin-top: 0; margin-bottom: 0" align="left">&nbsp;<b><u>Circuit
+Description:</u></b>
+</h3>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">The block diagram
+of DPOD is shown below:
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0"><img border="0" src="dpodfiles/block.gif" width="723" height="470">
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">A DB9 female connector X1 is provided on the
+DPOD board and handles all interfacing requirements.
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">When connected to
+a PC RS232 port, the TXD line is used to provide +5V regulated power to the
+entire circuit (Block A). The open collector inverting buffers (Blocks B and C)
+connect to RTS and DTR signals respectively to generate I2C signals SCK and SDA.
+The status of the SDA line can be read via the inverting stage (Block D) on the
+CTS line. Jumper JP1 when plugged pulls the Write Protect pin (WP pin) of the
+EEPROM low to enable writing to the EEPROM. If JP1 is removed, the EEPROM is
+partially/fully write protected (see datasheet of relevant EEPROM).
+<br>
+Note that WP, SCK and SDA are pulled up to Vcc through pull up resistors R8,
+R7 and R9. These lines are either at logic low level (&lt; 0.4 V) or pulled up
+to Vcc. If the power to the circuit is shut off, the voltage on these lines also
+falls and never exceeds the Vcc to the EEPROM. Also note that jumper JP2 is not
+plugged in this application, but if it is inadvertently left plugged, the DPOD
+software merely reads the jumper status at DCD pin and displays it to the user.
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">In case of a
+microcomputer board, either a RS232 connection can be used as above or
+microcomputer port pins may be directly used. In the latter case, buffers B, C
+and D work equally well at TTL/CMOS port pin levels. The system Vcc of +5V is
+given to DCD pin on X1 while TXD pin may be left open or grounded. Jumper JP2 is
+then installed. The special low dropout voltage regulator ensures that the
+dropout voltage remains within 100mV typical. Thus EEPROMS in 5.0V versions (Vcc=4.5V
+to 5.5V) and 2.7V versions (Vcc=2.7V to 5.5V) can be used in dpod.
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">The detailed
+circuit is shown below:
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0">&nbsp;
+</p>
+
+<p style="line-height: 100%; margin-top: 0; margin-bottom: 0"><img border="0" src="dpodfiles/circuit.gif" width="733" height="458">
+</p>
+
+<p>This circuit closely corresponds with the block diagram. Diode D1 protects
+the power supply against reverse voltage. Resistor R1 is provided for 2 reasons
+- to limit worst-case inrush current during hot-plugging / overvoltage and as a
+simple means of measuring current drain of the circuit while plugged in the PC
+and running a diagnostics program. It is possible for the diagnostic program to
+selectively switch on the power supply and the EEPROM IC from standby to active
+mode while the voltage drop across R1 is measured with a DMM to deduce the
+current drain. The current drain of the DPOD board is&nbsp; well within 5 mA
+which can easily be sourced by the TXD line.</p>
+<p>The voltage regulator is a National Semiconductor micropower LDO regulator
+type LP2954AIT. This is available in a 3 lead&nbsp; plastic TO-220 package. For
+this circuit, the important features of this IC are tight regulation, low
+dropout voltage, extremely low quiescent current (120 microamp at dropout), wide
+input supply rating (-20V to +30V) and output isolation( output can be left
+connected to an active voltage source without power supply to IC input - this
+presents interesting expansion possibilities in that the interface can also be
+used as part of a bigger circuit drawing power from it). The output capacitor C2
+is a tantalum type because of its good ESR properties and D2 is a high intensity
+LED with transparent lens so that glowing of the LED with extremely low forward
+current is seen easily. LED D2 indicates power switched on to the DPOD board.</p>
+<p>The open collector inverting buffers connected to RTS and DTR are compatible
+to both RS232 and microcomputer I/O ports. Since 2N3904 transistors require a
+base current of only 5 uA to switch SCK and SDA low, pull down resistors R10 and
+R11 ensure a switching threshold of 1.1V and stable behaviour of the circuit
+when connected to microcomputer ports which are defined as inputs after reset
+and do not have a internal pull up resistor ( such as B port lines of 65(C)22 /
+6532). The input current requirement of 60 uA is easily sourced by totem pole
+type ports or open drain ports with pull up resistors. Thus the input buffers
+can be connected either directly to microcomputer I/O ports or via any buffered
+port lines available. The input stages also withstand accidental high input
+voltages and ESD surges encountered in harsh environments.</p>
+<p>The output inverting stage D uses a MOSFET BS170 to drive the CTS line. This
+MOSFET has a drain-source on resistance of only 5.0 ohm. Resistor R6 and
+schottky diodes D5 and D6 provide protection in case of wrong connection. Note
+that using a MOSFET to sense SDA isolates the I2C section from the interface
+side voltages. The pull up resistor R5 and clamping diode D6 is also connected
+to input of IC1 and the output high voltage level therefore depends on input
+supply voltage level, whether through TXD or DCD line. The output stage is also
+compatible with RS232 or +5V microcomputer ports and can be connected to any
+input port pin directly or via a buffer stage available on the microcomputer
+board.</p>
+<p>Note: Due to high pull up resistances used to minimise current drain of the
+circuit, Q1 and Q2 must be selected so that the collector leakage current Ico is
+within 5 uA. Most transistors have Ico within this limit.</p>
+<p>The EEPROM is wired with select lines A0, A1 and A2 at logic low. No attempt
+has been made to use EEPROM banks on DPOD as EEPROM capacities are increasing
+rapidly. Note that the I2C/ Extended I2C standard has a theoretical addressing limit
+(2Kbytes for I2C, 512KB or 1MB for Ext I2C) and going by the rate at which
+EEPROM capacities are doubling in the same package, it is only a matter of time
+before the entire addressing capacity of Ext I2C is usable in only one chip.</p>
+<p>The WP pin is pulled high by R8. Though low current internal pull-up /
+pull-downs are provided in several modern EEPROMs, R8 and JP1 ensure
+compatibility with a wide range of EEPROMs.</p>
+<p>A variety of serial EEPROMs can be used in the DPOD board. I have tested the
+DPOD board with NM24C17 EEPROM (2 Kbytes, Fairchild Semiconductor, I2C
+interface) which incidentally I obtained as a free sample and Atmel EEPROMs
+AT24C256 / AT24C512 (32Kbytes / 64Kbytes, Extended I2C protocol).</p>
+<p>A full serial port is not implemented in many microcomputer boards . My 65C02
+microcomputer uses a MAX 232E chip for the serial interface. This chip has two
+RS 232 output lines while the DPOD board requires three. The following
+modification (shown in red) needs to be carried out if it is desired to use the
+same serial port for driving the DPOD board:</p>
+<p>&nbsp;</p>
+<p align="center"><img border="0" src="dpodfiles/max2.jpg" width="652" height="520"></p>
+<hr>
+
+<h3 style="line-height: 100%; margin-top: 0; margin-bottom: 0" align="left"><b>Parts
+List:</b>
+</h3>
+
+<table border="1" width="59%">
+  <tr>
+    <td width="29%">R1</td>
+    <td width="71%">100 ohm,&nbsp; 1 Watt</td>
+  </tr>
+  <tr>
+    <td width="29%">R2, R8</td>
+    <td width="71%">22K,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 250mW</td>
+  </tr>
+  <tr>
+    <td width="29%">R3, R4, R5</td>
+    <td width="71%">6.8K,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 250mW</td>
+  </tr>
+  <tr>
+    <td width="29%">R6</td>
+    <td width="71%">100 ohm, 500mW</td>
+  </tr>
+  <tr>
+    <td width="29%">R7, R9, R10, R11</td>
+    <td width="71%">10K,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 250mW</td>
+  </tr>
+  <tr>
+    <td width="29%">C1</td>
+    <td width="71%">22uF / 63V</td>
+  </tr>
+  <tr>
+    <td width="29%">C2</td>
+    <td width="71%">4.7uF / 35V Tantalum</td>
+  </tr>
+  <tr>
+    <td width="29%">C3</td>
+    <td width="71%">100nF Ceramic</td>
+  </tr>
+  <tr>
+    <td width="29%">D1</td>
+    <td width="71%">1N4007</td>
+  </tr>
+  <tr>
+    <td width="29%">D2</td>
+    <td width="71%">Red high intensity LED with transparent lens</td>
+  </tr>
+  <tr>
+    <td width="29%">D3, D4</td>
+    <td width="71%">1N4148</td>
+  </tr>
+  <tr>
+    <td width="29%">D5, D6</td>
+    <td width="71%">1N5819 Schottky diodes</td>
+  </tr>
+  <tr>
+    <td width="29%">DZ1</td>
+    <td width="71%">24V, 1 Watt Zener</td>
+  </tr>
+  <tr>
+    <td width="29%">Q1, Q2</td>
+    <td width="71%">2N3904</td>
+  </tr>
+  <tr>
+    <td width="29%">Q3</td>
+    <td width="71%">BS170 MOSFET</td>
+  </tr>
+  <tr>
+    <td width="29%">JP1, JP2</td>
+    <td width="71%">Jumpers SIL 2 pin</td>
+  </tr>
+  <tr>
+    <td width="29%">IC1</td>
+    <td width="71%">LP2954AIT (National Semiconductor)</td>
+  </tr>
+  <tr>
+    <td width="29%">IC2</td>
+    <td width="71%">EEPROM (Atmel AT24C512 may be used)</td>
+  </tr>
+  <tr>
+    <td width="29%">X1</td>
+    <td width="71%">DB9 female connector PCB mount type</td>
+  </tr>
+  <tr>
+    <td width="29%">Miscellaneous</td>
+    <td width="71%">8 pin DIP socket for IC2</td>
+  </tr>
+  <tr>
+    <td width="29%">&nbsp;</td>
+    <td width="71%">2 Jumper plugs for JP1, JP2</td>
+  </tr>
+  <tr>
+    <td width="29%">&nbsp;</td>
+    <td width="71%">PCB set</td>
+  </tr>
+</table>
+
+<p align="center">&nbsp;</p>
+<hr>
+
+<h3 align="left"><u><b>Construction:</b></u></h3>
+
+<p align="left">The PCB of the project designed in Eagle Layout Editor measures
+just 2.6&quot; x 2.0&quot; . A screenshot of the PCB component layout is shown
+below:</p>
+<p align="center"><img border="0" src="dpodfiles/pcblayout.jpg" width="657" height="425"></p>
+<p>This is a single sided PCB (The red lines are wire jumpers to be soldered on
+the PCB). A second&nbsp; single sided PCB is&nbsp; designed to serve as a base
+plate screen which is connected to ground by a short jumper wire. Three holes
+are provided for 'sandwiching' the two PCBs by means of spacers. The tin plated
+tracks of both PCBs face each other. </p>
+<p>This method of construction ensures that no 'cabinet' needs to be constructed
+for the DPOD. The photographs given in the beginning of the page may be referred
+to for an idea of construction details.</p>
+<p>The board files for Eagle Layout editor for the <a href="dpodfiles/dpodweb.brd">top
+component layout PCB</a> and the <a href="dpodfiles/dpod-screen.brd">base plate
+PCB</a> may be downloaded from the hyperlinks provided. </p>
+<p>After soldering the components on the PCB, the PCBs should be degreased and
+protected by a&nbsp; thin coat of PCB acrylic lacquer aerosol.</p>
+<p align="center"><img border="0" src="dpodfiles/screen.jpg" width="652" height="424"></p>
+<hr>
+<h3><u><b>Software:</b></u></h3>
+<p>Software for the project was written in C and compiled using Turbo C++ 3.0 .
+I am releasing the source and executable files to the public domain on 'as is
+where is basis' provided only that the copyright messages be retained and due
+acknowledgements given when using the material of the files.</p>
+<p>The program runs under MS-DOS and allows writing or reading a block of
+arbitrary length from the DPOD. The program supports 3 EEPROM types :
+24C16/24C17 (Highest capacity (2KB) EEPROM of I2C protocol), 24C256 (32 Kbytes)
+and 24C512 (64 Kbytes) EEPROMS (Extended I2C protocol). The program supports
+either COM1 or COM2. For details on usage, see readme.txt file.</p>
+<p>Note that Windows GUI release 95 and later make it no longer possible and
+even forbidden to communicate directly with various registers and memory
+locations as this task is left to the operating system in conjunction with
+various device drivers. The DPOD program must therefore be run from the MS-DOS
+command line prompt (press F8 after power on and choose 'Command line prompt'
+mode). The program may not run properly in Windows MS-DOS Prompt unless the COM
+port driver has DOS box support. If DPOD 'Power on LED' does not&nbsp; light
+and the program DPOD returns an error message while accessing DPOD, ensure that
+it is running in MS-DOS command line prompt mode.</p>
+<p>Run DPOD program without any options for a listing of the command line
+options supported.</p>
+<p>The source program written in C is extensively documented and the hardware
+dependent RS232 functions are separately listed. On similar lines, a assembly
+language program for accessing DPOD through the 65(C)02 based microcomputer may
+be written. The program takes all input through command line parameters and
+writes operating parameters and error messages to the standard output which can
+be redirected to a file or a printer. This is done to enable spawning the
+program from a higher level C program or batch file for more complicated
+operations and to have a written log of operations on a printer. The program also lists out a 16 bit CRC word which is based on the
+CCITT error checking polynomial. This CRC word should be the same during Read
+and Write operations on the same data block.</p>
+<p>Finally a note for 65(C)02 programmers: There is a minor difference in using
+Port A and Port B lines of PIA/VIA&nbsp; for the two output lines RTS and DTR.
+With Port B lines, these are defined as inputs at Reset and correspondingly SCK
+or SDA are held high which should be the normal state of the lines. In this
+case, first '0' may be written to Data Register and then these lines defined as
+outputs by writing the Data Direction Register.With Port A lines, these lines
+are pulled up high at Reset by the internal pull up resistors of the VIA/PIA
+chip and so SCK or SDA go to the low state. This may be treated as an
+interruption in I2C communication and a Reset procedure must be initiated after
+Reset. The Reset procedure has been outlined in the C source file discussed
+later.</p>
+<p>Here are some snapshots of the program output:</p>
+<ul>
+  <li>saving <i>dpod.c </i>file on DPOD:</li>
+  <li><i>dpod -w dpod.c&nbsp;</i></li>
+</ul>
+<p align="center"><img border="0" src="dpodfiles/write.gif" width="601" height="397"></p>
+<ul>
+  <li>
+    <p align="left">Reading file from DPOD and saving in desktop:</li>
+  <li>
+    <p align="left"><i>dpod -r -l4c02 c:\windows\desktop\dpod.c</i></li>
+</ul>
+<p align="center"><img border="0" src="dpodfiles/read.gif" width="582" height="378"></p>
+<p align="left"><a href="dpodfiles/dpod.zip">Download the DPOD archive</a>
+containing the&nbsp; C source file, the executable file and readme.txt
+file&nbsp; from here.</p>
+<p>Since several 65(C)02 microcomputer boards including mine use a 32 KB battery
+backed up RAM, I am working on&nbsp; design of a small file-handling software which
+recognizes both system Battery Backed up RAM and the plug-in DPOD as separate compatible
+'drives' and supports DOS like operations of load, save, verify, rename, copy,
+compact , backup etc while merging&nbsp; seamlessly with the operating system.
+On the PC side, Windows support would be an essential requirement.</p>
+<hr>
+<h3><u>References:</u></h3>
+<p>Here are the manufacturer's datasheets for the EEPROMS / ICs :</p>
+<blockquote>
+  <blockquote>
+    <p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/NM24C17U.pdf">NM
+    24C16 / NM24C17</a></p>
+    <p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/AT24C256.pdf">AT
+    24C256</a></p>
+    <p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/AT24C512.pdf">AT
+    24C512</a></p>
+    <p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/AN-794.pdf">National
+    Semiconductor's application note on using I2C EEPROMs</a></p>
+    <p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/LP2954A.pdf">LP
+    2954A</a></p>
+  </blockquote>
+</blockquote>
+<p style="margin-top: 0; margin-bottom: 0"><a href="dpodfiles/I2C_BUS_SPECIFICATION_3.pdf">The
+New I2C bus specification</a> may be found here.</p>
+<p style="margin-top: 0; margin-bottom: 0">( The Manufacturers' copyrights may
+be duly consulted for using these documents)</p>
+<hr>
+<p style="margin-top: 0; margin-bottom: 0">Samir Lohani may be contacted at <a href="mailto:slohani90182@yahoo.com">slohani90182@yahoo.com</a></p>
+
+<P><FONT SIZE=-1>Last page update: October 18, 2000.</FONT>

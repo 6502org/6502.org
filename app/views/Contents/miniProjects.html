@@ -1,0 +1,64 @@
+<? $this->title = 'Mini-Projects' ?>
+<? $this->description = 'How to connect all kinds of things to your 6502-based device.' ?>
+
+<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
+	<tr>
+		<td width="100%" bgcolor="#ffffff" class="bodyblack" style="padding: 15px 10px 0px 10px;">
+			The 6502 microprocessor has been along for a long time and a lot of smart
+			people have built projects with it.  It's likely that at least some of the
+			work you need to do for your project has already been done by someone
+			else.  Why re-invent the wheel?  This section provides schematics and
+			related source code for many useful things. 
+			
+			<P>Know how to do something?  Please submit a contribution for "Hardware Mini-Projects"
+			to us via 		
+      <?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript']) ?>!
+			
+			<P style="padding-top:20px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+			<a name="mini-projects"><b>Hardware Mini Projects</b></a>
+
+			<p>
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/flash/28f.htm">28F010 Flash Device</a> by Pete McCollum</div>
+				<div style="padding-left: 35px;">Shows you how to read and program this non-volatile storage memory in your 6502-based project.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/optrexlcd/lcd.htm">Character LCD Module</a> by Chris Ward</div>
+				<div style="padding-left: 35px;">Demonstrates how to interface and program a character-based LCD module to your 6502 computer.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/clock-switching/clock-switching.html">Clock Speed Switching</a> by Paul Fellingham</div>
+				<div style="padding-left: 35px;">Cleanly switch between two different clock sources without crashing the 6502 microprocessor.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/ds1820/ds1820.htm">Dallas DS1820</a> by Leo Nechaev</div>
+				<div style="padding-left: 35px;">Create a thermometer by adding a one-wire interface to Dallas Semiconductor's small DS1820 digital temperature sensor.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/dpod/datapod.htm">Data Pod</a> by Samir Lohani</div>
+				<div style="padding-left: 35px;">The Data Pod is a serial port device with nonvolatile EEPROM storage.  Use it in place of a cassette or floppy storage device with your project.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/firecracker/firecracker.htm">FireCracker CM17A</a> by Mike Naberezny</div>
+				<div style="padding-left: 35px;">Control home automation devices wirelessly with RF by interfacing X-10's FireCracker CM17A RF transmitter.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/at-keyb/at-keyb.htm">IBM PC/AT Keyboard Interface</a> by Lee Davison</div>
+				<div style="padding-left: 35px;">The standard PC/AT-compatible keyboard is an intexpensive and relatively easy way to add a full-featured input device to your project.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/nop-gen/nop-gen.htm">NOP Generator</a> by Lee Davison</div>
+				<div style="padding-left: 35px;">This simple circuit is an aid for troubleshooting homebuilt 6502 computers.  It plugs into the ROM socket and forces the microprocessor to execute the NOP instruction repeatedly, allowing the circuit to be tested.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/priority-interrupt-encoder/priority-interrupt-encoder.html">Priorty Interrupt Encoder</a> by Paul Fellingham</div>
+				<div style="padding-left: 35px;">Build a priority interrupt encoder to eliminate the time-intensive polling of devices after an interrupt occurs.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/gp2d02/gp2d02.htm">Sharp GP2D02</a> by Mike Naberezny</div>
+				<div style="padding-left: 35px;">The Sharp GP2D02 is an infared ranging sensor.  It is a two-wire serial device that measures the distance from itself to an object and returns the distance as a byte value.  This example shows how to connect up to four GP2D02s to a single 8-bit port and read them simultaneously.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/freq_counter/freq_counter.htm">Frequency Counter</a> by M. Dohmen and R. Koekoek</div>
+				<div style="padding-left: 35px;">This project utilites the seldom-used SOV input of the 6502 to allow a 1 MHz machine to accurately count a signal up to 100 KHz.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/816conv/conv.html">65C816 to 6502 Converter</a> by Daryl Rictor</div>
+				<div style="padding-left: 35px;">Construct an adapter board to plug a 65C816 into a socket made for a 6502.</div><br>
+
+				<div style="padding: 0px 0px 3px 25px;">&bull;&nbsp;<a href="/mini-projects/rdy-generation/index.html">RDY Generation for CMOS 65C02 Microprocessors</a> by Andre Fachat</div>
+				<div style="padding-left: 35px;">Describes a generic schematic for generating the RDY line used by the 65C02 microprocessor to hold bus accesses when a device is not ready.</div><br>
+			</p>
+		</td>
+	
+	</tr>
+
+	</table>

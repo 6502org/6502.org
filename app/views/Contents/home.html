@@ -1,0 +1,210 @@
+<? $this->title = 'The 6502 Microprocessor Resource' ?>
+<? $this->description = 'Information, links, and projects for enthusiasts of the 6502 microprocessor.' ?>
+
+<table cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="100%" style="padding-left: 10px; padding-right: 15px;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr><td class="bodyblack" style="padding-top: 15px;">
+					6502.org is a resource for people interested in building hardware or
+          writing software for the 6502 microprocessor and its relatives.
+					
+					<p>
+					  We continually strive to remain the largest and most complete
+            source for 6502-related information in the world. This includes
+            everything from articles and project descriptions to schematics
+            and source code. 
+          </p>
+          
+          <p style="padding-bottom: 15px;">  
+            If you have anything to contribute, whether in electronic form or
+            otherwise, please <?= $this->mailTo('mike@naberezny.com', 'contact us', ['encode' => 'javascript']) ?>.
+            This site was built on visitor contributions and we need your help
+            to keep growing!
+					</p>
+					
+					<table>
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('News and Site Updates', ['action' => 'news']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Find out what's new or changed on 6502.org.
+						  </td>
+						</tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Homebuilt Projects on the Web', ['action' => 'homebuilt']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Check out over thirty homemade computers based on the 6502
+                microprocessor documented on the web. Most include schematics,
+                source code, and pictures!
+						  </td>
+						</tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Source Code Repository', ['action' => 'repository']) ?></b></td>
+						</tr><tr>
+					    <td>&nbsp;</td>
+					    <td style="padding-bottom: 15px;">
+					      A repository for software programs and useful subroutines
+                written in 6502 assembly language.
+					    </td>  
+			      </tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Hardware Mini-Projects', ['action' => 'mini_projects']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td><td style="padding-bottom: 15px;">
+						    Learn how to interface hardware with your 6502 project through
+                examples with schematics and source code.
+						  </td>
+						</td>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Documents Archive', ['controller' => 'documents']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    The Documents Archive houses documentation archived in
+                electronic form that is available for download. This includes
+                original datasheets for almost any 6500 family part,
+                applications notes, hardware manuals, and other materials.
+						  </td>
+            </tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Newsletters and Magazines', ['controller' => 'documents', 'path' => '/publications']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    A collection of early publications from the heyday of the 6502
+                is available inside the Documents Archive.
+						  </td>
+            </tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Tutorials and Primers', ['action' => 'tutorials']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Lessons and step-by-step instructions for various tasks, tips
+                and tricks, and reference material for developers.
+						  </td>
+						</tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Books for the 6502 Fanatic', ['action' => 'books']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td><td style="padding-bottom: 15px;">
+						    If you're running to your local library for books, check out
+                this list of must-read titles for the 6502 fanatic.
+					    </td>
+            </tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Commercial Support for the 6502', ['action' => 'commercial']) ?></b></td>
+						</tr><tr>
+					    <td>&nbsp;</td>
+					    <td style="padding-bottom: 15px;">
+  					    Distributors of 65xx chips, commercial development tools, trade
+                magazines, and other commercial links useful to the 6502
+                enthusiast.
+					    </td>
+					  </tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Development Tools', ['controller' => 'tools']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Modern 6502 software is almost always cross-developed on a PC
+                or workstation platform. Here you will find public domain and
+                shareware assemblers, disassemblers, compilers, and optimizers
+                for cross-development of 6502 programs.
+						  </td>
+						</tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Discussion Groups', ['action' => 'groups']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Several free message boards and e-mail lists exist for 6502
+                enthusiasts, including our own message board for communication
+                between 6502.org users, discussions of our projects, and
+                talking about anything 6502 related.
+						  </td>
+						</tr>
+
+						<tr>
+						  <td><img src="/images/pointer.gif" alt=">">&nbsp;</td>
+						  <td><b><?= $this->linkTo('Simple Microcomputers and Trainers', ['controller' => 'trainers']) ?></b></td>
+						</tr><tr>
+						  <td>&nbsp;</td>
+						  <td style="padding-bottom: 15px;">
+						    Information and links supporting simple commercial and first
+                generation 6502 computers and trainers, including classics
+                like the MOS KIM-1 and modern EPE Microlab.
+						  </td>
+						</tr>
+						
+					</table>
+				</td></tr>
+			</table>
+		</td>
+
+		<td style="padding-right: 10px;">
+		<div style="width: 200px;">
+			<table cellpadding="0" cellspacing="0">
+				<tr><td height="15" width="200" nowrap="nowrap">&nbsp;</td></tr>
+				<tr><td class="boxtitle">Home</td></tr>
+				<tr><td class="box">
+					&bull;&nbsp;<a href="news/">News and Site Updates</a><br>
+					&bull;&nbsp;<a href="homebuilt/">Homebuilt Projects</a><br>
+					&bull;&nbsp;<a href="source/">Source Code Repository</a><br>
+					&bull;&nbsp;<a href="mini-projects/">Hardware Mini-Projects</a><br>
+					&bull;&nbsp;<a href="documents/">Documents Archive</a><br>
+					&bull;&nbsp;<a href="documents/publications">Newsletters and Magazines</a><br>
+					&bull;&nbsp;<a href="tutorials/">Tutorials and Primers</a><br>
+					&bull;&nbsp;<a href="books/">Book List</a><br>
+					&bull;&nbsp;<a href="commercial/">Commercial Support</a><br>
+					&bull;&nbsp;<a href="crossdev/">Development Tools</a><br>
+					&bull;&nbsp;<a href="groups/">Discussion Groups</a><br>
+					&bull;&nbsp;<a href="oldmicro/trainers.htm">Microcomputers &amp; Trainers</a><br>
+				</td></tr>
+		</table>
+		</div>
+		
+		<div style="width: 200px;">
+			<table cellpadding="0" cellspacing="0">
+				<tr><td height="15" width="200" nowrap="nowrap">&nbsp;</td></tr>
+				<tr><td class="boxtitle">Features</td></tr>
+				<tr><td class="box">
+					&bull;&nbsp;<a href="/users/andre/">Andr&eacute; Fachat's 8-bit Pages</a><br>
+					&bull;&nbsp;<a href="/users/dallas/">Dallas Shell's SYM-1 Pages</a><br>
+					&bull;&nbsp;<a href="/users/dieter/">Dieter M&uuml;eller's TTL CPU Pages</a><br>
+					&bull;&nbsp;<a href="/users/garth/">Garth Wilson's Projects</a><br>
+					&bull;&nbsp;<a href="/users/sjgray/">Steve Gray's CBM Pages</a><br>
+					&bull;&nbsp;<a href="/users/andre/petindex/index.html">Commodore PET Index</a><br>
+					&bull;&nbsp;<a href="http://cbm.6502.org/">Commodore Documents</a><br>
+				</td></tr>
+		</table>
+		</div>
+	</td>
+		
+	</tr>
+</table>

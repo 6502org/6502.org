@@ -1,0 +1,47 @@
+<style type = "text/css">
+<!--
+
+/*--------Global attributes-------*/
+body			{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; color: #000000; background-color: #FFFFFF; margin: 0px 0px 0px 0px }
+td				{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; color: #000000; vertical-align: top;}
+/*--table 			{width: 100%; margin: 0; border-width: 0;}--*/
+
+a:link			{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; text-decoration: none; color:#000000;}
+a:visited			{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; text-decoration: none; color:#000000;}
+a:hover			{font-family: verdana, helvetica, arial, sans-serif; font-size: 12px; text-decoration: none; color:#4682B4;}
+
+.centerVert 		{vertical-align: middle;}
+.bottomVert 		{vertical-align: bottom;}
+
+/*--------------Fonts---------------*/
+.smallblack 		{color:#000000; font-size: 9px;}
+.smallblack a:link	{color:#000000; font-size: 9px; text-decoration: underline;}
+.smallblack a:visited	{color:#000000; font-size: 9px; text-decoration: underline;}
+.smallblack a:hover	{color:#4682B4; font-size: 9px; text-decoration: underline;} 
+
+.bodyblack 			{color:#000000; font-size: 12px;}
+.bodyblack a:link	{color:#000000; font-size: 12px; text-decoration: underline;}
+.bodyblack a:visited	{color:#000000; font-size: 12px; text-decoration: underline;}
+.bodyblack a:hover	{color:#4682B4; font-size: 12px; text-decoration: underline;} 
+
+.navblack 			{color:#000000; font-size: 10px;}
+.navblack a:link	{color:#000000; font-size: 10px; text-decoration: none;}
+.navblack a:visited	{color:#000000; font-size: 10px; text-decoration: none;}
+.navblack a:hover	{color:#4682B4; font-size: 10px; text-decoration: none;} 
+
+.column				{font-family: times, serif; font-size: 15px; text-decoration: none; color: #000000; background-color: #FFFFFF;}
+.title				{font-family: times, serif; font-size: 36px; text-decoration: none; color: #000000; background-color: #FFFFFF;}
+.credits			{font-family: times, serif; font-size: 15px; text-decoration: italic; color: #000000; background-color: #FFFFFF;}
+
+.code				{font-family: fixed, monospace; font-size: 10px; text-decoration: none; color: #000000; background-color: #FFFFFF;}
+
+/*------------Form Styles-----------*/
+.textbox 		{ font-family: verdana, helvetica, arial, sans-serif; font-size: 10px; font-weight: normal; color: #000000; border-style: solid; border-width: 1px; border-color:#000000;}
+
+
+/*-----------Image borders----------*/
+.border1		{ border width: 1px; border-color:#FFFFFF; border-style: solid }   
+.border2		{ border width: 1px; border-color:#2F6355; border-style: solid }   
+
+-->
+</style> 

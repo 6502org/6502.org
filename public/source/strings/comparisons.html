@@ -1,0 +1,70 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Basic String Comparisons</TITLE>
+<META name="description" content="Comparing strings in 6502 assembly.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Simple String Comparisons</FONT>&nbsp;<FONT SIZE=-1>by Jonathyn Bet'nct</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Simple String Comparisons</B>
+<P>
+These two routines will compare two strings, in Pascal string format (length byte followed by string). 
+Upon entry, the addresses of the strings are stored in $FA/FB and $FC/FD. 
+$FF is used as a temporary variable. Upon exit, the zero flag is set if the strings are equal, 
+and cleared otherwise; thus BEQ and BNE can be used. High ASCII characters are considered the same 
+as their low ASCII equivalents; to differentiate between high and low ASCII, simply remove the AND #$7F's.
+
+<P><I>Comparing Strings (Case-Sensitive):</I>
+<PRE>
+STREQU:     LDY #$00        ;Compare strings, case-sensitive
+            LDA ($FA),Y     ;Naturally, the zero flag is used to return if the strings are equal
+            CMP ($FC),Y
+            BEQ STREQU1
+            RTS
+STREQU1:    TAY
+STREQULP:   LDA ($FC),Y
+            AND #$7F
+            STA $FF
+            LDA ($FA),Y
+            AND #$7F
+            CMP $FF
+            BNE STREQUEX
+            DEY
+            BNE STREQULP
+STREQUEX:   RTS
+</PRE>
+<P><I>Comparing Strings (Case-Insensitive):</I>
+<PRE>
+STREQI:     LDY #$00        ;Compare strings, case-insensitive
+            LDA ($FA),Y     ;Naturally, the zero flag is used to return if the strings are equal
+            CMP ($FC),Y
+            BEQ STREQI1
+            RTS
+STREQI1:    TAY
+STREQILP:   LDA ($FC),Y
+            AND #$7F
+            CMP #$7B
+            BCS STREQI2
+            CMP #$61
+            BCC STREQI2
+            SBC #$20
+STREQI2:    STA $FF
+            LDA ($FA),Y
+            AND #$7F
+            CMP #$7B
+            BCS STREQI3
+            CMP #$61
+            BCC STREQI3
+            SBC #$20
+STREQI3:    CMP $FF
+            BNE STREQIEX
+            DEY
+            BNE STREQILP
+STREQIEX:   RTS
+</PRE>
+<FONT SIZE=-1>Last page update: July 12, 2004.</FONT>
+</BODY></HTML>
+

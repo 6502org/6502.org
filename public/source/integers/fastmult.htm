@@ -1,0 +1,126 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Fast Multiplication</TITLE>
+<META name="description" content="Fast, table-driven multiplication in 6502 assembly.">
+</HEAD>
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Fast Multiplication</FONT>&nbsp;<FONT SIZE=-1>by Martin Arndt</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B></B>
+<P>
+Fast Multiplication Using Tables<BR>
+By Martin Arndt, 6 January 2004.<BR>
+<PRE>
+;Fast Multiplication
+;
+;The idea stems from Stephen Judd.
+;You find it in The Fridge and in the C=Hacking magazine:
+;
+;Let f(x) = x^2 / 4.  Then
+;
+;       a*b = f(a+b) - f(a-b)
+;
+;You need 2 tables of squares with 9 bit input size and
+;16 bit result size.
+;
+;You can save the building of the 2th complement
+;
+;   EOR #$ff
+;   CLC
+;   ADC #1
+;
+;by shifting the second table 1 byte down and
+;using the 1th complement:
+;
+;   EOR #$ff
+;
+;This algorithm is very useful when you want to multiply
+;multiple bytes by the same factor. Then you can set the
+;zp addresses once and just modify the y register.
+;With the same trick you can easily extend this algorithm
+;to 16 bit. But if you want to be fast you will need more
+;than the 8 zp addresses.
+
+
+zp1=$20    			;8 bytes zp index addresses
+zp2=$22
+zp3=$24
+zp4=$26
+
+tab1=$4000 			;2 kbytes square tables
+tab2=$4200
+tab3=$4400
+tab4=$4600
+
+    	.org $c000
+
+    	JSR init    ;first build the tables tab1..tab4
+                	;and init zp1-zp4
+    
+    	LDY #$66    ;factor 1 in y
+    	LDA #$12    ;factor 2 in a
+
+    	STA zp1     ;set zp adresses
+    	STA zp2
+    	EOR #$ff
+    	STA zp3
+    	STA zp4
+
+    	SEC
+    	LDA (zp1),y
+    	SBC (zp3),y
+    	TAX         ;product lo in x
+    	LDA (zp2),y
+        SBC (zp4),y ;product hi in a
+
+        RTS
+
+init    LDX #0      ;build square tables
+    	STX tab3+$fe
+    	STX tab4+$fe
+    	LDY #$ff
+
+.loop1  TXA
+    	LSR
+    	CLC
+    	ADC tab3+$fe,x
+    	STA tab1,x
+    	STA tab3+$ff,x
+    	STA tab3,y
+    	LDA #0
+    	ADC tab4+$fe,x
+    	STA tab2,x
+    	STA tab4+$ff,x
+    	STA tab4,y
+    	DEY
+    	INX
+    	BNE .loop1
+
+.loop2  TXA
+    	SEC
+    	ROR
+    	CLC
+    	ADC tab1+$ff,x
+    	STA tab1+$100,x
+    	LDA #0
+    	ADC tab2+$ff,x
+    	STA tab2+$100,x
+    	INX
+    	BNE .loop2
+
+    	LDA #>tab1  ;init zp addresses
+    	STA zp1+1
+    	LDA #>tab2
+    	STA zp2+1
+    	LDA #>tab3
+    	STA zp3+1
+    	LDA #>tab4
+    	STA zp4+1
+
+    	RTS
+</PRE>
+<FONT SIZE=-1>Last page update: March 20th, 2004.</FONT>
+</BODY></HTML>
+

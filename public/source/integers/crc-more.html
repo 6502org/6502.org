@@ -1,0 +1,161 @@
+<html><head><title>6502.org: Source: More CRC Calculations</title>
+<meta name="description" content="6502 assembly routine that calculates 16- and 8-bit CRCs
+in constant time without lookup tables.">
+<style>
+          body {
+            font-family: helvetica, arial, sans-serif;
+            margin: 0 1em;
+            padding-bottom: 3ex;
+          }
+          p, li {
+            text-align: justify;
+          }
+          pre {
+            padding: 0.8ex 0.5em 0.8ex 1.5em;
+            border-left: 3px solid #009ae1;
+            margin: 0.5ex 5em 0.5ex 0;
+            background-color: #ddd;
+          }
+          h1, h2, h3, h4 {
+            font-family: verdana, helvetica, arial, sans-serif;
+            color: #00326e;
+          }
+          ul {
+            list-style: disc outside;
+          }
+          em.highlight {
+            font-style: normal;
+            font-weight: bold;
+            color: red;
+          }
+        </style>
+</head>
+
+<body>
+<p><h3>More CRC Calculations</h3>
+by Greg Cook
+<hr>
+</p><p>Hello all, I was browsing the source code repository and remembered I had written a fast CRC routine a few years ago. 
+So I thought I would contribute it, as it might come in useful for anyone developing TCP/IP stacks etc.</p>
+
+<p>These routines are entered with the next byte of data in A and the current CRC in zero page memory. For the first byte of data CRCLO 
+and CRCHI should contain $FF, and in the case of CRC8, CRC should contain $00. On exit A is clobbered and the updated CRC is in the zero 
+page locations.</p>
+
+<p>All code below is relocatable. Sizes and execution times listed do not include the final RTS, and code is assumed to be page-aligned.</p>
+
+<h4>CRC-16 Calculation in Constant Time, Without Tables.</h4>
+
+<p>The following routine implements a CRC-16 cycle in constant time, without tables.</p>
+
+<pre>CRCLO   EQU $6          ; current value of CRC
+CRCHI   EQU $7          ; not necessarily contiguous
+
+CRC16_F:
+        EOR CRCHI       ; A contained the data
+        STA CRCHI       ; XOR it into high byte
+        LSR             ; right shift A 4 bits
+        LSR             ; to make top of x^12 term
+        LSR             ; ($1...)
+        LSR
+        TAX             ; save it
+        ASL             ; then make top of x^5 term
+        EOR CRCLO       ; and XOR that with low byte
+        STA CRCLO       ; and save
+        TXA             ; restore partial term
+        EOR CRCHI       ; and update high byte
+        STA CRCHI       ; and save
+        ASL             ; left shift three
+        ASL             ; the rest of the terms
+        ASL             ; have feedback from x^12
+        TAX             ; save bottom of x^12
+        ASL             ; left shift two more
+        ASL             ; watch the carry flag
+        EOR CRCHI       ; bottom of x^5 ($..2.)
+        TAY             ; save high byte
+        TXA             ; fetch temp value
+        ROL             ; bottom of x^12, middle of x^5!
+        EOR CRCLO       ; finally update low byte
+        STA CRCHI       ; then swap high and low bytes
+        STY CRCLO
+        RTS 
+</pre>
+<p>36 bytes, 62 cycles, AXYP clobbered.</p>
+<p>Alternative ending:</p>
+
+<pre>
+        ...
+        EOR CRCHI       ; bottom of x^5 ($..2.)
+        STA CRCHI       ; save high byte
+        TXA             ; fetch temp value
+        ROL             ; bottom of x^12, middle of x^5!
+        EOR CRCLO       ; finally update low byte
+        LDX CRCHI       ; then swap high and low bytes
+        STA CRCHI
+        STX CRCLO
+        RTS 
+</pre>
+
+<p>39 bytes, 66 cycles, AXP clobbered, Y preserved.</p>
+
+<p>With a starting CRC of $FFFF, the binary string $01 $02 $03 $04 should evaluate to $89C3.</p>
+
+<p>For comparison, a shorter routine can be derived from Paul Guertin's MAKECRCTABLE in the repository:</p>
+
+<pre>
+
+CRC16_S:
+        LDX #8          ; A contains the data
+        EOR CRCHI       ; as we now have the high byte
+BITLOOP ASL CRCLO       ; in A, things are the other
+        ROL             ; way round from MAKECRCTABLE
+        BCC NOADD
+        EOR #$10        ; high byte of polynomial
+        PHA
+        LDA CRCLO
+        EOR #$21        ; low byte of polynomial
+        STA CRCLO
+        PLA
+NOADD   DEX
+        BNE BITLOOP
+        STA CRCHI
+        RTS 
+</pre>
+
+<p>24 bytes, 128..256 cycles, AXP clobbered</p>
+
+<br /><p><h4>CRC-8 Calculation in Near-Constant Time, Without Tables.</h4></p>
+
+<p>Here is a CRC-8 routine in near-constant time where memory constraints do not permit tables:</p>
+
+<pre>
+CRC     EQU $6          ; current value of CRC
+CRC8:
+        EOR CRC         ; A contained the data
+        STA CRC         ; XOR it with the byte
+        ASL             ; current contents of A will become x^2 term
+        BCC UP1         ; if b7 = 1
+        EOR #$07        ; then apply polynomial with feedback
+UP1     EOR CRC         ; apply x^1
+        ASL             ; C contains b7 ^ b6
+        BCC UP2
+        EOR #$07
+UP2     EOR CRC         ; apply unity term
+        STA CRC         ; save result
+        RTS
+</pre>
+<p>20 bytes, 25..27 cycles, AP clobbered, XY preserved.</p>
+
+<p>With a starting CRC of $00, the binary string $01 $02 $03 $04 should evaluate to $E3.</p>
+
+<p>Variations:</p>
+<ol>
+<li>If the application demands constant time then BCC *+2 ($90 $00) can be inserted at UP1 and UP2:
+24 bytes, 31 cycles.</li>
+<li>Making a loop from the repeated code is barely worth one's while:
+18 bytes, 36..38 cycles, AXP clobbered, Y preserved.</li>
+</ol>
+<br /><p><hr></p>
+See also Paul Guertin's <a href="http://www.6502.org/source/integers/crc.htm">CRC Calculations</a> for a table-based approach.
+<p><font size="-1">Last page update: November 23rd, 2004.</font>
+</p></body></html>

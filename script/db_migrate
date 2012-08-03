@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+// check for environement arg
+foreach ($argv as $key => $value) {
+    if (preg_match('/MAD_ENV=(.*)/', $value, $match)) {
+        define('MAD_ENV', strtolower($match[1]));
+        unset($argv[$key]);
+        $argv = array_values($argv);
+    }
+}
+
+/**
+ * Set environment
+ */
+if (!defined('MAD_ENV')) define('MAD_ENV', isset($_SERVER['MAD_ENV']) ? $_SERVER['MAD_ENV'] : 'development');
+require_once dirname(dirname(__FILE__)).'/config/environment.php';
+
+
+try {
+    $script  = array_shift($argv);
+    $version = array_shift($argv);
+    $ver = preg_match('/VERSION=(\d*)/', $version, $match) ? $match[1] : null;
+
+    Mad_Model_Migration_Migrator::migrate(MAD_ROOT."/db/migrate/", $ver);
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}

@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+// check for environement arg
+foreach ($argv as $key => $value) {
+    if (preg_match('/MAD_ENV=(.*)/', $value, $match)) {
+        define('MAD_ENV', strtolower($match[1]));
+        unset($argv[$key]);
+        $argv = array_values($argv);
+    }
+}
+
+/**
+ * Set environment
+ */
+if (!defined('MAD_ENV')) define('MAD_ENV', isset($_SERVER['MAD_ENV']) ? $_SERVER['MAD_ENV'] : 'development');
+require_once dirname(dirname(__FILE__)).'/config/environment.php';
+
+new Mad_Script_TaskRunner($argv);

@@ -1,0 +1,45 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Multiply & Divide</TITLE>
+<META name="description" content="6502 assembly language multiplication and division routines for large integers.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<FONT SIZE=+1>16-bit Multiply</FONT><FONT SIZE=-1>by Jean-Charles
+Meyrignac</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>16-bit Multiple</B>
+<P>It multiplies the 16 bits word in (0-1) by the 16 bits word in
+(2-3) and
+stores the result in (4-5).
+This method is better when we have to multiply by small values (below 16).
+The other way is faster for values above 16.
+
+<PRE>
+;32 bit multiply with 64 bit product
+
+MULTIPLY:  ldy #16
+           lda #0
+           sta 4
+           sta 5
+LOOP1:     asl 4
+           rol 5
+           asl 0
+           rol 1
+           bcc SKIP1
+           clc
+           lda 4
+           adc 2
+           sta 4
+           lda 5
+           adc 3
+           sta 5
+SKIP1:     dey
+           bne loop1
+
+</PRE>
+<FONT SIZE=-1>Last page update: August 6, 1999.</FONT>
+</BODY></HTML>
+

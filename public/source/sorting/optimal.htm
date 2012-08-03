@@ -1,0 +1,122 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Optimal Sort</TITLE>
+<META name="description" content="A 6502 assembly language sort routine for a list containing 8-bit elements.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Optimal Sort (for 8-Bit Elements)</FONT><FONT SIZE=-1> by Mats Rosengren</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>General Discussion</B> 
+<P>The <a href="bubble8.htm">bubble sort</a> description from "6502 Software Design" is well 
+written and perfectly fills its purpose of being a pleasant and easy to read 
+tutorial. I'll here try to use the same style to explain a more efficient 
+algorithm that is just as short and equally easy to understand. 
+<P>I'll use the same example, i.e.: <FONT size=+2>
+<CENTER><PRE>05  03  04  01  02</FONT></PRE></CENTER>
+<P>My algorithm uses an "outer loop" that is run through as many time as there 
+are elements (i.e. in this case 5 times) and an "inner loop" that gets shorter 
+and shorter when the outer loop progresses. The easiest way to explain the 
+algorithm should be to simply apply it to this short sequence. 
+<P>The first step in the outer loop will be to find the largest element and to 
+directly put it at its correct place which is at the very end. The first action 
+is therefore to copy the value which is at the last position to another place as 
+this last position will be overwritten by the largest value. In the code below 
+this other place is the byte given the label "WORK3". In our example it is 
+consequently 02 that is copied to WORK3. 
+<P>Now starts the inner loop! 
+<P>The last element, in this case 02, is again copied to another place. This 
+second place is the byte given the label WORK2 in the code. A byte with the 
+label WORK1 is then used as a "pointer" to the place from where the present 
+value in WORK2 was copied. WORK1 is therefore initially given the value 5 which 
+is the last position. 
+<P>The value in WORK2 is then compared with the other elements of the sequence. 
+<P>First it is compared with the value 01. As 02 is larger then 01 no action is 
+taken and the inner loop continues to the next element which is 04. 
+<P>As 04 is larger then the present value in WORK2 this larger value 04 is 
+written to WORK2 and the pointer WORK1 is given the value 3 which is the 
+position of 04. 
+
+<P>The inner loop then continues, the only change is that the byte WORK2 now has 
+the larger value 04. WORK2 will then again be updated when the value 05 is found 
+and the pointer in WORK1 will be updated to corresponding index 1. 
+<P>As the last element now has been reached the first run through the inner loop 
+is finished. The value in WORK2 is the largest value and this is now written to 
+the last position. The value 02 that originally was in this last position is 
+available in WORK3 and the pointer WORK1 shows were the "free spot" is where 
+this value can be put. 
+<P>When this has been done the new sequence is <FONT size=+2>
+<CENTER><PRE>02  03  04  01  05</FONT></PRE></CENTER>
+<P>It is known that the largest value now is at the very end and what remain to 
+be sorted is <FONT size=+2>
+<CENTER><PRE>02  03  04  01</FONT></PRE></CENTER>The second step in the outer loop is 
+therefore to find the largest element in this new shorter sequence and to put 
+this largest element at the end of this new sequence using exactly the same 
+inner loop. As this new sequence only have 4 elements the inner loop only has to 
+use 4 steps. After this second step of the outer loop the total sequence is 
+<FONT size=+2>
+<CENTER><PRE>02  03  01  04  05</FONT></PRE></CENTER>
+<P>Next step in the outer loop will then produce the sequence <FONT size=+2>
+<CENTER><PRE>02  01  03  04  05</FONT></PRE></CENTER>
+
+<P>and the final step <FONT size=+2>
+<CENTER><PRE>01  02  03  04  05</FONT></PRE></CENTER>
+<P>The 6502 code for this algorithm is as follows: 
+<P><B>Sorting Lists Having 8-bit Elements</B> 
+<P>The subroutine (SORT) sorts unordered lists that are comprised of 8-bit 
+elements. The starting address is contained in location ZPADD (low-address byte) 
+and ZPADD + 1 (high-address byte). These bytes must be in the zero page. The 
+length of the list is contained in byte NVAL. Since a byte is 8 bits wide, the 
+list can contain up to 255 elements. <PRE>;SORTING SUBROUTINE CODED BY MATS ROSENGREN (MATS.ROSENGREN@ESA.INT)
+;
+; INPUT:
+;ZPADD  - START ADDRESS OF SEQUENCE TO BE SORTED SHALL BE PUT IN ZPADD, ZPADD+1 (ZERO PAGE)
+;         SHOULD POINT TO THE BYTE JUST BEFORE THE FIRST BYTE TO BE SORTED
+;         ( "LDA (ZPADD),Y" WITH 1&lt;=Y&lt;=255)
+;NVAL   - NUMBER OF VALUES,  1&lt;= NVAL &lt;= 255
+;         VALUE WILL BE DESTROYED (SET TO ZERO)
+;
+ZPADD  = $30            ;2 BYTE POINTER IN PAGE ZERO. SET BY CALLING PROGRAM
+NVAL   = $32            ;SET BY CALLING PROGRAM
+WORK1  = $33            ;3 BYTES USED AS WORKING AREA
+WORK2  = $34   
+WORK3  = $35
+        *=$6000         ;CODE ANYWHERE IN RAM OR ROM
+SORT LDY NVAL           ;START OF SUBROUTINE SORT
+     LDA (ZPADD),Y      ;LAST VALUE IN (WHAT IS LEFT OF) SEQUENCE TO BE SORTED
+     STA WORK3          ;SAVE VALUE. WILL BE OVER-WRITTEN BY LARGEST NUMBER
+     BRA L2
+L1   DEY
+     BEQ L3
+     LDA (ZPADD),Y
+     CMP WORK2
+     BCC L1
+L2   STY WORK1          ;INDEX OF POTENTIALLY LARGEST VALUE
+     STA WORK2          ;POTENTIALLY LARGEST VALUE
+     BRA L1
+L3   LDY NVAL           ;WHERE THE LARGEST VALUE SHALL BE PUT
+     LDA WORK2          ;THE LARGEST VALUE
+     STA (ZPADD),Y      ;PUT LARGEST VALUE IN PLACE
+     LDY WORK1          ;INDEX OF FREE SPACE
+     LDA WORK3          ;THE OVER-WRITTEN VALUE
+     STA (ZPADD),Y      ;PUT THE OVER-WRITTEN VALUE IN THE FREE SPACE
+     DEC NVAL           ;END OF THE SHORTER SEQUENCE STILL LEFT
+     BNE SORT           ;START WORKING WITH THE SHORTER SEQUENCE
+     RTS
+</PRE>
+<P>NVAL that initially is the number of values to be sorted is used as a pointer 
+to the last element of the subsequence that is not yet sorted. This is the loop 
+variable for the outer loop. The outer loop is finished when this loop variable 
+takes the value zero using the conditional branch "BNE". 
+<P>The loop variable for the inner loop is register Y that runs from NVAL to 1, 
+again using "BNE" as end condition. 
+<P>To test the efficiency (and correctness) of this algorithm I generated a 
+totally random permutation of the numbers 1 - 255 using a random number 
+generator. This sequence was successfully sorted using subroutine SORT above. I 
+measured the number of T1H counts of the W65C22S timer 1 during this sorting, it was 2006. As T1H decrements every 256 PHI2 pulses and my W6502 runs at 8 megahertz this corresponds to 0.0642 seconds. Sorting exactly the same sequence with the "Bubble Sort" routine I 
+got 7276 T1H decrements corresponding to 0.233 seconds, i.e 3.6 times as much time was needed. 
+<P><FONT SIZE=-1>Last page update: February 24, 2004.</FONT>
+</BODY></HTML>
+

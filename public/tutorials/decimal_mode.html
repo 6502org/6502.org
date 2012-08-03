@@ -1,0 +1,1259 @@
+<HTML><HEAD><TITLE>6502.org Tutorials: Decimal Mode</TITLE>
+<meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
+<META name="description" content="An extensive tutorial on the 6502 microprocessor's
+compare instructions."> <style><!-- a:{color:#000099}
+a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD> <BODY
+BACKGROUND="../graph.gif" TEXT="#000000" LINK="#000099" VLINK="#000099">
+<A HREF="../index.html"><IMG SRC="../mainlink.jpg" align=right border=0
+alt="[Return to Main Page]"></A><BODY> <FONT size=+1>Decimal Mode</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark</FONT>
+<BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR>
+<P>
+<b>Table of Contents</b>
+
+<p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><a href="#1">1</a></td><td>&nbsp;&nbsp;</td><td>Introduction</td></tr>
+<tr><td><a href="#2">2</a></td><td>&nbsp;&nbsp;</td><td>What is BCD?</td></tr>
+<tr><td><a href="#3">3</a></td><td>&nbsp;&nbsp;</td><td>Using decimal mode on the 6502</td></tr>
+<tr><td><a href="#3.1">3.1</a></td><td>&nbsp;&nbsp;</td><td>Instructions that affect the D flag</td></tr>
+<tr><td><a href="#3.2">3.2</a></td><td>&nbsp;&nbsp;</td><td>Instructions that are affected by the D flag</td></tr>
+<tr><td><a href="#3.2.1">3.2.1</a></td><td>&nbsp;&nbsp;</td><td>The accumulator and the carry flag</td></tr>
+<tr><td><a href="#3.2.2">3.2.2</a></td><td>&nbsp;&nbsp;</td><td>The N, V, and Z flags</td></tr>
+<tr><td><a href="#3.2.3">3.2.3</a></td><td>&nbsp;&nbsp;</td><td>Cycle counts on the 65C02</td></tr>
+<tr><td><a href="#4">4</a></td><td>&nbsp;&nbsp;</td><td>Useful techniques</td></tr>
+<tr><td><a href="#4.1">4.1</a></td><td>&nbsp;&nbsp;</td><td>Valid N and Z flags on the 6502</td></tr>
+<tr><td><a href="#4.2">4.2</a></td><td>&nbsp;&nbsp;</td><td>Using CMP to compare BCD numbers</td></tr>
+<tr><td><a href="#5">5</a></td><td>&nbsp;&nbsp;</td><td>Interrupts (including BRK) and decimal mode</td></tr>
+<tr><td><a href="#6">6</a></td><td>&nbsp;&nbsp;</td><td>Code that relies upon undocumented decimal mode behavior</td></tr>
+<tr><td><a href="#7">7</a></td><td>&nbsp;&nbsp;</td><td>Decimal mode applications</td></tr>
+</table>
+<p>
+<a href="#A">Appendix A</a>: What about invalid BCD values and invalid flags?<br/>
+<a href="#B">Appendix B</a>: A program to verify decimal mode operation<br/>
+<a href="#C">Appendix C</a>: Decimal mode on the 65816 with 16-bit numbers<br/>
+<p>
+<hr>
+<p>
+<a name="1"><b>1 INTRODUCTION</b></a>
+<p>
+BCD (Binary Coded Decimal) numbers can be directly added or subracted on the
+6502 by using decimal mode.  The basics of decimal mode are easily
+understood, but the specifics of its operation and use aren't always well
+documented.  The material below is intended to provide those specifics.
+
+
+<p>
+<a name="2"><b>2  WHAT IS BCD?</b></a>
+<p>A byte has 256 possible values, ranging, in hex, from $00 to $FF.  These
+values may represent numbers, characters, or other data.  The most common way
+of representing numbers is as a binary number (or more specifically, an
+unsigned binary integer), where $00 to $FF represents 0 to 255.  In BCD, a
+byte represents a number from 0 to 99, where $00 to $09 represents 0 to 9,
+$10 to $19 represents 10 to 19, and so on, all the way up to $90 to $99,
+which represents 90 to 99.  In other words, the upper digit (0 to 9) of the
+BCD number is stored in the upper 4 bits of the byte, and the lower digit is
+stored in the lower 4 bits.  These 100 values are called valid BCD numbers.
+The other 156 possible values of a byte (i.e. where either or both hex digits
+are A to F) are called invalid BCD numbers.  By contrast, all 256 possible
+values of a byte are valid binary numbers.</p>
+
+<p>For example, when $28 is a BCD number it represents 28 (in decimal), and when
+$28 is a binary number it represents 40 (in decimal).</p>
+
+<p>The term BCD arithmetic means arthmetic that involves BCD numbers, whereas
+the term binary arithmetic means arithmetic that involves binary numbers.
+Likewise for the terms BCD addition, binary addition, BCD subtraction, and
+binary subtraction.  For example, $19 + $28 = $47 using BCD addition, but
+$19 + $28 = $41 (i.e. 25 + 40 = 65) using binary addition.</p>
+
+<p>The BCD representation described above is called packed BCD, which means that
+there are two digits per byte.  There is a related representation called
+unpacked BCD where there is one digit per byte.  In unpacked BCD, $00 to $09
+represents 0 to 9, and $0A to $FF (the other 246 possible values of a byte)
+are invalid.  Note the similarity to how the digits 0 to 9 are represented in
+ASCII, namely, $30 to $39.  Unpacked BCD is an inefficient use of memory, but
+on processors that, unlike the 6502, cannot directly perform BCD addition or
+subtraction, unpacked BCD is typically the fastest and simplest way to
+perform BCD calculations.</p>
+
+<p>
+<a name="3"><b>3 USING DECIMAL MODE ON THE 6502</b></a>
+<p>
+On most processors that directly support BCD addition or subtraction, the
+addition and subtraction instructions always use binary arithmetic, and a
+subsequent instruction (which follows the addition or subtraction
+instruction) is used to turn the binary result into a BCD result.  By
+constrast, the addition and subtraction instructions of the 6502, ADC and
+SBC, may produce either a binary result or a BCD result.  The D (Decimal)
+flag determines whether a binary result (D flag clear) or a BCD result (D
+flag set) is produced.  Thus, the D flag selects a processor mode for
+arithmetic.   The mode when D is clear (zero) is called "binary mode"
+(officially, in manufacturer documentation such as a datasheet) or "hex mode"
+(informally, by programmers, in source code, notes, etc.).  The mode when D
+is set (one) is called "decimal mode" (officially) or "BCD mode"
+(informally).
+</p>
+
+<p>
+<a name="3.1"><b>3.1 INSTRUCTIONS THAT AFFECT THE D FLAG</b></a>
+<p>There are 4 instructions that affect the D flag: CLD, PLP, RTI, and SED.
+(The BRK instruction will be covered later when interrupts are discussed.)
+CLD and SED are the most commonly used.  CLD simply clears the D flag (binary
+mode), and SED simply sets the D flag (decimal mode).  PLP and RTI pull the
+P (processor status) register from the stack which affects all flags,
+including the D flag (bit 3 of the P register).  PLP and RTI are commonly
+found in 6502 debugger or monitor programs, to allow the user to set or clear
+any of the flags, including the D flag.</p>
+
+<p>On the 65816, there are two additional instructions that can affect the D
+flag: REP and SEP.  REP and SEP can be used to affect any of the flags,
+including the D flag.</p>
+
+<p>Most 6502 routines assume that the processor in is binary mode (D flag = 0)
+upon entry, and these routines will return in binary mode also (usually
+because they don't affect the D flag).  In this case, BCD calculations are
+performed by starting with a SED instruction, followed by the instructions to
+perform calculation itself, and finishing with an CLD instruction.  However,
+routines used for debugging (e.g., a routine that displays the contents of
+the 6502 registers) may wish to use a CLD or SED to ensure that the D flag
+has the expected value, but return with the D flag containing the same value
+it had upon entry (i.e. preserve the D flag).  In that case, the routine
+might begin with a PHP instruction followed by a CLD (or SED) instruction,
+and exit with a PLP instruction.</p>
+
+<p>
+<a name="3.2"><b>3.2 Instructions that are affected by the D flag</b></a>
+<p>Believe it or not, only two instructions are affected by the D flag: ADC and
+SBC.  These two instructions are usually not among the most frequently used
+instructions on a 6502, but they are often found in critical sections of
+code.  It is interesting to note that almost all moderate to large size 6502
+programs will not behave correctly when the 6502 is in decimal mode
+inadvertently.  The culprit must be an ADC or SBC instruction whose result is
+expected to be binary, rather than BCD.</p>
+
+<p>Since no other instructions are affected by the decimal flag, these other
+instructions will always return a binary, rather than a BCD, result.  This
+includes instructions such as ASL and INC, which always return a binary
+result, no matter what the value of the D flag is.  For example, after:</p>
+
+<pre>
+SED      ; Decimal mode
+LDA #$05
+CLC
+ADC #$05
+</pre>
+
+<p>the accumulator is $10, but after:</p>
+
+<pre>
+SED      ; Decimal mode (has no effect on this sequence)
+LDA #$05
+ASL A
+</pre>
+
+<p>the accumulator is $0A.  Also, after:</p>
+
+<pre>
+SED      ; Decimal mode
+LDA #$09
+CLC
+ADC #$01
+</pre>
+
+<p>the accumulator is $10, but after:</p>
+
+<pre>
+SED      ; Decimal mode (has no effect on this sequence)
+LDA #$09
+STA NUM
+INC NUM
+</pre>
+
+<p>NUM (assuming it is an ordinary RAM location) will contain $0A.</p>
+
+<p>
+<a name="3.2.1"><b>3.2.1 THE ACCUMULATOR AND THE CARRY FLAG</b></a>
+<p>In decimal mode, like binary mode, the carry (the C flag) affects the ADC
+and SBC instructions.  Specifically:</p>
+
+<ul>
+  <li>When the carry is clear, ADC NUM performs the calculation A = A + NUM</li>
+  <li>When the carry is set, ADC NUM performs the calculation A = A + NUM + 1</li>
+  <li>When the carry is clear, SBC NUM performs the calculation A = A - NUM - 1<li>
+  <li>When the carry is set, SBC NUM performs the calculation A = A - NUM</li>
+</ul>
+
+<p>The only difference is that ADC and SBC perform a binary calculation in
+binary mode, and perform a BCD calculation in decimal mode.</p>
+
+<p>The ADC and SBC instructions affect the accumulator and the C, N, V, and Z
+flags.  In decimal mode, the accumulator contains the result of the addition
+or subtraction, as expected.  In binary mode, after an ADC, the carry is
+set if the result was greater than 255 ($FF) and clear otherwise, and after a
+SBC, the carry is clear if the result was less than 0 and set otherwise.  By
+contrast, in decimal mode, after an ADC, the carry is set if the result was
+greater than 99 ($99) and clear otherwise, and after a SBC, the carry is
+clear if the result was less than 0 and set otherwise.  A few examples are in
+order:</p>
+
+<pre>
+CLD      ; Binary mode (binary addition: 88 + 70 + 1 = 159)
+SEC      ; Note: carry is set, not clear!
+LDA #$58 ; 88
+ADC #$46 ; 70 (after this instruction, C = 0, A = $9F = 159)
+
+SED      ; Decimal mode (BCD addition: 58 + 46 + 1 = 105)
+SEC      ; Note: carry is set, not clear!
+LDA #$58
+ADC #$46 ; After this instruction, C = 1, A = $05
+
+SED      ; Decimal mode (BCD addition: 12 + 34 = 46)
+CLC
+LDA #$12
+ADC #$34 ; After this instruction, C = 0, A = $46
+
+SED      ; Decimal mode (BCD addition: 15 + 26 = 41)
+CLC
+LDA #$15
+ADC #$26 ; After this instruction, C = 0, A = $41
+
+SED      ; Decimal mode (BCD addition: 81 + 92 = 173)
+CLC
+LDA #$81
+ADC #$92 ; After this instruction, C = 1, A = $73
+
+SED      ; Decimal mode (BCD subtraction: 46 - 12 = 34)
+SEC
+LDA #$46
+SBC #$12 ; After this instruction, C = 1, A = $34)
+
+SED      ; Decimal mode (BCD subtraction: 40 - 13 = 27)
+SEC
+LDA #$40
+SBC #$13 ; After this instruction, C = 1, A = $27)
+
+SED      ; Decimal mode (BCD subtraction: 32 - 2 - 1 = 29)
+CLC      ; Note: carry is clear, not set!
+LDA #$32
+SBC #$02 ; After this instruction, C = 1, A = $29)
+</pre>
+
+<p>In binary mode, subtraction has a wraparound effect.  For example $00 - $01 =
+$FF (and the carry is clear).  In decimal mode, there is a similar wraparound
+effect: $00 - $01 = $99, and the carry is clear.  For instance:</p>
+
+<pre>
+SED      ; Decimal mode (BCD subtraction: 12 - 21)
+SEC
+LDA #$12
+SBC #$21 ; After this instruction, C = 0, A = $91)
+
+SED      ; Decimal mode (BCD subtraction: 21 - 34)
+SEC
+LDA #$21
+SBC #$34 ; After this instruction, C = 0, A = $87)
+</pre>
+
+<p>The carry flag allows BCD addition and subtraction to be extended beyond 8
+bits as easily as binary addition and subtraction.  For example:</p>
+  
+<pre>
+SED       ; Decimal mode (BCD addition: NUM3 = NUM1 + NUM2)
+CLC
+LDA NUM1L ; Add low bytes first
+ADC NUM2L
+STA NUM3L
+LDA NUM1H ; Then add high bytes
+ADC NUM2H
+STA NUM3H
+
+SED       ; Decimal mode (BCD subtraction: NUM3 = NUM1 - NUM2)
+SEC
+LDA NUM1L ; Subtract low bytes first
+SBC NUM2L
+STA NUM3L
+LDA NUM1H ; Then subtract high bytes
+SBC NUM2H
+STA NUM3H
+</pre>
+
+<p>
+<a name="3.2.2"><b>3.2.2 THE N, V, AND Z FLAGS</b></a>
+<p>ADC and SBC not only affect the carry, but also affect the N, V, and Z flags,
+even in decimal mode.</p>
+
+<p>In binary mode, the Z flag simply indicates where the result of the
+instruction is non-zero (Z flag clear) or zero (Z flag set).  In decimal
+mode, the Z flag has the same meaning.</p>
+
+<p>In binary mode, the 6502 directly supports the addition and subtraction of
+twos complement numbers using the ADC and SBC instructions.  In twos
+complement representation, $00 to $7F represents 0 to 127 and $80 to $FF
+represents -128 to -1.  After an ADC or SBC instruction, the N flag is clear
+when the result is non-negative (0 to 127) and set when the result is
+negative (-128 to -1), and the V flag is clear when the result is in the
+range -128 to 127 inclusive and set when the result is outside that range.</p>
+
+<p>A similar BCD representaion is not directly supported by the ADC and SBC
+instructions.  The most common (and often the most efficient) way of handling
+negative BCD numbers is to store digits in one or more bytes and the sign in
+a separate byte.</p>
+
+<p>However, another common (and correct) interpretation of the N flag is that it
+contains the value of the high bit (i.e. bit 7) of the result of the
+instruction.  This second interpretation is the meaning of the N flag in
+decimal mode.</p>
+
+<p>With that interpretation of the N flag, it is possible to interpret $00 to
+$79 as 0 to 79 and $80 to $99 as -20 to -1 in decimal mode.  The number -1
+can be defined as the number which, when added to one, gives zero as a
+result.  In decimal mode, $99 + $01 gives the result (the accumulator) $00.
+However, there are a few of downsides to representing negative numbers with
+BCD.  First, one advantage of BCD is that it is not necessary to convert the
+hex value of a number into a form that can be output.  For example, when $99
+represents 99, the hex digits can be output directly, but when $99 represents
+-1, after a minus sign is output, $99 must be converted to $01 (by
+subtracting $99 from zero) before the 1 is output.  While this extra step is
+simple, costing only a few extra bytes and a few extra clock cycles, this
+cost does cut into the benefits of using BCD.  Second, the extreme asymmetry
+of positive and negative values may limit the usefulness of this
+representation, since there are nearly 4 times as many positive values (1 to
+79) as negative values (-1 to -20).  Third, the upper digit does not have the
+full 0 to 9 range (i.e. from -9 to 0 to 9), which may also be a limitation.</p>
+
+<p>By that interpretation, the V flag would indicate whether an addition or
+subtraction result was inside (V flag clear) or outside (V flag set) the
+range -20 to 79 (inclusive).  However, this is not how the V flag actually
+behaves.  For example, after:</p>
+
+<pre>
+SED      ; Decimal mode
+CLC
+LDA #$90
+ADC #$90
+</pre>
+
+<p>the V flag will be set on a 6502, 65C02 and 65816, which would be the
+expected result for a binary addition ($90 + $90 = -112 + -112 = -224), but
+not when the addition is (incorrectly) interpreted as -10 + -10 = -20.</p>
+
+<p>As it turns out, there isn't a simple interpretation that accurately
+describes what the value of V flag will be in decimal mode.  Since BCD is
+really an unsigned representation, it is perhaps not so surprising that the V
+flag does not have a useful meaning in decimal mode.  For the curious, the
+exact details of how the V flag is affected in decimal mode is given in
+Appendix A.</p>
+
+<p>On the 6502, only the C flag is valid.  The 65C02 and 65816 datasheets state
+that the N, V, and Z flags are valid as well as the C flag, but ironically,
+given the same inputs (carry flag, accumulator, and operand of the ADC or SBC
+instruction), the resulting V flag will be the same on the 6502, 65C02, and
+65816!  Again, the details are in Appendix A.</p>
+
+<p>However, the N and Z flags do have meaning as described above.  What is meant
+by valid is that the N and Z flags will match the result in the accumulator.
+For example, on a 6502, after:</p>
+
+<pre>
+SED      ; Decimal mode
+SEC
+LDA #$01
+SBC #$01
+</pre>
+
+<p>the accumulator will be $00, and the Z flag will be 1, which matches the
+result in the accumulator.  But after:</p>
+
+<pre>
+SED      ; Decimal mode
+CLC
+LDA #$99
+ADC #$01
+</pre>
+
+<p>the accumulator will be $00, but the Z flag will be 0, which does not match
+the result in the accumulator.  So sometimes the Z flag will be correct (in
+the sense of matching the accumulator), and sometimes it will not.  The same
+is true of the N flag on a 6502.<p>
+
+<p>On the 65C02 and 65816, the Z flag will be 1 in both examples above, because
+the Z flag is valid.</p>
+
+<p>The value of an invalid flag falls into the realm of undocumented behavior.
+The value of the accumulator and all four flags (N, V, Z, and C) when one or
+both BCD numbers are invalid is also considered undocmented behavior.  To
+summarize, on the 6502, the value of the N, V, and Z flags when both BCD
+numbers are valid and the value of the accumulator, N, V, Z, and C flags when
+one or both BCD number are invalid is undocumented behavior.  On the 65C02
+and 65816, the value of the V flag (despite the claim in the datasheet that
+it is valid) when both BCD numbers are valid and the value of the
+accumulator, N, V, Z, and C flags when one or both BCD number are invalid is
+undocumented behavior.  The details of all undocumented behavior are given in
+Appendix A.</p>
+
+<p>
+<a name="3.2.3"><b>3.2.3 CYCLE COUNTS ON THE 65C02</b></a>
+<p>One ramification of the N and Z flags being valid on the 65C02 is that ADC
+and SBC take one additional cycle on the 65C02.  The 65816, on the other
+hand, matches the timing of the 6502; in other words, a 65816 does not take
+an additional cycle, even though the N and Z flag will be valid on the 65816.
+A couple of examples are in order:</p>
+
+<pre>
+SED      ; 2 cycles
+ADC #$00 ; 2 cycles on the 6502 and 65816, 3 cycles on the 65C02
+
+SED         ; 2 cycles
+LDX #$FF    ; 2 cycles
+SBC $01FF,X ; 5 cycles on the 6502 and 65816, 6 cycles on the 65C02
+</pre>  
+
+<p>Note the SBC $01FF,X instruction takes 4 cycles for Absolute,X addressing,
+plus 1 cycle for a page boundary crossing (for a total of 5 cycles on the
+6502 and 65816), plus 1 more cycle on the 65C02, for a total of 6 cycles on
+the 65C02.</p>
+  
+<p>So, programs that depend on exact timing (i.e. a specific number of cycles),
+should be aware that ADC and SBC will have different cycle counts in decimal
+mode on the 65C02 than on the 6502.  On the other hand, this difference can
+be used to even out the timing of other instructions that have a smaller
+cycle count on the 65C02 than on the 6502 and 65816.  (ASL $1000,X when X =
+$00 is one such example.  It takes 7 cycles on a 6502 and 65816, but 6 cycles
+on a 65C02 since there was not a page boundary crossing.)</p>
+
+<p>
+<a name="4"><b>4 USEFUL TECHNIQUES</b></a>
+
+<p>
+<a name="4.1"><b>4.1 VALID N AND Z FLAGS ON THE 6502</b></a>
+<p>A simple way to obtain valid N and Z flags in decimal mode on the 6502 is
+to insert an EOR #0 instruction after the ADC or SBC instruction.  (A valid Z
+flag is usually the more useful of the two.)  The N and Z flags will then
+reflect the contents of the accumulator.  An AND #$FF or ORA #0 instruction
+could also be used; all three instructions take the same amount of space and
+have the same cycle count, so they are completely interchangable.</p>
+
+<p>An EOR #0 instruction is not necessary on the 65C02 and 65816, and could
+be omitted with conditional assembly.  However, including the EOR #0 has one
+benefit: the object code can run on a 6502, 65C02, or 65816 without
+modification, or the need to reassemble or recompile the source code.  One
+minor point: the EOR #0 is intended for use with valid BCD numbers; there are
+some cases where the 6502, 65C02, and 65816 return different accumulator
+values when invalid BCD numbers are involved.  For example, after:</p>
+
+<pre>
+SED      ; decimal mode
+SEC
+LDA #$90
+SBC #$0F ; invalid BCD!
+</pre>
+
+<p>The accumulator will contain $8B on a 6502 and 65816, but the accumulator
+will contain $7B on a 65C02.  Appendix A covers the details of undocumented
+decimal mode behavior, including invalid BCD numbers.</p>
+
+<p>
+<a name="4.2"><b>4.2 USING CMP TO COMPARE BCD NUMBERS</b></a>
+<p>Something that often goes unstated is that the CMP instruction can be used
+with (valid) BCD numbers (as can CPX and CPY, but this is often not as
+useful) to obtain valid Z and C flags, even though these flags are always
+based on a binary subtraction, even in decimal mode.  The reason is that
+$19 < $20, regardless of whether $19 and $20 represent 25 and 32 (unsigned
+binary numbers) or 19 and 20 (BCD numbers), so the resulting carry flag
+represents less than when clear, and greater than or equal when set.
+Likewise for the Z flag, and the comparison $15 = $15, regardless of whether
+$15 represents (the binary number) 21 or (the BCD number) 15.</p>
+
+<p>This also means that BCD comparisons can be extended beyond 8 bits in the
+same way that unsigned binary comparisons are.  For example, after:</p>
+
+<pre>
+LDA NUM1L ; a common technique for comparing two 16-bit numbers
+CMP NUM2L
+LDA NUM1H
+SBC NUM2H
+</pre>
+
+<p>the C flag will be 0 if NUM1 < NUM2, and the C flag will be 1 if NUM1 >=
+NUM2, if NUM1 and NUM2 represent (valid) BCD numbers or if they represent
+unsigned binary numbers.</p>
+  
+<p>
+<a name="5"><b>5 INTERRUPTS (INCLUDING BRK) AND DECIMAL MODE</b></a>
+<p>On the 6502, a BRK instruction, an IRQ interrupt, and an NMI interrupt do not
+affect the D flag, and after a RESET interrupt, the D flag is undefined.  On
+the 65C02 and 65816, after pushing the P register onto the stack, the D flag
+is cleared by a BRK instruction, an IRQ interrupt, and a NMI interrupt, and
+a RESET interrupt clears the D flag as well.  On the 65816, a COP interrupt
+and an ABORT interrupt also clear the D flag (after pushing the P register
+onto the stack).</p>
+
+<p>This is most useful with IRQ and NMI, since it saves 2 cycles (since a CLD is
+not necessary) each time an interrupt is serviced.  That may not seem like
+much, but it can add up if interrupts occur frequently and/or regularly, and
+it can improve the response time for the event.  Typically, interrupts should
+be handled as quickly as possible, and every little bit of time saved helps.</p>
+
+<p>BRK is typically used one of two ways: as an OS call, where it serves as
+JSR to an OS routine, returning after handling the OS call, or as breakpoint,
+stopping the program, and waiting for the user to decide whether or not to
+resume.  In the former case, the 2 cycle savings helpful, especially if many
+OS calls are made.  In the latter case, the 1 byte and 2 cycle savings is
+usually insignificant since the program is stopping and the CLD will only be
+executed once.</p>
+
+<p>Similarly, since a RESET interrupt will typically be used as a cold start or
+a warm start, the 1 byte and 2 cycle savings during is usually insignficant,
+since the unneeded CLD instruction would only be executed once during
+initialization.  It's merely for the sake of simplicity that all 65C02 and
+65816 interrupts clear the D flag.</p>
+
+<p>Thus, for breakpoint and reset handlers, it may be worthwhile in some
+instances just to simply include the CLD in the event the code is ever used
+on an (NMOS) 6502.</p>
+
+<p>
+<a name="6"><b>6 CODE THAT RELIES UPON UNDOCUMENTED DECIMAL MODE BEHAVIOR</b></a>
+<p>Beyond the usual BCD arithmetic, there are some nifty tricks that involve
+decimal mode, but rely upon undocmented behavior -- either invalid BCD
+numbers, or invalid flags on the 6502.  While these tricks will work on an
+actual 6502 family microprocessor IC, they may not work on a simulator,
+because the simulator would have to replicate undocumented behavior -- that
+means it has to know when an invalid flag doesn't match the result in the
+accumulator.  And it isn't really fair to expect a simulator to do that.</p>
+
+<p>So, nifty can sometimes be a little too clever.  It's worthwhile to carefully
+consider whether saving a few bytes and/or a few cycles it really worth it.
+Here are a couple of examples that appear in source code from time to time:</p>
+
+<p>Example #1: Distinguishing a (NMOS) 6502 from a 65C02</p>
+<pre>
+SED
+CLC
+LDA #$99
+ADC #$01
+CLD
+</pre>
+
+<p>This code returns with the Z flag set on a 65C02 (the Z flag is valid), and
+returns with the Z flag clear on a 6502 (the Z flag is invalid, and in this
+case it does not match the result in the accumulator).  This code is used
+to distinguish a 6502 from a 65C02, but relies upon the Z flag being invalid
+(which is documented behavior) and not matching the accumulator (which is
+undocumented behavior).</p>
+
+<p>Example #2: Converting a hex digit (0-F) to ASCII</p>
+<pre>
+SED
+CMP #$0A
+ADC #$30
+CLD
+</pre>
+
+<p>
+This code converts a hex digit 0 to F (i.e. the accumulator $00 to $0F) to
+$30 to $39 (for 0 to 9) and $41 to $46 (for A to F).  However, this can also
+be done without using BCD arithmetic, as follows:
+</p>
+
+<pre>
+     CMP #$0A
+     BCC SKIP
+     ADC #$66 ; Add $67 (the carry is set), convert $0A to $0F --> $71 to $76
+SKIP EOR #$30 ; Convert $00 to $09, $71 to $76 --> $30 to $39, $41 to $46
+</pre>
+
+<p>
+Which takes 2 more bytes, but the same number of cycles (or one less if the
+BCC is taken to the same page).  In this case, it may be worth weighing the 2
+byte cost versus the dependence on undocumented behavior.
+</p>
+
+<p>
+In either case, it's a good idea to add comments to the source that point out
+any instances where there is any dependence on undocumented behavior.
+</p>
+
+<p>
+<a name="7"><b>7 DECIMAL MODE APPLICATIONS</b></a>
+    
+<p>
+BCD can be a convenient representation for hardware.  For example, a 74HC160
+is a 4-bit BCD counter that counts from 0 to 9 and then rolls over.  A
+74HC161 is a 4-bit binary counter that counts from 0 to 15 and then rolls
+over.  So, for displaying a two digit number from 0 to 99 on a pair of
+7-segment LEDs, the former is more convenient than the latter.
+</p>
+
+<p>
+On a microprocessor, displaying a binary number from 0 ($00) to 99 ($63) can
+be done with a simple, relatively small, and quick routine, even on
+microprocessors that, like the 6502, don't have a multiply or divide
+instruction.  So BCD doesn't offer as much of an increase in convenience.
+However, there are situations where BCD can be quite useful.
+</p>
+
+<p>
+For example, in a game it's often desirable to update a score or a counter
+that displays the time remaining as quickly as possible, especially in an
+arcade-style game where graphics and sound effects must be handled also.  Any
+time saved could be used for additional action or other features.
+</p>      
+
+<p>
+Another example is fixed point and floating point math routines.  For
+instance, 2 bytes of a 4-byte fixed point number might represent the integer
+portion of the number, and the other 2 bytes might represent the fractional
+portion of the number (a floating point number is similar, but floating
+point representation is similar to scientific notation so there is an
+exponent as well).  If the fractional portion is binary, then it can range
+from 0/65536 to 65535/65536.  However, the downside is that 0.1 cannot be
+represented exactly.  6553/65536 is slightly less than 0.1 and 6554/65536 is
+slightly greater than 0.1.  Because the denominator of the fraction is not a
+multple of 10, using more bytes to represent the fractional portion does not
+change the fact that 0.1 cannot be represented exactly.
+</p>
+
+<p>
+However, if the fraction portion is BCD, then it ranges from 0/10000 to
+9999/10000 and 0.1 can be represented exactly.  (In floating point, the
+exponent is always an integer, so it is usually binary so that it will have
+greater range.)  Note that, for example, the fraction 2/3 cannot be
+represented exactly when the fractional portion is either binary or BCD,
+since neither denominator is a multiple of 3.  However, when 2/3 is entered
+or displayed as .6666 it is reasonable to expect that it would be treated as
+an approximation of 2/3 and not 2/3 exactly.  On the other hand, it is
+reasonable -- and often useful -- to expect a number entered or displayed as
+0.1 to be 0.1 exactly and not an approximation.
+</p>
+
+
+<p>
+<a name="A"><b>APPENDIX A: WHAT ABOUT INVALID BCD VALUES AND INVALID FLAGS?</b></a>
+
+<p>
+Decimal mode has some undocumented behavior.  First, there is arthimetic when
+one or both numbers are invalid BCD.  Second, there is the value of the N and
+Z flags on the (NMOS) 6502, which are invalid.  Third, there is the value of
+the V flag.  Even though the 65C02 and 65816 datasheets state the V flag is
+valid (it is invalid on the 6502, however), ADC and SBC perform unsigned BCD
+arithmetic, and the V flag has meaning for signed rather than unsigned
+arithmetic, so the the value (and meaning) of the V flag is effectively
+undocumented in decimal mode.
+</p>
+
+<p>
+The decimal mode behavior of ADC and SBC is described below in terms of
+binary arithmetic.  A and B represent the two numbers to be added or
+subtracted, and C represents the value of the carry flag beforehand.  A
+represents the accumulator, but note that B represents the operand (e.g. a
+memory location), and does not refer to a 65816 register.  In fact, all
+cases, including valid cases, are covered.
+</p>  
+  
+<p>
+In the tables, "bin" means that flag is the same as in binary mode.  For
+example, in binary mode:
+</p>
+
+<pre>
+CLD      ; binary mode: 99 + 1
+CLC
+LDA #$99
+ADC #$01
+</pre>
+
+<p>
+the accumulator is $9A, and the Z flag is clear.  Since the Z flag after ADC
+on the 6502 is "bin", that means the decimal mode Z flag is clear.  Thus, to
+predict the value of the Z flag, simply perform the ADC using binary
+arithmetic.
+</p>    
+
+<p>
+"dec" means that the flag is based on the BCD accumulator result.  For
+example, after:
+</p>  
+
+<pre>
+SED      ; decimal mode: 99 + 1
+CLC
+LDA #$99
+ADC #$01
+</pre>
+
+<p>
+the accumulator is $00.  Since the Z flag after ADC on the 65C02 and 65816
+is "dec", that means that the Z flag is set, since its value is based on the
+the value of the accumulator, which in this case is $00.
+</p>
+
+<p>
+A few other notes:
+</p>
+
+<ol>
+  <li>All calculations use unlimited precision</li>
+  <li>All arithmetic is binary arithmetic</li>
+  <li>All arithmetic is unsigned unless otherwise noted</li>
+  <li>The &amp; operator is bitwise AND, just like the 6502 AND instruction.</li>
+  <li>AL is a variable for holding intermediate results</li>
+</ol>
+
+<p>
+ADC B: A = A+B+C
+</p>      
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>6502</th>
+    <th>65C02 &amp; 65816</th>
+  </tr>
+  <tr>
+    <td>A</td><td>Seq. 1</td><td>Seq. 1</td>
+  </tr><tr>
+    <td>C</td><td>Seq. 1</td><td>Seq. 1</td>
+  </tr><tr>
+    <td>N</td><td>Seq. 2</td><td>dec</td>
+  </tr><tr>
+    <td>V</td><td>Seq. 2</td><td>Seq. 2</td>
+  </tr><tr>
+    <td>Z</td><td>bin</td><td>dec</td>
+  </tr>
+</table>
+
+<p>Seq. 1:</p>
+<p>
+1a. AL = (A &amp; $0F) + (B &amp; $0F) + C<br/>
+1b. If AL &gt;= $0A, then AL = ((AL + $06) &amp; $0F) + $10<br/>
+1c. A = (A &amp; $F0) + (B &amp; $F0) + AL<br/>
+1d. Note that A can be &gt;= $100 at this point<br/>
+1e. If (A &gt;= $A0), then A = A + $60<br/>
+1f. The accumulator result is the lower 8 bits of A<br/>
+1g. The carry result is 1 if A &gt;= $100, and is 0 if A &lt; $100<br/>
+</p>
+
+<p>Seq. 2:</p>
+<p>
+2a. AL = (A & $0F) + (B & $0F) + C<br/>
+2b. If AL &gt;= $0A, then AL = ((AL + $06) &amp; $0F) + $10<br/>
+2c. A = (A &amp; $F0) + (B &amp; $F0) + AL, using signed (twos complement) arithmetic<br/>
+2e. The N flag result is 1 if bit 7 of A is 1, and is 0 if bit 7 if A is 0<br/>
+2f. The V flag result is 1 if A &lt; -128 or A &gt; 127, and is 0 if -128 &lt;= A &lt;= 127<br/>
+</p>
+
+<p>SBC B: A = A-B+C-1</p>
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>6502</th>
+    <th>65C02</th>
+    <th>65816</th>
+  </tr><tr>
+    <td>A</td><td>Seq. 3</td><td>Seq. 4</td><td>Seq. 3</td>
+  </tr><tr>
+    <td>C</td><td>bin</td><td>bin</td><td>bin</td>
+  </tr><tr>
+    <td>N</td><td>bin</td><td>dec</td><td>dec</td>
+  </tr><tr>
+    <td>V</td><td>bin</td><td>bin</td><td>bin</td>
+  </tr><tr>
+    <td>Z</td><td>bin</td><td>dec</td><td>dec</td>
+  </tr>
+</table>
+
+<p>Seq. 3:</p>
+<p>
+3a. AL = (A &amp; $0F) - (B &amp; $0F) + C-1<br/>
+3b. If AL &lt; 0, then AL = ((AL - $06) &amp; $0F) - $10<br/>
+3c. A = (A &amp; $F0) - (B &amp; $F0) + AL<br/>
+3d. If A &lt; 0, then A = A - $60<br/>
+3e. The accumulator result is the lower 8 bits of A<br/>
+</p>  
+
+<p>Seq. 4:</p>
+<p>
+4a. AL = (A &amp; $0F) - (B &amp; $0F) + C-1<br/>
+4b. A = A - B + C-1<br/>
+4c. If A &lt; 0, then A = A - $60<br/>
+4d. If AL &lt; 0, then A = A - $06<br/>
+4e. The accumulator result is the lower 8 bits of A<br/>
+</p>
+
+<p>
+<a name="B"><b>APPENDIX B: A PROGRAM TO VERIFY DECIMAL MODE OPERATION</b></a>
+
+<p>
+The program below can be used for several purposes.  First, it can be used to
+verify that decimal mode behavior (both valid and undocumented) behaves as
+described.  Second, it can be used to verify that a simulator correctly
+replicates all (valid and undocumented) decimal mode behavior.  Third, with
+modifications described below, it can be used to verify that a simulator
+correctly replicates valid (documented) decimal mode behavior, since it isn't
+really fair to expect a simulator to replicate undocumented behavior.
+Fourth, it can be used to implement decimal mode in a simulator; for example,
+the assembly could be translated to another language, such as C.
+</p>
+
+<p>
+The program works by testing all 262144 = 2 * 2 * 256 * 256 cases -- 2
+instructions (ADC and SBC), 2 possible values for the carry flag beforehand,
+256 possible values for the first number (of the two numbers being added or
+subtracted), and 256 possible values for the second number.  0 is stored in
+ERROR if successful, and 1 is stored in ERROR if unsuccessful.
+</p>
+
+<p>
+Modifying the program to check only valid (documented) behavior involves
+several steps.  The points in the program below where modifications are to be
+made are marked in the program with a "[number]" comment.
+</p>
+
+<p>To check only valid BCD numbers:</p>
+<ol>
+  <!--1--><li>add the label NEXT1 to INC N1 (line [5])</li>
+  <!--2--><li>add the label NEXT2 to INC N2 (line [6])</li>
+  <!--3--><li>after the AND #$0F in LOOP1 (line [1]), add:
+    <pre>
+CMP #$0A
+BCS NEXT2
+    </pre>
+  </li>
+  <!--4--><li>after the AND #$F0 in LOOP1 (line [2]), add:
+    <pre>
+CMP #$A0
+BCS NEXT2
+    </pre>
+  </li>
+  <!--5--><li>after the AND #$0F in LOOP2 (line [3]), add:
+    <pre>
+CMP #$0A
+BCS NEXT1
+    </pre>
+  </li>
+  <!--6--><li>after the AND #$F0 in LOOP2 (line [4]), add:
+    <pre>
+CMP #$A0
+BCS NEXT1
+    </pre>
+    
+    <p>
+    Note that CMP #$0A and CMP #$A0 should be used instead of replacing INC N1
+    (and likewise for INC N2) with:
+    </p>  
+
+    <pre>
+SED
+CLC
+LDA N1
+ADC #1
+STA N1
+CLD
+    </pre>
+
+    <p>
+      especially when checking a simulator.  The reason is that if the simulator
+      has a bug and does not correctly replicate valid decimal mode behavior, then
+      the ADC #1 could skip a case which could result in a false pass of the test.
+      CMP #$0A and CMP #$A0 are dependent only on binary arithmetic working
+      properly, and not on BCD arithmetic working properly.
+    </p>
+    <p>
+      For the 6502:
+    </p>
+  </li>
+  <!--7--><li>Compare only the A and C result, by removing the N, V, and Z result
+comparison from COMPARE (lines [7] through [10], inclusive)
+  <p>
+    For the 65C02 and 65816:
+  </p>
+  </li>
+  <!--8--><li>Compare only the A, C, N, and Z results, by removing the V result
+comparison from COMPARE (lines [8] through [9], inclusive)
+  <p>
+    Note that this program is not optimized for space or speed.  Instead, it was
+    written to be modular, and with clarity in mind.
+  </p>
+  
+  <pre>
+; Verify decimal mode behavior
+;
+; Returns:
+;   ERROR = 0 if the test passed
+;   ERROR = 1 if the test failed
+;
+; This routine requires 17 bytes of RAM -- 1 byte each for:
+;   AR, CF, DA, DNVZC, ERROR, HA, HNVZC, N1, N1H, N1L, N2, N2L, NF, VF, and ZF
+; and 2 bytes for N2H
+;
+; Variables:
+;   N1 and N2 are the two numbers to be added or subtracted
+;   N1H, N1L, N2H, and N2L are the upper 4 bits and lower 4 bits of N1 and N2
+;   DA and DNVZC are the actual accumulator and flag results in decimal mode
+;   HA and HNVZC are the accumulator and flag results when N1 and N2 are
+;     added or subtracted using binary arithmetic
+;   AR, NF, VF, ZF, and CF are the predicted decimal mode accumulator and
+;     flag results, calculated using binary arithmetic
+;
+; This program takes approximately 1 minute at 1 MHz (a few seconds more on
+; a 65C02 than a 6502 or 65816)
+;
+TEST    LDY #1    ; initialize Y (used to loop through carry flag values)
+        STY ERROR ; store 1 in ERROR until the test passes
+        LDA #0    ; initialize N1 and N2
+        STA N1
+        STA N2
+LOOP1   LDA N2    ; N2L = N2 & $0F
+        AND #$0F  ; [1] see text
+        STA N2L
+        LDA N2    ; N2H = N2 & $F0
+        AND #$F0  ; [2] see text
+        STA N2H
+        ORA #$0F  ; N2H+1 = (N2 & $F0) + $0F
+        STA N2H+1
+LOOP2   LDA N1    ; N1L = N1 & $0F
+        AND #$0F  ; [3] see text
+        STA N1L
+        LDA N1    ; N1H = N1 & $F0
+        AND #$F0  ; [4] see text
+        STA N1H
+        JSR ADD
+        JSR A6502
+        JSR COMPARE
+        BNE DONE
+        JSR SUB
+        JSR S6502
+        JSR COMPARE
+        BNE DONE
+        INC N1    ; [5] see text
+        BNE LOOP2 ; loop through all 256 values of N1
+        INC N2    ; [6] see text
+        BNE LOOP1 ; loop through all 256 values of N2
+        DEY
+        BPL LOOP1 ; loop through both values of the carry flag
+        LDA #0    ; test passed, so store 0 in ERROR
+        STA ERROR
+DONE    RTS
+
+; Calculate the actual decimal mode accumulator and flags, the accumulator
+; and flag results when N1 is added to N2 using binary arithmetic, the
+; predicted accumulator result, the predicted carry flag, and the predicted
+; V flag
+;
+ADD     SED       ; decimal mode
+        CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1
+        ADC N2
+        STA DA    ; actual accumulator result in decimal mode
+        PHP
+        PLA
+        STA DNVZC ; actual flags result in decimal mode
+        CLD       ; binary mode
+        CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1
+        ADC N2
+        STA HA    ; accumulator result of N1+N2 using binary arithmetic
+
+        PHP
+        PLA
+        STA HNVZC ; flags result of N1+N2 using binary arithmetic
+        CPY #1
+        LDA N1L
+        ADC N2L
+        CMP #$0A
+        LDX #0
+        BCC A1
+        INX
+        ADC #5    ; add 6 (carry is set)
+        AND #$0F
+        SEC
+A1      ORA N1H
+;
+; if N1L + N2L <  $0A, then add N2 & $F0
+; if N1L + N2L >= $0A, then add (N2 & $F0) + $0F + 1 (carry is set)
+;
+        ADC N2H,X
+        PHP
+        BCS A2
+        CMP #$A0
+        BCC A3
+A2      ADC #$5F  ; add $60 (carry is set)
+        SEC
+A3      STA AR    ; predicted accumulator result
+        PHP
+        PLA
+        STA CF    ; predicted carry result
+        PLA
+;
+; note that all 8 bits of the P register are stored in VF
+;
+        STA VF    ; predicted V flags
+        RTS
+
+; Calculate the actual decimal mode accumulator and flags, and the
+; accumulator and flag results when N2 is subtracted from N1 using binary
+; arithmetic
+;
+SUB     SED       ; decimal mode
+        CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1
+        SBC N2
+        STA DA    ; actual accumulator result in decimal mode
+        PHP
+        PLA
+        STA DNVZC ; actual flags result in decimal mode
+        CLD       ; binary mode
+        CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1
+        SBC N2
+        STA HA    ; accumulator result of N1-N2 using binary arithmetic
+
+        PHP
+        PLA
+        STA HNVZC ; flags result of N1-N2 using binary arithmetic
+        RTS
+
+; Calculate the predicted SBC accumulator result for the 6502 and 65816
+
+;
+SUB1    CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1L
+        SBC N2L
+        LDX #0
+        BCS S11
+        INX
+        SBC #5    ; subtract 6 (carry is clear)
+        AND #$0F
+        CLC
+S11     ORA N1H
+;
+; if N1L - N2L >= 0, then subtract N2 & $F0
+; if N1L - N2L <  0, then subtract (N2 & $F0) + $0F + 1 (carry is clear)
+;
+        SBC N2H,X
+        BCS S12
+        SBC #$5F  ; subtract $60 (carry is clear)
+S12     STA AR
+        RTS
+
+; Calculate the predicted SBC accumulator result for the 6502 and 65C02
+
+;
+SUB2    CPY #1    ; set carry if Y = 1, clear carry if Y = 0
+        LDA N1L
+        SBC N2L
+        LDX #0
+        BCS S21
+        INX
+        AND #$0F
+        CLC
+S21     ORA N1H
+;
+; if N1L - N2L >= 0, then subtract N2 & $F0
+; if N1L - N2L <  0, then subtract (N2 & $F0) + $0F + 1 (carry is clear)
+;
+        SBC N2H,X
+        BCS S22
+        SBC #$5F   ; subtract $60 (carry is clear)
+S22     CPX #0
+        BEQ S23
+        SBC #6
+S23     STA AR     ; predicted accumulator result
+        RTS
+
+; Compare accumulator actual results to predicted results
+;
+; Return:
+;   Z flag = 1 (BEQ branch) if same
+;   Z flag = 0 (BNE branch) if different
+;
+COMPARE LDA DA
+        CMP AR
+        BNE C1
+        LDA DNVZC ; [7] see text
+        EOR NF
+        AND #$80  ; mask off N flag
+        BNE C1
+        LDA DNVZC ; [8] see text
+        EOR VF
+        AND #$40  ; mask off V flag
+        BNE C1    ; [9] see text
+        LDA DNVZC
+        EOR ZF    ; mask off Z flag
+        AND #2
+        BNE C1    ; [10] see text
+        LDA DNVZC
+        EOR CF
+        AND #1    ; mask off C flag
+C1      RTS
+
+; These routines store the predicted values for ADC and SBC for the 6502,
+; 65C02, and 65816 in AR, CF, NF, VF, and ZF
+
+A6502   LDA VF
+;
+; since all 8 bits of the P register were stored in VF, bit 7 of VF contains
+; the N flag for NF
+;
+        STA NF
+        LDA HNVZC
+        STA ZF
+        RTS
+
+S6502   JSR SUB1
+        LDA HNVZC
+        STA NF
+        STA VF
+        STA ZF
+        STA CF
+        RTS
+
+A65C02  LDA AR
+        PHP
+        PLA
+        STA NF
+        STA ZF
+        RTS
+
+S65C02  JSR SUB2
+        LDA AR
+        PHP
+        PLA
+        STA NF
+        STA ZF
+        LDA HNVZC
+        STA VF
+        STA CF
+        RTS
+
+A65816  LDA AR
+        PHP
+        PLA
+        STA NF
+        STA ZF
+        RTS
+
+S65816  JSR SUB1
+        LDA AR
+        PHP
+        PLA
+        STA NF
+        STA ZF
+        LDA HNVZC
+        STA VF
+        STA CF
+        RTS
+    </pre>
+  </li>
+</ol>
+
+<p>
+<a name="C"><b>APPENDIX C: DECIMAL MODE ON THE 65816 WITH 16-BIT NUMBERS</b></a>
+
+<p>
+On the 65816, 16-bit (m flag = 0) BCD arithmetic can be described in terms
+of 8-bit (m flag = 1) BCD arithmetic.  Note that 8-bit BCD arithmetic is
+the same in emulation (e flag = 1) and native (e flag = 0) modes.  All code
+below assumes native mode, and that the accumulator and carry flag beforehand
+are the same.  This includes both valid and undocumented behavior.
+</p>
+    
+<p>
+N2 and the N, V, Z, and C flags of:
+</p>
+
+<pre>
+REP #$20 ; 16-bit accumulator and memory
+ADC N1
+STA N2
+</pre>
+
+<pre>
+are the same as N2 and the N, V, and C flags of:
+</pre>
+
+<pre>
+SEP #$20 ; 8-bit accumulator and memory
+ADC N1   ; add low bytes first
+STA N2
+XBA
+ADC N1+1 ; then add high bytes
+STA N2+1
+</pre>
+
+<p>
+and the Z flag of:
+</p>
+
+<pre>
+SEP #$20 ; 8-bit accumulator and memory
+ADC N1   ; add low bytes first
+STA N2
+XBA
+ADC N1+1 ; then add high bytes
+ORA N2   ; use all 16 bits of the result to determine the Z flag
+</pre>
+  
+<p>  
+N2 and the N, V, Z, and C flags of:
+</p>
+
+<pre>
+REP #$20 ; 16-bit accumulator and memory
+SBC N1
+STA N2
+</pre>
+
+<p>
+are the same as N2 and the N, V, and C flags of:
+</p>
+
+<pre>
+SEP #$20 ; 8-bit accumulator and memory
+SBC N1   ; subtract low bytes first
+STA N2
+XBA
+SBC N1+1 ; then subtract high bytes
+STA N2+1
+</pre>
+
+<p>
+and the Z flag of:
+</p>
+
+<pre>
+SEP #$20 ; 8-bit accumulator and memory
+SBC N1   ; subtract low bytes first
+STA N2
+XBA
+SBC N1+1 ; then subract high bytes
+ORA N2
+</pre>
+
+<P><FONT SIZE=-1>Last Updated June 28, 2009.</FONT>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       

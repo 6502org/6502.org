@@ -1,0 +1,51 @@
+Name     ATkey_01 ;
+PartNo   00 ;
+Date     19/03/01 ;
+Revision 01 ;
+Designer Lee ;
+Company   ;
+Assembly None ;
+Location  ;
+Device   g16v8as ;
+
+/* This GAL is the select logic fot the AT keyboard interface board	*/
+
+/* Logic minimisations		None				*/
+/* Optimizations			None				*/
+/* Download				JEDEC/POF/PRG		*/
+/* Doc File Options		fuse plot, equations	*/
+/* Output				None				*/
+
+/* *************** INPUT PINS *********************/
+
+PIN	1 = A4	;				/* address bus		*/ 
+PIN	2 = A3	;				/* address bus		*/ 
+PIN	3 = A2	;				/* address bus		*/ 
+PIN	4 = A0	;				/* address bus		*/ 
+PIN	5 = A1	;				/* address bus		*/ 
+PIN	6 = p02	;				/* CPU phase 2		*/ 
+PIN	7 = RW	;				/* read write		*/ 
+PIN	8 = !SEL1	;				/* block select		*/ 
+PIN	9 = !SEL0	;				/* block select		*/ 
+PIN	11 = A6	;				/* address bus		*/ 
+PIN	12 = A5	;				/* address bus		*/ 
+PIN	13 = A7	;				/* address bus		*/ 
+
+/* *************** OUTPUT PINS *********************/
+
+PIN  19 = !KBR		;			/* key port read strobe		*/ 
+PIN  18 = !KBW		;			/* key port write strobe	*/ 
+/*PIN  17 = 		;			/* 					*/ 
+/*PIN  16 = 		;			/* 					*/ 
+/*PIN  15 = 		;			/* 					*/ 
+/*PIN  14 = 		;			/* 					*/ 
+
+/* intermediate terms */
+
+ADDR		= !A7 & !A6 & A5 & !A4 & !A3 & !A2 & !A1 & !A0 & !SEL0 & SEL1 ;
+							/* F120h (0010 0000)
+
+/* Output terms */
+
+KBR	= ADDR &  RW & p02 ;			/* key port read strobe		*/
+KBW	= ADDR & !RW & p02 ;			/* key port write strobe	*/

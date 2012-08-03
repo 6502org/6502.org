@@ -1,0 +1,73 @@
+<HTML>
+<TITLE>6502.org: Sharp GP2D02 by Mike Naberezny</TITLE>
+<META name="description" content="Interface an infared ranging sensor to your
+6502-based computer.">
+<h1>Reading the Sharp GP2D02 Sensor</h1>
+<h2>Mike Naberezny</h2>
+
+<P><B>Introduction</B>
+<P>
+The Sharp GP2D02 infared ranging sensor is a very elegant solution to object detection and ranging for robotics projects.  This sensor takes a distance reading when enabled and reports the distance as a byte-value cooresponding to the distance between 10cm (~4") to 80cm (~30"). 
+It is available as an inexpensive kit from <A HREF="http://www.acroname.com">Acroname Inc.</A>  This kit includes the sensor, a cable to plug into the miniature JST connector, a diode which is required to connect the sensor to TTL/CMOS logic, and a small instruction booklet.
+<P><B>Interface</B>
+<P>
+The four pins on the GP2D02's JST connector are: Vcc (+5VDC), GND, Vin (serial input), and Vout (serial output).  The Vout line may be directly connected to a pin on the interface adapter (VIA, PIA, etc.) configured for input.  The Vin line cannot be connected to an output pin directly.  A diode (1N4148 or equivalent) must be installed inline between the VIA output line and the open-drain GP2D02 Vin line, with the cathode (marked with a line) facing the VIA.  Here is a suggested method of connecting four sensors to an eight-bit VIA port:
+<PRE>
+PB0 - GP2D02 #1 Vout,  PB4 - GP2D02 #1 Vin
+PB1 - GP2D02 #2 Vout,  PB5 - GP2D02 #2 Vin
+PB2 - GP2D02 #3 Vout,  PB6 - GP2D02 #3 Vin
+PB3 - GP2D02 #4 Vout,  PB7 - GP2D02 #4 Vin
+</PRE>
+<P>The Vin and Vout lines may be wired to any two I/O pins you like, but design your interface with software in mind.  The configuration above allows you to connect up to four GP2D02 sensors to one 8-bit port.  The upper four bits (MSB) are the outputs to the sensors (going to Vin) 
+and the lower four bits (LSB) are inputs to the sensors (going to Vout).  This allows the software to easily shift out the incoming data.
+
+<P><B>Programming</B>
+<P>
+Controlling the detector is done by lowering the input line, waiting for ~70ms (it signals when the reading is complete), and then clocking the detector 8 times to read out the distance measurement on the output line.  The returned byte is inversely proportional to the distance of the object from the sensor, and the entire 0-255 range is not used.  Most of my sensors report between 60 (far away) and 240 (really close).  Readings are fairly consistent between sensors and are accurately reproduced.  
+<P>
+<PRE>
+GP2D02:    LDA #%11110000  ;Upper 4 Bits Output, Lower 4 Bits Input
+           STA DDR         ;Set Data Direction Register
+           LDA #%00000000  
+           STA PORT        ;Activate Detectors (Vin = Low)
+GP_INIT:   LDA PORT
+           AND #%00001111  ;Read the Port, Mask out upper 4 output bits
+           CMP #%00001111  ;All Detectors Ready? (Vout = High)
+           BNE GP_INIT
+           LDX #$08
+           LDA #%11110000
+           STA PORT        ;Set Clock High (Vin = High)
+GP_READ:   LDA #%00001111
+           STA PORT        ;Set Clock Low (Vin = Low)
+           LDA PORT        ;Read the Port
+           LSR             ;Detector 1 Vout -> Carry
+           ROL BYTE1       ;  Rotate to assemble data byte 1
+           LSR             ;Detector 2 Vout -> Carry
+           ROL BYTE2       ;  Rotate to assemble data byte 2
+           LSR             ;Detector 3 Vout -> Carry
+           ROL BYTE3       ;  Rotate to assemble data byte 3
+           LSR             ;Detector 4 Vout -> Carry
+           ROL BYTE4       ;  Rotate to assemble data byte 4
+           LDA #%11110000  
+           STA PORT        ;Set Clock High (Vin = High)
+           DEX
+           BNE READBYTE    ;All 8-bits collected? If not...
+           RTS
+</PRE>
+In this routine, up to four GP2D02 sensors are connected to an 8-bit port at address PORT, controlled by data direction register DDR.  I have simplified the program by expanding some instructions and using binary representations so you can see what's going on more easily.
+<P>
+First, the four sensors are enabled by pulling their Vin lines LOW.  When all of them are finished taking a reading (Vout = HIGH), the eight bits are clocked out.  Four bytes are returned, one distance reading for each sensor.  These are stored in BYTE1, BYTE2, BYTE3, and BYTE4.  If less than four sensors are used, you can remove the LSR and ROL instructions for those bytes, and modify the STA instructions so that any other bits on your port you may be using won't be disturbed.  One note about this routine is that if you are using a very fast system you may have to introduce delays if the sensor can't keep up.  This has not been a problem on any of the computers I've used (up to 4 MHz).  Also, the GP2D02 requires you to wait 1.5ms between each reading.
+<P>
+You may have realized that in the above example all of the Vin lines can be tied together, saving your three I/O pins.  This can indeed be done and may be more practical for your application.  However, having the ability to individually activate the sensors does have advantages.  You will be able to save power and avoid interference with other devices.  The source code presented can be used with either the Vin lines tied together or separated by modifying the value stored to PORT in the fourth line under label GP2D02.  The program will still rotate out bits for all of the sensors, present or not.  Any sensors deactivated or disconnected will just produce an invalid data byte.
+
+
+<P><B>Conclusion</B>
+<P>
+I first used the above program on my Commodore 64.  I stored the routine at $C000 and used the 8-bit User Port to connect the sensors.  I stuck my resulting bytes in the cassette buffer starting at $033C.  Then I wrote this BASIC program:
+<PRE>
+0 SYS49152 : PRINT PEEK(828), PEEK(829), PEEK(830), PEEK(831) : GOTO 0
+</PRE>
+It continuously polls the sensors and displays the returned distance bytes on the screen.  You could easily do something similar on another machine, perhaps on a seven-segment display or LCD module.
+<P>I now have the GP2D02 sensors on my robots and I've been very pleased with their performance.  One thing to note is that the field of view for the GP2D02 is very narrow, about five degrees.  This makes it perfect for panning with a servo and mapping terrain.  If you've tried to make proximity detectors by using a circuit with 38 or 40 KHz data receivers and experienced frustration these sensors are worth a look.  They will virtually eliminate problems from noisy flourescent lights and provide accurate, repeatable distancing.  
+
+<P><FONT SIZE=-1>Last page update: September 1, 2000.</FONT>

@@ -1,0 +1,341 @@
+<? $this->title = 'Homebuilt Projects' ?>
+<? $this->description = 'Links to 6502-based computers built by hobbyists.' ?>
+
+<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
+	<tr>
+		<td><img src="/images/spacer.gif" width="10" alt=" "></td>
+
+		<td width="100%" bgcolor="#ffffff" class="bodyblack" style="padding-top:15px;">
+
+		Here is a collection of some amazing 6502-based projects on the web built
+    by fellow enthusiasts. Many of these sites offer schematics, source code,
+    and even photos! If you know of a self-built 6502 system on the web that
+    is not listed here please send us the URL via
+		<?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript']) ?>.
+		Also, www.6502.org offers free web hosting for sites with good 6502
+    content, just ask if you'd like to take advantage of this service.
+
+		<P style="padding-top:20px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+		<a name="hardware"><B>Homebuilt 6502 Computers &amp; Hardware</b></a>
+
+		<ul>
+  		<li>
+  		  <a href="http://www.reocities.com/SiliconValley/2072/6502prj1.htm">Adam's
+        Great 6502 Projects</A> - Adam Luoranen presents some good beginning
+        6502 tips and projects, including a simple LED-blinker project and
+        details for interfacing a KS0108-based graphical LCD panel.
+  		</li>
+
+  		<li>
+  		  <a href="/users/alexis/">Alexis' ROMless 6502 Microcomputer</a> - Alexis
+        Kotlowy-Brown has created a 6502-based single board computer
+        programmable only by DIP switches in the spirit of computers like the
+        Altair 8800.
+  		</li>
+
+  		<li>
+  		  <A HREF="/users/andre/index.html">Andre's Gecko and CS/A65</A> - Andre
+        Fachat has written his own operating system for several 6502-based
+        homebuilt computers which even includes an experimental TCP/IP protocol
+        stack and SCSI interface. Andre also has his own cross-assembler, file
+        format, and standard library.
+  		</li>
+
+  		<li>
+  		  <a href="http://www.du.edu/~jcalvert/tech/6504.htm">Breadboard a
+        Computer</a> - J.B. Calvert's page is a tutorial that uses small
+        6504-based circuits to teach the fundamentals of a microcomputer
+        system.
+  		</li>
+
+		<li>
+		  <a href="http://mypeoplepc.com/members/spacebacker/SyMon/id1.html">Brian's
+      S/O/S SyMON II</a> - Brian M. Phelps created S/O/S SyMON II, a 65(C)02
+      BIOS with a monitor and assembler. His pages contain photos and
+      descriptions of several 6502 SBC projects along with documentation and
+      software for S/O/S SyMon II.
+		</li>
+
+		<li>
+		  <a href="http://www.cpcmicrosystems.com/jimini">Chris Cowen's Jimini
+      Platform</a> - CPC Microsystems is a website created by Christopher
+      Cowen detailing some of his microcomputer projects. One of his systems,
+      the Jimini Platform, is a modular 6502-based system which uses a
+      backplane similar to VME and is programmable in C using CC65.
+		</li>
+
+		<li>
+		  <a href="http://www.chrisward.org.uk/6502/">Chris Ward's 6502
+      Project</a> - Similar to DIY6502, Chris Ward's board has 32K SRAM, 8K
+      EEPROM, two 6522 VIAs, and one 6551 ACIA. Chris also has a schematic for
+      his parallel port EEPROM programmer circuit.
+		</li>
+
+		<li>
+		  <a href="http://www.opencores.org/project,t65">Daniel's T65</a> - Daniel
+      Wallner has created T65, a free 6502 VHDL core that supports the 6502,
+      65C02, and 65C816 instruction sets. A reference SoC design is also
+      provided, complete with ROM, RAM, and two 16450-compatible UARTs.
+		</li>
+
+		<li>
+		  <A HREF="http://www.free-ip.com">David's Free-6502</a> - David Kessner's
+      Free-IP site is home to the world's first free VHDL 6502 core.
+		</li>
+
+		<li>
+		  <a href="http://sbc.rictor.org/">Daryl's 65C02 SBC</a> - Daryl Rictor
+      has managed to squeeze a 65C02, 6526, RAM, ROM, and all associated
+      circuitry on a tiny 3.8"x2.5" board. His page includes schematics,
+      monitor software, and an interesting 65C02 simulator for Windows.
+		</li>
+
+		<li>
+		  <a href="http://6502.org/users/dieter/">Dieter's M02</a> - Dieter
+      Mueller has built a homebuilt 6502-based project without a
+      microprocessor IC or even FPGAs. Instead, he built his own 6502
+      work-alike using 40 ICs on two PCBs: mostly spare EPROMs and 74xx-series
+      logic. The custom CPU has several improvements over the original 6502,
+      such as a 16MB address range, most 65C02 opcodes, and some 65C816
+      features. The M02 computer includes a graphical LCD display and
+      keyboard, and runs the KERNAL and BASIC ROMs from the Commodore 64.
+		</li>
+
+		<li>
+		  <a href="http://www.hytherion.com/beattidp/">Douglas' DIY-6502</a> -
+      Douglas Beattie has constructed his own "do-it-yourself" 6502 computer
+      that include 2K or 8K ROM, 2K RAM, a 6551 ACIA for RS-232 and a 6522 VIA
+      for I/O functions. This page also featues his own macro cross assembler.
+		</li>
+
+		<li>
+		  <a href="http://users.telenet.be/kim1-6502/">Erik's DCF Decoder</a> -
+      Erik Van den Broeck has built a small 6502 board to decode and display a
+      signal from a DCF receiver, it includes a programmable clock with four
+      independent outputs.
+		</li>
+
+		<li>
+		  <a href="http://physics.ucsc.edu/people/eudaemons/layout.html">Eudaemons'
+      Shoe Computers</a> - Currently the only "evil" 6502 project on the web,
+      this page describes how the Eudaemons used a 6502 board hidden in the
+      sole of a shoe to cheat at the roulette table.
+    </li>
+
+		<li>
+		  <a href="http://www.6502.org/users/garth/">Garth Wilson's Projects</a> -
+      Garth Wilson has built many 6502 projects over the years and has
+      documented several of them on 6502.org, complete with photos and
+      schematics.
+		</li>
+
+		<li>
+		  <a href="http://www.lachenmeier.net/osiris">Georg's OSIRISflash</a> -
+      This German-only page describes Georg Lachenmeier's alternative energy
+      controller, which is based on the Mitsubishi 50747, a 6502 instruction
+      set compatible processor.
+		</li>
+
+		<li>
+		  <a href="http://home.micros.users.btopenworld.com/uk101/uk101.html">Grant's
+      MicroUK101</a> - Grant Searle has created his own computer based on the
+      Compukit UK101 that communicates via a serial port and includes a
+      monitor program and version of Microsoft BASIC. Everything you need to
+      build it yourself can be found on his web page.
+		</li>
+
+    <li>
+      <a href="http://www.fririki.net/6502/">Halldor's 6502 SBC Project
+      Site</a> - Halldor Karl Hognason's site describes a simple 6502-based
+      SBC. His pages include schematics and datasheets for the required parts.
+    </li>
+
+    <li>
+      <a href="http://web.inter.nl.net/users/J.Kortink/home/hardware/reco6502/index.htm">John's ReCo6502</a>
+      - John Kortink built this remake of the Acorn 6502 Second Processor
+      with contemporary parts.
+    </li>
+
+		<li>
+		  <a href="http://webpages.charter.net/greener/electronics/">Rob's Electronics Projects</a>
+		  - Rob Greene has been working on a 65C02-based computer that uses a PIC
+      microcontroller subsystem to provide a VGA graphics display.
+		</li>
+
+
+    <li>
+      <a href="http://laughtonelectronics.com/arcana/BrideOfSonPg1.html">Jeff's KimKlone</a> -
+      Jeff Laughton created the KimKlone, a computer that uses a standard
+      65C02 enhanced by off-chip circuitry. Its features include extensions
+      that give it a 16MB address space and hardware acceleration for the
+      Forth programming language.
+    </li>
+
+    <li>
+      <a href="http://www.pc65816.de/en/">Joachim's 65816 Projects</a> -
+      Joachim Deboy designed and built two 65816-based computers. His second
+      computer, PC65816 V2, includes a CRT controller, ethernet, IDE
+      interface, and a real time clock. These pages detail his projects with
+      schematics, photos, CPLD files, software, and more.
+    </li>
+
+		<li>
+		  <a href="http://www.kmsci.de/6502/6502.html">Klaus' 6502 Board</a> -
+      Klaus Mussler designed and built a small printed circuit board with 32K
+      of RAM, 16K of ROM, three VIAs for I/O, and a 6551 ACIA and MAX232
+      circuit for RS-232 communications.
+		</li>
+
+		<li>
+		  <a href="http://www.6502.org/users/krzysztof/">Krzysztof's Projects</a>
+      - Krzysztof Swiecicki is a 6502 enthusiast from Poland. He has built
+      some very interesting projects, including a 16450-based COM port,
+      AD1848-based audio output, an SBC with an overclocked 65C02, and a fuel
+      injection computer based on the 65SC816.
+		</li>
+
+		<li>
+		  <a href="http://mycorner.no-ip.org/6502/index.html">Lee's 6502-Based
+      Projects</a> - A pen plotter, complete 6502-based single board computer,
+      I2C and IDE interfaces, the EHBASIC interpreter, and more can all be
+      found on Lee Davison's project page.
+		</li>
+
+		<li>
+		  <a href="http://www.kuai.se/~leilin/extra/compukit/lwl01.htm">Lief's 6502 Constructions</A>
+		  - A showcase of a number Lief Leilin's of homebrew 6502 computers with
+      pictures, a schematic, and CompuKit UK101 enhancements.
+		</li>
+
+		<li>
+		  <a href="http://www.ody.ca/~mgenovy/6502.html">Mike Genovy's 6502 Stuff</a>
+ 		  - Documents the construction of a 6502-based SBC and its implementation
+      in a homebrew security system; including schematics, source code, and
+      several photographs.
+		</li>
+
+		<li>
+		  <a href="http://www.6502.org/users/mike/projects/6504/6504.html">Mike Naberezny's 6504 SBC</a>
+		  - A simple single board computer based on the 6504. It uses half of a
+      2764 for ROM (4K) and a 6532 RIOT for I/O. This page includes the
+      schematic, source code, and photographs.
+		</li>
+
+		<li>
+		  <a href="http://www.ti.uni-bielefeld.de/html/people/tkoehler/pgpsalm/index.html">PSALM</a>
+		  - A German-only page describing a project that reverse-engineered the
+      6502 to produce a VHDL core of an asynchronous (clockless) 6502.
+		</li>
+
+		<li>
+		  <a href="http://web.archive.org/web/20080318105543/http://www.geocities.com/ResearchTriangle/Node/7408/robots/robots.html">Pete's Robot</A>
+		  - "U2PO" is an autonomous 6502-based robot built by Pete McCollum.
+      Pete's website includes also includes other projects and robots like
+      VICBOT which is based on a Commodore VIC-20.
+		</li>
+
+		<li>
+		  <a href="http://www.philpem.me.uk/elec/6502/">Phil's 'The Great 6502 Computer Project'</a>
+		  - Phil Pemberton's 6502-based computer is based on a backplane design.
+      This site includes schematics for the CPU and UART cards.
+		</li>
+
+		<li>
+		  <a href="http://highgate.comm.sfu.ca/~rcini/6502proj.htm">Rich's My6502</a>
+      - Richard Cini's website has information on classic computers
+      and his own self-designed 6502 computer called My6502.
+		</li>
+
+		<li>
+		  <a href="http://rich12345.tripod.com">Rich12345's Hardware Page</a> -
+  		Interesting 6502-related hardware projects and documents, including
+      "Wozbot", an Apple II-based robot.
+		</li>
+
+		<li>
+		  <a href="http://members.casema.nl/hhaydn/atomhw.html">Roland's Atom-in-PC</a>
+  		- Roland Leurs has built an entire 6502-based Atom computer on a PC ISA
+      expansion card that even runs BBC BASIC. The 6502 communicates with the PC
+      via an 8255 PPI.
+		</li>
+
+		<li>
+		  <a href="http://www.hack.net/nixie/">Ryan's Nixie Clock</a>
+		  - Ryan Brooks built a Nixie tube clock that is driven by a 6502 with 8K
+      RAM, 8K EPROM, and a 6522 VIA. The RAM used is a Dallas DS1742, which
+      also acts as the real time clock. His page includes photos, schematics,
+      and source code.
+		</li>
+
+		<li>
+		  <a href="http://www.falvotech.com/content/kestrel/">Samuel's Kestrel Project</a> -
+  		Samuel Falvo has built a small number of 65C816-based projects. His site
+      contains schematics, software, and design documents.
+		</li>
+
+		<li>
+		  <a href="http://www.asciimation.co.nz/bender">Simon's Beer Brewing Bender</a> -
+  		Simon Jansen has built a replica of Bender, a robot character from the
+      television series Futurama. In addition to brewing beer, Simon's project
+      includes a 6502 SBC with IR control and audio playback.
+		</li>
+
+		<li>
+		  <a href="http://www.sprow.co.uk/bbc/minib.htm">Sprow's MiniB</a> - This
+      homebuilt computer is based on the BBC Micro. Smaller than a 3.5" floppy
+      disk, its features include a 20x4 LCD display, 128K Flash ROM, a Real
+      Time Clock, and a programmable logic device.
+		</li>
+	</ul>
+
+	<P style="padding-top:10px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+	<a name="software"><b>Homebuilt 6502 Software Projects</b></a>
+
+	<ul>
+		<li><a href="http://dunkels.com/adam/uip/">Adam's uIP</A> - Adam Dunkels has
+		written a free, small TCP/IP stack in C which has been ported to x86,
+		8051, and 6502 systems.</li>
+
+		<li><a href="/users/andre/index.html">Andre's GeckOS/A65</A> -
+		Andre Fachat has written a small 6502 multitasking operating system that
+		runs on the Commodore 64 and PET computers as well as his homebuilt 6502
+		projects.</li>
+
+		<li><a href="http://www.z80.eu/dos65.html">Richard's DOS/65</a> -
+		Richard Leary has written DOS/65, an interesting operating system with
+    file system compatibility to CP/M-80 (and other similarities).
+    </li>
+
+		<li><a href="http://mycorner.no-ip.org/6502/ehbasic/index.html">Lee's
+		EHBASIC</A> - EHBASIC, or Enhanced 6502 BASIC, is a very advanced and
+		easily portable BASIC interpreter for 6502-based systems from Lee
+		Davison.</li>
+
+		<P><I>See also the <a href="/source/">Source Code Repository</a>
+		for more 6502 software in assembly language.</I>
+	</ul>
+
+	<P style="padding-top:10px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+	<a name="software"><b>Reverse Engineering Projects</b></a>
+
+	<ul>
+	  <li>
+      <a rel="nofollow" href="http://www.visual6502.org/">Visual Transistor-level Simulation of the 6502 CPU</a> -
+      This incredible browser-based simulator in JavaScript was made by
+      photographing a 6502 chip die, converting those images to vector
+      polygons, then building maps of transistor connections from those. It
+      is an accurate representation of the 6502 in its most intricate details.
+    </li>
+
+		<li><a href="http://impulzus.sch.bme.hu/6502/6502/">Reverse Engineering the 6502</a> - This Hungarian-only
+		site attempts to reverse engineer the NMOS 6502 microprocessor.  High-resolution scans of
+		the 6502 silicon are included along with an impressive attempt to make a schematic diagram from them.</li>
+  </ul>
+
+	</td>
+
+	<td><img src="/images/spacer.gif" height="1" width="10" alt=" "></td>
+
+	</tr>
+
+	</table>

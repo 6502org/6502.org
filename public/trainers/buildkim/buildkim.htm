@@ -1,0 +1,168 @@
+<HTML><HEAD><TITLE>www.6502.org: Build Your Own KIM-1</TITLE>
+<META name="description" content="Build your own KIM-1 replica with Ruud Raltissen.">
+</HEAD>
+<A HREF="http://www.6502.org"><IMG SRC="../../mainlink.jpg" align=right border=0 alt="[Return to Main Page]"></A>
+<BODY BACKGROUND="/graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<P><FONT SIZE=+1>Build Your Own KIM-1 with Ruud Baltissen</FONT>
+<BR clear=all><A HREF="../trainers.htm">[Up to Early Microcomputers and Trainers]</A>
+<BR clear=all><P>
+In this article, Ruud Baltissen describes how you can make your own KIM-1 replica.  Ruud
+improves on the original design and makes it much easier to construct by reducing the
+parts count using some modern chips not available at the time the original KIM-1 was sold.
+<P>Ruud's "KIM-2" retains full software compatibility with the original KIM-1 microcomputer.
+Schematics for both the original and the simplified version are included along with
+source code for the monitor ROM.  Good luck and have fun building your own classic KIM-1!
+<P>
+<HR>
+<BR>
+<FONT COLOR="#FF0000"><B> DISCLAIMER </B></FONT>
+<UL>
+<LI>All names with a copyright are acknowledged.
+<LI>If the reader uses information from this document to write software 
+or build hardware, then it is on his own account. I cannot be held 
+responsible for blowing up your computer, mother-in-law or whatever; 
+it will always be your own fault.
+<LI>I'm not a sexist, with 'he' and 'him' I also mean 'she' and 'her'.
+</UL>
+<p>
+<FONT COLOR="#FF9900"><B>Copyrights </B></FONT>
+<UL>
+<LI>You may copy every bit on this page, including the source code, 
+for non-commercial use. I hope you enjoy it. If you use it, just 
+give me at least some credit like "Stolen from Ruud" :-)
+</UL>
+
+<hr><p><B><FONT COLOR="#3300FF">What is the KIM-1?</B></FONT>
+
+<P>If you don't know by now then stop and read my document about the 
+<A HREF="kim.htm">KIM-1</A> first.
+
+<p><B> <FONT COLOR="#3300FF">The Troublemaker: 6530 </FONT> </B> 
+
+<P>The only real hurdle to building a replica KIM-1 is an old I/O chip
+called the 6530.  Anybody who is a little familiar with the hardware market 
+can tell you that you can't find anywhere to buy the old 6530 anymore,
+and it is used twice in the original KIM-1.  Happily enough 
+there is another IC available which you could call its brother: 
+the 6532. 
+
+<P>The 6532 has 16 I/O-lines, an internal timer and 128 bytes of RAM onboard.
+It also has no internal mask-programmed ROM. But we (should) know by now that 
+the internal ROM of the 6530 could be selected unindependently from the I/O. 
+So for this project we'll use an external EPROM as replacement. The pinout of 
+the 6532 is completely different but that should not be a problem. The next 
+difference is the fact that the 6532 has a separate IRQ and PB7 line. As we will 
+see, the functionality of both lines is the same as with the 6530. To create 
+the same circumstances we only have to connect them together.  The third difference 
+is the availability of PB6 with a 6532. See it as a bonus as I haven't found any 
+reason how it could jeopardize our project. The fourth difference is that it is 
+possible to generate an interrupt depending the behaviour of PA7. But this is an 
+option which is out of function by default after a reset. 
+
+<P>The last and major difference however lays in the way the registers are selected:
+
+<PRE>
+funtion:        RS:  A6:  A5:  A4:  A3:  A2:  A1:  A0:  R/W:
+
+RAM              0    x    x    x    x    x    x    x    x
+
+DRA              1    x    x    x    x    0    0    0    x     A
+DDRA             1    x    x    x    x    0    0    1    x     B
+DRB              1    x    x    x    x    0    1    0    x     C
+DDRB             1    x    x    x    x    0    1    1    x     D
+
+PA7, IRQ off,
+      neg edge   1    x    x    0    x    1    0    0    0     F
+PA7, IRQ off,
+      pos edge   1    x    x    0    x    1    0    1    0     G
+PA7, IRQ on,
+      neg edge   1    x    x    0    x    1    1    0    0     H
+PA7, IRQ on,
+      pos edge   1    x    x    0    x    1    1    1    0     I
+
+read interrupt
+       flag      1    x    x    x    x    1    x    1    1     E
+
+read timer,
+       IRQ off   1    x    x    x    0    1    x    0    1     J
+read timer,
+       IRQ on    1    x    x    x    1    1    x    0    1     K
+
+Clock / 1,   
+       IRQ off   1    x    x    1    0    1    0    0    0     L
+Clock / 8,   
+       IRQ off   1    x    x    1    0    1    0    1    0     M
+Clock / 64, 
+       IRQ off   1    x    x    1    0    1    1    0    0     N
+Clock / 1024,
+       IRQ off   1    x    x    1    0    1    1    1    0     O
+
+Clock / 1,
+       IRQ on    1    x    x    1    1    1    0    0    0     P
+Clock / 8,
+       IRQ on    1    x    x    1    1    1    0    1    0     R
+Clock / 64,
+       IRQ on    1    x    x    1    1    1    1    0    0     S
+Clock / 1024,
+       IRQ on    1    x    x    1    1    1    1    1    0     T
+</PRE>
+As we can see, the last 16 registers equal the 16 of the 6530. 
+So now we have to develop some logic which will do the following: 
+
+<UL><LI>The 6532 is only visible within a range of 128 bytes
+<LI>The first 16 bytes represent register 16 to 31
+<LI>The next 48 bytes are mirrors of the first 16
+<LI>The last 64 bytes apear as RAM
+</UL>
+Conclusion:
+<UL>
+<LI>Input A6 won't be used and can be tied to GND
+<LI>Input A4 is connected to addressline A4 of the 6502 via an invertor.
+<LI>An 74LS138/74LS08 construction or equivalent enables the RS- and CS-lines at the right moment.
+</UL>
+
+<B> <FONT COLOR="#3300FF">ROM and RAM </FONT> </B> 
+
+<P>Here we have another problem. The original KIM-1 only has 2K of ROM.  While it is
+possible to buy a 2K EPROM (the 2716), it is more expensive and much less available than 
+the popular 2764, an 8K device.  The same problem applies to the RAM.  We will use the 8K
+parts and simply tie the upper address lines to GND to make them act like the 2K versions.
+
+<P>On the new schematic the EPROM and SRAM are wired up to act just like the original 
+KIM-1 memories.  However, it would be quite simple to use the upper portions of these chips
+we have disabled to expand the memory of your replica KIM-1.
+You can do this by OR-wiring the CS-line with more Kx-outputs of the main 
+74145.  Don't forget to wire up the address lines also! 
+In case of the EPROM we can tie switches 
+to the surplus address lines and have the advantage of a switchable multi-KERNEL system.
+
+<p><B> <FONT COLOR="#3300FF">Source Codes of the ROM </FONT> </B> 
+
+<P>You can compile your own monitor ROM based on my commented source code.  You can
+<A HREF="kim-src.htm">browse it</A> online or download it as a text file: 
+<A HREF="kim-src.asm">kim-src.asm</A>.  It should be 100% okay.<p><B> 
+
+<FONT COLOR="#3300FF">Schematics of the New KIM-1 </FONT> </B> 
+
+<p>Available here as a GIF file: <A HREF="kim-rb.gif">kim-rb.gif</A>.  You can compare it
+to my schematic of the original KIM-1: <A HREF="kim.gif">kim.gif</A>.
+<p>These are major differences between the two:
+<UL>
+<LI>Replacement of the 6530s by 6532s.
+<LI>Replacement of the 6108 RAM-ICs by one 6264 or equivalent 8K*8 SRAM.
+<LI>Adding an EPROM.
+<LI>Adding a 74LS138 to decode the RAM and I/O of the 6532s.
+<LI>Combining K6 and K7 to one line, dropping the resistor for K6.
+<LI>Adding jumpers to enable combining other K-lines as well.
+</UL>
+I didn't change things which are more or less obvious like replacing the clock circuit 
+by an oscillator module or replacing all different TTL-ICs by LS or HCT types. 
+
+<P>Send your comments and feedback to Ruud Baltissen, <A HREF="mailto:ruud">g.j.p.a.a.baltissen@kader.hobby.nl</A>.
+
+<P><HR>
+<I>www.6502.org: Build Your Own KIM-1</I>
+<BR>This site is maintained by <A HREF="mailto:mnaberez@nyx.net">
+Mike Naberezny</A> and hosted on <A HREF="http://buzz.chisp.net">Buzz.chisp.net</A>.
+<BR>Last page update: July 10, 1999.
+</HTML>

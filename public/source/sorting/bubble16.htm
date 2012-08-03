@@ -1,0 +1,99 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: 16-bit Bubble Sort</TITLE>
+<META name="description" content="A 6502 assembly language bubble sort routine for a list containing 8-bit elements.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Bubble Sort (for 16-Bit Elements)</FONT><FONT SIZE=-1> from 6502 Software Design</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Sorting Lists Having 16-Bit Elements</B>
+<P>The sort subroutine discussed in the preceding example (see <A HREF="bubble8.htm">8-bit Bubble Sort</A>) was relatively simple because the elements were 8-bit values, and could be compared with a CMP instruction and exchanged without too much difficulty.  Unfortunately, the 6502 microprocessor has no 16-bit compare instruction, so a comparison must be made by actually subtracting the elements and testing the status of the result; if a borrow occurs, the elements must be exchanged, otherwise the elements can remain in their present order.  The SORT16 subroutine sorts 16-bit elements using the bubble-sort algorithm and a 16-bit "compare" sequence.
+<PRE>
+;THIS SUBROUTINE ARRANGES THE 16-BIT ELEMENTS OF A LIST IN
+;ASCENDING ORDER.  THE STARTING ADDRESS OF THE LIST IS IN LOCATIONS
+;$30 AND $31.  THE LENGTH OF THE LIST IS IN THE FIRST BYTE OF THE LIST.
+;LOCATION $32 IS USED TO HOLD AN EXCHANGE FLAG.
+
+SORT16   LDY #$00     ;TURN EXCHANGE FLAG OFF (= 0)
+         STY $32
+         LDA ($30),Y  ;FETCH ELEMENT COUNT
+         TAY          ;  AND USE IT TO INDEX LAST ELEMENT
+NXTEL    LDA ($30),Y  ;FETCH MSBY
+         PHA          ;  AND PUSH IT ONTO STACK
+         DEY
+         LDA ($30),Y  ;FETCH LSBY
+         SEC
+         DEY
+         DEY
+         SBC ($30),Y  ; AND SUBTRACT LSBY OF PRECEDING ELEMENT
+         PLA
+         INY
+         SBC ($30),Y  ; AND SUBTRACT MSBY OF PRECEDING ELEMENT
+         BCC SWAP     ;ARE THESE ELEMENTS OUT OF ORDER?
+         CPY #$02     ;NO. LOOP UNTIL ALL ELEMENTS COMPARED
+         BNE NXTEL
+         BIT $32      ;EXCHANGE FLAG STILL OFF?
+         BMI SORT16   ;NO. GO THROUGH LIST AGAIN
+         RTS
+
+;THIS ROUTINE BELOW EXCHANGES TWO 16-BIT ELEMENTS IN MEMORY
+
+SWAP     LDA ($30),Y  ;SAVE MSBY1 ON STACK
+         PHA
+         DEY
+         LDA ($30),Y  ;SAVE LSBY1 ON STACK
+         PHA
+         INY
+         INY
+         INY
+         LDA ($30),Y  ;SAVE MSBY2 ON STACK
+         PHA
+         DEY
+         LDA ($30),Y  ;LOAD LSBY2 INTO ACCUMULATOR
+         DEY
+         DEY
+         STA ($30),Y  ; AND STORE IT AT LSBY1 POSITION
+         LDX #$03
+SLOOP    INY          ;STORE THE OTHER THREE BYTES
+         PLA
+         STA ($30),Y
+         DEX
+         BNE SLOOP    ;LOOP UNTIL THREE BYTE STORED
+         LDA #$FF     ;TURN EXCHANGE FLAG ON (= -1)
+         STA $32
+         CPY #04      ;WAS EXCHANGE DONE AT START OF LIST?
+         BEQ SORT16   ;YES. GO THROUGH LIST AGAIN.
+         DEY          ;NO. COMPARE NEXT ELEMENT PAIR
+         DEY
+         JMP NXTEL
+</PRE>
+The SORT16 subroutine is designed with the same algorithm as SORT8, so the two subroutines have several characteristics in common.  For example, both SORT8 and SORT16 have an exchange flag (in the same location, $32) that indicates whether or not an exchange occurred during the last pass through the list.  Like SORT8, the SORT16 subroutine also compares adjacent elements (albeit with a 16-bit subtraction, as opposed to the simple 8-bit comparison of the SORT8) and has an exchange routine that interchanges misordered elements in memory.
+<P>Aside from the fact that SORT8 and SORT16 operate on different size elements, the only other real difference between them is that SORT16 processes the list from the end and works upward, whereas, SORT8 process the list from the beginning and works downward.  Why the difference in procedure?  There is no good reason, other than to demonstrate that a bubble sort can operate in either direction.
+<P>SORT16 starts by initializing the exchange flag to zero, and fetching the element count from the first byte of the list.  Using that value to point Y at the last element, the 6502 microprocessor executes "compare" (subtraction) instructions.  These instructions, which start with the NXTEL instruction, perform a double-precision subtraction.  In this subtraction, the lest-significant bytes (LSBYs) are subtracted first, and any borrow from that operation is passed, via the Carry, to the subtraction of the most-significant bytes (MSBYs).
+<P>Operations on multiple-precision elements typically require a lot of pointer manipulation, as you can see by the instructions that follow the NXTEL label.  To get the higher-addressed LSBY, the Y register must be decremented from its MSBY position.  Before decrementing the Y register, however, the higher-addressed MSBY is pushed onto the stack for later use.  With several more Y register decrements, the two LSBYs are addressed and subtracted.  The result of the subtraction is not saved, since we are only interested in the final status of the operation, not the numerical result.
+
+<CENTER><PRE>
+         |           |                     |           |
+         +-----------+                     +-----------+
+ADDR     |   LSBY1   |            ADDR     |   LSBY2   |
+         +-----------+                     +-----------+
+ADDR + 1 |   MSBY1   |            ADDR + 1 |   MSBY2   |
+         +-----------+                     +-----------+
+ADDR + 2 |   LSBY2   |            ADDR + 2 |   LSBY1   |
+         +-----------+                     +-----------+
+ADDR + 3 |   MSBY2   |            ADDR + 3 |   MSBY1   |
+         +-----------+                     +-----------+
+         |           |                     |           |
+
+    (A) Before Swap.                  (B) After Swap.
+</PRE>
+     Figure 1: Swapping two 16-bit values in memory.
+</CENTER>
+<P>The most-significant bytes (MSBYs) are subtracted next, by retrieving the higher-addressed MSBY from the stack and subtracting the lower-addressed MSBY from it.  With this subtraction, we can make the exchange/no-exchange decision based ont he state of the Carry flag.  If Carry is set (no borrow occurred), the elements are in the correct order; if Carry is reset (a borrow occurred), the elements must be exchanged.
+<P>Figure 1 shows what the SWAP routine actually does, by presenting the "before" and "after" diagrams of the exchanged 16-bit elements.  The higher-valued elements initially resides in symbolic addresses ADDR + 2 and ADDR + 3, and its bytes are designated as LSBY2 and MSBY2.  The lower-valued elements initially resides in symbolic addressed ADDR and ADDR + 1, and its bytes are designated LSBY1 and MSBY1.  The sequence of the SWAP routine will be more easily understood if you refer to Figure 1 while studying the instructions of the routine.
+<P>Due to the previous subtraction routine, the Y register index is pointing at MSBY1 when the SWAP routine is initiated.  Taking advantage of this pointer, SWAP saves MSBY1 and the adjacent byte, LSBY1, on the stack.  Recalling that information is retrieved from a stack in the opposite order from which it was entered on the stack, the MSBY1-then-LSBY1 push sequence implies which byte will be the next to be pushed onto the stack- it will be MSBY2.  With these three bytes on the stack, the final byte LSBY2 is moved from ADDR + 2 (again, refer to Figure 1) to ADDR.  A short loop (SLOOP) pulls bytes MSBY2, LSBY1, and MSBY1 off the stack and stores them in the locations following LSBY2.  The SWAP routine ends by turning on the exchange flag in location $32.  If Elements 1 and 2 were exchanged, a BEQ SORT16 instrucion branches to the top of the subroutine; otherwise, control jumps to NXTEL, for the next comparison.
+<P><FONT SIZE=-1>Last page update: August 6, 2000.</FONT>
+</BODY></HTML>

@@ -1,0 +1,231 @@
+<html>
+<head>
+	<meta name="description" content="Demonstrates how to preserve registers using the stack on the 6502 and 65C02.">
+	<title>6502.org: Source: Register Preservation Using The Stack (and a BRK handler)</title>
+	<style>
+		body 			{ font-family: helvetica, arial, sans-serif; margin: 0 1em; padding-bottom: 3ex; }
+		p, li 			{ text-align: justify; }
+		pre 			{ padding: 0.8ex 0.5em 0.8ex 1.5em; border-left: 3px solid #009ae1; margin: 0.5ex 5em 0.5ex 0; background-color: #ddd; }
+		h1, h2, h3, h4 	{ font-family: verdana, helvetica, arial, sans-serif; color: #00326e; }
+		ul 				{ list-style: disc outside; }
+		em.highlight 	{ font-style: normal; font-weight: bold; color: red; }
+	</style>
+</head>
+<body>
+<p></p><h3>Register Preservation Using The Stack (and a BRK handler)</h3>
+by Bruce Clark, 7 Jun 2004
+<hr>
+
+<p>On the 65C02, a subroutine can save the A, X, and Y registers without altering them by using:</p>
+
+<pre>
+PHA
+PHX
+PHY
+</pre>
+
+<p>The subroutine then restores A, X, and Y by exiting with:</p>
+
+<pre>
+PLY
+PLX
+PLA
+RTS
+</pre>
+
+<p>The PHX/PLX and PHY/PLY instructions are not available on the 6502.  On the 6502, A, X, and Y are often saved using:</p>
+
+<pre>
+PHA
+TXA
+PHA
+TYA
+PHA
+</pre>
+
+<p>which preserves X and Y, but overwrites A.  The subroutine then restores A,
+X, and Y by exiting with:</p>
+
+<pre>
+PLA
+TAY
+PLA
+TAX
+PLA
+RTS
+</pre>
+
+<p>One way to preserve A (to allow it to be passed as a parameter to the
+subroutine) -- as well as X and Y -- is to use:</p>
+
+<pre>
+STA TEMP
+PHA
+TXA
+PHA
+TYA
+PHA
+LDA TEMP
+</pre>
+
+<p>which takes 4 additional bytes and 6 additional cycles if TEMP is a zero page
+location, and 6 additional bytes and 8 additional cycles if TEMP is an
+absolute memory location.</p>
+
+<p>This is usually sufficient, but if, for example, the subroutine is used by the
+main program and by an interrupt routine, interrupts must be disabled so that
+TEMP will not be in use when the interrupt occurs.</p>
+
+<p>An alternative is to use:</p>
+
+<pre>
+PHA
+TXA
+TSX
+PHA
+TYA
+PHA
+INX
+LDA $100,X ; get A from the stack
+</pre>
+
+<p>which takes 5 additional bytes and 8 additional cycles (as compared to the
+the first 6502 example, not the previous example) but interrupts need not
+be disabled since it gets A from the stack rather than requiring a special
+memory location.  This could be used in a subroutine called by an NMI (since
+an NMI can't be disabled).  Remember, NMIs are dangerous, and should be used
+with extreme caution if at all.</p>
+
+<p>Notice that the idea is to get the stack pointer into X as soon as possible
+so that the number INX instructions needed can be minimized.</p>
+
+<p>The code above works correctly regardless of the value of the stack pointer.
+As long as the stack pointer is not $FF, the last two instructions could be
+replaced with a LDA $101,X instruction, which would save 1 byte and two
+cycles.  Ordinarily, this is not a problem since the stack pointer is usually
+initialized to $FF (and will therefore be less than $FF after the PHA).  It
+goes without saying that the software should be fully debugged before even
+considering the LDA $101,X change.</p>
+
+<p>The code above preserves A, but overwrites X.  To preserve A, X, and Y, use:</p>
+
+<pre>
+PHA
+TXA
+TSX
+PHA
+TYA
+PHA
+INX
+LDA $100,X ; get A from the stack
+PHA
+DEX
+LDA $100,X ; get X from the stack
+TAX
+PLA
+</pre>
+
+<p>which is 7 bytes and 15 cycles longer than the previous example.  This may be
+more trouble than it is worth, but it could come in handy for subroutines
+that are used for debugging (where the idea is to be as independent as
+possible and to stay as far out of the way of the main program as possible).</p>
+
+<p>The preceding techniques can also be applied to the BRK/IRQ interrupt
+handler.  For example, on the 6502,</p>
+
+<pre>
+PHA
+TXA
+TSX
+PHA
+INX
+INX
+LDA $100,X ; get the status register from the stack
+AND #$10   ; mask B flag
+BNE BREAK
+BEQ IRQ
+</pre>
+
+<p>can be used to determine whether the interrupt was caused by a BRK
+instruction or an IRQ.  Ordinarily, of course, the code would simply fall
+through to the IRQ handler, eliminating the BEQ instruction.  The BRK and
+IRQ handlers would then exit with:</p>
+
+<pre>
+PLA
+TAX
+PLA
+RTI
+</pre>
+
+<p>Alternatively, A and X could be restored immediately after branching (or
+falling through) to the BRK or IRQ interrupt handler.</p>
+
+<p>On the 65C02, with PHX and PLX available,</p>
+
+<pre>
+PHX
+TSX
+PHA
+INX
+INX
+LDA $100,X ; get the status register from the stack
+AND #$10   ; mask B flag
+BNE BREAK
+BEQ IRQ
+</pre>
+
+<p>can be used, which takes 1 fewer byte and 2 fewer cycles than the 6502
+example.  The BRK and IRQ handlers would then exit with:</p>
+
+<pre>
+PLA
+PLX
+RTI
+</pre>
+
+<p>which also takes 1 fewer byte and 2 fewer cycles than the 6502 example.</p>
+
+<p>Note that A and X are saved in the opposite order that they were in the 6502
+example!</p>
+
+<p>The B (Break) flag, bit 4 of the P (Processor status) register, is a frequent
+source of confusion on the 6502.  The sole purpose of this flag is to
+distinguish a BRK from a IRQ.  However, the behavior of BRK and IRQ (and how
+to distinguish between the two) can be described  without even mentioning the
+B flag.</p>
+
+<p>After the return address has been pushed onto the stack, a BRK instruction
+pushes the value of the P register ORed with $10, then transfers control to
+the BRK/IRQ interrupt handler.</p>
+
+<p>After the return address has been pushed onto the stack, an IRQ interrupt
+pushes the value of the P register ANDed with $EF, then transfers control to
+the BRK/IRQ interrupt handler.</p>
+
+<p>This means that the value of the P register that was pushed onto the stack
+must be used to distinguish a BRK from a IRQ, not the value of the P register
+upon entry to the BRK/IRQ interrupt handler.  Specifically,</p>
+
+<pre>
+PHA
+PHP
+PLA
+AND #$10  ; mask B flag
+BNE BREAK
+BEQ IRQ
+</pre>
+
+<p>does NOT properly distinguish a BRK from an IRQ!</p>
+
+<p><b>Chelly adds:</b> <i>At the end proper checking of the B flag is discussed.
+My feedback is that it would be simpler to explain that there is no B flag in
+the processor status register; that bit is simply unused. When pushing the
+status register on the stack, that bit is set to a fixed value based on the
+instruction/event (set for PHP and BRK, clear for NMI). This is much simpler
+to explain and leads to no incorrect assumption that there is a B flag in the
+status register that can be checked.</i></p>
+	
+<hr />
+<p><font size="-1">Last page update: November 11, 2006.</font></p>
+</html>

@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Set environment
+ */
+if (!defined('MAD_ENV')) define('MAD_ENV', isset($_SERVER['MAD_ENV']) ? $_SERVER['MAD_ENV'] : 'development');
+require_once dirname(dirname(__FILE__)).'/config/environment.php';
+
+try {
+    // dump schema from development
+    
+    
+    // load schema to test
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}

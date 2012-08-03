@@ -1,0 +1,154 @@
+<? $this->title = 'Synertek SYM-1 Resources' ?>
+<? $this->description = 'Information and links for the enthusiasts of the SYM-1 microcomputer.' ?>
+
+<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
+	<tr>
+		<td><img src="/images/spacer.gif" width="10" alt=" "></td>
+
+		<td width="100%" bgcolor="#ffffff" class="bodyblack" style="padding-top:15px;">
+    <p>
+      This section contains information and binaries for the Synertek Systems
+      SYM-1 Single Board Computer. Additional documents from Synertek, such as
+      their full 1981-1982 databook, can be found in the <a
+      href="/documents/datasheets">Datasheets Archive</a>.
+    </p>
+
+    <p>
+      Special thanks to Andrew Lankford, Dallas Shell, Leland Goertz, and
+      Ren&#233 Sommerlatt for most of the material and the hard work that made this section
+      possible. If you have additional SYM-1 information, please send them to
+      us via
+      <?= $this->mailTo('webmaster@6502.org', 'email', array('encode' => 'javascript')) ?>.
+    </p>
+
+		<p style="padding-top:20px;"><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="web-resources"><b>Synertek Web Resources</b></a>
+  		<ul>
+        <li>
+          <a href="/users/dallas/">Dallas' SYM-1 Pages</a> - Dallas Shell has
+          one of the largest sites about the SYM-1. His pages include
+          photographs, descriptions, and schematics of his many modifications
+          and expansion projects.
+        </li>
+  		</ul>
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="manuals"><b>Synertek SYM-1 Manuals</b></a>
+  		<ul>
+        <li>
+          <a href="/trainers/synertek/manuals/srefman.pdf">SYM-1 Reference Manual</a> from Synertek
+        </li>
+        <li>
+          <a href="/trainers/synertek/manuals/technotes.pdf">SYM-1 Technical Notes</a> from Synertek
+        </li>
+        <li>
+          <a href="/trainers/synertek/manuals/shardtom.pdf">Hardware Theory of Operations Manual</a> by Robert A. Peck
+        </li>
+        <li>
+          <a href="/trainers/synertek/manuals/smontom.pdf">Monitor Theory of Operations Manual</a> by Robert A. Peck
+        </li>
+        <li>
+          <a href="/documents/books/microprocessor_fundamentals_sym1.pdf">Microprocessor Fundamentals (SYM-1 version)</a> by Raymond N. Bennett and John Stocksdale
+        </li>
+  		</ul>
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="symphysis"><b>SYM-PHYSIS: The SYM-1 Users' Group Newsletter</b></a>
+  		<ul>
+        <li>
+          <a href="/documents/publications/symphysis/">SYM-PHYSIS</a> -
+            was a newsletter distributed by the SYM Users' Group from September
+            1979 to December 1983, dedicated to the SYM-1 and other Synertek devices.
+            All eighteen issues are available in their orginal format in Portable
+            Document Format (PDF).
+        </li>
+  		</ul>
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="monitor"><b>SYM-1 Monitor</b></a>
+  		<ul>
+        <li>
+          <a href="/trainers/synertek/monitor/sy1_1mon.pdf">Monitor Enhancements</a> -
+            document describes the differences introduced with the second release of the SYM-1
+            and its updated Monitor, version 1.1.  The changes are mainly in the tape area.
+        </li>
+        <li><a href="/trainers/synertek/monitor/symon1_0.bin">SYMON1_0.BIN</a> - Monitor Version 1.0 Binary - ready to get burned.</li>
+        <li><a href="/trainers/synertek/monitor/symon1_0.bin">SYMON1_1.BIN</a> - Monitor Version 1.1 Binary - ready to get burned.</li>
+        <li><a href="/trainers/synertek/monitor/synmon11.asm">SYNMON11.ASM</a> - SYM-1 Supermon and audio cassette interface sources,
+          combined and converted to Telemark Assembler (TASM) 3.1.</li>
+  		</ul>
+	  </p>
+
+		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="rae"><b>RAE: Resident Assembler Editor</b></a>
+  		<ul>
+        <li><a href="/trainers/synertek/rae/raeman.pdf">RAE Reference Manual</a> - from Synertek</li>
+        <li><a href="/trainers/synertek/rae/raenote1.pdf">RAE Notes Issue #1</a> - from the SYM-1 Users' Group</li>
+        <li><a href="/trainers/synertek/rae/raenote2.pdf">RAE Notes Issue #2</a> - from the SYM-1 Users' Group</li>
+        <li><a href="/trainers/synertek/rae/raenote3.pdf">RAE Notes Issue #3</a> - from the SYM-1 Users' Group</li>
+        <li><a href="/trainers/synertek/rae/RAE_B000.BIN">RAE_B000.BIN</a> - RAE 4k Binary ($B000-BFFF) - ready to get burned.</li>
+        <li><a href="/trainers/synertek/rae/RAE_E000.BIN">RAE_E000.BIN</a> - RAE 4k Binary ($E000-EFFF) - ready to get burned.</li>
+  		</ul>
+	  </p>
+
+
+	  <p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="basic"><b>SYM-1 BASIC Interpreter</b></a>
+  		<ul>
+        <li>
+          <a href="basic/sym-basic.txt">Leland Goertz's Listings</a>
+            includes both standard hex and raw ASCII dumps of the program. It
+            was placed in public domain when the company under. The listings
+            also show the differences between BASIC versions for the SYM-1,
+            KIM-1, AIM-65, and OSI. An 8KB <A HREF="basic/symbasicv11.rom">ROM
+            Image</A> was extracted from the dumps by Leslie Ayling.
+        </li>
+        <li>
+          <a href="http://mycorner.no-ip.org/6502/symbasic/index.html">Full Disassembly</a>
+          of SYM-1 BASIC has been made available by Lee Davison.
+        </li>
+        <li><a href="/trainers/synertek/basic/basman.pdf">Synertek BASIC Reference Manual</a> - from Synertek</li>
+        <li><a href="/trainers/synertek/basic/BAS_C000.BIN">BAS_C000.BIN</a> - BASIC 1.1 4k Binary ($C000-CFFF) - ready to get burned.</li>
+        <li><a href="/trainers/synertek/basic/BAS_D000.BIN">BAS_D000.BIN</a> - BASIC 1.1 4k Binary ($D000-DFFF) - ready to get burned.</li>
+        <li><a href="/trainers/synertek/basic/BASIC1_1.BIN">BASIC1_1.BIN</a> - BASIC 1.1 8k Binary ($C000-DFFF) - ready to get burned.</li>
+        <li><a href="/trainers/synertek/basic/BXT_0200.BIN">BXT_0200.BIN</a> - BASIC Extension ($0200-11FF) - to be copied to memory.</li>
+        <li><a href="/trainers/synertek/basic/BXT_1200.BIN">BXT_1200.BIN</a> - BASIC Extension ($1200-1705) - to be copied to memory.</li>
+  		</ul>
+	  </p>
+
+	  <p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="forth"><b>FDC-FORTH: FORTH Interest Group FORTH for the SYM-1</b></a>
+  		<ul>
+        <li>
+          <a href="http://www.6502.org/trainers/synertek/symforth/fig_4th.pdf">Installation Instructions</a> -
+            from the SYM Users' Group describe how to install
+            FDC-FORTH on SYM-1 microcomputers with the FDC-1 disk
+            controller.  Modifications for cassette operation are also presented.
+        </li>
+  		</ul>
+	  </p>
+
+	  <p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="symulator"><b>SYMulator: The SYM-1 Emulator</b></a>
+  		<ul>
+        <li>
+          <a href="/trainers/synertek/symulator/symulator.zip">SYMulator</a> -
+            is a working SYM-1 simulator by
+            <?= $this->mailTo('andrew.dunn@flinders.edu.au', 'Andrew Dunn', ['encode' => 'javascript']) ?>.
+            It based on a modified version of Daryl Rictor's
+            <a href="http://sbc.rictor.org/simulator.html">65C02 simulator</a> and
+            supports Supermon 1.1 at $8000, Basic at $C000, and RAE at $B000.
+        </li>
+  		</ul>
+	  </p>
+
+	</td>
+
+	<td><img src="/images/spacer.gif" height="1" width="10" alt=" "></td>
+
+	</tr>
+
+	</table>

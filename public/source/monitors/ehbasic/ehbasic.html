@@ -1,0 +1,1170 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Enhanced 6502 BASIC</TITLE>
+<META name="description" content="An advanced BASIC interpreter for the 6502 microprocessor.">
+</HEAD>
+<BODY
+BACKGROUND="../../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../../index.html"><IMG SRC="../../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Enhanced 6502 BASIC</FONT>&nbsp;<FONT SIZE=-1>by Lee Davison</FONT>
+<BR clear=all><A HREF="../../source.htm">[Up to Source Code
+Repository]</A>
+<BR clear=all><P>
+<HR>
+<P>
+<P>
+<B><U>Numbers</U></B>
+<BLOCKQUOTE>
+  Numbers may range from zero to plus or minus 1.70141173x10^38 and will have an
+  accuracy of just under 1 part in 1.68 x 10^7.
+
+  <P>Numbers can be preceeded by a sign, + or -, and are written as a string of
+  numeric digits with or without a decimal point and can also have a positive
+  or negative exponent as a power of 10 multiplier e.g.
+  <P>
+  <CENTER>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+      <TR>
+        <TD>-142</TD> 
+        <TD>96.3</TD> 
+        <TD>0.25</TD> 
+        <TD>-136.42E-3</TD>
+        <TD>-1.3E7</TD> 
+        <TD>1</TD> 
+      </TR>
+    </TABLE>
+  </CENTER>
+  <P>
+  .. are all valid numbers.
+  <P>
+  Integer numbers, i.e. with no decimal fraction or exponent, can also be in
+  either hexidecimal or binary. Hexidecimal numbers should be preceeded by <B>$</B>
+  and binarynumbers preceeded by <B>%</B>, e.g.
+  <P>
+  <CENTER>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+      <TR>
+        <TD>%101010</TD> 
+        <TD>-$FFE0</TD> 
+        <TD>$A0127BD</TD> 
+        <TD>-%10011001</TD> 
+        <TD>%00001010</TD>
+        <TD>$0A</TD> 
+      </TR>
+    </TABLE>
+  </CENTER>
+  <P>
+  .. again are all valid numbers.
+</BLOCKQUOTE>
+<B><U>Strings</U></B>
+<BLOCKQUOTE>
+  Strings are any string of printable characters enclosed in a pair of quotation marks.
+  Non printing characters may be converted to single character strings using the
+  <A href="#CHR">CHR$()</A> functions.
+  <P>
+  <CENTER>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+      <TR>
+        <TD>"Hello world"</TD> 
+        <TD>"-136.42E-3"</TD> 
+        <TD>"+----+----+"</TD> 
+        <TD>"[Y/n]"</TD> 
+        <TD>"Y"</TD> 
+      </TR>
+    </TABLE>
+  </CENTER>
+  <P>
+  Are all valid strings.
+</BLOCKQUOTE>
+<B><U>Variables</U></B>
+<BLOCKQUOTE>
+  Variables of both numeric and string type are available. String variables are
+  distinguished by the <B>$</B> suffix. As well as simple variables arrays are also
+  available and these may be either numeric or string and are distinguished by their
+  bracketed indecies after the variable name.
+
+  <P>Variable names may be any length but only the first two name characters are significant.
+  The first character must be one of "A" to "Z" or "a" to "z". Later characters may also
+  include numbers. E.g.
+  <P>
+  <CENTER>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+      <TR>
+        <TD>A</TD> 
+        <TD>A$</TD> 
+        <TD>NAME$</TD>
+        <TD>x2LIM</TD> 
+        <TD>y</TD> 
+        <TD>colour</TD>
+        <TD>s1</TD> 
+        <TD>s2</TD> 
+      </TR>
+    </TABLE>
+  </CENTER>
+
+  <P>Variable names are case sensitive so AB, Ab, aB and ab are all separate variables.
+
+  <P>Variable names may not contain BASIC keywords. Keywords are only valid in upper
+  case so 'PRINTER' is not allowed (it would be interpreted as PRINT ER) but 'printer'
+  is.
+
+  <P>Note that spaces in variable names are ignored so 'print e r', 'print er' and 'pri nter'
+  will all be interpreted the same way.
+</BLOCKQUOTE>
+
+
+<P><B><U>BASIC Keywords</B></U>
+<BLOCKQUOTE>
+  Here is a list of BASIC keywords. They are only valid when entered in upper case as
+  shown and spaces may not be included in them. So GOTO is valid but GO TO is not.
+
+  <P>
+  <CENTER>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+    <TR>
+      <TD><A href="#ABS">ABS</A></TD>
+      <TD><A href="#AND">AND</A></TD>
+      <TD><A href="#ASC">ASC</A></TD>
+      <TD><A href="#ATN">ATN</A></TD>
+      <TD><A href="#BIN">BIN$</A></TD>
+      <TD><A href="#BITCLR">BITCLR</A></TD>
+      <TD><A href="#BITSET">BITSET</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#BITTST">BITTST</A></TD>
+      <TD><A href="#CALL">CALL</A></TD>
+      <TD><A href="#CHR">CHR$</A></TD>
+      <TD><A href="#CLEAR">CLEAR</A></TD>
+      <TD><A href="#CONT">CONT</A></TD>
+      <TD><A href="#COS">COS</A></TD>
+      <TD><A href="#DATA">DATA</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#DEC">DEC</A></TD>
+      <TD><A href="#DEEK">DEEK</A></TD>
+      <TD><A href="#DEF">DEF</A></TD>
+      <TD><A href="#DIM">DIM</A></TD>
+      <TD><A href="#DO">DO</A></TD>
+      <TD><A href="#DOKE">DOKE</A></TD>
+      <TD><A href="#END">END</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#AND">EOR</A></TD>
+      <TD><A href="#EXP">EXP</A></TD>
+      <TD><A href="#FN">FN</A></TD>
+      <TD><A href="#FOR">FOR</A></TD>
+      <TD><A href="#FRE">FRE</A></TD>
+      <TD><A href="#GET">GET</A></TD>
+      <TD><A href="#GOSUB">GOSUB</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#GOTO">GOTO</A></TD>
+      <TD><A href="#HEX">HEX$</A></TD>
+      <TD><A href="#IF">IF</A></TD>
+      <TD><A href="#INC">INC</A></TD>
+      <TD><A href="#INPUT">INPUT</A></TD>
+      <TD><A href="#INT">INT</A></TD>
+      <TD><A href="#IRQ">IRQ</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#LCASE">LCASE$</A></TD>
+      <TD><A href="#LEFT">LEFT$</A></TD>
+      <TD><A href="#LEN">LEN</A></TD>
+      <TD><A href="#LET">LET</A></TD>
+      <TD><A href="#LIST">LIST</A></TD>
+      <TD><A href="#LOAD">LOAD</A></TD>
+      <TD><A href="#LOG">LOG</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#LOOP">LOOP</A></TD>
+      <TD><A href="#MAX">MAX</A></TD>
+      <TD><A href="#MID">MID$</A></TD>
+      <TD><A href="#MIN">MIN</A></TD>
+      <TD><A href="#NEW">NEW</A></TD>
+      <TD><A href="#NEXT">NEXT</A></TD>
+      <TD><A href="#NMI">NMI</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#NOT">NOT</A></TD>
+      <TD><A href="#NULL">NULL</A></TD>
+      <TD><A href="#OFF">OFF</A></TD>
+      <TD><A href="#ON">ON</A></TD>
+      <TD><A href="#AND">OR</A></TD>
+      <TD><A href="#PEEK">PEEK</A></TD>
+      <TD><A href="#PI">PI</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#POKE">POKE</A></TD>
+      <TD><A href="#POS">POS</A></TD>
+      <TD><A href="#PRINT">PRINT</A></TD>
+      <TD><A href="#READ">READ</A></TD>
+      <TD><A href="#REM">REM</A></TD>
+      <TD><A href="#RESTORE">RESTORE</A></TD>
+      <TD><A href="#RETIRQ">RETIRQ</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#RETNMI">RETNMI</A></TD>
+      <TD><A href="#RETURN">RETURN</A></TD>
+      <TD><A href="#RIGHT">RIGHT$</A></TD>
+      <TD><A href="#RND">RND</A></TD>
+      <TD><A href="#RUN">RUN</A></TD>
+      <TD><A href="#SADD">SADD</A></TD>
+      <TD><A href="#SAVE">SAVE</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#SIN">SIN</A></TD>
+      <TD><A href="#SGN">SGN</A></TD>
+      <TD><A href="#SPC">SPC(</A></TD>
+      <TD><A href="#SQR">SQR</A></TD>
+      <TD><A href="#STEP">STEP</A></TD>
+      <TD><A href="#STOP">STOP</A></TD>
+      <TD><A href="#STR">STR$</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#SWAP">SWAP</A></TD>
+      <TD><A href="#TAB">TAB(</A></TD>
+      <TD><A href="#TAN">TAN</A></TD>
+      <TD><A href="#THEN">THEN</A></TD>
+      <TD><A href="#TO">TO</A></TD>
+      <TD><A href="#TWOPI">TWOPI</A></TD>
+      <TD><A href="#UCASE">UCASE$</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#UNTIL">UNTIL</A></TD>
+      <TD><A href="#USR">USR</A></TD>
+      <TD><A href="#VAL">VAL</A></TD>
+      <TD><A href="#VARPTR">VARPTR</A></TD>
+      <TD><A href="#WAIT">WAIT</A></TD>
+      <TD><A href="#WHILE">WHILE</A></TD>
+      <TD><A href="#WIDTH">WIDTH</A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#AND">+</A></TD>
+      <TD><A href="#AND">-</A></TD>
+      <TD><A href="#AND">*</A></TD>
+      <TD><A href="#AND">/</A></TD>
+      <TD><A href="#AND">^</A></TD>
+      <TD><A href="#AND"><<</A></TD>
+      <TD><A href="#AND">>></A></TD>
+    </TR>
+    <TR>
+      <TD><A href="#AND">></A></TD>
+      <TD><A href="#AND">=</A></TD>
+      <TD><A href="#AND"><</A></TD>
+    </TR>
+    </TABLE>
+  </CENTER>
+ </BLOCKQUOTE>
+ 
+  <UL>
+    <LI>Anything in upper case is part of the command/function structure and must be present
+    <LI>Anything in lower case enclosed in < > is to be supplied by the user
+    <LI>Anything enclosed in [ ] is optional
+    <LI>Anything enclosed in { } and separated by | characters are multi choice options
+    <LI>Any items followed by an ellipsis, ... , may be repeated any number of times
+    <LI>Any punctuation and symbols, except those above, are part of the structure and must
+        be included
+  </UL>
+
+  <BLOCKQUOTE>
+  <TABLE CELLPADDING=0 CELLSPACING=0 BORDER=0>
+  <TR><TD>var</TD><TD>is a valid variable name</TD></TR>
+  <TR><TD>var$</TD><TD>is a valid string variable name</TD></TR>
+  <TR><TD>var()</TD><TD>is a valid array name</TD></TR>
+  <TR><TD>var$()</TD><TD>is a valid string array name</TD></TR>
+  <TR><TD>&nbsp;</TD></TR>
+  <TR><TD>expression</TD><TD>is any expression returning a result</TD></TR>
+  <TR><TD>expression$&nbsp;&nbsp;&nbsp;</TD><TD>is any expression returning a string result</TD></TR>
+  <TR><TD>&nbsp;</TD></TR>
+  <TR><TD>addr</TD><TD>is an unsigned integer in the range +/- 16777215 that will be wrapped to the range 0 to 65535</TD></TR>
+  <TR><TD>b</TD><TD>is a byte value 0 to 255</TD></TR>
+  <TR><TD>n</TD><TD>is an integer in the range 0 to 63999</TD></TR>
+  <TR><TD>w</TD><TD>is an integer in the range -32768 to 32767</TD></TR>
+  <TR><TD>i</TD><TD>is a +ve integer value</TD></TR>
+  <TR><TD>r</TD><TD>is real number</TD></TR>
+  <TR><TD>+r</TD><TD>is a +ve value real number (0 is considered +ve)</TD></TR>
+  <TR><TD>$</TD><TD>is a string literal</TD></TR>
+  </TABLE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><B><U>BASIC Commands</U></B>
+
+<BLOCKQUOTE>
+  <A name=END>
+  <B>END</B>
+  <BLOCKQUOTE>
+    Terminates program execution and returns control to the command line (direct
+    mode). END may be placed anywhere in a program and any number, including none,
+    is allowed.
+    <P>Note. CONT may be used after and END to resume execution from the next statement.
+  </BLOCKQUOTE>
+
+  <A name=FOR>
+  <B>FOR &#60;var&#62; = &#60;expression&#62; TO &#60;expression&#62; [STEP expression]</B>
+  <BLOCKQUOTE>
+    Assigns a variable to a loop counter and optionally sets the step size. If
+    STEP expression is omitted then a default step size of +1 will be assumed.
+  </BLOCKQUOTE>
+
+  <A name=NEXT>
+  <B>NEXT [var[,var]...]</B>
+  <BLOCKQUOTE>
+    Increments a loop variable and checks for the terminating condition. If
+    the terminating condition has been reached then execution continues with
+    the next command, else execution continues with the command after the
+    FOR assignment. (See <A href="#FOR">FOR</A>).
+  </BLOCKQUOTE>
+
+  <A name=DATA>
+  <B>DATA [{r|$}[,{r|$}]...]</B>
+  <BLOCKQUOTE>
+    Defines a constant or series of constants. Real constants are held as
+    strings in program memory and can be read as numeric values or string
+    values. String constants may contain spaces but if they need to contain
+    commas then they must be enclosed in quotes.
+  </BLOCKQUOTE>
+
+  <A name=INPUT>
+  <B>INPUT ["$";] &#60;var&#62;[,var]...</B>
+  <BLOCKQUOTE>
+    Get a variable, or list of variables from the input stream. A question
+    mark, "?", is always output (after the string if there is one) and if
+    further input is required i.e. there are more variables in the list than
+    the user entered values, then a double question mark, "??", will be
+    output until enough values have been entered.
+    <P>There are two possible messages that may appear during the execution of an
+       input statement:
+    <BLOCKQUOTE>
+      <P>
+        <I>Extra ignored</I>
+        <BLOCKQUOTE>
+	  The user has attempted to enter more values than are required. Program
+  	  execution will continue but the extraneous data entered has been discarded.
+        </BLOCKQUOTE>
+
+      <P>
+        <I>Redo from start</I>
+        <BLOCKQUOTE>
+	  The user has attempted to enter a string where a number was expected. The
+  	  reverse never causes an error as numbers are also valid strings.
+        </BLOCKQUOTE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+
+  <A name=DIM>
+  <B>DIM &#60;var[$](i1[,i2[,i3]])&#62;[,var[$](i1[,i2[,i3]])]...</B>
+  <BLOCKQUOTE>
+    Dimension arrays. Creates arrays of either string or numeric variables. The
+    arrays can have one, two or three dimensions. The lower limit is always zero
+    and the upper limit is i. If you do not explicitly dimension an array then
+    it's number of dimensions will be set when you first access it and the
+    upper bound will be set to 10 for each dimension.
+  </BLOCKQUOTE>
+
+  <A name=READ>
+  <B>READ &#60;var&#62;[,var]...</B>
+  <BLOCKQUOTE>
+    Reads values from DATA statements and assigns them to variables. Trying to
+    read a string literal into a numeric variable will cause a syntax error.
+  </BLOCKQUOTE>
+
+  <A name=LET>
+  <B>LET &#60;var&#62; = &#60;expression&#62;</B>
+  <BLOCKQUOTE>
+    Assign the value of expression to var. Both var and expression bust be of the
+    same type. The LET command word is optional and just &#60;var&#62; = &#60;expression&#62; will
+    give exactly the same result. It is only maintained for historical reasons.
+  </BLOCKQUOTE>
+
+  <A name=DEC>
+  <B>DEC &#60;var&#62;[,var]...</B>
+  <BLOCKQUOTE>
+    Decrement variables. The variables listed will have their values decremented
+    by one. Trying to decrement a string variable will give a type mismatch error.
+    DEC A is much faster than doing A=A-1 and DEC A,A is slightly faster than
+    doing A=A-2.
+  </BLOCKQUOTE>
+
+
+  <A name=SWAP>
+  <B>SWAP &#60;var[$]&#62;,&#60;var[$]&#62;</B>
+  <BLOCKQUOTE>
+    Swap two variables. The variables listed will have their values exchanged. Both
+    must be of the same type, numeric or string, and either, or both, may be array
+    elements. Trying to swap a numeric and string variable will give a type mismatch
+    error.
+  </BLOCKQUOTE>
+
+  <A name=GOTO>
+  <B>GOTO &#60;n&#62;</B>
+  <BLOCKQUOTE>
+    Continue execution from line number n
+  </BLOCKQUOTE>
+
+
+  <A name=RUN>
+  <B>RUN [n]</B>
+  <BLOCKQUOTE>
+    Begins execution of the program currently in memory at the lowest numbered line.
+    RUN erases all variables and functions, resets FOR .. NEXT, GOSUB .. RETURN and
+    DO ..LOOP states and sets the data pointer to the program start.
+    <P>If n is specified then programme execution will start at the specified line number.
+  </BLOCKQUOTE>
+
+  <A name=IF>
+  <B>IF &#60;expression&#62;[relation expression] THEN&#60;{{statement|n}|{GOTO|GOSUB}n}&#62;</B>
+  <BLOCKQUOTE>
+    Evaluates expression. If the result of expression is non zero then the statement(s)
+    after the THEN or the GOTO or GOSUB are executed. If the result of expression is
+    zero then execution continues with the next line.
+  </BLOCKQUOTE>
+
+  <A name=RESTORE>
+  <B>RESTORE [n]</B>
+  <BLOCKQUOTE>
+    Reset the DATA pointer. If n is specified then the pointer will be reset to the
+    beginning of line n else it will be reset to the start of the program. If n is
+    specified but doesn't exist an error will be generated.
+  </BLOCKQUOTE>
+
+  <A name=GOSUB>
+  <B>GOSUB &#60;n&#62;</B>
+  <BLOCKQUOTE>
+    Call a subroutine at line n. Program execution is diverted to line n but the
+    calling point is remembered. Upon encountering a RETURN statement program
+    execution will continue with the next statement (line) after the GOSUB.
+  </BLOCKQUOTE>
+
+  <A name=RETIRQ>
+  <B>RETIRQ</B>
+  <BLOCKQUOTE>
+    Returns program execution to the next statement after an interrupt, automatically
+    restores the IRQ enabled flag. See <A href="#ON2">ON IRQ</A>.
+  </BLOCKQUOTE>
+
+  <A name=RETNMI>
+  <B>RETNMI</B>
+  <BLOCKQUOTE>
+    Returns program execution to the next statement after an interrupt, automatically
+    restores the NMI enabled flag. See <A href="#ON2">ON NMI</A>.
+  </BLOCKQUOTE>
+
+  <A name=RETURN>
+  <B>RETURN</B>
+  <BLOCKQUOTE>
+     Returns program execution to the next statement (line) after the last GOSUB
+     encountered. See <A href="#GOSUB">GOSUB</A>. Also returns program execution to the next statement
+     after an interrupt but does not restore the enabled flags.
+  </BLOCKQUOTE>
+
+  <A name=REM>
+  <B>REM</B>
+  <BLOCKQUOTE>
+    Everything following this statement on this program line will be ignored,
+    even colons.
+  </BLOCKQUOTE>
+
+  <A name=STOP>
+  <B>STOP</B>
+  <BLOCKQUOTE>
+    Halts program execution and generates a "Break in line n" message where n is the
+    line in which the STOP was encountered.
+  </BLOCKQUOTE>
+
+  <A name=OFF>
+  <B>OFF</B>
+  <BLOCKQUOTE>
+    See <A href="#IRQ">IRQ</A> or <A href="#NMI">NMI</A>.
+  </BLOCKQUOTE>
+
+  <A name=ON>
+  <B>ON &#60;expression&#62; {GOTO|GOSUB} &#60;n&#62;[,n]...</B>
+  <BLOCKQUOTE>
+    The integer value of expression is calculated and then the nth number after the
+    GOTO or GOSUB is taken (where n is the result of expression). Note that valid
+    results for expression range only from zero to 255. Any result outside this
+    range will cause a Function call error.
+  </BLOCKQUOTE>
+
+  <A name=ON2>
+  <B>ON {IRQ|NMI} &#60;n&#62;</B>
+  <BLOCKQUOTE>
+    Set up the IRQ or NMI routine pointers. This sets up the effective GOSUB line
+    that is taken when an interrupt happens. When the effective GOSUB is taken the
+    interrupt, IRQ or NMI, is turned off. This can be turned back on with the interrupt
+    on command or by using the matching special return. The normal program flow is
+    resumed by any of RETIRQ, RETNMI or RETURN.
+  </BLOCKQUOTE>
+
+  <A name=NULL>
+  <B>NULL &#60;n&#62;</B>
+  <BLOCKQUOTE>
+    Sets the number of null characters printed by BASIC after every carriage 
+    return. n may be specified in the range 0 to 255.
+  </BLOCKQUOTE> 
+
+  <A name=INC>
+  <B>INC &#60;var&#62;[,var]...</B>
+  <BLOCKQUOTE>
+    Increment variables. The variables listed will have their values incremented
+    by one. Trying to increment a string variable will give a type mismatch error.
+    INC A is much faster than doing A=A+1 and INC A,A is slightly faster than
+    doing A=A+2.
+  </BLOCKQUOTE>
+
+  <A name=WAIT>
+  <B>WAIT &#60;addr,b1&#62;[,b2]</B>
+  <BLOCKQUOTE>
+    Program execution will wait at this point until the value of the location addr
+    exclusive ORed with b2 then ANDed with b1 is non zero. If b2 is not defined then
+    it is assumed to be zero. Note b1 and b2 must both be byte values.
+  </BLOCKQUOTE>
+
+  <A name=LOAD>
+  <B>LOAD</B>
+  <BLOCKQUOTE>
+    Does nothing in this version but does it via a vector in RAM so is easily patched.
+  </BLOCKQUOTE>
+
+  <A name=SAVE>
+  <B>SAVE</B>
+  <BLOCKQUOTE>
+    Does nothing in this version but does it via a vector in RAM so is easily patched.
+  </BLOCKQUOTE>
+
+  <A name=DEF>
+  <B>DEF FN &#60;name&#62;(&#60;var&#62;) = &#60;statement&#62;</B>
+  <BLOCKQUOTE>
+    Defines &#60;statement&#62; as function &#60;name&#62;. &#60;name&#62; can be any valid numeric variable
+    name of one or more characters. &#60;var&#62; must be a simple variable and is used to
+    pass a numeric argument into the function.
+    Note that the value of &#60;var&#62; will be unchanged by it's use in the function
+    so &#60;var&#62; should be considered to be a local variable name.
+  </BLOCKQUOTE>
+
+  <A name=POKE>
+  <B>POKE &#60;addr,b&#62;</B>
+  <BLOCKQUOTE>
+    Writes the byte value b into the address addr.
+  </BLOCKQUOTE>
+
+  <A name=DOKE>
+  <B>DOKE &#60;addr,w&#62;</B>
+  <BLOCKQUOTE>
+    Writes the word value w into the addresses addr and addr+1, the lower byte of
+    w is in addr. Note if addr = 65535 ($FFFF) then the high byte will be written
+    to address zero.
+  </BLOCKQUOTE>
+
+  <A name=CALL>
+  <B>CALL &#60;addr&#62;</B>
+  <BLOCKQUOTE>
+    CALLs a user subroutine at address addr. No values are passed or returned and
+    so this is much faster than using USR()
+  </BLOCKQUOTE>
+
+  <A name=DO>
+  <B>DO</B>
+  <BLOCKQUOTE>
+    Marks the beginning of a DO .. LOOP loop (See <A href="#LOOP">LOOP</A>). No parameters. This
+    command can be nested like FOR .. NEXT or GOSUB .. RETURN.
+  </BLOCKQUOTE>
+
+  <A name=LOOP>
+  <B>LOOP [{UNTIL|WHILE} expression]</B>
+  <BLOCKQUOTE>
+    Marks the end of a DO .. LOOP loop. There are three possible variations on the
+    LOOP command ..
+    
+    <BLOCKQUOTE>
+      <P>
+        <B>LOOP</B>
+        <BLOCKQUOTE>
+          Repeats forever. With just this command control is passed back to the next 
+          command (line) after the DO.
+        </BLOCKQUOTE>
+      <P>
+        <B>LOOP UNTIL expression</B>
+        <BLOCKQUOTE>
+          This loop will repeat until the value of expression is
+          non zero. Once that occurs execution will continue with the next command (line) after
+          this one.
+        </BLOCKQUOTE>
+      <P>
+        <B>LOOP WHILE expression</B>
+        <BLOCKQUOTE>
+          This loop will repeat while the value of expression is
+          non zero. Once expression=0 execution will continue with the next command (line) after
+          this one.
+        </BLOCKQUOTE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+
+  <A name=PRINT>
+  <B>PRINT [expression][{;|,}expression]...[{;|,}]</B>
+  <BLOCKQUOTE>
+    Outputs the value of each expressions. If the list of expressions to  be output
+    does not end with a comma or a semi-colon, then a carriage return and linefeed
+    is output after the values. 
+	
+    <P>Expressions on the line can be separated with either a semi-colon, causing the
+    next expression to follow immediately, or a comma which will advance the output
+    to the next tab stop before continuing to print. If there are no expressions and
+    no comma or semi-colon after the PRINT statement then a carriage return and
+    linefeed is output.
+	
+    <P>When entering a program line, or immediate statement, PRINT can be abbreviated
+    to ? .
+  </BLOCKQUOTE>
+
+  <A name=CONT>
+  <B>CONT</B>
+  <BLOCKQUOTE>
+    Continues program execution after CTRL-C has been typed, a STOP has been
+    encountered during program execution or a null input was given to an INPUT
+    request.
+  </BLOCKQUOTE>
+
+  <A name=LIST>
+  <B>LIST [n1][-n2]</B>
+  <BLOCKQUOTE>
+    Lists the entire program held in memory. If n1 is specified then the listing will
+    start from line n1 and run to the end of the program. If -n2 is specified then the
+    listing will terminate after line n2 has been listed. If n1 and -n2 are specified
+    then all the lines from n1 to n2 inclusive will be listed.
+
+    <P>Note. If n1 does not exist then the list will start from the next line numbered
+    after n1. If n2 does not exist then the listing will stop with the last line
+    numbered before n2.
+
+    <P>Also note. LIST can be executed from within a program, first a [CR][LF] is printed
+    and then the specified lines, if any, each terminated with another [CR][LF].
+    Program execution then continues as normal.
+
+  </BLOCKQUOTE>
+
+  <A name=CLEAR>
+  <B>CLEAR</B>
+  <BLOCKQUOTE>
+    Erases all variables and functions and resets FOR .. NEXT, GOSUB .. RETURN and
+    DO ..LOOP states.
+  </BLOCKQUOTE>
+
+  <A name=NEW>
+  <B>NEW</B>
+  <BLOCKQUOTE>
+    Deletes the current program and all variables from memory.
+  </BLOCKQUOTE>
+
+  <A name=WIDTH>
+  <B>WIDTH {b1|,b2|b1,b2}</B>
+  <BLOCKQUOTE>
+    Sets the terminal width and TAB spacing. b1 is the terminal width and b2
+    is the tab spacing (default is 80 and 14). Width can be zero, for "infinite"
+    terminal width, or from 16 to 255. The tab size is from 2 to width-1 or
+    127, whichever is smaller.
+  </BLOCKQUOTE>
+
+  <A name=GET>
+  <B>GET &#60;var[$]&#62;</B>
+  <BLOCKQUOTE>
+    Gets a key, if there is one, from the input device. If there is no key waiting
+    then var will be set to 0 and var$ will return a null string "". GET does not
+    halt and execution will continue.
+  </BLOCKQUOTE>
+
+  <A name=IRQ>
+  <B>IRQ {ON|OFF|CLEAR}</B>
+  <BLOCKQUOTE>
+    Enables or disables the IRQ handling subroutine. Note that turning the handler
+    off does not suppress the interrupt detection and if an interrupt occurs while
+    handling is off it will be actioned as soon as handling is turned back on.
+    Using CLEAR clears the interrupt assignment and it can only be restarted with
+    an ON IRQ command
+  </BLOCKQUOTE>
+
+  <A name=NMI>
+  <B>NMI {ON|OFF|CLEAR}</B>
+  <BLOCKQUOTE>
+    Enables or disables the NMI handling subroutine. Note that turning the handler
+    off does not suppress the interrupt detection and if an interrupt occurs while
+    handling is off it will be actioned as soon as handling is turned back on.
+    Using CLEAR clears the interrupt assignment and it can only be restarted with
+    an ON NMI command
+  </BLOCKQUOTE>
+
+  <A name=TAB>
+  <B>TAB(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Sets the cursor position to &#60;expression&#62;. If the cursor is already beyond that
+    point then the cursor will be left where it is. This command is only valid in a
+    PRINT statement.
+  </BLOCKQUOTE>
+
+  <A name=TO>
+  <B>TO</B>
+  <BLOCKQUOTE>
+    Sets the range in a FOR .. NEXT loop. See <A href="#FOR">FOR</A>.
+  </BLOCKQUOTE>
+
+  <A name=FN>
+  <B>FN&#60;name&#62;(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    See <A href="#DEF">DEF</A>.
+  </BLOCKQUOTE>
+
+  <A name=SPC>
+  <B>SPC(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Prints &#60;expression&#62; spaces. This command is only valid in a PRINT statement.
+  </BLOCKQUOTE>
+
+  <A name=THEN>
+  <B>THEN</B>
+  <BLOCKQUOTE>
+    See <A href="#IF">IF</A>.
+  </BLOCKQUOTE>
+
+  <A name=NOT>
+  <B>NOT &#60;expression&#62;</B>
+  <BLOCKQUOTE>
+    Generates the bitwise NOT of then signed integer value of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=STEP>
+  <B>STEP</B>
+  <BLOCKQUOTE>
+    Sets the step size in a FOR .. NEXT loop. See <A href="#FOR">FOR</A>.
+  </BLOCKQUOTE>
+
+  <A name=UNTIL>
+  <B>UNTIL</B>
+  <BLOCKQUOTE>
+    See <A href="#DO">DO</A> and <A href="#LOOP">LOOP</A>.
+  </BLOCKQUOTE>
+
+  <A name=WHILE>
+  <B>WHILE</B>
+  <BLOCKQUOTE>
+    See <A href="#DO">DO</A> and <A href="#LOOP">LOOP</A>.
+  </BLOCKQUOTE>
+
+  <A name=BITCLR>
+  <B>BITCLR &#60;addr&#62;,&#60;b&#62;</B>
+  <BLOCKQUOTE>
+    Clears bit b of address addr. Valid bit numbers are 0, the least significant
+    bit, to 7, the most significant bit. Values outside this range will cause a
+    function call error.
+  </BLOCKQUOTE>
+
+  <A name=BITSET>
+  <B>BITSET &#60;addr&#62;,&#60;b&#62;</B>
+  <BLOCKQUOTE>
+    Sets bit b of address addr. Valid bit numbers are 0, the least significant
+    bit, to 7, the most significant bit. Values outside this range will cause a
+    function call error.
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><B><U>BASIC Operators</B></U>
+<BLOCKQUOTE>
+  Operators perform mathematical or logical operations on values and return the result.
+  The operation is usually preceded by a variable name and equality sign or is part of
+  an IF .. THEN statement.
+  <BLOCKQUOTE>
+    <A name=AND>
+    <TABLE WIDTH=85% CELLPADDING=3 CELLSPACING=0 BORDER=0>
+    <TR><TD>+</TD><TD>Add. c = a + b will assign the sum of a and b to c.</TD></TR>
+    <TR><TD>-</TD><TD>Subtract. c = a - b will assign the result of a minus b to c.</TD></TR>
+    <TR><TD>*</TD><TD>Multiply. c = a * b will assign the product of a and b to c.</TD></TR>
+    <TR><TD>/</TD><TD>Divide. c = a / b will assign the result of a divided by b to c.</TD></TR>
+    <TR><TD>^</TD><TD>Raise to the power of.  c = a ^ b will assign the result of a rasied to the power of b to c.</TD></TR>
+    <TR><TD>AND</TD><TD>Logical AND. c = a AND b will assign the logical AND of a and b to c</TD></TR>
+    <TR><TD>EOR</TD><TD>Logical Exclusive OR.  c = a EOR b will assign the logical exclusive OR of a and b to c.</TD></TR>
+    <TR><TD>OR</TD><TD>Logical OR.  c = a OR b will assign the logical inclusive OR of a and b to c.</TD></TR>
+    <TR><TD>&#60;&#60;</TD><TD>Shift left.  c = a &#60;&#60; b will assign the result of a shifted left by b bits to c.
+    <TR><TD>&#62;&#62;</TD><TD>Shift right.  c = a &#62;&#62; b will assign the result of a shifted right by b bits to c.
+    <TR><TD>=</TD><TD>Equals.  c = a = b will assign the result of the comparison a = b to c.
+    <TR><TD>&#62;</TD><TD>Greater than.  c = a &#60; b will assign the result of the comparison a &#62; b to c.
+    <TR><TD>&#60;</TD><TD>Less than.  c = a &#60; b will assign the result of the comparison of a &#60; b to c.
+    </TABLE>
+  </BLOCKQUOTE>
+
+  The three comparison operators can be mixed to provide further operators ..
+  <BLOCKQUOTE>
+     <TABLE CELLPADDING=3 CELLSPACING=0 BORDER=0>
+     <TR><TD>&#62;= or =&#62;</TD><TD>Greater than or equal to.</TD></TR>
+     <TR><TD>&#60;= or =&#60;</TD><TD>Less than or equal to.</TD></TR>
+      <TR><TD>&#60;&#62; or &#62;&#60;</TD><TD>Not equal to (greater than or less than).</TD></TR>
+     <TR><TD>&#60;=&#62; any order</TD><TD>Always true (greater than or equal to or less than).</TD></TR>
+     </TABLE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<B><U>BASIC Functions</U></B>
+<BLOCKQUOTE>
+  Functions always return a value, be it numeric or string, so are used on
+  the right hand side of the = sign or in commands requiring an
+  expression e.g after PRINT, within expressions, or in other functions.
+
+  <P><A name=SGN>
+  <B>SGN(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the sign of &#60;expression&#62;. If the value is +ve SGN returns +1, if
+    the value is -ve then SGN returns -1. If expression=0 then SGN returns 0.
+  </BLOCKQUOTE>
+
+  <A name=INT>
+  <B>INT(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the integer of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=ABS>
+  <B>ABS(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the absolute value of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=USR>
+  <B>USR(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Takes the value of &#60;expression&#62; and places it in FAC1 and then calls the
+    USeR routine pointed to by the vector at $0B,$0C. What the routine does
+    with this value is entirely up to the user, it can even be safely ignored
+    if it isn't needed. The routine, after the user code has done an RTS, takes
+    whatever is in FAC1 and returns that. Note it can be either a numeric or
+    string value.
+    <P>If no value needs to be passed or returned then CALL is a better option.
+  </BLOCKQUOTE>
+
+  <A name=FRE>
+  <B>FRE(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the amount of free program memory. The value of expression is ignored
+    and can be numeric or string.
+  </BLOCKQUOTE>
+
+  <A name=POS>
+  <B>POS(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the POSition of the cursor on the terminal line. The value of expression
+    is ignored.
+  </BLOCKQUOTE>
+
+  <A name=SQR>
+  <B>SQR(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the square root of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=RND>
+  <B>RND(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns a random number in the range 0 to 1. If the value of &#60;expression&#62; is
+    non zero then it will be used as the seed for the returned pseudo random number
+    otherwise the next number in the sequence will be returned.
+  </BLOCKQUOTE>
+
+  <A name=LOG>
+  <B>LOG(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the natural logarithm (base e) of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=EXP>
+  <B>EXP(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns e^&#60;expression&#62;. (natural antilog)
+  </BLOCKQUOTE>
+
+  <A name=COS>
+  <B>COS(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the cosine of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=SIN>
+  <B>SIN(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the sine of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=TAN>
+  <B>TAN(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>  
+    Returns the tangent of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=ATN>
+  <B>ATN(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the arctangent of &#60;expression&#62;.
+  </BLOCKQUOTE>
+
+  <A name=PEEK>
+  <B>PEEK(&#60;addr&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the byte value of &#60;addr&#62;.
+  </BLOCKQUOTE>
+
+  <A name=DEEK>
+  <B>DEEK(&#60;addr&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the word value of &#60;addr&#62; and addr+1. Addr holds the word low byte.
+  </BLOCKQUOTE>
+
+  <A name=SADD>
+  <B>SADD(&#60;{var$|var$()|expression$}&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the address of var$, var$() or expression$. This returns a pointer
+    to the actual string in memory not the descriptor.
+  </BLOCKQUOTE>
+
+  <A name=LEN>
+  <B>LEN(&#60;expression$&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the length of &#60;expression$&#62;.
+  </BLOCKQUOTE>
+
+  <A name=STR>
+  <B>STR$(&#60;expression&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the result of &#60;expression&#62; as a string.
+  </BLOCKQUOTE>
+
+  <A name=VAL>
+  <B>VAL(&#60;expression$&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the value of &#60;expression$&#62;.
+  </BLOCKQUOTE>
+
+  <A name=ASC>
+  <B>ASC(&#60;expression$&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the ASCII value of the first character of &#60;expression$&#62;.
+  </BLOCKQUOTE>
+
+  <A name=LCASE>
+  <B>LCASE$(&#60;expression$&#62;)</B>
+  <BLOCKQUOTE>
+    Returns &#60;expression$&#62; with all the alpha characters in lower case.
+  </BLOCKQUOTE>
+
+  <A name=UCASE>
+  <B>UCASE$(&#60;expression$&#62;)</B>
+  <BLOCKQUOTE>
+    Returns &#60;expression$&#62; with all the alpha characters in upper case.
+  </BLOCKQUOTE>
+
+  <A name=CHR>
+  <B>CHR$(b)</B>
+  <BLOCKQUOTE>
+    Returns single character string of character &#60;b&#62;.
+  </BLOCKQUOTE>
+
+  <A name=HEX>
+  <B>HEX$(&#60;expression&#62;[,b])</B>
+  <BLOCKQUOTE>
+    Returns &#60;expression&#62; as a hex string. If b is omitted, or if b = 0, then
+    the string is returned with all leading zeroes removed and is of variable
+    length. If b is set (permissible set values are 1 to 6) then a string of
+    length b will be returned. The result is always unsigned and calling this
+    function with expression&#62;2^24-1 or b&#62;6 will cause a function call error.
+  </BLOCKQUOTE>
+
+  <A name=BIN>
+  <B>BIN$(&#60;expression&#62;[,b])</B>
+  <BLOCKQUOTE>
+    Returns &#60;expression&#62; as a binary string. If b is omitted, or if b = 0, then
+    the string is returned with all leading zeroes removed and is of variable
+    length. If b is set (permissible set values are 1 to 24) then a string of
+    length b will be returned. The result is always unsigned and calling this
+    function with expression&#62;2^24-1 or b&#62;24 will cause a function call error.
+  </BLOCKQUOTE>
+
+  <A name=BITTST>
+  <B>BITTST(&#60;addr&#62;,&#60;b&#62;)</B>
+  <BLOCKQUOTE>
+    Tests bit b of address addr. Valid bit numbers are 0, the least significant
+    bit, to 7, the most significant bit. Values outside this range will cause a
+    function call error. Returns zero if the bit was zero, returns -1 if the bit
+    was 1.
+  </BLOCKQUOTE>
+
+  <A name=MAX>
+  <B>MAX(&#60;expression&#62;[,&#60;expression&#62;]...)</B>
+  <BLOCKQUOTE>
+    Returns the maximum value from a list of numeric expressions. There must be
+    at least one expression but the upper limit is dictated by the line length.
+    Each expression is evaluated in turn and the largest of them returned.
+  </BLOCKQUOTE>
+
+  <A name=MIN>
+  <B>MIN(&#60;expression&#62;[,&#60;expression&#62;]...)</B>
+  <BLOCKQUOTE>
+    Returns the minimum value from a list of numeric expressions. There must be
+    at least one expression but the upper limit is dictated by the line length.
+    Each expression is evaluated in turn and the smallest of them returned.
+  </BLOCKQUOTE>
+
+  <A name=PI>
+  <B>PI</B>
+  <BLOCKQUOTE>
+    Returns the value of pi as 3.14159274 (closest floating value).
+  </BLOCKQUOTE>
+
+  <A name=TWOPI>
+  <B>TWOPI</B>
+  <BLOCKQUOTE>
+    Returns the value of 2*pi as 6.28318548 (closest floating value).
+  </BLOCKQUOTE>
+
+  <A name=VARPTR>
+  <B>VARPTR(&#60;var[$]&#62;)</B>
+  <BLOCKQUOTE>
+    Returns a pointer to the variable memory space. If the variable is numeric,
+    or a numeric array element, then VARPTR returns the pointer to the packed
+    value of that variable in memory. If the variable is a string, or a string
+    array element, then VARPTR returns a pointer to the descriptor for that
+    string.
+  </BLOCKQUOTE>
+
+  <A name=LEFT>
+  <B>LEFT$(&#60;expression$,b&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the leftmost b characters of &#60;expression$&#62;.
+  </BLOCKQUOTE>
+
+  <A name=RIGHT>
+  <B>RIGHT$(&#60;expression$,b&#62;)</B>
+  <BLOCKQUOTE>
+    Returns the rightmost b characters of &#60;expression$&#62;.
+  </BLOCKQUOTE>
+
+  <A name=MID>
+  <B>MID$(&#60;expression$,b1&#62;[,b2])</B>
+  <BLOCKQUOTE>
+    Returns the substring string from character b1 of expression$ of length b2.
+    The characters of expression$ are numbered from 1 starting with the leftmost.
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<B><U>BASIC Error Messages</U></B>
+<BLOCKQUOTE>
+  These will all be followed by the word Error and, if the error occurred while
+  executing a program, will be followed by "in line <n>" where <n> is the number
+  of the line in which the error occurred.
+
+  <P><I>NEXT without FOR</I> 
+  <BLOCKQUOTE>
+    NEXT has been encountered and no matching FOR could be found.
+  </BLOCKQUOTE>
+
+  <I>Syntax</I>
+  <BLOCKQUOTE>
+    Just generally worng. 8^)=
+  </BLOCKQUOTE>
+
+  <I>RETURN without GOSUB</I>
+  <BLOCKQUOTE>
+    RETURN has been encountered and no matching GOSUB could be found.
+  </BLOCKQUOTE>
+
+  <I>Out of DATA</I>
+  <BLOCKQUOTE>
+    A READ has tried to read data beyond the last item. Usually because you either
+    mistyped the DATA lines, miscounted the DATA, RESTOREd to the wrong place or
+    just plain forgot to restore.
+  </BLOCKQUOTE>
+
+  <I>Function call</I>
+  <BLOCKQUOTE>
+    Some parameter of a function was outside it's limits. E.g. Trying to POKE a
+    value of less than 0 or greater than 255.
+  </BLOCKQUOTE>
+
+  <I>Overflow</I>
+  <BLOCKQUOTE>
+    The result of a calculation has exceeded the numerical range of BASIC. This is
+    plus or minus 1.7014117+E38
+  </BLOCKQUOTE>
+
+  <I>Out of memory</I>
+  <BLOCKQUOTE>
+    Anything that uses memory can cause this but mostly it's writing and running
+    programmes that does it.
+  </BLOCKQUOTE>
+
+  <I>Undefined statement</I>
+  <BLOCKQUOTE>
+    Either a GOTO, GOSUB, RUN or RESTORE was attempted to a line that doesn't exist
+    or the line referred to in an ON &#60;expression&#62; {GOTO|GOSUB} or ON {IRQ|NMI} <n>
+    doesn't exist.
+  </BLOCKQUOTE>
+
+  <I>Array bounds</I>
+  <BLOCKQUOTE>
+    An attempt was made to access an element of an array that was outside it's
+    bounding dimensions.
+  </BLOCKQUOTE>
+
+  <I>Double dimension</I>
+  <BLOCKQUOTE>
+    An attempt has been made to dimension an already dimensioned array. This could
+    be because the array was accessed previously causing it to be dimensioned by
+    default.
+  </BLOCKQUOTE>
+
+  <I>Divide by zero</I>
+  <BLOCKQUOTE>
+    The right hand side of an A/B expression was zero.
+  </BLOCKQUOTE>
+
+  <I>Illegal direct</I>
+  <BLOCKQUOTE>
+    An attempt was made to execute a function in direct mode which is disallowed
+    in that mode e.g. INPUT or DEF.
+  </BLOCKQUOTE>
+
+  <I>Type mismatch</I>
+  <BLOCKQUOTE>
+    An attempt was made to pass a numeric value to a string, a string value to a
+    numeric variable or an attempt at a relational operation between a string and
+    a number was made.
+  </BLOCKQUOTE>
+
+  <I>String too long</I>
+  <BLOCKQUOTE>
+    String lengths can be from zero to 255 characters, more than that and you will
+    see this.
+  </BLOCKQUOTE>
+
+  <I>String too complex</I>
+  <BLOCKQUOTE>
+    A string expression caused an overflow on the descriptor stack. Try splitting
+    the expression into smaller pieces.
+  </BLOCKQUOTE>
+
+  <I>Can't continue</I>
+  <BLOCKQUOTE>
+    Execution can't be continued because either the program execution ended because
+    an error occurred, NEW or CLEAR have been executed since the program was
+    interrupted or the program has been edited.
+  </BLOCKQUOTE>
+
+  <I>Undefined function</I>
+  <BLOCKQUOTE>
+    FN &#60;var&#62; was called but not found.
+  </BLOCKQUOTE>
+
+  <I>LOOP without DO</I>
+  <BLOCKQUOTE>
+    LOOP has been encountered and no matching DO could be found.
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<FONT SIZE=-1>Last page update: August 31, 2001.</FONT>
+</BODY></HTML>
+

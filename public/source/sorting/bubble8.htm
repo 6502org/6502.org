@@ -1,0 +1,66 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: 8-bit Bubble Sort</TITLE>
+<META name="description" content="A 6502 assembly language bubble sort routine for a list containing 8-bit elements.">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE"
+VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Bubble Sort (for 8-Bit Elements)</FONT><FONT SIZE=-1> from 6502 Software Design</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>A Simple Sorting Technique</B>
+<P>Although unordered data are perfectly acceptable for many applications, it is often easier to analyze the data, and to locate a specific value, if the elements are ordered.  Computer scientists have devised a variety of ways to order data but one of the simplest techniques is called the <I>bubble sort</I>.
+<P>Just as bubble rise upward into the sky, list elements rise upward in memory during a bubble sort.  (Data can be sorted in an increasing or decreasing order; we will discuss only increasing order).  During a bubble sort, elements of a list are accessed sequentially, starting with the first element, and are compared to the next element in the list.  If an element is greater than the enxt sequential element in the list, the elements are exchanged.  The next pair of elements is compared, exchanged if required, and so on.  By the time the 6502 microprocessor gets to the last element of the list, the largest element in the list will have "bubbled up" to the last element position of the list.
+<P>If the bubble-sort algorithm is used, the microcomputer usually requires several passes to sort a list, as can be seen by the following example.  Consider a 5-element list that is initially arranged in the following order.
+<FONT SIZE=+2><CENTER><PRE>05  03  04  01  02</FONT></PRE></CENTER>
+After one pass through the list, the elements will be in the following order:
+<FONT SIZE=+2><CENTER><PRE>03  04  01  02  05</FONT></PRE></CENTER>
+Element 05, the largest element of the list, has "bubbled up" to the top of the list.  The next pass will produce the order:
+<FONT SIZE=+2><CENTER><PRE>03  01  02  04  05</FONT></PRE></CENTER>
+Element 04 is bubbled up the list to a position that is just before Element 05.  The result of the final pass is:
+<FONT SIZE=+2><CENTER><PRE>01  02  03  04  05</FONT></PRE></CENTER>
+The example not only demonstrates how the bubble sort algorithm operates, but it also gives an indication of what type of performance you can expect from it.  Note that three passes were required to sort a partialy ordered, 5-element list.  If the list were totally ordered at the outset, it would still take one pass through the algorithm to deduce this fact.  Conversely, if the list were initially arranged in descending order (the worst case), the bubble-sort algorithm woul require 5 passes to order the list, 4 passes to sort, and 1 additional pass to detect that no additional elements need to be exchanged.  From this observation, we can state that the 6502 microprocessor will have to make from 1 to N number of passes through an N-element list, in order to sort it.  On the average, N/2 passes are required to sort an N-element list.
+<P>What constitutes a "pass" in terms of instructions and time?  This can be found out by examining two typical bubble-sort subroutines; one operating on a list containing 8-bit elements, the other operating on a list containing 16-bit elements.  The basic principles that you learn in these two examples should allow you to develop bubble-sort subroutines for lists having even longer elements.
+<P><B>Sorting Lists Having 8-bit Elements</B>
+<P>The subroutine (SORT8) sorts unordered lists that are comprised of 8-bit elements.  As in the previous examples in this chapter, the starting addres is contained in locations $30 (low-address byte) and $31 (high-address byte).  The length of the list is contained in the first byte of the list.  Since a byte is 8 bits wide, the list can contain up to 255 elements.
+<PRE>
+;THIS SUBROUTINE ARRANGES THE 8-BIT ELEMENTS OF A LIST IN ASCENDING
+;ORDER.  THE STARTING ADDRESS OF THE LIST IS IN LOCATIONS $30 AND 
+;$31.  THE LENGTH OF THE LIST IS IN THE FIRST BYTE OF THE LIST.  LOCATION
+;$32 IS USED TO HOLD AN EXCHANGE FLAG.
+
+SORT8    LDY #$00      ;TURN EXCHANGE FLAG OFF (= 0)
+         STY $32
+         LDA ($30),Y   ;FETCH ELEMENT COUNT
+         TAX           ; AND PUT IT INTO X
+         INY           ;POINT TO FIRST ELEMENT IN LIST
+         DEX           ;DECREMENT ELEMENT COUNT
+NXTEL    LDA ($30),Y   ;FETCH ELEMENT
+         INY
+         CMP ($30),Y   ;IS IT LARGER THAN THE NEXT ELEMENT?
+         BCC CHKEND
+         BEQ CHKEND
+                       ;YES. EXCHANGE ELEMENTS IN MEMORY
+         PHA           ; BY SAVING LOW BYTE ON STACK.
+         LDA ($30),Y   ; THEN GET HIGH BYTE AND
+         DEY           ; STORE IT AT LOW ADDRESS
+         STA ($30),Y   
+         PLA           ;PULL LOW BYTE FROM STACK
+         INY           ; AND STORE IT AT HIGH ADDRESS
+         STA ($30),Y 
+         LDA #$FF      ;TURN EXCHANGE FLAG ON (= -1)
+         STA $32
+CHKEND   DEX           ;END OF LIST?
+         BNE NXTEL     ;NO. FETCH NEXT ELEMENT
+         BIT $32       ;YES. EXCHANGE FLAG STILL OFF?
+         BMI SORT8     ;NO. GO THROUGH LIST AGAIN
+         RTS           ;YES. LIST IS NOW ORDERED
+</PRE>
+Subroutine SORT8 begins by initializing an <I>exchange flag</I>.  The exchange flag is an indicator in memory location $32 that can be interrogated upon completion of a sorting pass to find out whether any elements were exchanged during that pass (flag=-1) or if the pass was exected with no exchanges (flag=0).  The latter case indicates that the list is completely ordered and needs no further sorting.
+<P>After loading the element count into the X register, the 6502 microprocessor enters an element compare loop at NXTEL.  As each element is fetched, it is compared to the next element in the list, with CMP ($30),Y.  If this pair of elements are of equal value, or are in ascending (sorted) order, the subroutine then branches to CHKEND, to see if the element count in the X register has been decremented to zero (the end-of-list condition).  Otherwise, the elements are exchanged (if the element pair is in the wrong order).  The stack is used to save the lower-addressed element while the higher-addressed element is being relocated in memory.  A zero page memory location could have been used to save the element, but it was observed that PHA and PLA both execute in one less cycle than their LDA and STA counterparts.  Upon completion of an exchange operation, the exchange flag is turned on, by loading it with -1.
+<P>Following the exchange, the element count is decremented with a DEX instruction (label CHKEND) and the subsequent BNE BXTEL instruction branches to NXTEL if the pass has not yet been completed.  When the pass is completed, BIT $32 checkes whether the exhange is still off (Bit 7=0), or has been turned on (Bit 7=1) by an exchange operation during the pass.  If an exchange occurred, the subroutine is reinitiated at ORDER8, otherwise RTS causes a return, with a now ordered list.
+<P>See also the <A HREF="bubble16.htm">16-bit Bubble Sort</A> routine.
+<P><FONT SIZE=-1>Last page update: August 5, 2000.</FONT>
+</BODY></HTML>
+

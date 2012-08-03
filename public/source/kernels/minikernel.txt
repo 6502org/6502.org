@@ -1,0 +1,197 @@
+;*------------------------------------------------------------------*
+;*								    *
+;*			 Mini Multitasking Kernel		    *
+;*			     for 6502 Systems			    *
+;*								    *
+;*			    by Joachim Deboy			    *
+;*								    *
+;*    This mini kernel uses IRQ interrupts from a free running	    *
+;*    6522-timer for task switching. It currently supports 4	    *
+;*    concurrent tasks. The tasks receive control for fixed time    *
+;*    slices in a round robin method. It should be easily possible  *
+;*    to implement a priority driven task selector in the inter-    *
+;*    rupt service routine.					    *
+;*								    *
+;*    For performance reasons, the stack page will not be copied    *
+;*    for every task switch, but is divided into 4 parts, one for   *
+;*    each task. Because of that only the stack pointer and the     *
+;*    other processor registers must be saved and loaded, when	    *
+;*    performing a task switch. A disadvantage is the 'home made'   *
+;*    further limitation of the already short stack area.	    *
+;*								    *
+;*    Two macros are implemented to allow a simple kind of seria-   *
+;*    lization between concurrent tasks. A call of the enq-macro    *
+;*    locks task switching until the deq-macro is used. This also   *
+;*    prevents a discuption of a time critical process. 	    *
+;*								    *
+;*    This software is part of a heater control software, which     *
+;*    runs at my home for several years now.			    *
+;*    It may be freely used and modified to suit other possible     *
+;*    applications, but i can't guarantee for the usablity          *
+;*    in any way. Use it at for own risk.			    *
+;*								    *
+;*    If you have any comments, questions, further ideas or if you  *
+;*    find any bugs, please contact me under joachim@deboy.de	    *
+;*								    *
+;*------------------------------------------------------------------*
+;*			   page 0 addresses			    *
+;*------------------------------------------------------------------*
+mtarlow   =$00			  ; multitasking kernel, ret-addr., low
+mtarhig   =$01			  ; multitasking kernel, ret-addr.,high
+mtatemp   =$02			  ; multitasking kernel, temp. work
+mtatask   =$03			  ; multitasking kernel, actual task
+mtastab   =$04			  ; multitasking kernel, stack pointers
+mtastbe   =$07			  ; multitasking kernel, end of st-ptrs
+reserved  =$08			  ; reserved
+mtalock   =$09			  ; multitasking lock x'00' = free
+;*------------------------------------------------------------------*
+;*			   6522 ports				    *
+;*------------------------------------------------------------------*
+orb	  =$c310		  ; output-register a
+ora	  =$c311		  ; output-register b
+ddrb	  =$c312		  ; data direction register b
+ddra	  =$c313		  ; data direction register a
+t1csl	  =$c314		  ; read: counter, low
+;				  ; write: preset, low
+t1csh	  =$c315		  ; read & write: counter, high
+t1lsl	  =$c316		  ; read & write preset low, low
+t1lsh	  =$c317		  ; read & write preset, high
+acr	  =$c31b		  ; acr-helpregister
+pcr	  =$c31c		  ; pcr-register
+ifr	  =$c31d		  ; interrupt-flag-register
+ier	  =$c31e		  ; interrupt-enable-register
+orahlp	  =$c31f		  ; output-register a w/o handshaking
+;*------------------------------------------------------------------*
+;*			define macros				    *
+;*------------------------------------------------------------------*
+ #define enq() inc mtalock
+ #define deq() dec mtalock \ beq $+8 \ jsr mtaentry \ inc $100
+;*------------------------------------------------------------------*
+;*			initialization routine			    *
+;*------------------------------------------------------------------*
+	  .org $f000
+init:
+	  lda  #$00		  ; init output ports of pia 2
+	  sta  mtalock		  ; reset multitasking lock
+	  lda  #$40		  ; setup timer for free running
+	  sta  acr
+	  lda  #$c0		  ; enable timer interrupts
+	  sta  ier
+
+	  ldy  #0
+	  lda  #0
+stinit:   sta  $100,y		  ; reset stack to x'00'
+	  iny
+	  bne  stinit
+
+	  lda  #$00		  ; set actual task # to 0
+	  sta  mtatask
+	  ldy  #maxtask-1	  ; get max. number of tasks
+initloop:
+	  lda  mtasini,y	  ; get initial stackpointer value
+	  sta  mtastab,y	  ; and save value in page 0 table
+	  tax			  ; move stack pointer value to reg x
+	  lda  #$b0		  ; set initial flag register contents
+	  sta  $0104,x		  ; save flag register on stack
+	  tya			  ; get actual task number
+	  asl  a		  ; multiply with 2
+	  tax			  ; and move result to reg x
+	  stx  mtatemp		  ; save reg x
+	  lda  ent_tab,x	  ; get pcl-value
+	  ldx  mtastab,y	  ; get stack pointer value
+	  sta  $0105,x		  ; save pcl register on stack
+	  ldx  mtatemp		  ; get reg x
+	  lda  ent_tab+1,x	  ; get pch-value
+	  ldx  mtastab,y	  ; get stack pointer value
+	  sta  $0106,x		  ; save pch register on stack
+	  dey
+	  bpl  initloop 	  ; ==> loop for all tasks
+	  ldx  #$3f		  ; set stack for task 0
+	  txs
+
+	  lda  #0		  ; initial load timer
+	  sta  t1lsl
+	  lda  #40		  ; about 1/100 sec timer value
+	  sta  t1csh
+	  cli			  ; enable interrupts
+	  jmp  ent_task0	  ; enter task 0
+;*------------------------------------------------------------------*
+;*		   table of task entry addresses		    *
+;*------------------------------------------------------------------*
+ent_tab:
+	  .word ent_task0
+	  .word ent_task1
+	  .word ent_task2
+	  .word ent_task3
+
+;*------------------------------------------------------------------*
+;*	     program call entry to interrupt service routine	    *
+;*------------------------------------------------------------------*
+mtaentry:
+	  php			  ; save processor status on stack
+;				  ; for interrupt simulation
+	  pha			  ; save registers on current stack
+	  txa
+	  pha
+	  tya
+	  pha
+	  tsx
+
+	  inc  $105,x		  ; add 1 to return address
+	  bne  mtaent01 	  ; because of jsr command
+	  inc  $106,x
+mtaent01:
+
+	  lda  #$00		  ; reset task lock
+	  sta  mtalock
+	  jmp  mtaswitch	  ; and process task switch
+
+;*------------------------------------------------------------------*
+;*			interrupt service routine		    *
+;*------------------------------------------------------------------*
+irq:
+	  pha			  ; save registers on current stack
+	  txa
+	  pha
+	  tya
+	  pha
+
+	  lda  t1csl		  ; enable interrupt
+	  lda  #$c0		  ; reset flag
+	  sta  ifr
+
+	  lda  mtalock		  ; is task locked ?
+	  beq  mtaswitch	  ; ==> no, then process task change
+	  inc  mtalock		  ; indicate task switch requested
+	  jmp  irq_ret		  ; ==> and skip task change
+
+mtaswitch:			  ; task switcher
+	  ldy  mtatask		  ; get actual task number
+	  tsx			  ; get actual stack pointer
+	  stx  mtastab,y	  ; and save it in table
+	  iny			  ; calculate next task number
+	  cpy  #maxtask 	  ; valid task number ?
+	  bcc  mtanumok 	  ; ==> yes
+	  ldy  #0		  ; else start with task 0
+mtanumok:
+	  sty  mtatask		  ; save new task number
+	  ldx  mtastab,y	  ; get new stack pointer
+	  txs			  ; and load it in  sp-register
+
+irq_ret:
+	  pla			  ; load registers from current stack
+	  tay
+	  pla
+	  tax
+	  pla
+	  rti			  ; ==> go and process task
+
+mtasini   .byte $39,$79,$b9,$f9   ; initial stackpointer values
+maxtask   =$-mtasini
+
+	  .org $fffa
+nmivector .word init		  ; nmi vector
+resvector .word init		  ; reset vector
+irqvector .word irq		  ; irq vector
+	  .end
+

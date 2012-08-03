@@ -1,0 +1,166 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Memory Move Routines</TITLE>
+<META name="description" content="Practical routines for moving blocks of memory in 6502 assembly language.">
+</HEAD>
+<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Practical Memory Move Routines</FONT><FONT SIZE=-1> by Bruce Clark</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P>Here are some reasonably fast general-purpose routines for moving blocks of
+memory.  You simply specify the address to move from, the address to move to,
+and the size of the block.  When SIZE is zero, no bytes are moved.  SIZEL and
+SIZEH do not need to be consecutive memory locations, or even on the zero
+page for that matter.  These routines only take one additional cycle if SIZEL
+is not on the zero page.  Likewise, they only take one additional cycle if
+SIZEH is not on the zero page.  Note that this adds only to the total number
+of cycles, not to the number of cycles per byte, since neither SIZEL nor
+SIZEH is inside a loop anywhere.
+
+<p>These routines are intended to be both flexible and practical, without being
+excessively lengthy or excessively slow.  To that end, they can be placed in
+ROM or in RAM.
+
+<p>
+There are three routines moving memory upward (i.e. to a higher address),
+each of which is tailored to a slightly different set of input parameters.
+
+<PRE>
+; Move memory down
+;
+; FROM = source start address
+;   TO = destination start address
+; SIZE = number of bytes to move
+;
+MOVEDOWN LDY #0
+         LDX SIZEH
+         BEQ MD2
+MD1      LDA (FROM),Y ; move a page at a time
+         STA (TO),Y
+         INY
+         BNE MD1
+         INC FROM+1
+         INC TO+1
+         DEX
+         BNE MD1
+MD2      LDX SIZEL
+         BEQ MD4
+MD3      LDA (FROM),Y ; move the remaining bytes
+         STA (TO),Y
+         INY
+         DEX
+         BNE MD3
+MD4      RTS
+
+; Move memory up
+;
+; FROM = source start address
+;   TO = destination start address
+; SIZE = number of bytes to move
+;
+MOVEUP   LDX SIZEH    ; the last byte must be moved first
+         CLC          ; start at the final pages of FROM and TO
+         TXA
+         ADC FROM+1
+         STA FROM+1
+         CLC
+         TXA
+         ADC TO+1
+         STA TO+1
+         INX          ; allows the use of BNE after the DEX below
+         LDY SIZEL
+         BEQ MU3
+         DEY          ; move bytes on the last page first
+         BEQ MU2
+MU1      LDA (FROM),Y
+         STA (TO),Y
+         DEY
+         BNE MU1
+MU2      LDA (FROM),Y ; handle Y = 0 separately
+         STA (TO),Y
+MU3      DEY
+         DEC FROM+1   ; move the next page (if any)
+         DEC TO+1
+         DEX
+         BNE MU1
+         RTS
+
+; Move memory up
+;
+; FROM = 1 + source end address
+; TO   = 1 + destination end address
+; SIZE = number of bytes to move
+;
+MOVEUP   LDY #$FF
+         LDX SIZEH
+         BEQ MU3
+MU1      DEC FROM+1
+         DEC TO+1
+MU2      LDA (FROM),Y ; move a page at a time
+         STA (TO),Y
+         DEY
+         BNE MU2
+         LDA (FROM),Y ; handle Y = 0 separately
+         STA (TO),Y
+         DEY
+         DEX
+         BNE MU1
+MU3      LDX SIZEL
+         BEQ MU5
+         DEC FROM+1
+         DEC TO+1
+MU4      LDA (FROM),Y ; move the remaining bytes
+         STA (TO),Y
+         DEY
+         DEX
+         BNE MU4
+MU5      RTS
+
+; Move memory up
+;
+; FROM = source end address
+; TO   = destination end address
+; SIZE = number of bytes to move
+;
+MOVEUP   LDY #0
+         LDX SIZEH
+         BEQ MU3
+MU1      LDA (FROM),Y ; handle Y = 0 separately
+         STA (TO),Y
+         DEY
+         DEC FROM+1
+         DEC TO+1
+MU2      LDA (FROM),Y ; move a page at a time
+         STA (TO),Y
+         DEY
+         BNE MU2
+         DEX
+         BNE MU1
+MU3      LDX SIZEL
+         BEQ MU5
+         LDA (FROM),Y ; handle Y = 0 separately
+         STA (TO),Y
+         DEY
+         DEX
+         BEQ MU5
+         DEC FROM+1
+         DEC TO+1
+MU4      LDA (FROM),Y ; move the remaining bytes
+         STA (TO),Y
+         DEY
+         DEX
+         BNE MU4
+MU5      RTS
+</PRE>
+
+Even more speed can be gained by using self-modifying code, i.e. replacing
+the (ZeroPage),Y addressing mode with the Absolute,Y addressing mode.  This
+will take 2 fewer cycles per byte.  There will be some additional cycles from
+the added instructions that self-modify the code, but the self-modification
+occurs only once, and therefore adds these cycles to total number of cycles,
+rather than the number of cycles per byte moved.  As always, the instructions
+that are self-modified can't be located in ROM.
+<P><FONT SIZE=-1>Last page update: April 3, 2004.</FONT>
+</BODY></HTML>
+

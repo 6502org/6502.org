@@ -1,0 +1,340 @@
+<HTML><HEAD><TITLE>www.6502.org: Source: Enhanced Day of the Week</TITLE>
+<META name="description" content="Calculates the day of the week from any calendar date from September 14, 1752 to December 31, 9999">
+</HEAD>
+<BODY BACKGROUND="../../graph.gif" BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
+border=0 alt="[Return to Main Page]"></A>
+<P><FONT SIZE=+1>Enhanced Day of the Week</FONT>&nbsp;<FONT SIZE=-1>by W.J. Brier</FONT>
+<BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Enhanced Day of the Week</B>
+<P>
+This is an alternative to Paul Guertin's <a href="/source/misc/dow.htm">Day of the Week</a> 
+program.  It is longer but has the advantage of supporting a wider range of dates.<BR>
+By W.J. Brier, 1 March 2008.<BR>
+<P>
+<PRE>
+;
+;* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;*                                                                             *
+;*                          COMPUTE THE DAY OF WEEK                            *
+;*                                                                             *
+;*                         by W.J. Brier, March 2008                           *
+;*                                                                             *
+;* This 6502 assembly language program calculates the day of the week from any *
+;* calendar date from September 14, 1752 to December 31, 9999.                 *
+;*                                                                             *
+;* --------------------------------------------------------------------------- *
+;*                                                                             *
+;* Copyright (C)2008 by W.J. Brier.  All rights reserved.  Permission is here- *
+;* by granted to copy and redistribute this software,  provided this copyright *
+;* notice remains in the source code and proper attribution is given.  Any re- *
+;* distribution must be at no charge to the end user.  This code  MAY  NOT  be *
+;* incorporated into any package intended for sale unless  written  permission *
+;* has been given by the author.                                               *
+;*                                                                             *
+;* THERE IS NO WARRANTY OF ANY KIND WITH THIS SOFTWARE.  It's free,  so  don't *
+;* look a gift horse in the mouth.                                             *
+;*                                                                             *
+;* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;
+;
+;	Calling Syntax:
+;
+;	ldx #&lt;date            ;starting address of..,
+;	ldy #&gt;date            ;date data
+;	jsr cdow              ;this subroutine
+;	sta dow               ;day of week returned in .A
+;
+;	.X and .Y are preserved.
+;
+;	The information at DATE must be in the following format:
+;
+;	Offset   Data
+;	--------------------------------------------------------------
+;	  $00    Year MSB.  For example, if the year is 2008 then this
+;	         value would be $07.
+;
+;	  $01    Year LSB.  For example, if the year is 2008 then this
+;	         value would be $D8.
+;
+;	  $02    Month, ranging from $01 to $0C (12).
+;
+;	  $03    Date, ranging from $01 to $1F (31).
+;	--------------------------------------------------------------
+;
+;	Upon return, .A will contain the day of the week in the range $01-$07,
+;	with $01 being Sunday.  Execution time will typically be 4150 clock
+;	cycles, depending on the supplied values.  No range checking is perf-
+;	ormed.  A bogus date will produce a bogus result.
+;
+;===============================================================================
+;
+;DECLARATIONS
+;
+_origin_ =$02000               ;assembly address
+;
+zpptr    =$10                  ;working ZP pointer
+;
+;	--------------------------------------------------------
+;	Redefine the above assignments to suit your application.
+;	--------------------------------------------------------
+;
+dayswk   =7                    ;days in a week
+march    =$03                  ;March in binary
+s_bits   =8                    ;number of bits in a byte
+s_byte   =1                    ;size of a byte or char
+s_date   =4                    ;size of the input date
+s_dword  =4                    ;size of a double word
+s_word   =2                    ;size of a word
+y2fac    =4                    ;Y2 computation factor
+y3fac    =100                  ;Y3 computation factor
+y4fac    =400                  ;Y4 computation factor
+;
+;===============================================================================
+;
+;COMPUTE DAY OF WEEK
+;
+         *=_origin_            ;set program counter
+;
+cdow     stx zpptr             ;save pointer to...
+         sty zpptr+1           ;date info
+         ldy #s_date-1         ;bytes in date -1
+;
+cdow01   lda (zpptr),y         ;copy user's date...
+         sta userdate,y        ;into our storage
+         dey
+         bpl cdow01
+;
+         lda month             ;month
+         ldx yearlo            ;year LSB
+         ldy yearhi            ;year MSB
+         pha                   ;save month
+         cmp #march            ;month March or later?
+         bcs cdow03            ;yes, no year adjustment
+;
+         txa                   ;year LSB
+         sec
+         sbc #1                ;move back a year
+         bcs cdow02
+;
+         dey                   ;adjust MSB
+;
+cdow02   tax                   ;hold LSB
+;
+cdow03   stx y1                ;save Y1
+         sty y1+1
+;
+;	------------
+;	compute Y1/4
+;	------------
+;
+         jsr stafaca           ;store Y1 in accummulator #1
+         ldx #&lt;y2fac           ;4
+         ldy #&gt;y2fac
+         jsr stafacb           ;copy to accummulator #2
+         jsr dpdiv             ;Y2=Y1/4
+         stx y2                ;store
+         sty y2+1
+;
+;	---------------
+;	compute Y1/100)
+;	---------------
+;
+         jsr stay1fac          ;copy Y1 to accummulator #1
+         ldx #&lt;y3fac
+         ldy #&gt;y3fac
+         jsr stafacb           ;copy to accummulator #2
+         jsr dpdiv             ;Y3=Y1/100
+         stx y3                ;store
+         sty y3+1
+;
+;	--------------
+;	compute Y1/400
+;	--------------
+;
+         jsr stay1fac
+         ldx #&lt;y4fac
+         ldy #&gt;y4fac
+         jsr stafacb           ;copy to accummulator #2
+         jsr dpdiv             ;Y4=Y1/400
+         stx y4                ;store
+         sty y4+1
+;
+;	-------------
+;	combine terms
+;	-------------
+;
+         clc
+         lda y1                ;Y1
+         adc y2                ;Y2
+         sta acm1
+         lda y1+1
+         adc y2+1
+         sta acm1+1
+         sec
+         lda acm1
+         sbc y3                ;Y3
+         sta acm1
+         lda acm1+1
+         sbc y3+1
+         sta acm1+1
+         clc
+         lda acm1
+         adc y4                ;Y4
+         sta acm1
+         lda acm1+1
+         adc y4+1
+         sta acm1+1
+         pla                   ;get month
+         tax                   ;change 1-12 to...
+         dex                   ;0-11
+         clc
+         lda acm1              ;combined terms
+         adc dowmctab,x        ;month comp factor
+         bcc cdow04
+;
+         inc acm1+1
+;
+cdow04   sta acm1
+         clc
+         lda date              ;date
+         adc acm1              ;last term
+         bcc cdow05
+;
+         inc acm1+1
+;
+cdow05   sta acm1
+         ldx #&lt;dayswk          ;number of days in a week
+         ldy #&gt;dayswk
+         jsr stafacb           ;copy to accummulator #2
+         jsr dpdiv             ;ACM1=ACM1 mod 7
+         adc #1                ;0-6 --&gt; 1-7...
+;
+;	-------------------------------------------------------
+;	remove the above ADC #1 instruction for a 0-6 DOW range
+;	-------------------------------------------------------
+;
+         ldx zpptr             ;restore
+         ldy zpptr+1           ;likewise
+         rts                   ;return day of week in .A
+;
+;================================================================================
+;
+;DOUBLE-PRECISION DIVISION
+;
+;	-----------------------------------------
+;	acm1 = 16 bit dividend
+;	acm2 = 16 bit divisor
+;	-----------------------------------------
+;	acm1 = 16 bit quotient
+;	.A   = remainder
+;	.X   = quotient LSB
+;	.Y   = quotient MSB
+;
+;	The remainder is also available in acm1+2.
+;
+;	No check is made for division by zero.
+;	------------------------------------------
+;
+dpdiv    lda #0
+         sta acm1+s_word       ;clear dividend hi bits
+         sta acm1+s_word+s_byte
+         ldx #s_bits*s_word    ;bits to process
+         clc
+;
+dpdiv01  rol acm1              ;rotate dividend
+         rol acm1+s_byte
+         rol acm1+s_word
+         rol acm1+s_word+s_byte
+         sec
+         lda acm1+s_word
+         sbc acm2              ;subtract divisor
+         tay
+         lda acm1+s_word+s_byte
+         sbc acm2+s_byte
+         bcc dpdiv02
+;
+         sty acm1+s_word       ;save partial quotient
+         sta acm1+s_word+s_byte
+;
+dpdiv02  dex
+         bne dpdiv01           ;next
+;
+         rol acm1              ;rotate in last carry to...
+         rol acm1+s_byte       ;finish quotient
+         lda acm1+s_word       ;get remainder LSB
+         ldx acm1              ;get quotient LSB
+         ldy acm1+s_byte       ;get quotient MSB
+         rts
+;
+;================================================================================
+;
+;STORE Y1 INTO ACCUMMULATOR #1
+;
+stay1fac ldx y1
+         ldy y1+1
+;
+;================================================================================
+;
+;STORE INTO ACCUMMULATOR #1
+;
+stafaca  stx acm1
+         sty acm1+1
+         rts
+;
+;================================================================================
+;
+;STORE INTO ACCUMMULATOR #2
+;
+stafacb  stx acm2
+         sty acm2+1
+         rts
+;
+;===============================================================================
+;
+;COMPENSATION TABLE
+;
+dowmctab .byte 0               ;January
+         .byte 3               ;February
+         .byte 2               ;March
+         .byte 5               ;April
+         .byte 0               ;May
+         .byte 3               ;June
+         .byte 5               ;July
+         .byte 1               ;August
+         .byte 4               ;September
+         .byte 6               ;October
+         .byte 2               ;November
+         .byte 4               ;December
+;
+;===============================================================================
+;
+;WORKING STORAGE
+;
+acm1     *=*+s_dword           ;accummulator #1
+acm2     *=*+s_word            ;accummulator #2
+y1       *=*+s_word            ;adjusted year (Y1)
+y2       *=*+s_word            ;Y1/4
+y3       *=*+s_word            ;Y1/100
+y4       *=*+s_word            ;Y1/400
+;
+;	-------------------------------------------------------------
+;	The above locations should be defined on page zero if room is
+;	available.  Execution time will be reduced about 20 percent.
+;	-------------------------------------------------------------
+;
+userdate *=*+s_date            ;input date storage...
+;
+yearhi   =userdate             ;year MSB
+yearlo   =yearhi+s_byte        ;year LSB
+month    =yearlo+s_byte        ;month
+date     =month+s_byte         ;date
+;
+;===============================================================================
+	.end
+</PRE>
+<FONT SIZE=-1>Last page update: March 1, 2009.</FONT>
+</BODY></HTML>
+
