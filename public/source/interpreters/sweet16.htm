@@ -3,8 +3,7 @@
 </HEAD>
 <BODY BGCOLOR="white" TEXT="black" LINK="#0000EE"
 VLINK="#0000EE">
-<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
-border=0 alt="[Return to Main Page]"></A>
+<a href="../../index.html">[Return to Main Page]</a>
 <P><FONT SIZE=+1>Porting Sweet 16</FONT>&nbsp;<FONT SIZE=-1>by Carsten Strotmann (carsten@strotmann.de)</FONT>
 <BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
 <BR clear=all><P>
@@ -55,7 +54,7 @@ programming instructions, and notes to help port it.
 <ul>
 <li> <a href="#Programming_Model">Programming Model</a>
 </li>
-<li> <a href="#SWEET_16_OPCODES">Sweet 16 Opcodes</a> 
+<li> <a href="#SWEET_16_OPCODES">Sweet 16 Opcodes</a>
 </li>
 </ul>
 </li>
@@ -112,31 +111,31 @@ routines to your programm. Here is a template:
 
 <pre>
  ;------------------------------
- SAVE 
-    STA ACC 
-    STX XREG 
-    STY YREG 
-    PHP 
-    PLA 
-    STA STATUS 
-    CLD 
+ SAVE
+    STA ACC
+    STX XREG
+    STY YREG
+    PHP
+    PLA
+    STA STATUS
+    CLD
     RTS
  ;------------------------------
- RESTORE 
-    LDA STATUS 
-    PHA 
-    LDA ACC 
-    LDX XREG 
-    LDY YREG 
-    PLP 
+ RESTORE
+    LDA STATUS
+    PHA
+    LDA ACC
+    LDX XREG
+    LDY YREG
+    PLP
     RTS
  ;-------------------------------
- ACC    .BYTE 0 
- XREG   .BYTE 0 
- YREG   .BYTE 0 
+ ACC    .BYTE 0
+ XREG   .BYTE 0
+ YREG   .BYTE 0
  STATUS .BYTE 0
 </pre>
- 
+
 Thats all.  Porting  Sweet 16 is easy and  straightforward.  I hope to see some
 Sweet 16  enhanced  6502 source in the future. If someone is searching  for a
 nice project,  extending an open-source  6502 Assembler  (like CA65 from CC65)
@@ -424,10 +423,10 @@ RS      LDX  $18            ;12*2 FOR R12 AS STACK POINTER
         STA  R15L
         RTS
 RTN     JMP  RTNZ
--- 
+--
 
  W. Sheldon Simms        | Newt's Friend / Jack Kemp for President
- sheldon@netcom.com      | Freedom implies responsibility 
+ sheldon@netcom.com      | Freedom implies responsibility
 -------------------------+--------------------------------------------
 
 
@@ -688,12 +687,12 @@ NOTE:  Registers A, X, Y, P, and S are not disturbed by SWEET 16.
 <p />
 <h3><a name ="Instruction_Descriptions_"> Instruction Descriptions: </a></h3>
 <p />
-The SWEET 16 opcode listing is short and uncomplicated. Excepting relative branch displacements, hand assembly is trivial. All register opcodes are formed by combining two Hex digits, one for the opcode and one to specify a register. For example, opcodes 15 and 45 both specify register R5 while codes 23, 27, and 29 are all ST ops. Most register ops are assigned in complementary pairs to facilitate remembering them. Therefore, LD ans ST are opcodes 2N and 3N respectively, while LD @ and ST @ are codes 4N and 5N. 
+The SWEET 16 opcode listing is short and uncomplicated. Excepting relative branch displacements, hand assembly is trivial. All register opcodes are formed by combining two Hex digits, one for the opcode and one to specify a register. For example, opcodes 15 and 45 both specify register R5 while codes 23, 27, and 29 are all ST ops. Most register ops are assigned in complementary pairs to facilitate remembering them. Therefore, LD ans ST are opcodes 2N and 3N respectively, while LD @ and ST @ are codes 4N and 5N.
 <p />
 Opcodes 0 to C (Hex) are assigned to the thirteen non-register ops. Except for RTN (opcode 0), BK (0A), and RS (0B), the non register ops are 6502 style branches. The second byte of a branch instruction contains a +/-127 byte displacement value (in two's complement form)
 relative to the address of the instruction immediately following the branch.
 <p />
-If a specified branch condition is met by the prior register op result, the displacement is added to the PC effecting a branch. Except for the BR (Branch always) and BS (Branch to a Subroutine), the branch opcodes are assigned in complementary pairs, rendering them easily remembered for hand coding. For example, Branch if Plus and Branch if Minus are opcodes 4 and 5 while Branch if Zero and Branch if <span style='background : #FFFFCE;'><font color="#0000FF">NonZero</font></span><a href="/twiki/bin/edit/APG/NonZero?topicparent=APG.AsmSweetSixteen">?</a> are opcodes 6 and 7. 
+If a specified branch condition is met by the prior register op result, the displacement is added to the PC effecting a branch. Except for the BR (Branch always) and BS (Branch to a Subroutine), the branch opcodes are assigned in complementary pairs, rendering them easily remembered for hand coding. For example, Branch if Plus and Branch if Minus are opcodes 4 and 5 while Branch if Zero and Branch if <span style='background : #FFFFCE;'><font color="#0000FF">NonZero</font></span><a href="/twiki/bin/edit/APG/NonZero?topicparent=APG.AsmSweetSixteen">?</a> are opcodes 6 and 7.
 
 <p />
 <h3><a name ="SWEET_16_Opcode_Summary_"> </a> SWEET 16 Opcode Summary: </h3>
@@ -1240,7 +1239,7 @@ the opcode. By assigning all the entries to a common page, only a single byte to
      JMP     (IND)
 </pre>
 <p />
-To save code, the subroutine entry address (minus 1) is pushed onto the stack, high-order byte first. A 6502 RTS (return from subroutine) is used to pop the address off the stack and into the 6502 PC (after incrementing by 1). The net result is that the desired subroutine is reached by executing a subroutine return instruction! 
+To save code, the subroutine entry address (minus 1) is pushed onto the stack, high-order byte first. A 6502 RTS (return from subroutine) is used to pop the address off the stack and into the 6502 PC (after incrementing by 1). The net result is that the desired subroutine is reached by executing a subroutine return instruction!
 <p />
 <p />
 <h3><a name ="Opcode_Subroutines_"> Opcode Subroutines: </a></h3>
@@ -1251,9 +1250,9 @@ instructions, since the register specification is saved in the high-order byte o
 for ADD and SUB instructions and R13 for the CPR (compare) instruction.
 
 <p />
-Normally the high-order R14 byte holds the 'prior result register' index times 2 to account for the 2-byte SWEET 16 registers and the LSB is zero. If ADD, SUB, or CPR instructions generate carries, then this index is incremented, setting the LSB. 
+Normally the high-order R14 byte holds the 'prior result register' index times 2 to account for the 2-byte SWEET 16 registers and the LSB is zero. If ADD, SUB, or CPR instructions generate carries, then this index is incremented, setting the LSB.
 <p />
-The SET instruction increments the PC twice, picking up data bytes in the specified register. In accordance with 6502 convention, the low-order data byte precedes the high-order byte. 
+The SET instruction increments the PC twice, picking up data bytes in the specified register. In accordance with 6502 convention, the low-order data byte precedes the high-order byte.
 <p />
 Most SWEET 16 non-register ops are relative branches. The corresponding subroutines determine whether or not the 'prior result' meets the
 specified branch condition and if so, update the SWEET 16 PC by adding the displacement value (-128 to +127 bytes).
@@ -1271,11 +1270,11 @@ instructions. The user must initialize and otherwise not disturb R12 if the SWEE
 
 <p />
 The only storage that must be allocated for SWEET 16 variables are 32 consecutive locations in page zero for the SWEET 16 registers, four
-locations to save the 6502 register contents, and a few levels of the 6502 subroutine return address stack. if you don't need to preserve the 6502 register contents, delete the SAVE and RESTORE subroutines and the corresponding subroutine calls. This will free the four page zero locations ASAV, XSAV, YSAV, and PSAV. 
+locations to save the 6502 register contents, and a few levels of the 6502 subroutine return address stack. if you don't need to preserve the 6502 register contents, delete the SAVE and RESTORE subroutines and the corresponding subroutine calls. This will free the four page zero locations ASAV, XSAV, YSAV, and PSAV.
 <p />
 <h3><a name ="User_Modifications_"> User Modifications: </a></h3>
 <p />
-You may wish to add some of your own instructions to this implementation of SWEET 16. If you use the unassigned opcodes $0E and $0F, remember that SWEET 16 treats these as 2-byte instructions. You may wish to handle the break instruction as a SWEET 16 call, saving two bytes of code each time you transfer into SWEET 16 mode. Or you may wish to use the SWEET 16 BK (break) op as a 'CHAROUT' call in the interrupt handler. You can perform absolute jumps within SWEET 16 by loading the ACC (R0) with the address you wish to jump to (minus 1) and executing a ST R15 instruction. 
+You may wish to add some of your own instructions to this implementation of SWEET 16. If you use the unassigned opcodes $0E and $0F, remember that SWEET 16 treats these as 2-byte instructions. You may wish to handle the break instruction as a SWEET 16 call, saving two bytes of code each time you transfer into SWEET 16 mode. Or you may wish to use the SWEET 16 BK (break) op as a 'CHAROUT' call in the interrupt handler. You can perform absolute jumps within SWEET 16 by loading the ACC (R0) with the address you wish to jump to (minus 1) and executing a ST R15 instruction.
 <p />
 
 <p />
@@ -1395,11 +1394,11 @@ the 6502's A-register); R12 is the subroutine return stack pointer;
 R13 receives the results of comparisons; R14 is a status register;
 R15 is the program address counter.
 <p />
-<pre> 
+<pre>
     SWEET-16 REGISTERS
- 
+
     Register    6502 Address    Purpose
- 
+
        0          $00,01        Accumulator
        1          $02,03        General
        2          $04,05        General
@@ -1412,7 +1411,7 @@ R15 is the program address counter.
       14          $1C,1D        Status
       15          $1E,1F        Program address
 
-</pre>  
+</pre>
 <p />
 There are two general types of opoodes recognized by SWEET-16:
 register and non-register opcodes.  The non-register opcodes all have
@@ -1428,7 +1427,7 @@ digit from 0 through F, and R is a register number (0-F).
     rest have a second byte which is a relative address, similar to
     the relative branch addresses used in 6502 opcodes.  The conditional
     branches use status bits found in R14.
-<pre>  
+<pre>
     00      RTN          Return to 6502 code.
     0l ea   BR   addr    Unconditional Branch.
     02 ea   BNC  addr    Branch if Carry=0.
@@ -1442,13 +1441,13 @@ digit from 0 through F, and R is a register number (0-F).
     0A      BK           Execute 6502 BRK instruction.
     0B      RS           Return from SWEET-16 subroutine.
     0C ea   BS   addr    Call SWEET-16 subroutine.
-</pre>  
+</pre>
 <p />
     Register Opcodes: The SET opcode uses three bytes, to load a 16-bit
     immediate value into a register.  All the rest of the register
     opcodes only use one byte.  ("MA" = memory address)
 
-<pre>  
+<pre>
     1n lo hi    SET  n,value    Rn &lt;-- value.
     2n          LD   n          R0 &lt;-- (Rn).
     3n          ST   n          Rn &lt;-- (R0).
@@ -1473,14 +1472,14 @@ digit from 0 through F, and R is a register number (0-F).
     En          INR  n          Rn &lt;-- (Rn) + 1.
     Fn          DCR  n          Rn &lt;-- (Rn) - 1.
 
-</pre>  
+</pre>
 <p />
 The S-C Assembler II includes all of the SWEET-16 opcodes, in the
 formats shown above.  You can write programs which mix both 6502 code
 and SWEET-16 together in any combination.
 <p />
 Here are a few examples which illustrate programming in SWEET-16.
-<pre>  
+<pre>
                     1000 *-------------------------------------
                     1010 *     CLEAR A BLOCK OF MEMORY
                     1020 *-------------------------------------
@@ -1496,20 +1495,20 @@ Here are a few examples which illustrate programming in SWEET-16.
     080D- F2        1120            DCR 2
     080E- 07 FC     1130            BNZ .1          NOT FINISHED YET
     0810- 00        1140            RTN
- 
- 
+
+
     SYMBOL TABLE
- 
+
     0A00- BLOCK
     0800- CLEAR
     .1=080C
     0234- N
     F689- SWEET.16
- 
+
     0000 ERRORS IN ASSEMBLY
- 
- 
- 
+
+
+
                     1000 *----------------------------
                     1010 *  MOVE A BLOCK OF MEMORY
                     1020 *----------------------------
@@ -1527,20 +1526,20 @@ Here are a few examples which illustrate programming in SWEET-16.
     080E- F3        1140            DCR 3
     080F- 07 FB     1150            BNZ .1          NOT FINISHED YET
     0811- 00        1160            RTN
- 
- 
+
+
     SYMBOL TABLE
- 
+
     0A80- DESTIN
     0800- MOVE
     .01=08CC
     0023- N
     0A00- SOURCE
     F689- SWEET.16
- 
+
     0000 ERRORS IN ASSEMBLY
- 
- 
+
+
                     1000 *-------------------------------
                     1010 *      RENUMBER S-C ASSEMBLER SOURCE CODE
                     1020 *-------------------------------
@@ -1576,17 +1575,17 @@ Here are a few examples which illustrate programming in SWEET-16.
     0823- 01 EE     1320        BR  .1
     0825- 00        1330 .2     RTN
     0826- 60        1340        RTS
- 
- 
+
+
     SYMBOL TABLE
- 
+
     004C- HIHEM
     00CA- PP
     0800- RENUMBER
     .01-0813, .02-0825
     F689- SWEET.16
- 
-    0000 ERRORS IN ASSEMBLY 
+
+    0000 ERRORS IN ASSEMBLY
 
 </pre>
 <p />

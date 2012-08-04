@@ -2,8 +2,7 @@
 <META name="description" content="A program to test address bus lines written in 6502 assembly language.">
 </HEAD>
 <BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
-<A HREF="../../index.html"><IMG SRC="../../mainlink.jpg" align=right
-border=0 alt="[Return to Main Page]"></A>
+<a href="../../index.html">[Return to Main Page</a>
 <P><FONT SIZE=+1>Address Line Test</FONT><FONT SIZE=-1> by Tony Gonzalez</FONT>
 <BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
 <BR clear=all><P>
@@ -16,7 +15,7 @@ address lines.  This simple method does just that.
 <p>This code is a bit long, but purposely so to
 demonstrate how the technique works.  Calling the routine at
 WRTDATA writes an incremental number to fifteen RAM locations,
-with the address of each location unique to A0-A14.  
+with the address of each location unique to A0-A14.
 <p>The program then falls through to RAMTEST1, which checks the
 RAM locations corresponding to A0-A7.  If successful, it then
 jumps to RAMTEST2 which checks A8-A14.  Note that A15 is not
@@ -35,7 +34,7 @@ the X register.
           .ORG $E000
 
 ;WRTDATA: Fill fifteen memory locations with unique, incremental
-;values, where each address uses a unique address line. 
+;values, where each address uses a unique address line.
 WRTDATA:  LDX #$0F
           STX $4000     ;$4000 = #$0F  (for test of A14)
           DEX
@@ -64,7 +63,7 @@ WRTDATA:  LDX #$0F
           STX $0004     ;$0004 = #$03  (for test of A2)
           DEX
           STX $0002     ;$0002 = #$02  (for test of A1)
-          DEX          
+          DEX
           STX $0001     ;$0001 = #$01  (for test of A0)
 
 ;RAMTEST1: Check address lines A0-A7.
@@ -94,7 +93,7 @@ RAMTEST1: CPX $0001
           CPX $0080     ;A7 bad (not = #$08)?
           BNE FOUNDBAD
           JMP RAMTEST2
-          
+
 ;FOUNDBAD: Called by either RAMTEST1 or RAMTEST2 if
 ;an error was detected.  This is the jump to the error handler.
 FOUNDBAD: JMP FAILURE
@@ -126,9 +125,9 @@ RAMTEST2: INX
 ;
 SUCCESS:  LDX #$00      ;Optional: Clean up the test bytes by filling
           STX $01       ;with #$00.
-          STX $02       
-          STX $04       
-          STX $08       
+          STX $02
+          STX $04
+          STX $08
           STX $10
           STX $20
           STX $40
@@ -139,12 +138,12 @@ SUCCESS:  LDX #$00      ;Optional: Clean up the test bytes by filling
           STX $0800
           STX $1000
           STX $2000
-          STX $4000	
-          RTS           
+          STX $4000
+          RTS
 
 FAILURE:  DEX           ;An error was detected.
-;	   .            
-;	   .            The address line under test (Axx) at the 
+;	   .
+;	   .            The address line under test (Axx) at the
 ;	   .            time of failure is in the X register.
 </pre>
 <P><FONT SIZE=-1>Last page update: April 4, 2004.</FONT>
