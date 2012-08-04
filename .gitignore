@@ -6,5 +6,5 @@
 /log/*
 /public/javascripts/cache
 /public/stylesheets/cache
-/public/help/users
+/public/users
 /tmp/*
