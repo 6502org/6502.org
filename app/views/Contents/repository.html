@@ -114,6 +114,15 @@
           it does not specifically find bad address lines. This simple method does
           just that.
     		</ul>
+
+                <p>&bull;&nbsp;<a href="http://wilsonminesco.com/StructureMacros/index.html">Program Structures in 65c02 Assembly, Through Macros</a>
+                <span style="font-size:10px;">by Garth Wilson</span>
+                <ul>
+                Cut the spaghetti code and label usage, and get more clarity, better control,
+                and fewer bugs, with no memory or runtime penalty, using program structures for
+                control of looping, conditionals, CASE statements, etc.,  mostly nestable, using
+                assembler macros
+                </ul>
 		  </ul>
 
 		<p><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
@@ -149,6 +158,19 @@
     		resulting with a 16-bit quotient and a 16-bit remainder.  Presented for
     		the 65C02 (with changes for use on 6502) and 65C816, with notes of
     		interest to Forth users.
+  		</ul>
+
+  		<p>&bull;&nbsp;<a href="http://wilsonminesco.com/16bitMathTables/index.html">Large Look-up Tables
+  		for Hyperfast, Accurate, 16-Bit Fixed-Point/Scaled-Integer Math</a>
+  		<span style="font-size:10px;">by Garth Wilson</span>
+  		<ul>
+    		So how fast?&nbsp; How about three <u>micro</u>seconds for a 10MHz 6502 to get even a trig or
+    		log function, <em>accurate to all 16 bits</em>?&nbsp; Memory is cheap enough now to do it.&nbsp; 
+    		You can probably implement them even if your computer is already built up, the address
+    		space is full, and your I/O is almost all taken.&nbsp;  See how.&nbsp; <strong>Plus: </strong>
+    		Introduction to the commonly unfamiliar and misunderstood world of fixed-point/scaled-integer
+    		math (and how to make it far more powerful than you thought possible, and take advantage
+    		of its efficiency)
   		</ul>
 
   		<p>&bull;&nbsp;<a href="/source/integers/32bcdbin.htm">BCD to Binary Conversion (32-bit)</a>
@@ -285,6 +307,16 @@
         and it so well documented that making changes to it are easy.
   		</ul>
 
+  		<p>&bull;&nbsp;<a href="http://bcstechnology.net/poc816/files/code/816macs.65s">Macros
+  		to assemble WDC's '816 code on the Kowalski simulator's assembler</a>
+  		<span style="font-size:10px;">by BigDumbDinosaur</span>
+  		<ul>
+    		The Kowalski simulator and its assembler are made for the NMOS and Rockwell CMOS 6502
+    		and lacks a couple of the WDC 65c02 instructions plus all the extra instructions and
+    		and addressing modes of the 65816.&nbsp; This set of macros effectively extends the
+                assembler to WDC 65c02/816 capability.
+  		</ul>
+
   		<p>&bull;&nbsp;<a href="/source/forth65.zip">FIG FORTH 6502 [FORTH65.ZIP: 32KB]</a>
   		<span style="font-size:10px;">from the FORTH Interest Group</span>
   		<ul>
@@ -293,6 +325,15 @@
         that this has the "UM/MOD" division bug. An explanation of the bug and a
         correction can be found in Garth Wilson's 32-bit Division entry, which
         can also be found here in the Source Code Repository.
+  		</ul>
+
+  		<p>&bull;&nbsp;<a href="http://wilsonminesco.com/Forth/32DOLOOP.FTH">32-bit DO LOOP & related words in 6502 ITC Forth [text source-code file]</a>
+  		<span style="font-size:10px;">by Garth Wilson</span>
+  		<ul>
+    		All in 32-bit (including the increment value for 2+LOOP): 32-bit equivalents for
+    		DO, ?DO, LOOP, +LOOP, I, BOUNDS, LEAVE, ?LEAVE, UNLOOP, and the internals, plus
+    		explanation.&nbsp; These augment, not replace, the normal 16-bit ones, putting "2"
+    		in front of the names to tell the double-precision ones apart from the normal single-precision ones.
   		</ul>
 
   		<p>&bull;&nbsp;<a href="/source/interpreters/sweet16.htm">Porting Sweet 16</a>
