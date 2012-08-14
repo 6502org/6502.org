@@ -1,7 +1,7 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: Convert ASCII Number String to 32-bit Binary</TITLE>
 <META name="description" content="Convert ASCII Number String to 32-bit Binary.">
 </HEAD>
-<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<BODY TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <P><FONT SIZE=+1>Convert ASCII Number String to 32-bit Binary</FONT>&nbsp;<FONT SIZE=-1>by BigDumbDinosaur</FONT>
 <BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
 <BR clear=all><P>
@@ -10,7 +10,7 @@
 <P>
 This 6502 assembly language program converts a null-terminated ASCII number
 string into a 32-bit unsigned binary value in little-endian format.  It can
-accept a number in binary, octal, decimal or hexadecimal format.           
+accept a number in binary, octal, decimal or hexadecimal format.
 </p>
 
 <PRE>
@@ -28,7 +28,7 @@ accept a number in binary, octal, decimal or hexadecimal format.
 ;* --------------------------------------------------------------------------- *
 ;*                                                                             *
 ;* Copyright (C)1985 by BCS Technology Limited.  All rights reserved.          *
-;*                                                                             * 
+;*                                                                             *
 ;* Permission is hereby granted to copy and redistribute this software,  prov- *
 ;* ided this copyright notice remains in the source code & proper  attribution *
 ;* is given.  Any redistribution, regardless of form, must be at no charge  to *
@@ -171,7 +171,7 @@ strbin06 clc                   ;assume no error for now
 ;
          cmp #'z'+1
          bcs strbin08          ;not ASCII LC
-;         
+;
          and #a_maskuc         ;do case conversion
 ;
 strbin07 sec

@@ -1,8 +1,8 @@
 <HTML><HEAD><TITLE>www.6502.org: Tutorials: Compare Instructions</TITLE>
 <meta http-equiv="Context-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="A tutorial on the 6502 microprocessor's
-compare instructions."> <style><!-- a:{color:#000099}
-a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
+compare instructions.">
+<style><!-- a:{color:#000099} a:vlink{color:#000099} a:hover{color:#007FFF} --></style></HEAD>
 <BODY TEXT="#000000" LINK="#000099" VLINK="#000099">
 <a href="../index.html">[Return to Main Page]</a>
 <FONT size=+1>6502 Compare
@@ -46,7 +46,7 @@ would follow the compare instruction with a Branch on Carry Clear (BCC)
 instruction, as shown by the following:
 <p><b>Example: Comparing Memory to the Accumulator</b>
 <table cellpadding="20"
-cellspacing="0" border="1"> <tr><td bgcolor=white><pre>
+cellspacing="0" border="1"> <tr><td><pre>
         CMP  $20     ;Accumulator less than location $20?
         BCC  THERE
 HERE                 ;No, continue execution here.
@@ -84,7 +84,7 @@ memory locations are identical, and sets a flag in memory to so indicate.
 <p>
 <b>Example: Testing Two Locations for Equality</b>
 <table cellpadding="20" cellspacing="0" border="1">
-<tr><td bgcolor=white><pre>
+<tr><td><pre>
 ;This routine sets memory location $22 to "One" if the contents
 ;of locations $20 and $21 are equal, and to "Zero" if otherwise.
 
@@ -101,7 +101,7 @@ of two values in the higher memory location.
 <p>
 <b>Example: Arranging Two Numbers in Order of Value</b>
 <table cellpadding="20" cellspacing="0" border="1">
-<tr><td bgcolor=white><pre>
+<tr><td><pre>
 ;This routine arranges two numbers in locations $20 and $21 in
 ;order of value, with the lower-valued number in location $20.
 
@@ -126,7 +126,7 @@ EQGT3 based its branch decision on!
 <p>
 <b>Example: A Three-Way Decision Routine</b>
 <table cellpadding="20" cellspacing="0" border="1">
-<tr><td bgcolor=white><pre>
+<tr><td><pre>
 ;This routine stores the contents of the accumulator into location
 ;$20, $21, or $22, depending upon whether the accumulator holds a
 ;value les than 3, equal to 3, or grather than 3, respectively.
@@ -155,7 +155,7 @@ moved" check each time a byte is moved.
 <p>
 <b>Example: A Multiple-Byte Move Routine</b>
 <table cellpadding="20" cellspacing="0" border="1">
-<tr><td bgcolor=white><pre>
+<tr><td><pre>
 ;This routine moves up to 256 bytes of memory, starting at
 ;location $20, to another portion of memory, starting at location
 ;$0320.  The byte count is contained in location $1F.

@@ -2,7 +2,7 @@
 <META name="description" content="How to divide a 32-bit number by a
 16-bit number in 6502 assembly.">
 </HEAD>
-<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<BODY TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <a href="../../../index.html">[Return to Main Page]</a>
 <P><FONT SIZE=+1>Division (32-bit)</FONT>&nbsp;<FONT SIZE=-1>by
 Garth Wilson</FONT>
@@ -54,7 +54,7 @@ Forth to benefit from this however.</LI>
 </UL>
 
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1"><TR>
-<TD BGCOLOR="#FFFFFF">
+<TD>
 <PRE>
 ; ----------------------------- ZP RAM Variables ------------------------------
 .PAGE0
@@ -146,50 +146,50 @@ wrote:
 <TD BGCOLOR="F0F8FF">Remainder&nbsp;<font size=-1>(Wrong quot &
 rem)</font></TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">70000000</TD>
-<TD BGCOLOR="#FFFFFF">FFFF</TD>
-<TD BGCOLOR="#FFFFFF">0</TD>
-<TD BGCOLOR="#FFFFFF">0</TD></TR>
+<TD>70000000</TD>
+<TD>FFFF</TD>
+<TD>0</TD>
+<TD>0</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">60000000</TD>
-<TD BGCOLOR="#FFFFFF">FFFF</TD>
-<TD BGCOLOR="#FFFFFF">0</TD>
-<TD BGCOLOR="#FFFFFF">0</TD></TR>
+<TD>60000000</TD>
+<TD>FFFF</TD>
+<TD>0</TD>
+<TD>0</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">20000000</TD>
-<TD BGCOLOR="#FFFFFF">FFFF</TD>
-<TD BGCOLOR="#FFFFFF">0</TD>
-<TD BGCOLOR="#FFFFFF">0</TD></TR>
+<TD>20000000</TD>
+<TD>FFFF</TD>
+<TD>0</TD>
+<TD>0</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">20000000</TD>
-<TD BGCOLOR="#FFFFFF">EFFF</TD>
-<TD BGCOLOR="#FFFFFF">0</TD>
-<TD BGCOLOR="#FFFFFF">0</TD></TR>
+<TD>20000000</TD>
+<TD>EFFF</TD>
+<TD>0</TD>
+<TD>0</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">7FFFFFFF</TD>
-<TD BGCOLOR="#FFFFFF">EFFF</TD>
-<TD BGCOLOR="#FFFFFF">8000</TD>
-<TD BGCOLOR="#FFFFFF">7FFF</TD></TR>
+<TD>7FFFFFFF</TD>
+<TD>EFFF</TD>
+<TD>8000</TD>
+<TD>7FFF</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">7FFFFFFF</TD>
-<TD BGCOLOR="#FFFFFF">FFFF</TD>
-<TD BGCOLOR="#FFFFFF">8000</TD>
-<TD BGCOLOR="#FFFFFF">7FFF</TD></TR>
+<TD>7FFFFFFF</TD>
+<TD>FFFF</TD>
+<TD>8000</TD>
+<TD>7FFF</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">7FFFFFFF</TD>
-<TD BGCOLOR="#FFFFFF">8FFF</TD>
-<TD BGCOLOR="#FFFFFF">E001</TD>
-<TD BGCOLOR="#FFFFFF">5000</TD></TR>
+<TD>7FFFFFFF</TD>
+<TD>8FFF</TD>
+<TD>E001</TD>
+<TD>5000</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">7FFFFFFF</TD>
-<TD BGCOLOR="#FFFFFF">800F</TD>
-<TD BGCOLOR="#FFFFFF">FFE2</TD>
-<TD BGCOLOR="#FFFFFF">1C1</TD></TR>
+<TD>7FFFFFFF</TD>
+<TD>800F</TD>
+<TD>FFE2</TD>
+<TD>1C1</TD></TR>
 <TR>
-<TD BGCOLOR="#FFFFFF">90000000</TD>
-<TD BGCOLOR="#FFFFFF">A000</TD>
-<TD BGCOLOR="#FFFFFF">0</TD>
-<TD BGCOLOR="#FFFFFF">0</TD></TR>
+<TD>90000000</TD>
+<TD>A000</TD>
+<TD>0</TD>
+<TD>0</TD></TR>
 </TABLE></CENTER>
 <P>
 Actual division part of UM/MOD in many 6502 Forths is as follows.  It's
@@ -197,7 +197,7 @@ slightly faster than the fix detailed above, but what good is that if it
 doesn't always give the right answers?
 <P>
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
-<TR><TD BGCOLOR="#FFFFFF">
+<TR><TD>
 To start, ZP data stack usage makes:<BR>
 0,X & 1,X = 16-bit divisor<BR>
 2,X & 3,X = hi 16 bits of dividend<BR>
@@ -263,7 +263,7 @@ not used for parameter-passing from one Forth word to another.</LI>
 </OL>
 <P>
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
-<TR><TD BGCOLOR="#FFFFFF">
+<TR><TD>
 <PRE>
 HEADER "UM/MOD", NOT_IMMEDIATE          ; ( ud u -- rem quot )
         CODE            ; (Make Forth CFA point to PFA for a code definition.)
@@ -338,7 +338,7 @@ one-line contents.
 
 <P>
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
-<TR><TD BGCOLOR="#FFFFFF">
+<TR><TD>
 <PRE>
 INDEX_16:       MACRO                   ; Put X & Y into 16-bit mode.
                 REP     #00010000B

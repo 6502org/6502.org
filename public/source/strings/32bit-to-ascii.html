@@ -1,13 +1,13 @@
 <HTML><HEAD><TITLE>www.6502.org: Source: Convert 32-bit Binary to ASCII Number String</TITLE>
 <META name="description" content="Convert 32-bit Binary to ASCII Number String.">
 </HEAD>
-<BODY BGCOLOR="white" TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<BODY TEXT="black" LINK="#0000EE" VLINK="#0000EE">
 <P><FONT SIZE=+1>Convert 32-bit Binary to ASCII Number String</FONT>&nbsp;<FONT SIZE=-1>by BigDumbDinosaur</FONT>
 <BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
 <BR clear=all><P>
 <HR>
 <P><B>Convert ASCII Number String to 32-bit Binary</B>
-<P>                      
+<P>
 This program converts 32-bit binary back to an ASCII string.  It is a companion
 to <a href="ascii-to-32bit.html">Convert ASCII Number String to 32-bit Binary</a>.
 </p>
@@ -31,7 +31,7 @@ are notes in the code warning about it.  Please see them below.
 ;* --------------------------------------------------------------------------- *
 ;*                                                                             *
 ;* Copyright (C)1985 by BCS Technology Limited.  All rights reserved.          *
-;*                                                                             * 
+;*                                                                             *
 ;* Permission is hereby granted to copy and redistribute this software,  prov- *
 ;* ided this copyright notice remains in the source code & proper  attribution *
 ;* is given.  Any redistribution, regardless of form, must be at no charge  to *
@@ -372,7 +372,7 @@ facbcd08 pla                   ;operand
 ;================================================================================
 ;
 ;PER RADIX CONVERSION TABLES
-;        
+;
 bitstab  .byte 4,1,3,4         ;bits per numeral
 lzsttab  .byte 2,9,2,3         ;leading zero suppression thresholds
 numstab  .byte 12,48,16,12     ;maximum numerals

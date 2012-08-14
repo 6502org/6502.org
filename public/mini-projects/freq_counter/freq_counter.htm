@@ -9,76 +9,76 @@
 <tr><td colspan="4" class="credits"><center><i>M. Dohmen<br>R. Koekoek</i><br><br></center></td>
 </tr>
 
-<tr><td width="500" valign="top" class="column"><b>The project described here can measure a frequency up to 100 kHz 
-with a deviation of only one alternation  in 65,536. The frequency is displayed over five digits. The program 
+<tr><td width="500" valign="top" class="column"><b>The project described here can measure a frequency up to 100 kHz
+with a deviation of only one alternation  in 65,536. The frequency is displayed over five digits. The program
 is written for the KIM but is usable on other 6502 microcomputers, like the SYM and the Junior.
-The program will perform a frequency measurement only once after the "0" key is pressed, or it will measure 
+The program will perform a frequency measurement only once after the "0" key is pressed, or it will measure
 continuously after the "6" key is pressed.</b><br><br>
 
 <table><tr><td width="250" valign="top" class="column"><big><bold>Overflow</bold></big><br><br>
-This program employs a seldom-used hardware feature of the 6502. This microprocessor has a SO (Set Overflow) input on pin 38, 
-which can set the Overflow bit in the Processor Status Register externally.  On most 6502-based computers, this pin this is available via a connector (RO, pin E-5 on 
-the KIM; SO, pin 14-c on the Junior).<br><br>  
+This program employs a seldom-used hardware feature of the 6502. This microprocessor has a SO (Set Overflow) input on pin 38,
+which can set the Overflow bit in the Processor Status Register externally.  On most 6502-based computers, this pin this is available via a connector (RO, pin E-5 on
+the KIM; SO, pin 14-c on the Junior).<br><br>
 <img src="buffer.jpg" width="220" height="352" alt="input protection" border="2" align="middle"><br>
 
 </td>
 <td width="10" class="column">&nbsp;</td>
 
-<td width="250" valign="top" bgcolor="FFFFFF" class="column" noresize>The overflow flag is set on the falling edge of the SOV pin, i.e. when the 
+<td width="250" valign="top" class="column" noresize>The overflow flag is set on the falling edge of the SOV pin, i.e. when the
 signal on this input goes from high to low.
-This gives a fast and direct access to the microprocessor without involving the rest of the computer. 
+This gives a fast and direct access to the microprocessor without involving the rest of the computer.
 Once the overflow flag is set, only the software can influence it.<br>
 
 <br><big><bold>Buffering</bold></big><br><br>
-Since the measuring is done directly with our circuit, buffering and protection of the SOV-input is necessary. 
+Since the measuring is done directly with our circuit, buffering and protection of the SOV-input is necessary.
 The easyist way to implement this is via a Schmitt-trigger gate, like the 7413.  The figure at left also shows voltage
 and current protection before the 7413.  This circuit can measure signals of every shape if the level is around 2.5 V.<br>
 
 <br><big><bold>Operation</bold></big><br><br>
-The program starts on location 0200 hex.  First, the interrupt vector is being set at the start address of the 
-interrupt routine (0298 hex).  Next, the counter for the interrupts is initialized and the readout is then cleared.  
-The timer is being set to interrupt once every 1/4 of a second.  For a complete cycle,  four interrupts are used 
+The program starts on location 0200 hex.  First, the interrupt vector is being set at the start address of the
+interrupt routine (0298 hex).  Next, the counter for the interrupts is initialized and the readout is then cleared.
+The timer is being set to interrupt once every 1/4 of a second.  For a complete cycle,  four interrupts are used
 which results in about 1 second.</td></tr></table>
 
 </td>
 
 <td width="15" class="column">&nbsp;</td>
 
-<td width="400" valign="top" bgcolor="FFFFFF" class="column">To make this timing accurate and trim the measurement, an extra delay routine of about 3 ms is required.  The accumulator, the 
-carry- and overflow-flag are cleared, then the number of overflows are counted until the next interrupt.  
+<td width="400" valign="top" class="column">To make this timing accurate and trim the measurement, an extra delay routine of about 3 ms is required.  The accumulator, the
+carry- and overflow-flag are cleared, then the number of overflows are counted until the next interrupt.
 
-<br><br>Counting 
-is done in binary with the least significant bits in the X-register, then the Y-register and the most significant 
-bits in the accumulator. By keeping this routine as short as possible, the maximum frequency is about 100 kHz. The 
-error occuring at 65536 pulses is arises when the X and Y-registers reach FFFF hex and the accumulator needs to be 
+<br><br>Counting
+is done in binary with the least significant bits in the X-register, then the Y-register and the most significant
+bits in the accumulator. By keeping this routine as short as possible, the maximum frequency is about 100 kHz. The
+error occuring at 65536 pulses is arises when the X and Y-registers reach FFFF hex and the accumulator needs to be
 incremented. This makes the counting routine a little longer.<br><br>
 
-Whenever an interrupt occurs, the interrupt routine is being called.  Here the timer is being restarted if this 
-was not the fourth interrupt.  If it was the fourth, the value is converted to decimal.  This happens only now 
-because counting in decimal happens in the accumulator and is more time consuming.  Conversion from binary to 
-decimal is done as follows:  in the table there are respectively the decimal values of 1, 10, 100, 1,000 and 
-10,000.  As long as the value is not negative, the 10,000 counter is incremented.  The result is being put back in 
-the original counter.  If the result was negative, the value of the counter before the subtraction is used and 
-the next value from the table is subtracted.  This goes on until the counter reaches zero.  The decimal value is 
-kept in the readout registers.<br><br>  
+Whenever an interrupt occurs, the interrupt routine is being called.  Here the timer is being restarted if this
+was not the fourth interrupt.  If it was the fourth, the value is converted to decimal.  This happens only now
+because counting in decimal happens in the accumulator and is more time consuming.  Conversion from binary to
+decimal is done as follows:  in the table there are respectively the decimal values of 1, 10, 100, 1,000 and
+10,000.  As long as the value is not negative, the 10,000 counter is incremented.  The result is being put back in
+the original counter.  If the result was negative, the value of the counter before the subtraction is used and
+the next value from the table is subtracted.  This goes on until the counter reaches zero.  The decimal value is
+kept in the readout registers.<br><br>
 After the conversion, the display lights up and shows the value.  Next the key is checked.  If not, the preveous key value is used. If yes, the program stops measuring at a "0" and goes on displaying the frequency at a "6".
 </td></tr>
-<td align=left bgcolor="FFFFFF" class="column"><font size=-1>Radio Bulletin</font></td>
+<td align=left class="column"><font size=-1>Radio Bulletin</font></td>
 <td class="column">&nbsp;</td>
-<td bgcolor="FFFFFF" align="right" class="column"><font size=-1>January 1981</font></td>
+<td align="right" class="column"><font size=-1>January 1981</font></td>
 </tr></table>
 
 <p>
 <hr>
 
-<table cellpadding=10 width="850" bgcolor="FFFFFF"><tr>
-<td width="30%" valign="top" bgcolor="FFFFFF" class="column">
+<table cellpadding=10 width="850"><tr>
+<td width="30%" valign="top" class="column">
 <big><bold>Adjustment</bold></big><br><br>
 The adjustment goes as follows. A dividing circuit, composed of two devide-by-10 deviders, is connected to the 1 MHz clock of the computer. The frequency at the output will be in the neighbourhood of 10 kHz. This signal is being fed to input and
 
 </td>
-<td width="30%" valign="top" bgcolor="FFFFFF" class="column">the program is started. By modifying the values in memory locations 021C and 021E of the delay-routine, the readout is adjusted to 10.000. The devide-by-100 is used because then the accumulator is not yet active in the proces. This way the meter is most accurate. By connecting the devider between the buffer(7413) and the RO (SO) input the measurement is extended to 10 MHz. In order to make the timer work it's importand for the KIM to connect PB7 (A-15) and NMI (E-6) and for the Junior, NMI (12-C) and IRQ (12-A). The timer actualy generates interupts.</td>
-<td width="30%" valign="top" bgcolor="FFFFFF" class="column"><big><bold>Modifications for the Junior</bold></big><br><br>
+<td width="30%" valign="top" class="column">the program is started. By modifying the values in memory locations 021C and 021E of the delay-routine, the readout is adjusted to 10.000. The devide-by-100 is used because then the accumulator is not yet active in the proces. This way the meter is most accurate. By connecting the devider between the buffer(7413) and the RO (SO) input the measurement is extended to 10 MHz. In order to make the timer work it's importand for the KIM to connect PB7 (A-15) and NMI (E-6) and for the Junior, NMI (12-C) and IRQ (12-A). The timer actualy generates interupts.</td>
+<td width="30%" valign="top" class="column"><big><bold>Modifications for the Junior</bold></big><br><br>
 The program in the listing is for the KIM. For the Junior the following changes apply:
 <pre>Address  KIM    Junior
 0203     FB     7B
@@ -94,8 +94,8 @@ The program in the listing is for the KIM. For the Junior the following changes 
 </pre>
 </td></tr></table>
 <table cellpadding=0 cellspacing=0 width="850">
-<tr><td bgcolor="FFFFFF" class="column">&nbsp;</td>
-<td valign=top bgcolor="FFFFFF" class="code"><pre>
+<tr><td class="column">&nbsp;</td>
+<td valign=top class="code"><pre>
          MICRO-WARE ASSEMBLER 65XX-1.0 PAGE 01
 0010:
 0020:               *****************************************
@@ -179,9 +179,9 @@ The program in the listing is for the KIM. For the Junior the following changes 
 0800: 0231 69 01           ADCIM $01    ADD 1 TO ACCU
 0810: 0233 D0 F3           BNE   OVERFL ACCU = FF?</td>
 
-<td bgcolor="FFFFFF" class="code">&nbsp;</td>
+<td class="code">&nbsp;</td>
 
-<td valign=top bgcolor="FFFFFF" class="code"><pre>
+<td valign=top class="code"><pre>
 0820:
 0830:               BINARY TO DECIMAL CONVERSION
 0840:
@@ -266,11 +266,11 @@ The program in the listing is for the KIM. For the Junior the following changes 
 0440: 02B6 03              =     $03
 0450: 02B7 10              =     $10
 0460: 02B8 27              =     $27</td>
-<td bgcolor="FFFFFF" class="column">&nbsp;</td>
+<td class="column">&nbsp;</td>
 </tr><tr>
-<td align=left bgcolor="FFFFFF" colspan=2 class="column"><font size=-1>Radio Bulletin</font></td>
-<td bgcolor="FFFFFF" class="column">&nbsp;</td>
-<td bgcolor="FFFFFF" align="right" colspan=2 class="column"><font size=-1>January 1981</font></td>
+<td align=left colspan=2 class="column"><font size=-1>Radio Bulletin</font></td>
+<td class="column">&nbsp;</td>
+<td align="right" colspan=2 class="column"><font size=-1>January 1981</font></td>
 </tr></table>
 
 </center>
