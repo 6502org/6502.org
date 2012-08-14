@@ -1,7 +1,7 @@
-<HTML><HEAD><TITLE>www.6502.org: Source: 8-bit Bubble Sort</TITLE>
-<META name="description" content="A 6502 assembly language bubble sort routine for a list containing 8-bit elements.">
-</HEAD>
-<BODY TEXT="black" LINK="#0000EE" VLINK="#0000EE">
+<html><head><title>www.6502.org: Source: 8-bit Bubble Sort</title>
+<meta name="description" content="A 6502 assembly language bubble sort routine for a list containing 8-bit elements.">
+</head>
+<body>
 <a href="../../index.html">[Return to Main Page]</a>
 <P><FONT SIZE=+1>Bubble Sort (for 8-Bit Elements)</FONT><FONT SIZE=-1> from 6502 Software Design</FONT>
 <BR clear=all><A HREF="../source.htm">[Up to Source Code Repository]</A>
@@ -60,5 +60,4 @@ Subroutine SORT8 begins by initializing an <I>exchange flag</I>.  The exchange f
 <P>Following the exchange, the element count is decremented with a DEX instruction (label CHKEND) and the subsequent BNE BXTEL instruction branches to NXTEL if the pass has not yet been completed.  When the pass is completed, BIT $32 checkes whether the exhange is still off (Bit 7=0), or has been turned on (Bit 7=1) by an exchange operation during the pass.  If an exchange occurred, the subroutine is reinitiated at ORDER8, otherwise RTS causes a return, with a now ordered list.
 <P>See also the <A HREF="bubble16.htm">16-bit Bubble Sort</A> routine.
 <P><FONT SIZE=-1>Last page update: August 5, 2000.</FONT>
-</BODY></HTML>
-
+</body></html>
