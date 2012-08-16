@@ -311,10 +311,17 @@
   		to assemble WDC's '816 code on the Kowalski simulator's assembler</a>
   		<span style="font-size:10px;">by BigDumbDinosaur</span>
   		<ul>
-    		The Kowalski simulator and its assembler are made for the NMOS and Rockwell CMOS 6502
+            <!-- The Kowalski simulator and its assembler are made for the NMOS and Rockwell CMOS 6502
     		and lacks a couple of the WDC 65c02 instructions plus all the extra instructions and
     		and addressing modes of the 65816.&nbsp; This set of macros effectively extends the
-                assembler to WDC 65c02/816 capability.
+                assembler to WDC 65c02/816 capability.-->
+                The Kowalski simulator was designed to simulate the NMOS 6502 and Rockwell
+                65C02.&nbsp;  It does not recognize the WDC 65C02 <tt><b>STP</b></tt> and <tt><b>WAI</b></tt>
+                instructions.&nbsp;  This set of macros may be used to synthesize these instructions
+                in the simulator's integrated assembler, plus synthesize the new instructions and
+                addressing modes of the WDC 65C816.&nbsp;  (Note, however, that the simulator
+                cannot <em>execute</em> the synthesized instructions and will report an error if
+                it encounters them during simulation.)
   		</ul>
 
   		<p>&bull;&nbsp;<a href="/source/forth65.zip">FIG FORTH 6502 [FORTH65.ZIP: 32KB]</a>
