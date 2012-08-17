@@ -3,150 +3,150 @@
 </head>
 <body>
 <a href="../index.html">[Return to Main Page]</a>
-<FONT size=+1>NMOS 6502 Opcodes</FONT>&nbsp;<FONT SIZE=-1>by John Pickens,
+<FONT size="+1">NMOS 6502 Opcodes</FONT>&nbsp;<FONT SIZE="-1">by John Pickens,
 Updated by Bruce Clark</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A>
 <BR>
 <HR>
-<H2>INDEX</H2></A>
+<h2>INDEX</h2>
 <P><TT>
-<TABLE border=2 cellPadding=2 width="90%">
+<TABLE border=2 cellpadding=2 width="90%">
   <TBODY>
   <TR>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#BRA">Branches</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#DFLAG">Decimal Mode</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#IFLAG">Interrupt Flag</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#VFLAG">Overflow Flag</A></TD>
-    <TD align=middle><A href="#PC">Program
+    <TD align="center"><A href="#PC">Program
       Counter</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#STACK">Stack</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#TIMES">Times</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
       href="#WRAP">Wrap-around</A></TD></TR></TBODY></TABLE>
 <P>
 <TABLE border=2 cellPadding=2 width="90%">
   <TBODY>
   <TR>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#ADC">ADC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#AND">AND</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#ASL">ASL</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BCC">BCC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BCS">BCS</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BEQ">BEQ</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BIT">BIT</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BMI">BMI</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BNE">BNE</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BPL">BPL</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BRK">BRK</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BVC">BVC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#BVS">BVS</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CLC">CLC</A></TD></TR>
   <TR>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CLD">CLD</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CLI">CLI</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CLV">CLV</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CMP">CMP</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CPX">CPX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#CPY">CPY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#DEC">DEC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#DEX">DEX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#DEY">DEY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#EOR">EOR</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#INC">INC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#INX">INX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#INY">INY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#JMP">JMP</A></TD></TR>
   <TR>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#JSR">JSR</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#LDA">LDA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#LDX">LDX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#LDY">LDY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#LSR">LSR</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#NOP">NOP</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#ORA">ORA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#PHA">PHA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#PHP">PHP</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#PLA">PLA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#PLP">PLP</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#ROL">ROL</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#ROR">ROR</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#RTI">RTI</A></TD></TR>
   <TR>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#RTS">RTS</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#SBC">SBC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#SEC">SEC</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#SED">SED</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#SEI">SEI</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#STA">STA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#STX">STX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#STY">STY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TAX">TAX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TAY">TAY</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TSX">TSX</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TXA">TXA</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TXS">TXS</A></TD>
-    <TD align=middle><A
+    <TD align="center"><A
     href="#TYA">TYA</A></TD></TR></TBODY></TABLE>
 </TT>
 <P><A name=ADC>&nbsp;</A>
@@ -710,5 +710,5 @@ Zero Page,X   STY $44,X     $94  2   4
 Absolute      STY $4400     $8C  3   4
 </PRE>
 <P>
-<P><FONT SIZE=-1>Last Updated March 30, 2001.</FONT>
+<P><FONT SIZE="-1">Last Updated March 30, 2001.</FONT>
 </body></html>
