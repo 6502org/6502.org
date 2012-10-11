@@ -138,9 +138,59 @@
           As a project for Princeton University, Ian Buck developed a hardware
           simulation of the original 6502-based Nintendo game console.
         </li>
+      </ul>
+    </p>
 
-  		</ul>
-	  </p>
+		<p style="padding-top:20px;"><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+  		<a name="tests"><b>6502 Test programs</b> (for emulators and re-implementations)</a>
+  		<ul>
+        <li>
+          <a href="https://github.com/redline6561/cl-6502/blob/b0087903428ec2a3794ba4219494005174d1b09f/tests/6502_functional_test.a65">Klaus Dormann's test suite</a> -
+          portable, includes decimal mode, is standalone and can be assembled to a single image around 16k.
+          (See also <a href="http://forum.6502.org/viewtopic.php?f=2&t=2241">this forum thread</a>.)
+        </li>
+        <li>
+          <a href="http://www.modelb.bbcmicro.com/testsuite-2.15.tar.gz">Wolfgang Lorenz' C64 suite</a> -
+          exhaustive, excluding decimal mode, uses C64 facilities to chain each program. 11kByte total.
+          There's some description of the suite <a href="http://plus4world.powweb.com/software/Test_Suite">here</a>.
+          Christopher Palm offers stubbing advice <a href="http://www.softwolves.com/arkiv/cbm-hackers/7/7114.html">here</a>.
+          (<a href="http://www.baisoku.org/pc64test.zip">A different revision</a> with sources.)
+        </li>
+        <li>
+          <a href="http://www.baltissen.org/zip/rb65-11.zip">Ruud Baltissen's 8k test ROM</a> -
+          from his VHDL 6502 core (includes source, but only a subset of files found in the
+          <a href="http://www.baltissen.org/zip/rb65-10.zip">previous version</a>)
+        </li>
+        <li>
+          <a href="http://nickmass.com/images/nestest.nes">NES test rom</a> -
+          by Kevin Horton (24kbyte) (no sources, but some information <a href="http://www.qmtpro.com/~nes/misc/nestest.txt">here)
+        </li>
+        <li>
+          <a href="http://code.google.com/p/hmc-6502/source/browse/trunk/emu/testvectors/AllSuiteA.asm">AllSuiteA.asm</a> -
+          from the hcm-6502 (verilog) project. ROM available. Load at and reset to 0xf000 and set
+          IRQ vector to 0xf5a4.
+        </li>
+        <li>
+          <a href="http://www.6502.org/tutorials/decimal_mode.html">Decimal mode tests</a> -
+          by Bruce Clark ADC/SBC (exhaustive, tests all four affected flags and several CPU versions.)
+          (Some additional tests <a href="http://visual6502.org/wiki/index.php?title=6502DecimalMode">here</a>
+          in the visual6502 project.)
+        </li>
+        <li>
+          <a href="http://web.archive.org/web/20070707064155/http://www.birdcomputer.ca/Projects/Prj6502/bc6502_page.html">Rob Finch's tests</a> -
+          from his 6502 core (now offline, so link is to archive.org) (1500 bytes)
+        </li>
+        <li>
+          <a href="http://www.virtualdub.org/downloads/Acid800-1.0.7z">Acid800</a> -
+          by Avery Lee for 8-bit Atari emulators includes some 6502 tests.
+          See <a href="http://www.virtualdub.org/altirra.html">Altirra page.
+        </li>
+        <li>
+          <a href="http://asap.git.sourceforge.net/git/gitweb.cgi?p=asap/asap;a=tree;f=test">ASAP tests</a> -
+          by Piotr Fusik include exhaustive tests for ADC, SBC and 0x6B as well as a few tests for other undocumented opcodes.
+       </li>
+      </ul>
+    </p>
 
 	</td>
 
