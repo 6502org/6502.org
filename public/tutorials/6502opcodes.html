@@ -104,7 +104,7 @@ Updated by Bruce Clark</FONT>
     <TD align="center"><A
     href="#NOP">NOP</A></TD>
     <TD align="center"><A
-    href="#ORA">ORA</A></TD>
+    href="#">ORA</A></TD>
     <TD align="center"><A
     href="#PHA">PHA</A></TD>
     <TD align="center"><A
@@ -173,7 +173,7 @@ packed BCD (Binary Coded Decimal).
 <H2>AND (bitwise AND with accumulator) </H2>
 <P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     AND #$44      $29  2   2
-Zero Page     AND $44       $25  2   2
+Zero Page     AND $44       $25  2   3
 Zero Page,X   AND $44,X     $35  2   3
 Absolute      AND $4400     $2D  3   4
 Absolute,X    AND $4400,X   $3D  3   4+
@@ -545,7 +545,7 @@ out existing code.
 <H2>ORA (bitwise OR with Accumulator) </H2>
 <P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     ORA #$44      $09  2   2
-Zero Page     ORA $44       $05  2   2
+Zero Page     ORA $44       $05  2   3
 Zero Page,X   ORA $44,X     $15  2   3
 Absolute      ORA $4400     $0D  3   4
 Absolute,X    ORA $4400,X   $1D  3   4+
