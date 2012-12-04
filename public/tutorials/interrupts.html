@@ -1054,8 +1054,8 @@ CUR_ADR:       .DFS  2   ; The only STA() there is is in ZP, so use this addr.
 </pre>
 Not necessarily in zero page:
 <pre>
-BEG_ADR:       .DFS  2   ; ¿ These 2 specify the address range where the samples
-END_ADR:       .DFS  2   ; Ù are stored, & get initialized in START_ARB below.
+BEG_ADR:       .DFS  2   ; ï¿½ These 2 specify the address range where the samples
+END_ADR:       .DFS  2   ; ï¿½ are stored, & get initialized in START_ARB below.
 PLAY_T1_VAL:   .DFS  2   ; Value to store in VIA T1 counter for desired
                          ;                                       interrupt rate.
 
@@ -1263,7 +1263,7 @@ otherwise noted.  Avg=average.
 	<td>8051</td><td>Dallas</td>
 	<td>1.5&mu;s @ 33MHz (52 clocks) latency</td>
 </tr><tr>
-	<td>&nbsp;</td><td valign="top">Intel</td>
+	<td>8051</td><td valign="top">Intel</td>
     <td>1.8&mu;s (C) min @ 20MHz.  5.4&mu;s (A)+(C) max total latency @ 20MHz.  (3-9&mu;s @ 12MHz.)<br>
                 Interrupt sequence (C) and return (E) take 4.6&mu;s @ 20MHz  ST</td>
 </tr><tr>
@@ -1283,7 +1283,7 @@ otherwise noted.  Avg=average.
 	<td>70 clocks (7 instruction cycles). RETI (E) is 50 clocks (5 instruction cycles).  (7&mu;s & 5&mu;s @ 10MHz)</td>
 </tr><tr>
 	<td>&mu;PD78C05</td><td>NEC</td>
-	<td>RETI (E) takes 13 or 15 clocks (2.08 or 2.4ns at 6.25MHz)</td>
+	<td>RETI (E) takes 13 or 15 clocks (2.08 or 2.4&mu;s at 6.25MHz)</td>
 </tr><tr>
 	<td>&mu;PD70008/A</td><td>NEC</td>
 	<td>sequence (C) takes 13 or 19 clocks.  Return (E) takes 14 clocks.<br>
