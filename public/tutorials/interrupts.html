@@ -35,9 +35,12 @@ Forum posts indicate that many members are uncomfortable with interrupts or even
 was written to help with basic interrupt understanding and how to implement interrupts on 6502 systems, without getting into too
 much detail of individual hardware setups.
 <p>
-For further reading, see the Synertek programming manual in the Datasheets Archive on 6502.org or
-at <a href="http://users.telenet.be/kim1-6502/6502/proman.html">http://users.telenet.be/kim1-6502/6502/proman.html</a>, pages 129-146. These two locations have the same thing in different forms.  Then there's
-WDC's outstanding programming manual which I can't pass up an opportunity to recommend.  Virtually all programming manuals will
+For further reading, see the Synertek programming manual
+<a href="http://6502.org/documents/datasheets/synertek/synertek_programming_manual.pdf">on 6502.org</a> or
+at <a href="http://users.telenet.be/kim1-6502/6502/proman.html">http://users.telenet.be/kim1-6502/6502/proman.html</a>,
+pages 129-146. These two locations have the same thing in different forms.  Then there's
+<a href="http://www.westerndesigncenter.com/wdc/documentation/Programmanual.pdf">WDC's outstanding programming manual</a>
+which I can't pass up an opportunity to recommend.  Virtually all programming manuals will
 give some treatment to interrupts.  What I have tried to additionally provide here is:
 <ul>
 <li>more examples of what interrupts really are (and are not)</li>
@@ -217,7 +220,7 @@ As a parenthetical note, we should mention that the interrupt sequence does not 
 does.  The JSR does not push exactly the address where the execution should be resumed, but rather the address of the last byte
 of the three-byte JSR instruction.  The RTS instruction at the end of a subroutine must take the address off the stack and
 increment it before picking up the next instruction.  However, the RTI at the end of an ISR does not need to do this
-incrementing.  In other words, PLP RTS is not just a longer way to do RTI.  It would actually land you at a different address--
+incrementing.  In other words, PLP RTS is <u>not</u> just a longer way to do RTI.  It would actually land you at a different address--
 the one <i>after</i> RTI would have taken you to.
 <p>
 The ISR's execution is ended when the RTI instruction (ReTurn from Interrupt, op code $40), is encountered.  After executing the
@@ -340,7 +343,8 @@ ISR: BIT  VIA1_STATUS   ; Check 6522 VIA1's status register without loading.
  ;-------------         ; (Don't forget that the last ISR instruction to be
                         ;    executed must be RTI, not RTS.)
 </pre>
-This ISR assumes there are three possible sources of interrupts.  (The two 6522's and a 6551 are what Daryl Rictor's board has.)
+This ISR assumes there are three possible sources of interrupts.  (The two 6522's and a 6551 are what
+<a href="http://sbc.rictor.org/info2.html">Daryl Rictor's SBC-2 board</a> has.)
 The ISR first checks with the #1 6522 VIA.  If that one is not the one that caused the interrupt, check the second VIA.  If that
 one didn't either, the assumption is that the ACIA did it, since there's nothing else left.
 <p>
@@ -501,7 +505,7 @@ and how to calculate the number to put in the T1 latches to make the timer run a
 <p>
 Step <b>3</b> above is pretty self-explanatory.  You might want to put the CLI at the end of the TMR_SETUP routine above.
 <p>
-Step <b>A</b> above is a simpler version of the real-time clock (RTC) that I have on my workbench computer for time of day (with .01
+What's above is a simpler version of the real-time clock (RTC) that I have on my workbench computer for time of day (with .01
 second precision) and calendar.  It slows the whole system down by about 1%, including looking to see if an alarm is due.  An
 alarm would tell the computer it's time to do a particular job.  I have VIA1 connected to NMI instead of IRQ though, for a couple
 of reasons.  It's the only thing I have on NMI, so it requires no polling overhead of its own, and neither does it add any
@@ -535,6 +539,10 @@ possibility is that the timing on an I/O operation may need to be tightly contro
 an ISR jumping in during that time.  To mask IRQ interrupts, use the SEI (SEt Interrupt-disable bit) instruction.  To make the
 processor able to respond to IRQ interrupts again, use the CLI (CLear Interrupt-disable bit).  Each of these takes only two
 clocks to do its job of setting or clearing the I bit (bit 2) in the processor status register P.
+<p>
+Note that neither CLI nor SEI clears or acknowledges any interrupts!  It does not affect anything outside the processor
+itself.  Also note that the 6502 does not have any interrupt-acknowledge pin.  Interrupt conditions are cleared in the
+interrupting IC by reading or writing particular registers in it per its data sheet.  This is also the only acknowledgement.
 <p>
 The 6502's <span style="text-decoration: overline;">IRQ</span> input is level-sensitive.  Anytime this input pin is low and the interrupt-disable bit is clear, the processor
 will finish up the currently executing instruction and begin the interrupt sequence.  Again, this sequence consists of pushing
@@ -799,7 +807,8 @@ computer can do, from acting like an alarm clock to performing a complex operati
 The alarm service routine can in turn also take care of setting up the next alarm.  Adding the alarm part only slows things down
 by .034% if an alarm is pending, and .014% otherwise.
 <p>
-Since the RTC ISR can cause some jitter in other timed events, I sometimes turn it off by using RTC_OFF (shown above).  "Jitter"
+Since the RTC ISR can cause some jitter in other timed events, I sometimes turn it off by using RTC_OFF (shown above).
+"<a href="http://wilsonminesco.com/6502primer/potpourri.html#JIT">Jitter</a>"
 is when the timing of a regular event gets skewed.  When I've done sampling for audio digital recording or playback at anywhere
 up to about 50,000 samples per second using interrupts from another VIA's T1 on the processor's IRQ input, I turn off this RTC.
 Otherwise some of the audio samples get taken care of a little late instead of precisely at the right times.  Another way to do
@@ -816,8 +825,8 @@ There is also a software interrupt, the BRK (break) instruction, which goes thro
 anything having pulled the <span style="text-decoration: overline;">IRQ</span> or <span style="text-decoration: overline;">NMI</span> line down.  The vector used is at $FFFE-$FFFF, the same one used by IRQ.  BRK was mainly
 used for patching code in PROMs back when re-assembling and programming was a long, slow process, and each iteration could be
 quite expensive if the PROM was not erasable.  The BRK instruction seems to mostly have outlived its usefulness.  There is some
-use for it in multitasking, but the 6502 is not generally very well suited for that anyway.  The 65816 has other capabilities
-that make it better suited to multitasking, relocatable code, etc..
+use for it in multitasking operating systems, but the 6502 is not generally very well suited for that anyway.  The 65816
+as other capabilities that make it better suited to multitasking, relocatable code, etc..
 <p>
 If you do use BRK, the ISR will normally need to test the B bit (the "break" bit, bit 4) <i>in the stacked record</i> of the
 processor status register to determine if the interrupt was caused by the BRK instruction.  The ISR cannot test it in the status
@@ -873,8 +882,8 @@ continuation of code execution after the interrupt service is finished.
 <p>
 As promised in the beginning, here's the program example of receiving data by RS-232 in the background through a 6551 ACIA,
 driven by interrupts, and putting the data into a buffer that holds it until the program running in the foreground is ready for
-it.  We do plan to get an RS-232 primer up on this website after this interrupts primer goes up, so be patient if there are some
-mysteries surrounding the subject of RS-232.
+it.  (There is an RS-232 primer at
+<a href="http://wilsonminesco.com/RS-232/RS-232primer.html">http://wilsonminesco.com/RS-232/RS-232primer.html</a>.)
 <p>
 The reason for having the ACIA generate an interrupt each time a byte is finished coming in is that this allows the computer to
 do other useful things in the foreground while it's waiting for the ACIA to deliver the next byte.  We will put the data into
@@ -1054,8 +1063,8 @@ CUR_ADR:       .DFS  2   ; The only STA() there is is in ZP, so use this addr.
 </pre>
 Not necessarily in zero page:
 <pre>
-BEG_ADR:       .DFS  2   ; � These 2 specify the address range where the samples
-END_ADR:       .DFS  2   ; � are stored, & get initialized in START_ARB below.
+BEG_ADR:       .DFS  2   ; + These 2 specify the address range where the samples
+END_ADR:       .DFS  2   ; +   are stored, & get initialized in START_ARB below.
 PLAY_T1_VAL:   .DFS  2   ; Value to store in VIA T1 counter for desired
                          ;                                       interrupt rate.
 
@@ -1369,6 +1378,6 @@ otherwise noted.  Avg=average.
                 Special case:  IRQ from WAIt instrucion with interrupt-disable bit I set:  no more than 1 cy (0.05&mu;s!)</td>
 </tr></table>
 </pre>
-<P><FONT SIZE=-1>Last Updated June 6, 2004.</FONT>
+<P><FONT SIZE=-1>Last Updated Jan 5, 2013, outdated cartoons notwithstanding!</FONT>
 </body>
 </html>
