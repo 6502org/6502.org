@@ -413,9 +413,11 @@ include things like trig, log, square root, clock, calendar, and alarm functions
 definitions) for good performance, extended-precision arithmetic words, an assembler, extra string functions, and extra
 compiling, debugging, and developing tools.  It's modular, so you can select to include only the files you want.</p>
 
-<p>In the '816 Forth, <code>NEXT</code> does not poll to see if interrupt service has been requested like the '02 Forth <code>NEXT</code> does.  The
-common colon definitions end with <code>JMP (NEXTadr)</code> instead of <code>JMP NEXT</code>, and <code>NEXTadr</code> contains the address of the right part
-of <code>NEXT</code> to run, either for beginning interrupt service or for continuing on with the code it was already executing.</p>
+<p>In the '816 Forth, <code>NEXT</code> does not poll to see if interrupt service has been requested like the '02 Forth
+<code>NEXT</code> does with the <code>BEQ</code> after the <code>LDY</code>.  The common code definitions end with
+<code>JMP (NEXTadr)</code> instead of <code>JMP NEXT</code>, and <code>NEXTadr</code> contains the address of the right
+part of <code>NEXT</code> to run, either for beginning interrupt service or for continuing on with the code it was
+already executing.</p>
 
 <p>I have not looked at whether this interrupt method would be practical with true multitasking.  For the type of work I
 do, the pseudo-multitasking I can get with interrupts has been adequate.  True multitasking is not that difficult in
@@ -429,5 +431,5 @@ as high-level interrupt service methods go; and if multiple nesting doesn't make
 separate stacks and other overhead certainly should.</p>
 
 <hr />
-<p><font size="-1">Last page update: January 30th, 2005.</font></p>
+<p><font size="-1">Last page update: Feb 2, 2013.</font></p>
 </body></html>
