@@ -1,4 +1,4 @@
-<TITLE>www.6502.org: How to: DS1820 digital temperature sensor</TITLE>
+<TITLE>6502.org: How to: DS1820 digital temperature sensor</TITLE>
 <META name="description" content="Interface a DS1820 device to your
 6502-based computer.">
 
@@ -24,11 +24,11 @@ The three pins of the DS1820 are: GND, DQ (serial input/output - data
 line), VDD (optional +5VDC, this device can be powered from data line, but
 we shall use the standard power circuit). DQ may be connected to open
 drain (or open collector) output with input feature, and this output pin
-MUST have a pull-up resistor of approximately 5Kohm. 
+MUST have a pull-up resistor of approximately 5Kohm.
 <p>
 <B>Programming</B>
 <p>
-I use the <A HREF="http://www.6502.org/crossdev/asm/index.htm">MXASS</A>
+I use the <A HREF="http://6502.org/crossdev/asm/index.htm">MXASS</A>
 0.28 assembler . It is an excellent assembler with cool things like local
 labels and much more. If you use other assembler, take care when renaming
 local labels and/or long labels.
@@ -41,7 +41,7 @@ rgStatus = $6000   ; Read:  D7 - input pin without inversion
 Temperature measuring:
 <pre>
 tmpMeasure
-        jsr     tmpInit     ; DS1820 initializing  
+        jsr     tmpInit     ; DS1820 initializing
         jsr     tmpInitCRC  ; CRC initializing
         lda     #$CC        ; "Skip ROM" command
         jsr     tmpWrite    ; write command to the DS1820

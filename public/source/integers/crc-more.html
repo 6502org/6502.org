@@ -35,11 +35,11 @@ in constant time without lookup tables.">
 <p><h3>More CRC Calculations</h3>
 by Greg Cook
 <hr>
-</p><p>Hello all, I was browsing the source code repository and remembered I had written a fast CRC routine a few years ago. 
+</p><p>Hello all, I was browsing the source code repository and remembered I had written a fast CRC routine a few years ago.
 So I thought I would contribute it, as it might come in useful for anyone developing TCP/IP stacks etc.</p>
 
-<p>These routines are entered with the next byte of data in A and the current CRC in zero page memory. For the first byte of data CRCLO 
-and CRCHI should contain $FF, and in the case of CRC8, CRC should contain $00. On exit A is clobbered and the updated CRC is in the zero 
+<p>These routines are entered with the next byte of data in A and the current CRC in zero page memory. For the first byte of data CRCLO
+and CRCHI should contain $FF, and in the case of CRC8, CRC should contain $00. On exit A is clobbered and the updated CRC is in the zero
 page locations.</p>
 
 <p>All code below is relocatable. Sizes and execution times listed do not include the final RTS, and code is assumed to be page-aligned.</p>
@@ -78,7 +78,7 @@ CRC16_F:
         EOR CRCLO       ; finally update low byte
         STA CRCHI       ; then swap high and low bytes
         STY CRCLO
-        RTS 
+        RTS
 </pre>
 <p>36 bytes, 62 cycles, AXYP clobbered.</p>
 <p>Alternative ending:</p>
@@ -93,7 +93,7 @@ CRC16_F:
         LDX CRCHI       ; then swap high and low bytes
         STA CRCHI
         STX CRCLO
-        RTS 
+        RTS
 </pre>
 
 <p>39 bytes, 66 cycles, AXP clobbered, Y preserved.</p>
@@ -119,7 +119,7 @@ BITLOOP ASL CRCLO       ; in A, things are the other
 NOADD   DEX
         BNE BITLOOP
         STA CRCHI
-        RTS 
+        RTS
 </pre>
 
 <p>24 bytes, 128..256 cycles, AXP clobbered</p>
@@ -156,6 +156,6 @@ UP2     EOR CRC         ; apply unity term
 18 bytes, 36..38 cycles, AXP clobbered, Y preserved.</li>
 </ol>
 <br /><p><hr></p>
-See also Paul Guertin's <a href="http://www.6502.org/source/integers/crc.htm">CRC Calculations</a> for a table-based approach.
+See also Paul Guertin's <a href="http://6502.org/source/integers/crc.htm">CRC Calculations</a> for a table-based approach.
 <p><font size="-1">Last page update: November 23rd, 2004.</font>
 </p></body></html>

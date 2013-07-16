@@ -1,4 +1,4 @@
-<TITLE>www.6502.org: How to: 28F010 Flash</TITLE>
+<TITLE>6502.org: How to: 28F010 Flash</TITLE>
 <META name="description" content="Interface a flash device to your
 6502-based computer.">
 
@@ -8,9 +8,9 @@
 The 28F010 is a 128K X 8 device that can be programmed randomly
 one byte at a time, but must be erased in it's entirety.
 Hardware connections to the 6502 are essentially the same as with
-other 'standard' memory devices. 
+other 'standard' memory devices.
 <P>
-The 28F010 is available in two different packages, a 32-pin DIP and PLCC.  
+The 28F010 is available in two different packages, a 32-pin DIP and PLCC.
 <BR>
 <A HREF="28f_po.gif">28f_po.gif</A> - Pinouts for the 28F010 Flash Device.
 <P>
@@ -19,8 +19,8 @@ select, you must generate the OE and RW signals needed to talk to memory
 devices.
 <BR><A HREF="oe_rw.gif">oe_rw.gif</A> - Logic to generate /OE and /RW
 signals.
-<P>The method shown is essentially the same as that used 
-on the KIM-1. The CE signal is generated through address selection, 
+<P>The method shown is essentially the same as that used
+on the KIM-1. The CE signal is generated through address selection,
 the same as with any other I/O or memory device.
 <P>
 Since a 6502 cannot address 128K directly, the upper address
@@ -28,7 +28,7 @@ bits can be either tied to ground, or controlled from a parallel
 I/O port (such as a 6522).
 <P>
 Note that the 28F010 requires a +12 volt source on pin 1 (Vpp)
-during any programming or erasing operation, in addition to the 
+during any programming or erasing operation, in addition to the
 normal +5 volts on pin 32.
 <P>
 Below is some code for programming and erasing a 28F010 flash.  You may
@@ -37,14 +37,14 @@ Consult the device data sheet for complete info on programming
 and erasing. It's a good idea to disable interrupts (SEI) during
 the process.
 <PRE>
-	; Flash a single byte, using the data in FDA, and the addr in 
-	; FRADLO/HI. FCNT will contain how many more times we would 
-	; have tried it. If it fails, FFDA contains the data that was 
+	; Flash a single byte, using the data in FDA, and the addr in
+	; FRADLO/HI. FCNT will contain how many more times we would
+	; have tried it. If it fails, FFDA contains the data that was
 	; read back. Nothing is preserved.
 FLASHB:
 	LDY #$19        ; Max of 25 retries
 	LDX #$0         ; init X
-FLOOP:  
+FLOOP:
 	LDA #$40        ; send Program Byte command
 	STA (TOADLO,X)
 	LDA FDA         ; send the data to be programmed
@@ -64,7 +64,7 @@ FLOOP:
 	BEQ FDONE        ; yes, we're done
 	DEY              ; no, try again
 	BNE FLOOP
-FDONE:  
+FDONE:
 	STY FCNT         ; save the number of loops
 	STA FFDA         ; save the last data we read
 	LDA #$0          ; send the Read Mode command
@@ -101,7 +101,7 @@ ERASE2:
 	STA (TOADLO,X)
 	STA (TOADLO,X)  ; we must send it twice
 	LDA #$3         ; Delay for about 12 ms (10 ms required)
-	JSR DELAY       ; 
+	JSR DELAY       ;
 ERASE3:
 	LDA #$A0        ; send the Erase Verify command
 	STA (TOADLO,X)
@@ -114,7 +114,7 @@ ERASE3:
 	LDA TOADHI
 	CMP #$E0        ; are we beyond 32K ?
 	BNE ERASE3      ; no, do another erase cycle
-EDONE:  
+EDONE:
 	LDA #$0         ; we're done - send the Read Mode command
 	STA (TOADLO,X)
 	RTS

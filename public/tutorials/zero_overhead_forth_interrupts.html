@@ -30,7 +30,7 @@
 </style></head><body>
 <p></p><h3>Zero-Overhead Forth Interrupt Service on 65C02</h3>
 Garth Wilson (<script type="text/javascript">eval(unescape('%64%6f%63%75%6d%65%6e%74%2e%77%72%69%74%65%28%27%3c%61%20%68%72%65%66%3d%22%6d%61%69%6c%74%6f%3a%77%69%6c%73%6f%6e%6d%69%6e%65%73%40%64%73%6c%65%78%74%72%65%6d%65%2e%63%6f%6d%22%20%3e%77%69%6c%73%6f%6e%6d%69%6e%65%73%40%64%73%6c%65%78%74%72%65%6d%65%2e%63%6f%6d%3c%2f%61%3e%27%29%3b'))</script>) 1994, revised Dec 2003 for 6502.org
-<hr>        
+<hr>
 
 <p>A number of good articles have been published on providing Forth interrupt response.  Without invalidating the work of
 others, I wanted to meet the challenge of accomplishing high-level Forth interrupt response in a much simpler way that
@@ -38,7 +38,7 @@ would still work in most typical indirect-threaded systems not using preemptive 
 
 <p>I was told by several people that it couldn't be done, which of course only fueled my fire.  The result I've been using
 for thirteen years now is described here.  I wanted it in 1990 for the production automated test equipment (ATE) I
-designed and programmed, which you can see <a href="http://www.6502.org/users/garth/projects.php?project=6">here</a>.  The RS-232 input from
+designed and programmed, which you can see <a href="http://6502.org/users/garth/projects.php?project=6">here</a>.  The RS-232 input from
 the PC for software development was handled at 9600 bps through a 65C51 ACIA entirely by interrupts in high-level Forth
 on a 2MHz 65C02.</p>
 
@@ -136,58 +136,58 @@ assembly source, like Listing One-A.</p>
 
 <p><i>Listing One-A:  Original version of <code>NEXT</code> (no interrupt support)</i>
 <pre>
-NEXT:   LDY  #1     ; Load Y for indirect indexing.  Next, load accumulator      
-        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.    
-        STA  W+1    ; Store it in hi byte of word pointer.                       
-                                                                                 
-        DEY         ; Decrement Y to 0.  Some primitives expect Y to contain 0.  
-        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction  
-        STA  W      ; pointer, and store that in lo byte of word pointer.        
-                                                                                 
-        CLC         ; Now advance the IP.  Start addition with carry flag clear. 
-        LDA  IP     ; Load accumulator with instruction pointer lo byte,         
-        ADC  #2     ; add two to it, and                                         
-        STA  IP     ; store it back where you got it.                            
-                                                                                 
-        BCC  next1  ; If the addition above didn't cause a carry, branch around  
-        INC  IP+1   ; the incrementing of the hi byte.  Otherwise, increment.    
- next1: JMP  W-1    ; Jump to where it says JMP (W), so we get a doubly indirect 
- ;----------------  ; jump.                                                      
+NEXT:   LDY  #1     ; Load Y for indirect indexing.  Next, load accumulator
+        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.
+        STA  W+1    ; Store it in hi byte of word pointer.
+
+        DEY         ; Decrement Y to 0.  Some primitives expect Y to contain 0.
+        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction
+        STA  W      ; pointer, and store that in lo byte of word pointer.
+
+        CLC         ; Now advance the IP.  Start addition with carry flag clear.
+        LDA  IP     ; Load accumulator with instruction pointer lo byte,
+        ADC  #2     ; add two to it, and
+        STA  IP     ; store it back where you got it.
+
+        BCC  next1  ; If the addition above didn't cause a carry, branch around
+        INC  IP+1   ; the incrementing of the hi byte.  Otherwise, increment.
+ next1: JMP  W-1    ; Jump to where it says JMP (W), so we get a doubly indirect
+ ;----------------  ; jump.
 </pre>
 
 <p><i>Listing One-B:  <code>NEXT</code> modified for interrupt support</i></p>
 <pre>
-NEXT:   LDY  irqnot ; Load Y with 0 if interrupt requested, otherwise 1.         
-        BEQ  runISR ; Branch if interrupt requested, else continue here.         
-                    ; Y=1 now for indirect indexing.  Load accumulator           
-        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.    
-        STA  W+1    ; Store it in the hi byte of the word pointer.               
-                                                                                 
-        DEY         ; Decrement Y to 0.  Some primitives will need Y to be 0.    
-        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction  
-        STA  W      ; pointer, and store that in lo byte of word pointer.        
-                                                                                 
-        CLC         ; Now advance the IP.  Start addition with carry flag clear. 
-        LDA  IP     ; Load accumulator with instruction pointer lo byte,         
-        ADC  #2     ; add two to it,                                             
-        STA  IP     ; and store it back where you got it.                        
-                                                                                 
-        BCS  inc_hi ; If the above addition caused a carry, branch to increment  
-        JMP  W-1    ; hi byte of instruction pointer.  Else you're done.  Do it  
-                    ; with two JMP's because a branch not taken saves a cycle.   
-inc_hi: INC  IP+1   ; Increment hi byte of instruction pointer.                  
-        JMP  W-1    ; You're done.                                               
- ;-----------------                                                              
-                       ; If interrupt was requested, run this part instead.      
-runISR: INC  irqnot    ; Set irqnot=1, meaning no further Forth interrupt        
-                       ; service requested after this yet.                       
-        LDA  FIRQVEC+1 ; Load the word pointer with the address pointed to       
-        STA  W+1       ; by FIRQVEC , a new Forth user variable.                 
-        LDA  FIRQVEC   ; Load hi byte first, then lo byte.  FIRQVEC is a RAM     
-        STA  W         ; address which holds the Forth interrupt request         
-                       ; vector CFA.                                             
-        JMP  W-1       ; Jump to where it says JMP (W), so we get a              
- ;-----------------    ; doubly indirect jump.                                   
+NEXT:   LDY  irqnot ; Load Y with 0 if interrupt requested, otherwise 1.
+        BEQ  runISR ; Branch if interrupt requested, else continue here.
+                    ; Y=1 now for indirect indexing.  Load accumulator
+        LDA  (IP),Y ; with hi byte of cell pointed to by instruction pointer.
+        STA  W+1    ; Store it in the hi byte of the word pointer.
+
+        DEY         ; Decrement Y to 0.  Some primitives will need Y to be 0.
+        LDA  (IP),Y ; Load accum with lo byte of cell pointed to by instruction
+        STA  W      ; pointer, and store that in lo byte of word pointer.
+
+        CLC         ; Now advance the IP.  Start addition with carry flag clear.
+        LDA  IP     ; Load accumulator with instruction pointer lo byte,
+        ADC  #2     ; add two to it,
+        STA  IP     ; and store it back where you got it.
+
+        BCS  inc_hi ; If the above addition caused a carry, branch to increment
+        JMP  W-1    ; hi byte of instruction pointer.  Else you're done.  Do it
+                    ; with two JMP's because a branch not taken saves a cycle.
+inc_hi: INC  IP+1   ; Increment hi byte of instruction pointer.
+        JMP  W-1    ; You're done.
+ ;-----------------
+                       ; If interrupt was requested, run this part instead.
+runISR: INC  irqnot    ; Set irqnot=1, meaning no further Forth interrupt
+                       ; service requested after this yet.
+        LDA  FIRQVEC+1 ; Load the word pointer with the address pointed to
+        STA  W+1       ; by FIRQVEC , a new Forth user variable.
+        LDA  FIRQVEC   ; Load hi byte first, then lo byte.  FIRQVEC is a RAM
+        STA  W         ; address which holds the Forth interrupt request
+                       ; vector CFA.
+        JMP  W-1       ; Jump to where it says JMP (W), so we get a
+ ;-----------------    ; doubly indirect jump.
 </pre>
 
 <p>After the modification, <code>NEXT</code> looks like the code in Listing One-B.  Notice how much shorter the code is for responding
@@ -204,18 +204,18 @@ that the same code doesn't get executed over and over.  Mine looks like Listing 
 
 <p><i>Listing Two:  This registers the interrupt request for <code>NEXT</code>.</i></p>
 <pre>
-irqrouting:          ; Machine-recognized interrupt vector at FFFE points here.  
-     JMP  (MIRQVEC)  ; Jump to address pointed to by the machine-language        
-                     ; interrupt vector MIRQVEC , which is initially setirq.     
-                                                                                 
-setirq:              ; Use to record IRQ for NEXT.  Put this address in MIRQVEC. 
-     STZ  irqnot     ; Record that interrupt was req'ed by storing 0 in irqnot.  
-     STA  tempA      ; Temporarily save accumulator in tempA to restore below.   
-        PLA          ; Pull saved processor status byte off the &mu;P stack,        
-        ORA  #4      ; set the bit corresponding to the interrupt disable,       
-        PHA          ; and push the revised status byte back on the stack.       
-     LDA  tempA      ; Restore the accumulator content.                          
-     RTI             ; Return from interrupt.  &mu;P status gets restored modified. 
+irqrouting:          ; Machine-recognized interrupt vector at FFFE points here.
+     JMP  (MIRQVEC)  ; Jump to address pointed to by the machine-language
+                     ; interrupt vector MIRQVEC , which is initially setirq.
+
+setirq:              ; Use to record IRQ for NEXT.  Put this address in MIRQVEC.
+     STZ  irqnot     ; Record that interrupt was req'ed by storing 0 in irqnot.
+     STA  tempA      ; Temporarily save accumulator in tempA to restore below.
+        PLA          ; Pull saved processor status byte off the &mu;P stack,
+        ORA  #4      ; set the bit corresponding to the interrupt disable,
+        PHA          ; and push the revised status byte back on the stack.
+     LDA  tempA      ; Restore the accumulator content.
+     RTI             ; Return from interrupt.  &mu;P status gets restored modified.
 </pre>
 
 <p>Next, you will need Forth primitives that enable and disable interrupting.  I call them <code>IRQOK</code> and <code>NOIRQ</code> .  Another
@@ -223,21 +223,21 @@ primitive, <code>IRQOK?</code> , returns my interrupt-disable flag.  See Listing
 
 <p><i>Listing Three:   Interrupt-disable flag support words</i></p>
 <pre>
-CODE IRQOK  ( -- )  ; Compile header for IRQOK .  Since it's 
+CODE IRQOK  ( -- )  ; Compile header for IRQOK .  Since it's
        CLI          ; a primitive, the CFA points here to CLI
        JMP NEXT     ; instruction.  All done now so jump out.
-                                                             
-CODE NOIRQ  ( -- )  ; Compile the header for NOIRQ .   The   
-       SEI          ; only instruction is SEI, then you go   
-       JMP NEXT     : back to NEXT for the next Forth word.  
-                                                             
-CODE IRQOK?   ( -- f )  ; f=0 means interrupts are disabled. 
-       PHP              ; Bring processor status register    
-       PLA              ; contents into accumulator.         
-       AND  #4          ; Look at only the I bit.            
-       BEQ  1$          ; If clear, branch to put true flag  
-       JMP  PUSH-FALSE  ; on the data stack.  Else false.    
- 1$:   JMP  PUSH-TRUE   ; These branch to NEXT when done.    
+
+CODE NOIRQ  ( -- )  ; Compile the header for NOIRQ .   The
+       SEI          ; only instruction is SEI, then you go
+       JMP NEXT     : back to NEXT for the next Forth word.
+
+CODE IRQOK?   ( -- f )  ; f=0 means interrupts are disabled.
+       PHP              ; Bring processor status register
+       PLA              ; contents into accumulator.
+       AND  #4          ; Look at only the I bit.
+       BEQ  1$          ; If clear, branch to put true flag
+       JMP  PUSH-FALSE  ; on the data stack.  Else false.
+ 1$:   JMP  PUSH-TRUE   ; These branch to NEXT when done.
 </pre>
 
 <p>A byte in RAM called <code>irqok?</code> (lower case) is used as a flag to record whether or not Forth interrupts are being allowed.
@@ -255,12 +255,12 @@ made <code>SYSRTI</code> do all the compile-time jobs that ; does.)  My <code>SY
 
 <p><i>Listing Four:  Forth return-from-interrupt</i></p>
 <pre>
-CODE SYSRTI   ( -- )   ; Lay header and code field down.                         
-       SEI             ; Start with interrupting disabled.                       
-       LDA  irqok?     ; Load & test byte at addr IRQOK? to see if IRQs are ok.  
-       BEQ  unnest+2   ; If not ok, don't execute next CLI instruction.          
-       CLI             ; Else clear interrupt disable flag.                      
-       BRA  unnest+2   ; Branch to body of unnest (1st addr after code field).   
+CODE SYSRTI   ( -- )   ; Lay header and code field down.
+       SEI             ; Start with interrupting disabled.
+       LDA  irqok?     ; Load & test byte at addr IRQOK? to see if IRQs are ok.
+       BEQ  unnest+2   ; If not ok, don't execute next CLI instruction.
+       CLI             ; Else clear interrupt disable flag.
+       BRA  unnest+2   ; Branch to body of unnest (1st addr after code field).
 </pre>
 
 <p>To allow multiple-nested interrupts, an interrupt service word must re-enable interrupts (by invoking <code>IRQOK</code> ).  If you
@@ -296,12 +296,12 @@ whether it was able to take care of the interrupt.</p>
 
 <p><i>Listing Five-A:  Interrupt handler that polls potential interrupt sources.</i>
 <pre>
-: SYSIRQ    ( -- )                                                        
-   POLL_TIMER     NOT  IF                                                 
-   POLL_ACIA      NOT  IF                                                 
-   POLL_KEYBOARD  NOT  IF                                                 
-   POLL_PRINTER   DROP  THEN  THEN  THEN                                  
-   SYSRTI      ;                                                          
+: SYSIRQ    ( -- )
+   POLL_TIMER     NOT  IF
+   POLL_ACIA      NOT  IF
+   POLL_KEYBOARD  NOT  IF
+   POLL_PRINTER   DROP  THEN  THEN  THEN
+   SYSRTI      ;
 </pre>
 
 <p>Listing Five-B is an alternative that uses a support word.  <code>?EXIT</code> is just my word to factor out occurrences of
@@ -309,13 +309,13 @@ whether it was able to take care of the interrupt.</p>
 
 <p><i>Listing Five-B:  Alternative with a support word</i></p>
 <pre>
-: POLL      ( -- )                                                        
-   POLL_TIMER     ?EXIT                                                   
-   POLL_ACIA      ?EXIT                                                   
-   POLL_KEYBOARD  ?EXIT                                                   
-   POLL_PRINTER    DROP    ;                                              
-                                                                          
-: SYSIRQ   POLL   SYSRTI   ;     ( -- )                                   
+: POLL      ( -- )
+   POLL_TIMER     ?EXIT
+   POLL_ACIA      ?EXIT
+   POLL_KEYBOARD  ?EXIT
+   POLL_PRINTER    DROP    ;
+
+: SYSIRQ   POLL   SYSRTI   ;     ( -- )
 </pre>
 
 <p>To go a step further, the <code>?EXIT</code> could be made part of each polling word.</p>
@@ -328,27 +328,27 @@ response.  A list of requirements is first, followed by a list of enhancements.<
 
 <p>Table One:  Summary of new code</p>
 <pre>
-Necessary:                                                                                                    
-NEXT    (Modified, not new.)  Inner loop for indirect-threaded model                                          
-irqnot  RAM byte to record whether or not an interrupt is pending.  Used by NEXT.                             
-NOIRQ   Primitive to  set  &mu;P interrupt disable bit  ( -- )   Just does SEI.                                  
-IRQOK   Primitive to clear &mu;P interrupt disable bit  ( -- )   Just does CLI.                                  
+Necessary:
+NEXT    (Modified, not new.)  Inner loop for indirect-threaded model
+irqnot  RAM byte to record whether or not an interrupt is pending.  Used by NEXT.
+NOIRQ   Primitive to  set  &mu;P interrupt disable bit  ( -- )   Just does SEI.
+IRQOK   Primitive to clear &mu;P interrupt disable bit  ( -- )   Just does CLI.
 setirq  Machine-language interrupt routine that puts 0 in irqnot to tell NEXT that an interrupt was requested.
-SYSIRQ  Colon definition for actual high-level interrupt service.  No special rules except that it usually    
-        will have SYSRTI just before the semicolon.  ( -- )                                                   
-RESET   (Modified, not new.)  Before the first execution of NEXT, put 1 in irqnot.                            
-COLD    (Modified, not new.)  Initialize all interrupt vectors.  Initialization of hardware is done before    
-        invoking IRQOK .                                                                                      
-                                                                                                              
-Optional:                                                                                                     
-IRQOK?  Primitive to read &mu;P interrupt disable bit     ( -- f )    Flag=0 means interrupts are disabled.      
-irqok?  RAM byte to record whether or not to restore interrupt capability upon return from interrupt.         
-SYSRTI  Primitive ( unnest version for return from interrupt).  Examines irqok? byte     ( -- )               
-MIRQVEC Variable containing an address used by the machine ISR for a jump indirect.  This allows installing   
-        higher-priority machine-language ISRs ahead of the Forth interrupt operations.  (More below.)         
-FIRQVEC Variable containing the Forth interrupt vector (actually a CFA).  If you have more than one high-     
-        level interrupt service word, put the CFA of one of them here.  NEXT uses it to load the word         
-        pointer W from in order to service the interrupt.                                                     
+SYSIRQ  Colon definition for actual high-level interrupt service.  No special rules except that it usually
+        will have SYSRTI just before the semicolon.  ( -- )
+RESET   (Modified, not new.)  Before the first execution of NEXT, put 1 in irqnot.
+COLD    (Modified, not new.)  Initialize all interrupt vectors.  Initialization of hardware is done before
+        invoking IRQOK .
+
+Optional:
+IRQOK?  Primitive to read &mu;P interrupt disable bit     ( -- f )    Flag=0 means interrupts are disabled.
+irqok?  RAM byte to record whether or not to restore interrupt capability upon return from interrupt.
+SYSRTI  Primitive ( unnest version for return from interrupt).  Examines irqok? byte     ( -- )
+MIRQVEC Variable containing an address used by the machine ISR for a jump indirect.  This allows installing
+        higher-priority machine-language ISRs ahead of the Forth interrupt operations.  (More below.)
+FIRQVEC Variable containing the Forth interrupt vector (actually a CFA).  If you have more than one high-
+        level interrupt service word, put the CFA of one of them here.  NEXT uses it to load the word
+        pointer W from in order to service the interrupt.
 </pre>
 
 <p>So far we have assumed we are servicing interrupts requested on the IRQ line.  If you want to service an interrupt on

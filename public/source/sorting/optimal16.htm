@@ -1,27 +1,27 @@
 <HTML>
 <BODY>
-<P><FONT size=+1>Optimal Sort for any number of 16-bit elements</FONT><FONT size=-1> by Mats 
-Rosengren</FONT> <BR clear=all><A 
-href="http://www.6502.org/source/source.htm">[Up to Source Code Repository]</A> 
+<P><FONT size=+1>Optimal Sort for any number of 16-bit elements</FONT><FONT size=-1> by Mats
+Rosengren</FONT> <BR clear=all><A
+href="http://6502.org/source/source.htm">[Up to Source Code Repository]</A>
 <BR clear=all>
 <P>
 <HR>
 
-<P><B>General Discussion</B> 
-<P>The extension of the <a href="http://www.6502.org/source/sorting/optimal.htm">"Optimal Sort"</a> algorithm to "an unlimited number" (i.e. more then 255 elements) of 16 bit elements is straightforward using standard 6502 technique.
+<P><B>General Discussion</B>
+<P>The extension of the <a href="http://6502.org/source/sorting/optimal.htm">"Optimal Sort"</a> algorithm to "an unlimited number" (i.e. more then 255 elements) of 16 bit elements is straightforward using standard 6502 technique.
 <P>Consider first the loop using the Y register to sequentially access the elements starting with the second last and ending with the first in a sequence of up to 255 elements (note that the last access here is with 1 in the Y register, i.e. the "ZPADD" should point to the byte <B>before</B> the first element):
-<PRE> 
+<PRE>
 L1   DEY
      BEQ L3
      LDA (ZPADD),Y
      "some code"
      BRA L1
-L3   
+L3
 </PRE>
 
 To access a longer sequence one could use nested loops with the X register for the outer and the Y register for the inner loop as follows:
 
-<PRE> 
+<PRE>
 L1   TYA
      BNE L2
      TXA
@@ -32,14 +32,14 @@ L2   DEY
      LDA (ZPADD),Y
      "some code"
      BRA L1
-L3  
+L3
 </PRE>
 
 <P>If initially the registers X and Y are given the values x and y and the value y is added to high part of the pointer ZPADD pointing to the first element of the sequence to be sorted the loop will be run through y + 256 * x times starting with the second last and ending with the first in a sequence of 1 + y + 256 * x elements. And when the loop is finished the pointer ZPADD will again point to the first element of the sequence while the X and the Y registers will take the value zero. Note that as here the last access is with 0 in the Y register the "ZPADD" should indeed point to the first element, <B>not</B> to the byte before the first element
 
 <P>To work with 16 bit values one has to handle the 8 less significant bits and the 8 more significant bits separately. The comparison is then made such that first the 8 most significant bits are compared. The 8 less significant bits only need to be compared if the 8 more significant bits were equal. The complete routine is then as follows:
 
-<PRE> 
+<PRE>
 SORT CLC
      LDA ZPADL+1        ;INITIALISE WORK4L
      ADC NVALH
@@ -94,7 +94,7 @@ L3   LDY NVALL          ;WHERE THE LARGEST VALUE SHALL BE PUT
      LDA WORK2H         ;THE LARGEST VALUE, MOST SIGNIFICANT PART
      STA (ZPADH),Y
      LDY WORK1L         ;INDEX LOW OF FREE SPACE
-     LDA WORK1LH        ;INDEX HIGH OF FREE SPACE, LEAST SIGNIFICANT PART 
+     LDA WORK1LH        ;INDEX HIGH OF FREE SPACE, LEAST SIGNIFICANT PART
      STA ZPADL+1
      LDA WORK3L         ;THE OVER-WRITTEN VALUE, LEAST SIGNIFICANT PART
      STA (ZPADL),Y      ;PUT THE OVER-WRITTEN VALUE, LEAST SIGNIFICANT PART, IN THE FREE SPACE
@@ -118,7 +118,7 @@ L3B  RTS
 <P>The calling program has to set the pointers ZPADL and ZPADH pointing to the start of the (separately stored) sequences of the 8 less and the 8 more significant bits of the values. The total number of values are 1  + y + 256 * x where the value x has to be given to variable NVALL and the value y has to be given to variable NVALH. At the end these variables will both be zero.
 
 <P>In addition the following 9 bytes are needed internally
- 
+
 <PRE>
 WORK1L
 WORK1LH
@@ -188,10 +188,10 @@ SEQH .BYTE    $05
 "Insert the code for subroutine SORT here"
 </PRE>
 
-<P>To test the efficiency (and correctness) of this algorithm I generated a 
-totally random permutation of the numbers 0 - 9999 using a random number 
-generator. This sequence was successfully sorted using subroutine SORT above. I 
-measured the number of T1H counts of the W65C22S timer 1 during this sorting, it 
-was 4324613. As T1H decrements every 256 PHI2 pulses and my W6502 runs at 8 
+<P>To test the efficiency (and correctness) of this algorithm I generated a
+totally random permutation of the numbers 0 - 9999 using a random number
+generator. This sequence was successfully sorted using subroutine SORT above. I
+measured the number of T1H counts of the W65C22S timer 1 during this sorting, it
+was 4324613. As T1H decrements every 256 PHI2 pulses and my W6502 runs at 8
 megahertz this corresponds to 138.4 seconds.
 <P><FONT size=-1>Last page update: April 20, 2004.</FONT> </P></BODY></HTML>
