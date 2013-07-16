@@ -2,13 +2,13 @@
 <BODY>
 <P><FONT size=+1>Optimal Sort for any number of 16-bit elements</FONT><FONT size=-1> by Mats
 Rosengren</FONT> <BR clear=all><A
-href="http://6502.org/source/source.htm">[Up to Source Code Repository]</A>
+href="/source/source.htm">[Up to Source Code Repository]</A>
 <BR clear=all>
 <P>
 <HR>
 
 <P><B>General Discussion</B>
-<P>The extension of the <a href="http://6502.org/source/sorting/optimal.htm">"Optimal Sort"</a> algorithm to "an unlimited number" (i.e. more then 255 elements) of 16 bit elements is straightforward using standard 6502 technique.
+<P>The extension of the <a href="/source/sorting/optimal.htm">"Optimal Sort"</a> algorithm to "an unlimited number" (i.e. more then 255 elements) of 16 bit elements is straightforward using standard 6502 technique.
 <P>Consider first the loop using the Y register to sequentially access the elements starting with the second last and ending with the first in a sequence of up to 255 elements (note that the last access here is with 1 in the Y register, i.e. the "ZPADD" should point to the byte <B>before</B> the first element):
 <PRE>
 L1   DEY
