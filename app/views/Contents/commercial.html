@@ -2,102 +2,129 @@
 <? $this->description = 'Links to companies supporting the 6502 microprocessor.' ?>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-	<tr>
-		<td><img src="/images/spacer.gif" width="10" alt=" "></td>
+  <tr>
+    <td><img src="/images/spacer.gif" width="10" alt=" "></td>
 
-		<td width="100%" class="bodyblack" style="padding-top:15px;">
+    <td width="100%" class="bodyblack" style="padding-top:15px;">
+      Send your company's link via
+      <?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript']) ?>
+      with a brief profile (100 words or less) to be added to our list. Only
+      companies providing products or services useful to 6502 developers or
+      hobbyists will be indexed.
 
-		Send your company's link via
-		<?= $this->mailTo('webmaster@6502.org', 'email', ['encode' => 'javascript']) ?>
-		with a brief profile (100 words or less) to be added to our list. Only
-    companies providing products or services useful to 6502 developers or
-    hobbyists will be indexed.
+      <p>(This page links to companies offering commercial support - see the <a href="/">front page</a>
+      for general resources.)
 
-                <p>
-                (This page links to companies offering commercial support - see the <a href="/">front page</a>
-                for general resources.)
+      <p style="padding-top:20px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+      <a name="cores"><B>Semiconductors and Synthesizable Cores</b></a>
 
-		<P style="padding-top:20px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
-		<a name="cores"><B>Semiconductors and Synthesizable Cores</b></a>
+      <ul>
+        <li>
+          <a href="http://www.westerndesigncenter.com/">The Western Design Center</a> -
+          The source for purchasing the latest in the 65xx family of Microprocessors, Microcontrollers, Microperipherals,
+          Development Tools, Starter Kits and IP.  WDC has been a pioneer in the licensing of microprocessor intellectual
+          property (IP) cores for FPGA and ASIC development. We are the original source of the patented W65C02. This has
+          evolved into a product line of hard and soft cores, development systems, consulting services and standard
+          product ICs from stock.
+        </li>
 
-		<UL>
-		<li><a href="http://www.westerndesigncenter.com/">The Western Design Center</a> -
-		The source for purchasing the latest in the 65xx family of Microprocessors, Microcontrollers, Microperipherals, Development Tools, Starter Kits and IP.  WDC has been a pioneer in the licensing of microprocessor intellectual property (IP) cores for FPGA and ASIC development. We are the original source of the patented W65C02. This has evolved into a product line of hard and soft cores, development systems, consulting services and standard product ICs from stock.</li>
+        <li>
+          <a href="http://www.evatronix.pl/">Evatronix</a> - An IP core developer and supplier
+          that sells the <a href="http://www.evatronix.pl/products/docs.html?id=1&product=NjUwMiBJU0EtY29tcGxpYW50IE1pY3JvcHJvY2Vzc29y">C6502</a>
+          products, synthesizable IP cores that are compatible with the 6502.
+        </li>
 
-    <li><a href="http://www.evatronix.pl/">Evatronix</a> - An IP core developer and supplier
-    that sells the <a href="http://www.evatronix.pl/products/docs.html?id=1&product=NjUwMiBJU0EtY29tcGxpYW50IE1pY3JvcHJvY2Vzc29y">C6502</a>
-    products, synthesizable IP cores that are compatible with the 6502.</li>
+        <li>
+          <a href="http://www.invector.nu/">Invector Embedded Technologies</a> -
+          Produces embedded controller boards including the IET6502SBC, a small SBC with a 65C02, 65C22, four-port UART,
+          128K RAM, ethernet controller, and connections for a graphical LCD display.
+        </li>
 
-		<li><a href="http://www.invector.nu/">Invector Embedded Technologies</a> -
-		Produces embedded controller boards including the IET6502SBC, a small SBC with a 65C02, 65C22, four-port UART,
-		128K RAM, ethernet controller, and connections for a graphical LCD display.
+        <li>
+          <a href="http://www.sitronix.com.tw/">Sitronix Technology Co.</a> -
+          A fabless LCD driver IC and SoC IC (microcontroller) provider based in Taiwan.  Their
+          <a href="http://www.sitronix.com.tw/product_line.htm">product line</a> includes
+          microcontrollers based on the 65C02, such as the
+          <a href="http://www.sitronix.com.tw/sitronix/product.nsf/Doc/ST20P64?OpenDocument">ST20P64</a>.
+        </li>
 
-		<li><a href="http://www.sitronix.com.tw/">Sitronix Technology Co.</a> -
-		A fabless LCD driver IC and SoC IC (microcontroller) provider based in Taiwan.  Their
-		<a href="http://www.sitronix.com.tw/product_line.htm">product line</a> includes
-		microcontrollers based on the 65C02, such as the
-		<a href="http://www.sitronix.com.tw/sitronix/product.nsf/Doc/ST20P64?OpenDocument">ST20P64</a>.</li>
+        <li>
+          <a href="http://mcu.sunplusmcu.com/">Sunplus Technology</a> -
+          A microcontroller IC design house which makes a number of specialized
+          6502-based chips for consumer products, some of which include speech and
+          LCD interfaces.
+        </li>
 
-		<li><a href="http://mcu.sunplusmcu.com/">Sunplus Technology</a> -
-		A microcontroller IC design house which makes a number of specialized
-		6502-based chips for consumer products, some of which include speech and
-		LCD interfaces.</li>
+        <li>
+          <a href="http://www.realtek.com.tw">Realtek Semiconductor Corp.</a> - Also produces a line of
+          6502-based consumer ICs.  Their large website has complete information about their products and
+          datasheets in PDF format.
+        </li>
 
-		<li><a href="http://www.realtek.com.tw">Realtek Semiconductor Corp.</a> - Also produces a line of
-		6502-based consumer ICs.  Their large website has complete information about their products and
-		datasheets in PDF format.</li>
+        <li>
+          <a href="http://www.micronas.com">Micronas GmbH</a> -
+          Microcontrollers used in consumer applications like televisions, matrix displays, projectors,
+          VCRs, VTRs, satellite receivers, etc. as well as in automotive applications like dashboards,
+          body and chassis control units based on the 65C02/65C816 core with high grade of integrated
+          functionality.</li>
 
-		<li><a href="http://www.micronas.com">Micronas GmbH</a> -
-		Microcontrollers used in consumer applications like televisions, matrix displays, projectors,
-		VCRs, VTRs, satellite receivers, etc. as well as in automotive applications like dashboards,
-		body and chassis control units based on the 65C02/65C816 core with high grade of integrated
-		functionality.</li>
+        <li>
+          <a href="http://www.sierracircuit.com">Sierra Circuit Design, Inc.</a> -
+          Offers several synthesizable cores, including a 65C02 and a superset
+          called the 65CX8 with eleven additional instructions such as MPY
+          (multiply).
+        </li>
+      </ul>
 
-		<li><a href="http://www.sierracircuit.com">Sierra Circuit Design, Inc.</a>
-		- Offers several synthesizable cores, including a 65C02 and a superset
-		called the 65CX8 with eleven additional instructions such as MPY
-		(multiply).</li>
+      <p style="padding-top:10px;"><img src="/images/files/folder_open.gif" align=left alt="**">&nbsp;
+      <a name="tools"><b>Development Tools</b></a>
 
-		</ul>
+      <ul>
+        <li>
+          <a href="http://www.westerndesigncenter.com/">The Western Design Center</a> -
+          WDC offers <a href="http://www.westerndesigncenter.com/wdc/hardwaretools.cfm">Hardware Development Tools</a> which
+          includes a developer board for each of our microprocessors and microcontrollers. The developer board connects to
+          the PC via the parallel port. WDC also offers <a href="http://www.westerndesigncenter.com/wdc/tools.cfm">Software
+          Development Tools,</a> which includes a C Compiler, Assembler, Linker, and Debugger, that supports all of WDC's
+          microprocessors and microcontrollers.
+        </li>
 
-		<P style="padding-top:10px;"><IMG SRC="/images/files/folder_open.gif" align=left alt="**">&nbsp;
-		<a name="tools"><b>Development Tools</b></a>
+        <li>
+          <a href="http://www.avocetsystems.com/">Avocet Systems, Inc.</a> -
+          Makers of embedded systems development software.  Their 6502 products include Avocet's AVSYS
+          Real Time Operating System (RTOS) and AVA assembler, as well as the popular 2500AD assembler
+          (ADA), 'C' compiler (ADC), and simulator (ADS).  Avocet also makes ADC-65, which includes the ADC-65 C
+          Compiler, Macro Assembler, Simulator, and IDE.  It's a fully-integrated Windows package, allowing you to
+          develop and debug in the same environment.
+        </li>
 
-		<ul>
+        <li>
+          <a href="http://www.datarescue.com/idabase/ida.htm">DataRescue IDA Pro</a> - A
+          powerful multi-processor interactive disassembler available for several different
+          operating systems.
+        </li>
 
-		<li><a href="http://www.westerndesigncenter.com/">The Western Design Center</a> -
-		WDC offers <a href="http://www.westerndesigncenter.com/wdc/hardwaretools.cfm">Hardware Development Tools</a> which includes a developer board for each of our microprocessors and microcontrollers. The developer board connects to the PC via the parallel port. WDC also offers <a href="http://www.westerndesigncenter.com/wdc/tools.cfm">Software Development Tools,</a> which includes a C Compiler, Assembler, Linker, and Debugger, that supports all of WDC's microprocessors and microcontrollers.
+        <li>
+          <a href="http://www.iar.com/products?chip=Western_Design_Center_6502">IAR Systems</a> -
+          The IAR Embedded Workbench offers an Integrated Development Environment for the Western
+          Design Center 65C02/65C816 microprocessors which includes a 'C' compiler.
+        </li>
 
-		<li><a href="http://www.avocetsystems.com/">Avocet Systems, Inc.</a> -
-		Makers of embedded systems development software.  Their 6502 products include Avocet's AVSYS
-		Real Time Operating System (RTOS) and AVA assembler, as well as the popular 2500AD assembler
-		(ADA), 'C' compiler (ADC), and simulator (ADS).  Avocet also makes ADC-65, which includes the ADC-65 C
-		Compiler, Macro Assembler, Simulator, and IDE.  It's a fully-integrated Windows package, allowing you to
-		develop and debug in the same environment.
-		</li>
+        <li>
+          <a href="http://www.i-pal.com/advanced/6502tool.html">I-Pal Communications</a> -
+          Produces RICE65, an In-Circuit-Emulator (ICE) for the 65C02 which runs up to 8 MHz.
+        </li>
 
-		<li><a href="http://www.datarescue.com/idabase/ida.htm">DataRescue IDA Pro</a> - A
-		powerful multi-processor interactive disassembler available for several different
-		operating systems.</li>
+        <li>
+          <a href="http://web.archive.org/web/20030220162645/http://www.micetek.com.tw/product/Prod-EP-6502F.html">Micetek</a> [archive.org] -
+          A Taiwanese company called Micetek made a product called "EasyPack
+          6502F", an In-Circuit-Emulator (ICE) for the WDC W65C02 which runs up to
+          14 MHz.
+        </li>
+      </ul>
+    </td>
 
-		<li><a href="http://www.iar.com/products?chip=Western_Design_Center_6502">IAR Systems</a> -
-		The IAR Embedded Workbench offers an Integrated Development Environment for the Western
-		Design Center 65C02/65C816 microprocessors which includes a 'C' compiler.</li>
+    <td><img src="/images/spacer.gif" height="1" width="10" alt=" "></td>
 
-		<li><a href="http://www.i-pal.com/advanced/6502tool.html">I-Pal
-		Communications</a> - Produces RICE65, an In-Circuit-Emulator (ICE) for the
-		65C02 which runs up to 8 MHz.</li>
-
-		<li><a href="http://web.archive.org/web/20030220162645/http://www.micetek.com.tw/product/Prod-EP-6502F.html">Micetek</a> [archive.org] -
-		A Taiwanese company called Micetek made a product called "EasyPack
-		6502F", an In-Circuit-Emulator (ICE) for the WDC W65C02 which runs up to
-		14 MHz.</li>
-		</ul>
-
-	</td>
-
-	<td><img src="/images/spacer.gif" height="1" width="10" alt=" "></td>
-
-	</tr>
-
-	</table>
+  </tr>
+</table>
