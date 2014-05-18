@@ -801,7 +801,11 @@ The NMI ISR above was done in two sections, cs_32 and year-month-day-hour-minute
 way to have both the time-and-date-relevant records and the absolute "ticker" of hundredths of seconds.  Incrementing both in the
 NMI ISR was easier and gave less overhead than having to convert each time you need the one you don't have.
 <p>
-Mine actually has even more to it, comparing cs_32 to the 32-bit timer value for the next alarm to come due.  If the times match,
+Mine actually has even more to it, comparing cs_32 to the 32-bit timer value for the next alarm to come due.  (5/17/14: There's
+a description and code in the <a href="http://wilsonminesco.com/multitask/index.html#alm">Alarms</a> section of my
+<a href="http://wilsonminesco.com/multitask/index.html">article</a> on simple methods for multitasking without a multitasking
+OS for systems that lack the resources to implement a multitasking OS, or where hard realtime requirements would rule one out
+anyway.)  If the times match,
 it sets the high-level interrupt status for my Forth system to service the alarm.  This service can consist of anything the
 computer can do, from acting like an alarm clock to performing a complex operation of gathering data and controlling equipment.
 The alarm service routine can in turn also take care of setting up the next alarm.  Adding the alarm part only slows things down
@@ -1378,6 +1382,6 @@ otherwise noted.  Avg=average.
                 Special case:  IRQ from WAIt instrucion with interrupt-disable bit I set:  no more than 1 cy (0.05&mu;s!)</td>
 </tr></table>
 </pre>
-<P><FONT SIZE=-1>Last Updated Jan 5, 2013, outdated cartoons notwithstanding!</FONT>
+<P><FONT SIZE=-1>Last Updated Ma7 17, 2014, outdated cartoons notwithstanding!</FONT>
 </body>
 </html>
