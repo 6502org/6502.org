@@ -11,7 +11,7 @@ interpreters for the 6502 microprocessor.">
 
 <P><FONT SIZE=+1>Cross-Development Software: Compilers & Languages</FONT>
 <BR>
-<A HREF="../">[Up to Cross-Development Software]</A>
+<A HREF="/tools">[Up to Cross-Development Software]</A>
 <BR clear=all><P>
 High-level languages, both interpreted and compiled.
 <P>
@@ -50,7 +50,7 @@ align=left alt="**">&nbsp;
 <B>Interpreters</B></a>
 <UL><I>
 Interpreted languages and other development tools written in native 6502
-code can be found in the <a href="../../source/source.htm">Source Code
+code can be found in the <a href="/source">Source Code
 Repository</a></I>.</UL>
 <P>
 <FONT SIZE=-1>Last updated February 24, 2004</FONT>
