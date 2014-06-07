@@ -1,8 +1,4 @@
-<?php
-$file_content = fread(fopen("../../header.html","r"),
-filesize("../../header.html"));
-echo($file_content);
-?>
+<?php echo file_get_contents("../../header.html"); ?>
 
 <TITLE>6502.org: Compilers & Languages</TITLE>
 <META name="description" content="High-level language compilers and
