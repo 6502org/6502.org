@@ -111,9 +111,9 @@ Getnext
 
 	LDA	#$FF		; set byte
 	STA	Sendf		; set sending flag
-	JMP	ResExit		; restore the registers & exit
+	JMP	ResExit		; restore the registers &amp; exit
 
-                                ; all done so clear the flag restore the regs & exit
+                                ; all done so clear the flag restore the regs &amp; exit
 ExitIRQ
         LDA     #$00            ; clear byte
 	STA	Sendf		; clear sending flag

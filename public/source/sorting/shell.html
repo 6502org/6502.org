@@ -1,6 +1,6 @@
 <html><head>
 	<meta name="description" content="The Shell Sort is a highly-efficient sorting algorithm. This 6502 implementation can sort a large number (>32,000) of 16-bit elements.">
-	
+
 	<title>6502.org: Source: Shell Sort (for 16-bit Elements)</title><style>
 		body 			{ font-family: helvetica, arial, sans-serif; margin: 0 1em; padding-bottom: 3ex; }
 		p, li 			{ text-align: justify; }
@@ -14,7 +14,7 @@
 by Fredrik Ramsberg, 29 Dec 2004
 <hr>
 
-<p>Here's my implementation of Shell Sort, a sort algorithm with rather amazing properties. All mathematicians that have 
+<p>Here's my implementation of Shell Sort, a sort algorithm with rather amazing properties. All mathematicians that have
 tried to analyze this algorithm have failed, but there's lots of empirical data that suggests it's roughly O(n log n). I
 wish I could say I invented this algorithm, but I didn't.  This is an equivalent Javascript
 routine that mimics the Shell Shot presented here:</p></p>
@@ -31,18 +31,18 @@ function ShellSort(arr,length) {
 </pre>
 
 <p>This is source code for what is meant to be an efficient implementation
-of Shell Sort in 6502 assembler.  This implementation can sort more than 32,000 16-bit values. The only reason it can't sort 32,767 values is that there 
-still has to be room for the routine and a few bytes for temporary storage. There's presently no other sorting routine 
-in the repository that can handle more than 256 values. The source code is in a format suitable for 
+of Shell Sort in 6502 assembler.  This implementation can sort more than 32,000 16-bit values. The only reason it can't sort 32,767 values is that there
+still has to be room for the routine and a few bytes for temporary storage. There's presently no other sorting routine
+in the repository that can handle more than 256 values. The source code is in a format suitable for
 the excellent and free ACME cross-assembler by Marco Baye, but should be
-easy to convert for other assemblers.  
+easy to convert for other assemblers.
 
 
 <p>While Shell Sort is very good for entirely unsorted arrays, it is also
 reasonably good for almost sorted arrays. However, if you happen to know
 that very few values are out of place OR that the values that are out
 of place are not very far from their right position, Insertion Sort is a
-better choice. Insertion Sort is also provided here, since 
+better choice. Insertion Sort is also provided here, since
 Shell Sort is really just a clever extension of Insertion Sort.</p>
 
 <p>Here are some examples of sort times @ 1MHz (10,000 values):</p>
@@ -64,27 +64,27 @@ Shell Short like this:</p>
 <pre>
 lda #&lt;nnnn
 ldx #&gt;nnnn
-jsr shell_sort 
+jsr shell_sort
 </pre>
 <p>or to perform an Insertion Sort:</p>
 <pre>
 lda #&lt;nnnn
 ldx #&gt;nnnn
-jsr insertion_sort 
+jsr insertion_sort
 </pre>
 <p>In the code snippits above, <code>&lt;</code> means the low-byte and <code>&gt;</code> means the high-byte.  Some
-assemblers use <code>x & $FF</code> for the low-byte and <code>nnnn >> 8</code> for the high-byte.
-</p>  
+assemblers use <code>x &amp; $FF</code> for the low-byte and <code>nnnn >> 8</code> for the high-byte.
+</p>
 
 
 <p>Source Code for the Shell Sort (with Insertion Sort):</p>
-	
+
 <pre>
   !to "shellsrt.o"                    ; An assembler directive to set out-file
   !sl "shelllbl.a"                    ; Tells the assembler to write all label
                                       ; values to a file
 
-  *=$1000                             ; Start address. Can safely be set to 
+  *=$1000                             ; Start address. Can safely be set to
                                       ; anything from $0100 to $fe00
 
   j=$fb                               ; Uses two bytes. Has to be on zero-page
@@ -100,26 +100,26 @@ sort_main       sty h_start_index
                 cld
                 sta j
                 sta in_address
-                
+
                 clc
                 adc #2
                 sta arr_start
-                
+
                 stx j + 1
                 stx in_address + 1
-                
+
                 txa
                 adc #0
                 sta arr_start + 1
-                
+
                 ldy #0
                 lda (j),y
                 sta arr_length
-                
+
                 clc
                 adc arr_start
                 sta arr_end
-                
+
                 iny
                 lda (j),y
                 sta arr_length + 1
@@ -128,7 +128,7 @@ sort_main       sty h_start_index
                 sta arr_end + 1
 
 ;   for (h=1; h &lt; length; h=3*h+1);
-                
+
                 ldx h_start_index     ; Start with highest value of h
 chk_prev_h      lda h_low,x
                 cmp arr_length
@@ -147,7 +147,7 @@ end_of_init     inx
 h_loop          dec h_index
                 bpl get_h
                 rts                   ; All done!
-                
+
 get_h           ldy h_index
                 lda h_low,y
                 sta h
@@ -158,7 +158,7 @@ get_h           ldy h_index
                 sta h + 1
                 adc in_address + 1
                 sta i + 1
-                
+
 ; for (i=h, j=i, v=arr[i]; i&lt;=length; arr[j+h]=v, i++, j=i, v=arr[i])
 
 i_loop          lda i
@@ -189,7 +189,7 @@ i_loop          lda i
                 adc #0
                 bcs i_loop            ; v=$ffff, so no j-loop necessary
                 sta v_plus_1 + 1
-                
+
                 dey                   ; Set y=0
 
 ;         while((j-=h) &gt;= 0 && arr[j] &gt; v)
@@ -211,7 +211,7 @@ j_loop          lda j
                 cpx arr_start
                 sbc arr_start + 1
                 bcc exit_j_loop
-                
+
 ; Do the actual comparison:  arr[j] &gt; v
 
                 lda (j),y
@@ -261,13 +261,13 @@ v_plus_1        !word 0
 <p>To increase speed and reduce code size, you can optionally place one or more
 of these 2-byte fields on zero-page (the suggested values work on a Commodore 64):</p>
 <pre>
-v_plus_1 = $5 
+v_plus_1 = $5
 h = $7
 arr_start = $A
 </pre>
 
-<p>Some simple tests using an array of 10,000 completely unsorted values showed 
-a 5.6% shorter execution time if all three fields were placed on ZP, with 
+<p>Some simple tests using an array of 10,000 completely unsorted values showed
+a 5.6% shorter execution time if all three fields were placed on ZP, with
 <code>v_plus_1</code> being a little more important than the others.</p>
 
 <p>To go even further, placing these 2-byte fields on zero-page will provide a

@@ -23,7 +23,7 @@ data stack indexing.  The Forth-specific header structure is not shown in
 any of these.
 <P>
 To start, the 32-bit dividend is in N+2 (byte 2), N+3 (byte 1, or hi
-byte), N+4 (byte 4, or lo byte), & N+5 (byte 3).
+byte), N+4 (byte 4, or lo byte), &amp; N+5 (byte 3).
 <P>
 <CENTER><IMG SRC="dividend.gif" width="404" height="228"></CENTER>
 <P>
@@ -32,8 +32,8 @@ The 16-bit divisor is in N+0 and N+1 (lo byte first, as is usual for the
 <P>
 <CENTER><IMG SRC="divisor.gif" width="238" height="176"></CENTER>
 <P>
-At the end, the 16-bit quotient is in N+4 & N+5, and 16-bit remainder is
-in N+2 & N+3 both with low byte first, as usual for 6502, like the divisor
+At the end, the 16-bit quotient is in N+4 &amp; N+5, and 16-bit remainder is
+in N+2 &amp; N+3 both with low byte first, as usual for 6502, like the divisor
 shown above.  In other words, the remainder and quotient end up in the
 same memory bytes that originally held the dividend.
 <UL>
@@ -60,7 +60,7 @@ N:          BLKB  7     ; 7 bytes of ZP for input, output, and scratchpad
 CARRY:      BLKB  1     ; 1 byte  of ZP for 17th bit (Could be called N+7)
 
 COMMENT
- N & N+1 could be called "DIVISOR" (and DIVISOR+1).  Since the answer ends up
+ N &amp; N+1 could be called "DIVISOR" (and DIVISOR+1).  Since the answer ends up
  in the same bytes that originally held the 32-bit dividend, it becomes a
  little harder to come up with good variable names for other bytes of N unless
  you have more than one name for the same locations and remember that they are
@@ -196,14 +196,14 @@ doesn't always give the right answers?
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
 <TR><TD>
 To start, ZP data stack usage makes:<BR>
-0,X & 1,X = 16-bit divisor<BR>
-2,X & 3,X = hi 16 bits of dividend<BR>
-4,X & 5,X = lo 16 bits of dividend<BR>
+0,X &amp; 1,X = 16-bit divisor<BR>
+2,X &amp; 3,X = hi 16 bits of dividend<BR>
+4,X &amp; 5,X = lo 16 bits of dividend<BR>
 N holds 8-bit loop counter<BR>
 <P>
 At the end:<BR>
-2,X & 3,X = 16-bit quotient<BR>
-4,X & 5,X = 16-bit remainder<BR>
+2,X &amp; 3,X = 16-bit quotient<BR>
+4,X &amp; 5,X = 16-bit remainder<BR>
 <P>
 <PRE>
 START:   LDA    4,X
@@ -337,12 +337,12 @@ one-line contents.
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
 <TR><TD>
 <PRE>
-INDEX_16:       MACRO                   ; Put X & Y into 16-bit mode.
+INDEX_16:       MACRO                   ; Put X &amp; Y into 16-bit mode.
                 REP     #00010000B
  ;              NOP                     ; NOP necessary for early versions of
                 ENDM                    ; '802 and '816 >4MHz.
  ;-------------------
-INDEX_8:        MACRO                   ; Put X & Y into 8-bit mode.
+INDEX_8:        MACRO                   ; Put X &amp; Y into 8-bit mode.
                 SEP     #00010000B
  ;              NOP                     ; NOP necessary for early versions of
                 ENDM                    ; '802 and '816 >4MHz.

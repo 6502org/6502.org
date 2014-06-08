@@ -70,7 +70,7 @@ needed and little more.
 ;
 ; Macros for converting 16-bit values to high and low bytes
 #define hi(x)  (x >> 8)
-#define lo(x)  (x & $FF)
+#define lo(x)  (x &amp; $FF)
 ;
 ; 6551 ACIA equates for serial I/O
 ;
@@ -148,7 +148,7 @@ HDWRECS jsr     GETSER          ; Wait for start of record mark ':'
         adc     CHKSUM
         sta     CHKSUM
         jsr     GETHEX          ; Get the record type
-        sta     RECTYPE         ; & save it
+        sta     RECTYPE         ; &amp; save it
         clc
         adc     CHKSUM
         sta     CHKSUM

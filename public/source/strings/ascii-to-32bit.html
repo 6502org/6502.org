@@ -30,7 +30,7 @@ accept a number in binary, octal, decimal or hexadecimal format.
 ;* Copyright (C)1985 by BCS Technology Limited.  All rights reserved.          *
 ;*                                                                             *
 ;* Permission is hereby granted to copy and redistribute this software,  prov- *
-;* ided this copyright notice remains in the source code & proper  attribution *
+;* ided this copyright notice remains in the source code &amp; proper  attribution *
 ;* is given.  Any redistribution, regardless of form, must be at no charge  to *
 ;* the end user.  This code MAY NOT be incorporated into any package  intended *
 ;* for sale unless written permission has been given by the copyright holder.  *
@@ -195,8 +195,8 @@ strbin09 cmp valdnum           ;check range
 ;	Prior to combining the most recent numeral with the partial
 ;	result, it is necessary to left-shift the partial result
 ;	result 1 digit.  The operation can be described as N*base,
-;	where N is the partial result & base is the number base.
-;	N*base with binary, octal & hex is a simple repetitive
+;	where N is the partial result &amp; base is the number base.
+;	N*base with binary, octal &amp; hex is a simple repetitive
 ;	shift.  A simple shift won't do with decimal, necessitating
 ;	an (N*8)+(N*2) operation.  PFAC is copied to SFAC to gener-
 ;	ate the N*2 term.

@@ -734,7 +734,7 @@ ADC B: A = A+B+C
 
 <p>Seq. 2:</p>
 <p>
-2a. AL = (A & $0F) + (B & $0F) + C<br/>
+2a. AL = (A &amp; $0F) + (B &amp; $0F) + C<br/>
 2b. If AL &gt;= $0A, then AL = ((AL + $06) &amp; $0F) + $10<br/>
 2c. A = (A &amp; $F0) + (B &amp; $F0) + AL, using signed (twos complement) arithmetic<br/>
 2e. The N flag result is 1 if bit 7 of A is 1, and is 0 if bit 7 if A is 0<br/>
@@ -903,18 +903,18 @@ TEST    LDY #1    ; initialize Y (used to loop through carry flag values)
         LDA #0    ; initialize N1 and N2
         STA N1
         STA N2
-LOOP1   LDA N2    ; N2L = N2 & $0F
+LOOP1   LDA N2    ; N2L = N2 &amp; $0F
         AND #$0F  ; [1] see text
         STA N2L
-        LDA N2    ; N2H = N2 & $F0
+        LDA N2    ; N2H = N2 &amp; $F0
         AND #$F0  ; [2] see text
         STA N2H
-        ORA #$0F  ; N2H+1 = (N2 & $F0) + $0F
+        ORA #$0F  ; N2H+1 = (N2 &amp; $F0) + $0F
         STA N2H+1
-LOOP2   LDA N1    ; N1L = N1 & $0F
+LOOP2   LDA N1    ; N1L = N1 &amp; $0F
         AND #$0F  ; [3] see text
         STA N1L
-        LDA N1    ; N1H = N1 & $F0
+        LDA N1    ; N1H = N1 &amp; $F0
         AND #$F0  ; [4] see text
         STA N1H
         JSR ADD
@@ -969,8 +969,8 @@ ADD     SED       ; decimal mode
         SEC
 A1      ORA N1H
 ;
-; if N1L + N2L <  $0A, then add N2 & $F0
-; if N1L + N2L >= $0A, then add (N2 & $F0) + $0F + 1 (carry is set)
+; if N1L + N2L <  $0A, then add N2 &amp; $F0
+; if N1L + N2L >= $0A, then add (N2 &amp; $F0) + $0F + 1 (carry is set)
 ;
         ADC N2H,X
         PHP
@@ -1027,8 +1027,8 @@ SUB1    CPY #1    ; set carry if Y = 1, clear carry if Y = 0
         CLC
 S11     ORA N1H
 ;
-; if N1L - N2L >= 0, then subtract N2 & $F0
-; if N1L - N2L <  0, then subtract (N2 & $F0) + $0F + 1 (carry is clear)
+; if N1L - N2L >= 0, then subtract N2 &amp; $F0
+; if N1L - N2L <  0, then subtract (N2 &amp; $F0) + $0F + 1 (carry is clear)
 ;
         SBC N2H,X
         BCS S12
@@ -1049,8 +1049,8 @@ SUB2    CPY #1    ; set carry if Y = 1, clear carry if Y = 0
         CLC
 S21     ORA N1H
 ;
-; if N1L - N2L >= 0, then subtract N2 & $F0
-; if N1L - N2L <  0, then subtract (N2 & $F0) + $0F + 1 (carry is clear)
+; if N1L - N2L >= 0, then subtract N2 &amp; $F0
+; if N1L - N2L <  0, then subtract (N2 &amp; $F0) + $0F + 1 (carry is clear)
 ;
         SBC N2H,X
         BCS S22

@@ -40,7 +40,7 @@ to perform the time measurements.
 ;                                                             ;
 ; I have taken the BASIC routine and converted it to 65C02    ;
 ; assembly code.  I am using the added opcodes PHX, PHY,      ;
-; PLX, PLY, LDA (zp) & STZ zp to decrease size and increase   ;
+; PLX, PLY, LDA (zp) &amp; STZ zp to decrease size and increase   ;
 ; speed.  By adding an additional zero page temp variable,    ;
 ; you can use the basic 6502 opcodes to perform this sort.    ;
 ;                                                             ;
@@ -93,7 +93,7 @@ CLFLAG   stz flag          ; TURN EXCHANGE FLAG OFF (= 0)
          SEC               ;
          lda (array)       ; get size
          SBC gap           ; subract gap to reduce loop size
-         TAX               ; (loop counter & pointer to lower element)
+         TAX               ; (loop counter &amp; pointer to lower element)
 NXTEL    CLC               ; calc pointer to upper element
          TXA               ;
          ADC gap           ;
@@ -115,7 +115,7 @@ NXTEL    CLC               ; calc pointer to upper element
          LDA #$FF          ; TURN EXCHANGE FLAG ON (= -1)
          STA flag          ;
          BNE CHKEND        ; skip over stack maintenance
-CLRSTK   PLA               ; remove upper element & pointer from stack
+CLRSTK   PLA               ; remove upper element &amp; pointer from stack
          PLA               ;
 CHKEND   DEX               ; END OF LIST?
          BNE NXTEL         ; NO. FETCH NEXT ELEMENT

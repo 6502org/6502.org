@@ -730,7 +730,7 @@ type
 		lsr			;
 		and   	#$01		; strip LSB
 		clc			;
-		adc   	temp		; combine row & col to determine
+		adc   	temp		; combine row &amp; col to determine
 square color
 		and   	#$01		; is board square white or blk?
 		bne	pout25 		; white, print space
@@ -756,7 +756,7 @@ POUT3		INY			;
 		BEQ   	POUT8		; yes, print the LED values
 		BNE   	POUT1		; no, do new row
 
-POUT4		LDA   	REV		; print piece's color & type
+POUT4		LDA   	REV		; print piece's color &amp; type
 		BEQ   	POUT41		;
 		LDA	cpl+16,X	;
 		BNE	POUT42		;

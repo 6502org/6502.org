@@ -257,7 +257,7 @@ made <code>SYSRTI</code> do all the compile-time jobs that ; does.)  My <code>SY
 <pre>
 CODE SYSRTI   ( -- )   ; Lay header and code field down.
        SEI             ; Start with interrupting disabled.
-       LDA  irqok?     ; Load & test byte at addr IRQOK? to see if IRQs are ok.
+       LDA  irqok?     ; Load &amp; test byte at addr IRQOK? to see if IRQs are ok.
        BEQ  unnest+2   ; If not ok, don't execute next CLI instruction.
        CLI             ; Else clear interrupt disable flag.
        BRA  unnest+2   ; Branch to body of unnest (1st addr after code field).

@@ -376,7 +376,7 @@ timer's time-out period, or reducing the rate that something external produces i
 increase the processor speed.
 <p>
 If you know that a regular, predictable interrupt from a source such as a timer will be hitting often enough to be pushing the
-limits of how fast you can service it, you better count cycles in the ISR (not forgetting to include the IRQ & RTI overhead and the
+limits of how fast you can service it, you better count cycles in the ISR (not forgetting to include the IRQ &amp; RTI overhead and the
 time to finish an instruction that was already executing when the interrupt hits), and make sure that the cycle count, divided by
 your &phi;2 rate, leaves you enough time between interrupts to service them completely.
 <p>
@@ -681,7 +681,7 @@ is up.
 <pre>
                            ; Init VIA timers and IRQ for software real-time clock operation.
 RTC_SETUP:                 ; This is normally only called in the boot-up routine.  You may
-                           ; also want to reset time & date numbers if they don't make sense.
+                           ; also want to reset time &amp; date numbers if they don't make sense.
          LDA    #$4E       ; Set T1 to time out every 10ms @ 5MHz.  $C34E is 49,998 decimal.
          STA    VIA1T1CL   ;                                      T1 period = n+2 / &phi;2 freq
          LDA    #$C3
@@ -1068,7 +1068,7 @@ CUR_ADR:       .DFS  2   ; The only STA() there is is in ZP, so use this addr.
 Not necessarily in zero page:
 <pre>
 BEG_ADR:       .DFS  2   ; + These 2 specify the address range where the samples
-END_ADR:       .DFS  2   ; +   are stored, & get initialized in START_ARB below.
+END_ADR:       .DFS  2   ; +   are stored, &amp; get initialized in START_ARB below.
 PLAY_T1_VAL:   .DFS  2   ; Value to store in VIA T1 counter for desired
                          ;                                       interrupt rate.
 
@@ -1293,7 +1293,7 @@ otherwise noted.  Avg=average.
                 Instructions 4-50 cy, or 0.4-5.0&mu;s.  Avg 15 cy, or 1.5&mu;s.</tr>
 </tr><tr>
 	<td>COP8</td><td>National</td>
-	<td>70 clocks (7 instruction cycles). RETI (E) is 50 clocks (5 instruction cycles).  (7&mu;s & 5&mu;s @ 10MHz)</td>
+	<td>70 clocks (7 instruction cycles). RETI (E) is 50 clocks (5 instruction cycles).  (7&mu;s &amp; 5&mu;s @ 10MHz)</td>
 </tr><tr>
 	<td>&mu;PD78C05</td><td>NEC</td>
 	<td>RETI (E) takes 13 or 15 clocks (2.08 or 2.4&mu;s at 6.25MHz)</td>
@@ -1316,7 +1316,7 @@ otherwise noted.  Avg=average.
 </tr><tr>
 	<td>6809</td><td>Motorola</td>
 	<td>(C)=19 clocks.  Stacks all registers.  RTI (E) 15 clocks.  2MHz (8MHz/4).<br>
-                FIRQ-RTI take 10 & 6 clocks, & work more like 6502 IRQ-RTI.</td>
+                FIRQ-RTI take 10 &amp; 6 clocks, &amp; work more like 6502 IRQ-RTI.</td>
 </tr><tr>
 	<td>68HC05</td><td>Motorola</td>
 	<td>16 clocks typ (8&mu;s @ 2MHz)</td>
