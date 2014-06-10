@@ -15,7 +15,7 @@ is written for the KIM but is usable on other 6502 microcomputers, like the SYM 
 The program will perform a frequency measurement only once after the "0" key is pressed, or it will measure
 continuously after the "6" key is pressed.</b><br><br>
 
-<table><tr><td width="250" valign="top" class="column"><big><bold>Overflow</bold></big><br><br>
+<table><tr><td width="250" valign="top" class="column"><big><b>Overflow</b></big><br><br>
 This program employs a seldom-used hardware feature of the 6502. This microprocessor has a SO (Set Overflow) input on pin 38,
 which can set the Overflow bit in the Processor Status Register externally.  On most 6502-based computers, this pin this is available via a connector (RO, pin E-5 on
 the KIM; SO, pin 14-c on the Junior).<br><br>
@@ -29,12 +29,12 @@ signal on this input goes from high to low.
 This gives a fast and direct access to the microprocessor without involving the rest of the computer.
 Once the overflow flag is set, only the software can influence it.<br>
 
-<br><big><bold>Buffering</bold></big><br><br>
+<br><big><b>Buffering</b></big><br><br>
 Since the measuring is done directly with our circuit, buffering and protection of the SOV-input is necessary.
 The easyist way to implement this is via a Schmitt-trigger gate, like the 7413.  The figure at left also shows voltage
 and current protection before the 7413.  This circuit can measure signals of every shape if the level is around 2.5 V.<br>
 
-<br><big><bold>Operation</bold></big><br><br>
+<br><big><b>Operation</b></big><br><br>
 The program starts on location 0200 hex.  First, the interrupt vector is being set at the start address of the
 interrupt routine (0298 hex).  Next, the counter for the interrupts is initialized and the readout is then cleared.
 The timer is being set to interrupt once every 1/4 of a second.  For a complete cycle,  four interrupts are used
@@ -73,12 +73,12 @@ After the conversion, the display lights up and shows the value.  Next the key i
 
 <table cellpadding=10 width="850"><tr>
 <td width="30%" valign="top" class="column">
-<big><bold>Adjustment</bold></big><br><br>
+<big><b>Adjustment</b></big><br><br>
 The adjustment goes as follows. A dividing circuit, composed of two devide-by-10 deviders, is connected to the 1 MHz clock of the computer. The frequency at the output will be in the neighbourhood of 10 kHz. This signal is being fed to input and
 
 </td>
 <td width="30%" valign="top" class="column">the program is started. By modifying the values in memory locations 021C and 021E of the delay-routine, the readout is adjusted to 10.000. The devide-by-100 is used because then the accumulator is not yet active in the proces. This way the meter is most accurate. By connecting the devider between the buffer(7413) and the RO (SO) input the measurement is extended to 10 MHz. In order to make the timer work it's importand for the KIM to connect PB7 (A-15) and NMI (E-6) and for the Junior, NMI (12-C) and IRQ (12-A). The timer actualy generates interupts.</td>
-<td width="30%" valign="top" class="column"><big><bold>Modifications for the Junior</bold></big><br><br>
+<td width="30%" valign="top" class="column"><big><b>Modifications for the Junior</b></big><br><br>
 The program in the listing is for the KIM. For the Junior the following changes apply:
 <pre>Address  KIM    Junior
 0203     FB     7B

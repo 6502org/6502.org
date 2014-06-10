@@ -9,14 +9,14 @@ R. Koekoek</i><br>
 <td width="60%" valign="top"><font size="4">The program described here can measure a frequency till, mind you, 100 kHz with an deviation of one alternation on 65536. The frequency is displayed on five digits. The program is written for the KIM, but is usable on other 6502 microcomputers, like the SYM and the Junior.
 Once started the program measures the frequency continuosly, when "6" is pressed and once when "0" is pressed.</font><br><br>
 
-<table><tr><td width="50%" valign="top"><big><bold>Overflow</bold></big><br><br>
+<table><tr><td width="50%" valign="top"><big><b>Overflow</b></big><br><br>
 In this program a seldom used 6502 property is applied. This microprocessor has a SO (Set Overflow) pin 38, which can set the overflow-flag from the exterior. On most computers this is available via a connector (RO, pin E-5 on the KIM; SO, pin 14-c on the Junior). the overflow flag is set when the signal on this input goes from high to low.<br><br>
 <img src="buffer.jpg" width="220" height="352" alt="input protection" border="2" align="middle"><br>
 
 </td><td width="50%" valign="top">This gives a fast and direct access to the microprocessor without involving the rest of the computer. Once the overflow flag is set, only the software can influence it.<br>
-<br><big><bold>Buffering</bold></big><br><br>
+<br><big><b>Buffering</b></big><br><br>
 Because measuring is done directly into circuits, buffering and protection of the RO-input is necessary. The easyist way to realise this is via a Schmitt-trigger gate, the 7413. This gate is also being provided with a voltage and current protection according to the picture. This way signals of every shape can be measured if the level is around 2.5 V.<br>
-<br><big><bold>Operation</bold></big><br><br>
+<br><big><b>Operation</b></big><br><br>
 The program starts on location 200 hex. First the interrupt vector is being set at the start address of the interrupt routine (0298 hex). Next the counter for the interrupts is initialised, then the readout is cleared. The timer is being set to 1/4 of a second, at which interrupts are allowed. For a complete cycle four interrupts are used which results in about 1 second. To make this timing accurate and trim the</td></tr></table>
 </td>
 <td width="30%" valign="top">measurement an extra delay routine of about 3 ms is in order. The accumulator, the carry- and overflow-flag are cleared, then the number of overflows are counted till the next interrupt. Counting is done binary with the least significant bits in the X-register, then the Y-register and the most significant bits in the accumulator. By keeping this routine as short as possible, the maximum frequency is about 100 kHz. The error occuring at 65536 pulses is arises when the X and Y-registers reach FFFF hex and the accumulator needs to be incremented. This makes the counting routine a little longer.<br>
@@ -27,12 +27,12 @@ Whenever an interrupt occurs, the interrupt routine is being called. Her the tim
 <hr size=5>
 <table cellpadding=10><tr>
 <td width="30%" valign="top">the display lights up and shows the value. Next the key is checked. If not, the preveous key value is used. If yes, the program stops measuring at a "0" and goes on displaying the frequency at a "6".<br>
-<br><big><bold>Adjustment</bold></big><br><br>
+<br><big><b>Adjustment</b></big><br><br>
 The adjustment goes as follows. A dividing circuit, composed of two devide-by-10 deviders, is connected to the 1 MHz clock of the computer. The frequency at the output will be in the neighbourhood of 10 kHz. This signal is being fed to input and the
 
 </td>
 <td width="30%" valign="top">program is started. By modifying the values in memory locations 021C and 021E of the delay-routine, the readout is adjusted to 10.000. The devide-by-100 is used because then the accumulator is not yet active in the proces. This way the meter is most accurate. By connecting the devider between the buffer(7413) and the RO (SO) input the measurement is extended to 10 MHz. In order to make the timer work it's importand for the KIM to connect PB7 (A-15) and NMI (E-6) and for the Junior, NMI (12-C) and IRQ (12-A). The timer actualy generates interupts.</td>
-<td width="30%" valign="top"><big><bold>Modifications for the Junior</bold></big><br><br>
+<td width="30%" valign="top"><big><b>Modifications for the Junior</b></big><br><br>
 The program in the listing is for the KIM. For the Junior the following changes apply:
 <pre>Adres    KIM    Junior
 0203     FB     7B
