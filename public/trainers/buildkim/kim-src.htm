@@ -179,25 +179,25 @@ SYNC2   jsr     RDCHT
 
 LOADT4  jsr     RDCHT   ; look for start of
 	cmp     #$2A    ;  start char
-	beq     LOAD11  ; yes ->
+	beq     LOAD11  ; yes -&gt;
 
 	cmp     #$16    ; SYNC-char?
-	bne     SYNC    ; no ->
+	bne     SYNC    ; no -&gt;
 
-	beq     LOADT4  ; always ->
+	beq     LOADT4  ; always -&gt;
 ;
 LOAD11  jsr     RDBYT   ; read ID
 	cmp     ID      ; requested ID?
-	beq     LOADT5  ; yes ->
+	beq     LOADT5  ; yes -&gt;
 
 	lda     ID
 	cmp     #0      ; ignore ID?
-	beq     LOADT5  ; yes ->
+	beq     LOADT5  ; yes -&gt;
 
 	cmp     #$FF    ; ignore start address?
-	beq     LOADT6  ; yes ->
+	beq     LOADT6  ; yes -&gt;
 
-	bne     LOADT   ; next program, always ->
+	bne     LOADT   ; next program, always -&gt;
 ;
 LOADT5  jsr     RDBYT   ; get SA from tape
 	jsr     CHKT
@@ -215,13 +215,13 @@ LOADT6  jsr     RDBYT   ; get SA from tape
 LOADT7  ldx     #2
 LOAD13  jsr     RDCHT
 	cmp     #$2F    ; last char?
-	beq     LOADT5  ; yes ->
+	beq     LOADT5  ; yes -&gt;
 
 	jsr     PACKT   ; convert to hex
 	bne     LOADT9  ; Y=1, non-hex char
 
 	dex             ; 2 chars?
-	bne     LOAD13  ; no -> next one
+	bne     LOAD13  ; no -&gt; next one
 
 	jsr     CHKT    ; compute checksum
 	jmp     VEB
@@ -238,7 +238,7 @@ LOADT8  jsr     RDBYT   ; EOD compare checksum
 	bne     LOADT9
 
 	lda     #0
-	beq     LOAD10  ; normal exit, always ->
+	beq     LOAD10  ; normal exit, always -&gt;
 ;
 LOADT9  lda     #$FF    ; error exit
 LOAD10  sta     POINTL
@@ -304,7 +304,7 @@ CHT1    jsr     ONE
 CHT2    jsr     ZRO
 CHT3    jsr     ZRO
 	dey             ; all bits?
-	bne     CHT1    ; no ->
+	bne     CHT1    ; no -&gt;
 	ldx     SAVX
 	ldy     SAVX+1
 	rts
@@ -327,7 +327,7 @@ ONE2    bit     CLKRDI  ; wait for timeout
 	lda     #$27
 	sta     SBD     ; PB7 := 0
 	dex             ; all pulses?
-	bne     ONE1    ; no ->
+	bne     ONE1    ; no -&gt;
 
 	pla
 	rts
@@ -350,7 +350,7 @@ ZRO2    bit     CLKRDI  ; wait for timeout
 	lda     #$27
 	sta     SBD     ; PB7 := 0
 	dex             ; all pulses?
-	bne     ZRO1    ; no ->
+	bne     ZRO1    ; no -&gt;
 
 	pla
 	rts
@@ -371,13 +371,13 @@ RDBYT2  jsr     RDCHT
 ;
 ; Pack ASCII in A as hex data
 PACKT   cmp     #$30    ; ASCII ?
-	bmi     PACKT3  ; no ->
+	bmi     PACKT3  ; no -&gt;
 
 	cmp     #$47
-	bpl     PACKT3  ; no ->
+	bpl     PACKT3  ; no -&gt;
 
-	cmp     #$40    ; > '9' ?
-	bmi     PACKT1  ; no ->
+	cmp     #$40    ; &gt;'9' ?
+	bmi     PACKT1  ; no -&gt;
 
 	clc
 	adc     #9
@@ -516,19 +516,19 @@ DETCPS  lda     #$FF    ; count startbit
 ; Test first keyboard or teleprinter
 	lda     #1      ; mask bit 0
 DET1    bit     SAD     ; test for teleprinter
-	bne     START   ; no ->
+	bne     START   ; no -&gt;
 
-	bmi     DET1    ; no startbit, wait for it ->
+	bmi     DET1    ; no startbit, wait for it -&gt;
 
 	lda     #$FC
 DET3    clc             ; this loop counts startbit time
 	adc     #1      ; A=0 ?
-	bcc     DET2    ; no ->
+	bcc     DET2    ; no -&gt;
 
 	inc     CNTH30
 
 DET2    ldy     SAD     ; check for end of startbit
-	bpl     DET3    ; no ->
+	bpl     DET3    ; no -&gt;
 
 	sta     CNTL30
 	ldx     #8
@@ -538,7 +538,7 @@ DET2    ldy     SAD     ; check for end of startbit
 START   jsr     INIT1
 	lda     #1      ; read jumper
 	bit     SAD     ; TTY ?
-	bne     TTYKB   ; no -> keyboard/display-routine
+	bne     TTYKB   ; no -&gt; keyboard/display-routine
 
 	jsr     CRLF    ; print return/linefeed
 	ldx     #$0A
@@ -552,27 +552,27 @@ CLEAR   lda     #0
 ;
 READ    jsr     GETCH   ; get char from TTY
 	cmp     #1      ; 1 has no meaning for TTY
-	beq     TTYKB   ; 1 = KB-mode ->
+	beq     TTYKB   ; 1 = KB-mode -&gt;
 
 	jsr     PACK
 	jmp     SCAN
 ;
 ; Main routine for keyboard and display
 TTYKB   jsr     SCAND   ; wait until NO key pressed
-	bne     START   ; if pressed, wait again ->
+	bne     START   ; if pressed, wait again -&gt;
 TTYKB1  lda     #1      ; check KB/TTY mode
 	bit     SAD     ; TTY?
-	beq     START   ; yes ->
+	beq     START   ; yes -&gt;
 
 	jsr     SCAND   ; Wait for key...
-	beq     TTYKB1  ; no key ->
+	beq     TTYKB1  ; no key -&gt;
 
 	jsr     SCAND   ; debounce key
-	beq     TTYKB1  ; no key ->
+	beq     TTYKB1  ; no key -&gt;
 ;
 GETK    jsr     GETKEY
 	cmp     #$15    ; >= $15 = illegal
-	bpl     START   ; yes ->
+	bpl     START   ; yes -&gt;
 
 	cmp     #$14
 	beq     PCCMD   ; display Program Counter
@@ -598,26 +598,26 @@ DATA    asl             ; move LSB key number to MSB
 	ldx     #4
 
 DATA1   ldy     MODE    ; part of address?
-	bne     ADDR    ; yes ->
+	bne     ADDR    ; yes -&gt;
 
 	lda     (POINTL),Y      ; get data
 	asl     TEMP
-	rol             ; MSB-TEMP = MSB-key -> A
+	rol             ; MSB-TEMP = MSB-key -&gt; A
 	sta     (POINTL),Y      ; store new data
 	jmp     DATA2
 
 ADDR    asl             ; TEMP not needed here
-	rol     POINTL  ; MSB-key -> POINTL
-	rol     POINTH  ; POINTL -> POINTH
+	rol     POINTL  ; MSB-key -&gt; POINTL
+	rol     POINTH  ; POINTL -&gt; POINTH
 
 DATA2   dex             ; 4 times = complete nibble?
-	bne     DATA1   ; no ->
+	bne     DATA1   ; no -&gt;
 
-	beq     DATAM2  ; -> always
+	beq     DATAM2  ; -&gt; always
 ;
 ; Switch to address mode
 ADDRM   lda     #1
-	bne     DATAM1  ; -> always
+	bne     DATAM1  ; -&gt; always
 ;
 ; Switch to data mode
 DATAM   lda     #0
@@ -640,7 +640,7 @@ PCCMD   lda     PCL
 ; Load papertape from TTY
 LOAD    jsr     GETCH
 	cmp     #$3B    ; ":", semicolon?
-	bne     LOAD    ; No -> again
+	bne     LOAD    ; No -&gt; again
 
 LOADS   lda     #0
 	sta     CHKSUM
@@ -690,7 +690,7 @@ LOAD8   lda     #$27
 ;
 LOADE1  jsr     GETBYT  ; dummy
 LOADER  ldx     #$11    ; X-OFF error KIM
-	bne     LOAD8   ; always ->
+	bne     LOAD8   ; always -&gt;
 ;
 ; Dump to TTY from open cell address to LIMHL, LIMHH
 DUMP    lda     #0
@@ -710,7 +710,7 @@ DUMP1   jsr     CRLF
 ;
 	lda     POINTH
 	sbc     EAH
-	bcc     DUMP4   ; no ->
+	bcc     DUMP4   ; no -&gt;
 ;
 	lda     #0      ; print last record
 	jsr     PRTBYT  ; 0 bytes
@@ -736,7 +736,7 @@ DUMP2   ldy     #0
 	jsr     CHK
 	jsr     INCPT
 	dex             ; Printed everything?
-	bne     DUMP2   ; No ->
+	bne     DUMP2   ; No -&gt;
 ;
 	lda     CHKHI
 	jsr     PRTBYT  ; print checksum
@@ -831,11 +831,11 @@ PRTPNT  lda     POINTH
 	rts
 ;
 ; Print ASCII-string from TOP+X to TOP
-CRLF    ldx     #7      ; output <RETURN> and <LF>
+CRLF    ldx     #7      ; output &lt;RETURN&gt; and &lt;LF&gt;
 PRTST   lda     TOP,x
 	jsr     OUTCH
 	dex             ; everything?
-	bpl     PRTST   ; no ->
+	bpl     PRTST   ; no -&gt;
 
 PRT1    rts
 ;
@@ -852,9 +852,9 @@ PRTBYT  sta     TEMP    ; save A
 	rts
 ;
 HEXTA   and     #$0F    ; mask bit 0..4
-	cmp     #$0A    ; > 10 ?
+	cmp     #$0A    ; &gt;10 ?
 	clc
-	bmi     HEXTA1  ; no ->
+	bmi     HEXTA1  ; no -&gt;
 
 	adc     #7      ; A..F
 HEXTA1  adc     #$30    ; convert to ASCII-char...
@@ -865,7 +865,7 @@ GETCH   stx     TMPX
 	ldx     #8      ; count 8 bits
 	lda     #1
 GET1    bit     SAD     ; check if TTY-mode
-	bne     GET6    ; no ->
+	bne     GET6    ; no -&gt;
 
 ; PA7 is input TTY
 	bmi     GET1    ; wait for startbit
@@ -914,7 +914,7 @@ OUTCH   sta     CHAR
 	jsr     DELAY
 	lda     SBD
 	and     #$FE    ; send startbit
-	sta     SBD     ; PB0 = 0 -> TTY := (H)
+	sta     SBD     ; PB0 = 0 -&gt; TTY := (H)
 	jsr     DELAY
 ;
 	ldx     #8      ; send character
@@ -925,7 +925,7 @@ OUT1    lda     SBD
 	sta     SBD     ; output bit
 	jsr     DELAY
 	dex             ; all bits?
-	bne     OUT1    ; no ->
+	bne     OUT1    ; no -&gt;
 
 	lda     SBD
 	ora     #1
@@ -940,11 +940,11 @@ DELAY   lda     CNTH30
 	lda     CNTL30
 DE2     sec
 DE4     sbc     #1
-	bcs     DE3     ; A<>$FF ->
+	bcs     DE3     ; A&lt;&gt;$FF -&gt;
 
 	dec     TIMH
-DE3     ldy     TIMH    ; TIMH > 0 ?
-	bpl     DE2     ; yes ->
+DE3     ldy     TIMH    ; TIMH &gt; 0 ?
+	bpl     DE2     ; yes -&gt;
 
 	rts
 ;
@@ -957,7 +957,7 @@ DEHALF  lda     CNTH30
 	bcc     DE2
 
 	ora     #$80
-	bcs     DE4     ; always ->
+	bcs     DE4     ; always -&gt;
 ; Why not:
 ;  lsr  TIMH
 ;  ror
@@ -965,7 +965,7 @@ DEHALF  lda     CNTH30
 ; ????
 ;
 ;
-; Determine if key is depressed: NO -> A=0, YES -> A>0
+; Determine if key is depressed: NO -&gt; A=0, YES -&gt; A&gt;0
 AK      ldy     #3      ; 3 rows
 	ldX     #1      ; select 74145 output 0
 
@@ -976,13 +976,13 @@ AKA     stx     SBD     ; enable output = select row
 	inx             ; prepare for next row
 	and     SAD     ; A := A &amp;&amp; (PA0..PA7)
 	dey             ; all rows?
-	bne     AKA     ; no ->
+	bne     AKA     ; no -&gt;
 
 	ldy     #7
 	sty     SBD     ; select 74145 output 3 (not used)
 ;
 	ora     #$80    ; mask bit 7 of A
-	eor     #$FF    ; if A still is $FF -> A := 0
+	eor     #$FF    ; if A still is $FF -&gt; A := 0
 	rts
 ;
 ; Output to 7-segment-display
@@ -1005,7 +1005,7 @@ SCAND1  lda     INL_A,y ; get byte
 	and     #$0F    ; get LSD
 	jsr     CONVD
 	dey             ; all ?
-	bne     SCAND1  ; no ->
+	bne     SCAND1  ; no -&gt;
 
 	sty     SBD     ; all digits off
 	lda     #0
@@ -1041,29 +1041,29 @@ INCPT2  rts
 GETKEY  ldx     #$21    ; row 0 / disable input TTY
 GETKE5  ldy     #1      ; only one row in the time
 	jsr     ONEKEY  ; key?
-	bne     KEYIN   ; yes ->
+	bne     KEYIN   ; yes -&gt;
 
 	cpx     #$27    ; last row?
-	bne     GETKE5  ; no, next one ->
+	bne     GETKE5  ; no, next one -&gt;
 
 	lda     #$15    ; 15 = no key
 	rts
 ;
 KEYIN   ldy     #$FF    ; Y := key number
 KEYIN1  asl             ; shift A until
-	bcs     KEYIN2  ;  bit = 1 ->
+	bcs     KEYIN2  ;  bit = 1 -&gt;
 ;
 ; Comment: bit 7 is always 0 so Carry is always 0 the first time
 ;  and allowing Y to become 0 (key $FF does not exist)
 	iny
-	bpl     KEYIN1  ; always ->
+	bpl     KEYIN1  ; always -&gt;
 
 KEYIN2  txa
 	and     #$0F    ; strip bit4..7
 	lsr             ; A := row+1
 	tax             ; X := actual row+1
 	tya
-	bpl     KEYIN4  ; always, because Y<7 ->
+	bpl     KEYIN4  ; always, because Y&lt;7 -&gt;
 
 ;
 ; Add 7 to A for every row above 0 to get actual key number
@@ -1072,7 +1072,7 @@ KEYIN3  clc
 KEYIN4  dex             ; countdown to 0
 	bne     KEYIN3
 
-	rts             ; A is always < 21 eg. < $15
+	rts             ; A is always &lt; 21 eg. &lt; $15
 ;
 ; Compute checksum
 CHK     clc
@@ -1094,13 +1094,13 @@ GETBYT  jsr     GETCH
 ;
 ; Shift char in A into INL and INH
 PACK    cmp     #$30    ; is hex?
-	bmi     UPDAT2  ; < = no        ->
+	bmi     UPDAT2  ; &lt; = no        -&gt;
 
 	cmp     #$47
-	bpl     UPDAT2  ; > = no ->
+	bpl     UPDAT2  ; &gt; = no -&gt;
 
 HEXNUM  cmp     #$40    ; A..F ?
-	bmi     UPDATE  ; no ->
+	bmi     UPDATE  ; no -&gt;
 
 HEXALP  clc
 	adc     #9
@@ -1113,9 +1113,9 @@ UPDAT1  rol
 	rol     INL
 	rol     INH
 	dey     ; 4 times?
-	bne     UPDAT1  ; no ->
+	bne     UPDAT1  ; no -&gt;
 
-	lda     #0      ; if hex number -> A := 0
+	lda     #0      ; if hex number -&gt; A := 0
 UPDAT2  rts
 ;
 OPEN    lda     INL     ; move I/O-buffer to POINT
@@ -1131,7 +1131,7 @@ TOP     .by     0, 0, 0, 0, 0, 0, 10, 13
 	.tx     "RRE "
 	.by     $13
 
-; Hex -> 7-segment      0    1    2    3    4    5    6    7
+; Hex -&gt; 7-segment      0    1    2    3    4    5    6    7
 TABLE   .by     $BF, $86, $DB, $CF, $E6, $ED, $FD, $87
 ;               8    9    A    B    C    D    E    F
 	.by     $FF, $EF, $F7, $FC, $B9, $DE, $F9, $F1
