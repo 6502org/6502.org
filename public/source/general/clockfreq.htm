@@ -24,8 +24,8 @@ vcNMI           =       $FFFA
 
 Refresh         =       450     ; NMI rate in Hz
 
-        ldx     #&ltNMI           ; installing the NMI vector
-        ldy     #&gtNMI
+        ldx     #&lt;NMI           ; installing the NMI vector
+        ldy     #&gt;NMI
         stx     vcNMI
         sty     vcNMI+1
         lda     #$40            ; on start NMI is off
@@ -96,10 +96,10 @@ Main                            ; main counting cycle
         sta     Ticks+3   ;4  50
         cld               ;2  52
         lda     Timer     ;4  56
-        cmp     #&ltRefresh ;2  58
+        cmp     #&lt;Refresh ;2  58
         bne     Main      ;3  61 + 34 (from NMI ISR) = 95
         lda     Timer+1   ; 4
-        cmp     #&gtRefresh ; 2
+        cmp     #&gt;Refresh ; 2
         bne     Main      ; 3
 
         lda     InUse           ; turn off NMI
@@ -120,7 +120,7 @@ Main                            ; main counting cycle
         lsr
         lsr
         lsr
-        beq     +               ; delete non-significant zero (clock &lt 10MHz)
+        beq     +               ; delete non-significant zero (clock &lt; 10MHz)
         jsr     PrintDigit
 +       pla
         and     #15
