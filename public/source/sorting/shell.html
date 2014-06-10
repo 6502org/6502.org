@@ -22,10 +22,10 @@ routine that mimics the Shell Shot presented here:</p></p>
 <pre>
 function ShellSort(arr,length) {
   var j, i, v, h, k;
-  for (h=1; h < length; h=3*h+1);
+  for (h=1; h &lt; length; h=3*h+1);
   while (h=(h-1)/3)
-    for (i=h, j=i, v=arr[i]; i<=length; arr[j+h]=v, i++, j=i, v=arr[i])
-      while((j-=h) >= 0 && arr[j] > v)
+    for (i=h, j=i, v=arr[i]; i&lt;=length; arr[j+h]=v, i++, j=i, v=arr[i])
+      while((j-=h) >= 0 &amp;&amp; arr[j] > v)
         arr[j+h]=arr[j];
 }
 </pre>
@@ -192,7 +192,7 @@ i_loop          lda i
 
                 dey                   ; Set y=0
 
-;         while((j-=h) &gt;= 0 && arr[j] &gt; v)
+;         while((j-=h) &gt;= 0 &amp;&amp; arr[j] &gt; v)
 
 j_loop          lda j
                 sta j_plus_h

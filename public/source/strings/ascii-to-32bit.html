@@ -104,7 +104,7 @@ sfac     =pfac+s_fac           ;secondary accumulator
 ;	------------------------------------------------------
 ;	Define the above to suit your application.  Moving the
 ;	accumulators to absolute storage will result in an
-;	approximate 20 percent increase in execution time &
+;	approximate 20 percent increase in execution time &amp;
 ;	will require some program restructuring to avoid out-
 ;	of-range relative branches.
 ;	------------------------------------------------------
@@ -218,7 +218,7 @@ strbin10 lda pfac,x            ;N
 strbin11 ldx bitsdig           ;bits per digit
 ;
 strbin12 asl pfac              ;compute N*base for binary,...
-         rol pfac+1            ;octal &...
+         rol pfac+1            ;octal &amp;...
          rol pfac+2            ;hex or...
          rol pfac+3            ;N*8 for decimal
          bcs strbin17          ;overflow

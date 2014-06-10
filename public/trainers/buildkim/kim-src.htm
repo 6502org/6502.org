@@ -974,7 +974,7 @@ ONEKEY  lda     #$FF    ; initial value
 AKA     stx     SBD     ; enable output = select row
 	inx
 	inx             ; prepare for next row
-	and     SAD     ; A := A && (PA0..PA7)
+	and     SAD     ; A := A &amp;&amp; (PA0..PA7)
 	dey             ; all rows?
 	bne     AKA     ; no ->
 
