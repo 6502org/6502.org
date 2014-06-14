@@ -3,11 +3,11 @@
 class DocumentsController extends ApplicationController
 {
     public function index() {
-    	$docrootPath   = dirname(dirname(__FILE__)) . '/public_html';
-
         $config = Horde_Yaml::loadFile(MAD_ROOT.'/config/database.yml');
         $spec = $config[MAD_ENV];
-        $pdo = new PDO("mysql:host=${spec['host']};dbname=${spec['database']}", $spec['username'], $spec['password']);
+        $this->pdo = new PDO("mysql:host=${spec['host']};dbname=${spec['database']}",
+                             $spec['username'],
+                             $spec['password']);
 
 	    $keyList = explode('/', trim($this->params['path'], '/'));
         foreach($keyList as $k => $v) {
@@ -36,7 +36,7 @@ class DocumentsController extends ApplicationController
                     FROM docs_sections
                     WHERE (section_key = :key) AND (parent_id = :parent_id)
                     LIMIT 1';
-            $stmt = $pdo->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array('key' => $key,
                                  'parent_id' => $parent_id));
             $section = $stmt->fetch();
@@ -53,7 +53,7 @@ class DocumentsController extends ApplicationController
                             FROM docs_items
                             WHERE (filename = :key) AND FIND_IN_SET(:id, section_ids)
                             LIMIT 1';
-                    $stmt = $pdo->prepare($sql);
+                    $stmt = $this->pdo->prepare($sql);
                     $stmt->execute(array('key' => $key,
                                          'id'  => $this->sections[count($this->sections)-1]['id']));
                     $item = $stmt->fetch();
@@ -67,7 +67,7 @@ class DocumentsController extends ApplicationController
                         $sql = 'UPDATE docs_items
                                 SET downloads = downloads + 1
                                 WHERE id = :id';
-                        $stmt = $pdo->prepare($sql);
+                        $stmt = $this->pdo->prepare($sql);
                         $stmt->execute(array('id' => $item['id']));
 
     					header ("Location: http://archive.6502.org/" . $this->sections[count($this->sections)-1]['path'] . $item['filename']);
@@ -89,7 +89,7 @@ class DocumentsController extends ApplicationController
         $sql="SELECT * FROM docs_sections
               WHERE FIND_IN_SET(:id, parent_id)
               ORDER BY title ASC";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
         $this->mySections = $stmt->fetchAll();
 
@@ -100,7 +100,7 @@ class DocumentsController extends ApplicationController
         $sql="SELECT * FROM docs_items
               WHERE FIND_IN_SET(:id, section_ids)
               ORDER BY sort_title, title ASC";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
 		$this->mySection['items'] = $stmt->fetchAll();
 
@@ -116,27 +116,27 @@ class DocumentsController extends ApplicationController
     // Update size of any file whose size_kb entry is 0
     protected function _updateFileSizes()
     {
-    	for ($i=0; $i<count($this->mySection['items']); $i++) {
-    		$fileSize = $this->mySection['items'][$i]['size_kb'];
-
-    		if ($fileSize==0) {
-    			$filename = $this->mySection['items'][$i]['filename'];
-                $filespec = dirname(dirname($docrootPath)) . '/archive.6502.org/' . $this->mySection['path'] . $filename;
+        foreach ($this->mySection['items'] as &$item) {
+    		if ($item['size_kb'] == 0) {
+                $filespec = dirname(MAD_ROOT)
+                          . '/archive.6502.org/public/'
+                          . $this->mySection['path']
+                          . $item['filename'];
 
     	  		if (file_exists($filespec)) {
-    				$fileSize = intval(filesize($filespec) / 1024);
-    		  		$this->mySection['items'][$i]['size_kb'] = $fileSize;
+    		  		$item['size_kb'] = intval(filesize($filespec) / 1024);
 
                     $sql = 'UPDATE docs_items
-                            SET size_kb = :filesize
+                            SET size_kb = :size_kb
                             WHERE filename = :filename
                             AND FIND_IN_SET(:id, section_ids)';
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute(array('filesize' => $fileSize,
-                                         'filename' => $filename,
-                                         'id'       => $myId));
+                    $stmt = $this->pdo->prepare($sql);
+                    $stmt->execute(array('size_kb'  => $item['size_kb'],
+                                         'filename' => $item['filename'],
+                                         'id'       => $item['id']));
     	  		}
     		}
     	}
     }
+
 }
