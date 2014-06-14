@@ -128,12 +128,10 @@ class DocumentsController extends ApplicationController
 
                     $sql = 'UPDATE docs_items
                             SET size_kb = :size_kb
-                            WHERE filename = :filename
-                            AND FIND_IN_SET(:id, section_ids)';
+                            WHERE id = :id';
                     $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute(array('size_kb'  => $item['size_kb'],
-                                         'filename' => $item['filename'],
-                                         'id'       => $item['id']));
+                    $stmt->execute(array('size_kb' => $item['size_kb'],
+                                         'id'      => $item['id']));
     	  		}
     		}
     	}
