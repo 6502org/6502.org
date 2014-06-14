@@ -124,7 +124,7 @@ class DocumentsController extends ApplicationController
                 $filespec = dirname(dirname($docrootPath)) . '/archive.6502.org/' . $this->mySection['path'] . $filename;
 
     	  		if (file_exists($filespec)) {
-    				$fileSize = intval(@filesize($filespec) / 1024);
+    				$fileSize = intval(filesize($filespec) / 1024);
     		  		$this->mySection['items'][$i]['size_kb'] = $fileSize;
 
                     $sql = 'UPDATE docs_items
