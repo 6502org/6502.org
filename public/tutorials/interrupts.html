@@ -223,6 +223,9 @@ increment it before picking up the next instruction.  However, the RTI at the en
 incrementing.  In other words, PLP RTS is <u>not</u> just a longer way to do RTI.  It would actually land you at a different address--
 the one <i>after</i> RTI would have taken you to.
 <p>
+A second parenthetical note:  See also the forum topic, "<a href="http://forum.6502.org/viewtopic.php?f=4&t=1634">A taken branch
+delays interrupt handling by one instruction</a>.
+<p>
 The ISR's execution is ended when the RTI instruction (ReTurn from Interrupt, op code $40), is encountered.  After executing the
 RTI, the processor immediately picks up where it left off in the job it was doing before the interrupt.  RTI takes 6 clocks and
 does the reverse process to put the program counter and the processor status register back.  The ISR's RTI is similar to the
