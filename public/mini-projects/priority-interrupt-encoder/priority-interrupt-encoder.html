@@ -90,7 +90,7 @@ It might seem that the latch is unnecessary and a 3-state buffer could be used i
 <br>
 After pushing registers onto the stack, the processor reads the input port. This gives the number of the highest priority IRQ line that is currently active. The CPU can then use this number to identify the interrupting device. Suitable code for the 65C02 and 65C816 (with 8-bit index) is as follows<br>
 </font><font face="Courier New" size=2><br>
-IRQ&nbsp; &nbsp; &nbsp;  PHX<br>
+IRQ&nbsp; &nbsp; &nbsp; &nbsp;PHX<br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LDX&nbsp;  IRQPORT<br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; JMP&nbsp;  (IRQTABLE,X)<br>
 <br>
@@ -103,9 +103,9 @@ This pushes X onto the stack, then loads the value from the IRQ port into X. Thi
 <br>
 With the NMOS 6502, which does not have the preindexed indirect JMP instruction, the following code is required.<br>
 <br>
-</font><font face="Courier New" size=2>IRQ&nbsp; &nbsp; &nbsp; PHA<br>
+</font><font face="Courier New" size=2>IRQ&nbsp; &nbsp; &nbsp;PHA<br>
 &nbsp; &nbsp; &nbsp; &nbsp;  TXA<br>
-&nbsp; &nbsp; &nbsp; &nbsp;  PHX<br>
+&nbsp; &nbsp; &nbsp; &nbsp;  PHA<br>
 &nbsp; &nbsp; &nbsp; &nbsp;  LDX&nbsp; &nbsp; IRQPORT<br>
 &nbsp; &nbsp; &nbsp; &nbsp;  LDA&nbsp; &nbsp; IRQTABLE,X<br>
 &nbsp; &nbsp; &nbsp; &nbsp;  STA&nbsp; &nbsp; TEMP<br>
