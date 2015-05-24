@@ -50,7 +50,7 @@ class DocumentsController extends ApplicationController
     			   update the download counter and redirect.  */
     			if (count($this->folders) > 0) {
                     $sql = 'SELECT *
-                            FROM docs_items
+                            FROM document_files
                             WHERE (filename = :key) AND (folder_id = :id)
                             LIMIT 1';
                     $stmt = $this->pdo->prepare($sql);
@@ -64,7 +64,7 @@ class DocumentsController extends ApplicationController
     					exit();
     				} else {
     					// If the filename was found, update the download counter and redirect to download.
-                        $sql = 'UPDATE docs_items
+                        $sql = 'UPDATE document_files
                                 SET downloads = downloads + 1
                                 WHERE id = :id';
                         $stmt = $this->pdo->prepare($sql);
@@ -97,7 +97,7 @@ class DocumentsController extends ApplicationController
     		$this->myFolders[$i]['url'] = $url . $this->myFolders[$i]['slug'] . '/';
     	}
 
-        $sql="SELECT * FROM docs_items
+        $sql="SELECT * FROM document_files
               WHERE folder_id = :id
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
@@ -127,7 +127,7 @@ class DocumentsController extends ApplicationController
     	  		if (file_exists($filespec)) {
     		  		$item['filesize'] = filesize($filespec);
 
-                    $sql = 'UPDATE docs_items
+                    $sql = 'UPDATE document_files
                             SET filesize = :filesize
                             WHERE id = :id';
                     $stmt = $this->pdo->prepare($sql);
@@ -155,7 +155,7 @@ class DocumentsController extends ApplicationController
 
             // update row with page count
             $item['pages'] = $pages;
-            $sql = 'UPDATE docs_items
+            $sql = 'UPDATE document_files
                     SET pages = :pages
                     WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
