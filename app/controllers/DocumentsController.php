@@ -33,7 +33,7 @@ class DocumentsController extends ApplicationController
             }
 
             $sql = 'SELECT *
-                    FROM docs_sections
+                    FROM document_folders
                     WHERE (slug = :slug) AND (parent_folder_id = :parent_folder_id)
                     LIMIT 1';
             $stmt = $this->pdo->prepare($sql);
@@ -86,7 +86,7 @@ class DocumentsController extends ApplicationController
 
       	$myId = $this->sections[count($this->sections)-1]['id'];
 
-        $sql="SELECT * FROM docs_sections
+        $sql="SELECT * FROM document_folders
               WHERE parent_folder_id = :id
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
