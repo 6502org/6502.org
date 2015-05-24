@@ -114,25 +114,25 @@ class DocumentsController extends ApplicationController
 
     }
 
-    // Update size of any file whose size_kb entry is 0
+    // Update size of any file whose filesize is 0
     protected function _updateFileSizes()
     {
         foreach ($this->mySection['items'] as &$item) {
-    		if ($item['size_kb'] == 0) {
+    		if ($item['filesize'] == 0) {
                 $filespec = dirname(MAD_ROOT)
                           . '/archive.6502.org/public/'
                           . $this->mySection['path']
                           . $item['filename'];
 
     	  		if (file_exists($filespec)) {
-    		  		$item['size_kb'] = intval(filesize($filespec) / 1024);
+    		  		$item['filesize'] = filesize($filespec);
 
                     $sql = 'UPDATE docs_items
-                            SET size_kb = :size_kb
+                            SET filesize = :filesize
                             WHERE id = :id';
                     $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute(array('size_kb' => $item['size_kb'],
-                                         'id'      => $item['id']));
+                    $stmt->execute(array('filesize' => $item['filesize'],
+                                         'id'       => $item['id']));
     	  		}
     		}
     	}

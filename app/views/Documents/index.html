@@ -33,12 +33,8 @@
 				</tr><tr>
 					<td>&nbsp;</td>
 					<td nowrap style="padding-bottom: 15px;">&nbsp;&nbsp;
-					  <a href="<?= $item['url'] ?>"><?= $item['filename'] ?></a> -
-
-				    <? if ($item['pages'] > 0): ?><?= $item['pages'] ?> pages, <? endif ?>
-
-					  <? if ($item['size_kb'] > 0): ?><?= $item['size_kb'] ?>K<? endif ?>
-
+					  <a href="<?= $item['url'] ?>"><?= $this->h($item['filename']) ?></a> -
+				      <?= $item['pages'] ?> pages, <?= $this->numberToHumanSize($item['filesize']) ?>
 					</td>
 				</tr>
 			<? endforeach ?>
