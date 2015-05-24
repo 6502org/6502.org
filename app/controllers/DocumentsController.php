@@ -34,15 +34,15 @@ class DocumentsController extends ApplicationController
 
             $sql = 'SELECT *
                     FROM docs_sections
-                    WHERE (section_key = :key) AND (parent_folder_id = :parent_folder_id)
+                    WHERE (slug = :slug) AND (parent_folder_id = :parent_folder_id)
                     LIMIT 1';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('key' => $key,
+            $stmt->execute(array('slug' => $key,
                                  'parent_folder_id' => $parent_folder_id));
             $section = $stmt->fetch();
 
     		if (!empty($section)) {
-    			$url .= $section['section_key'] . '/';
+    			$url .= $section['slug'] . '/';
     			$section['url'] = $url;
     			array_push($this->sections, $section);
     		} else {
@@ -94,7 +94,7 @@ class DocumentsController extends ApplicationController
         $this->mySections = $stmt->fetchAll();
 
     	for ($i=0; $i<count($this->mySections); $i++) {
-    		$this->mySections[$i]['url'] = $url . $this->mySections[$i]['section_key'] . '/';
+    		$this->mySections[$i]['url'] = $url . $this->mySections[$i]['slug'] . '/';
     	}
 
         $sql="SELECT * FROM docs_items
