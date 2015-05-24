@@ -87,7 +87,7 @@ class DocumentsController extends ApplicationController
       	$myId = $this->sections[count($this->sections)-1]['id'];
 
         $sql="SELECT * FROM docs_sections
-              WHERE (filename = :key) AND (parent_id = :id)
+              WHERE parent_id = :id
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
