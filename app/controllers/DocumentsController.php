@@ -75,7 +75,10 @@ class DocumentsController extends ApplicationController
                         $filename = $this->_getLocalFilename($doc, $folder);
                         $options = array('type' => 'application/octet-stream');
                         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                        if ($ext == 'pdf') { $options['type'] = 'application/pdf'; }
+                        if ($ext == 'pdf') {
+                            $options['type'] = 'application/pdf';
+                            $options['disposition'] = 'inline';
+                        }
                         $this->sendFile($filename, $options);
                         return;
                     }
