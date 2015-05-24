@@ -26,7 +26,7 @@
 			<? foreach ($this->mySection['items'] as $item): ?>
 				<tr>
 					<td>
-					  <?= $this->linkTo($this->imageTag("files/{$item['format']}.gif", ['border' => 0]), $item['url']) ?>
+					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($item), ['border' => 0]), $item['url']) ?>
 					</td>
 					<td nowrap>&nbsp;&nbsp;<?= $item['title'] ?></td>
 					<td width="100%">&nbsp;</td>

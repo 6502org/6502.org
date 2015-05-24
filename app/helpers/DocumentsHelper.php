@@ -14,9 +14,16 @@ class DocumentsHelper extends ApplicationHelper
                 $crumbs[] = $this->linkTo($section['title_sidebar'], $section['url']);
             }
         }
-        
+
         return $this->contentTag('div', implode(' &gt; ', $crumbs),
-                                 array('style' => 'padding-bottom: 10px;'));        
+                                 array('style' => 'padding-bottom: 10px;'));
+    }
+
+    public function fileFormatIcon($docItem)
+    {
+        $ext = pathinfo($docItem['filename'], PATHINFO_EXTENSION);
+        $ext = strtolower($ext);
+        return "files/$ext.gif";
     }
 
 }
