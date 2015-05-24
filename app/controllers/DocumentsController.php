@@ -51,7 +51,7 @@ class DocumentsController extends ApplicationController
     			if (count($this->sections) > 0) {
                     $sql = 'SELECT *
                             FROM docs_items
-                            WHERE (filename = :key) AND (section_id = :id)
+                            WHERE (filename = :key) AND (folder_id = :id)
                             LIMIT 1';
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->execute(array('key' => $key,
@@ -98,7 +98,7 @@ class DocumentsController extends ApplicationController
     	}
 
         $sql="SELECT * FROM docs_items
-              WHERE section_id = :id
+              WHERE folder_id = :id
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
