@@ -87,7 +87,7 @@ class DocumentsController extends ApplicationController
       	$myId = $this->sections[count($this->sections)-1]['id'];
 
         $sql="SELECT * FROM docs_sections
-              WHERE (filename = :key) AND (section_id = :id)
+              WHERE (filename = :key) AND (section_id = :parent_id)
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
@@ -98,7 +98,7 @@ class DocumentsController extends ApplicationController
     	}
 
         $sql="SELECT * FROM docs_items
-              WHERE FIND_IN_SET(:id, section_ids)
+              WHERE section_id = :id
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
