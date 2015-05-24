@@ -11,11 +11,11 @@
 			<div style="padding: 0px 0px 10px 15px; font-weight: bold;">
 				<IMG SRC="/images/files/folder_closed.gif" align=left alt="**">&nbsp;
 
-				  <a href="<?= $section['url'] ?>"><?= $section['title'] ?></a>
+				  <a href="<?= $section['url'] ?>"><?= $this->h($section['title']) ?></a>
 
           <? if (! empty($section['description'])): ?>
   				    <div style="padding: 6px 0px 2px 20px; font-weight: normal;">
-  				      <?= $section['description'] ?>
+  				      <?= $this->h($section['description']) ?>
   				    </div>
   				<? endif ?>
 			</div>
@@ -28,7 +28,7 @@
 					<td>
 					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($item), ['border' => 0]), $item['url']) ?>
 					</td>
-					<td nowrap>&nbsp;&nbsp;<?= $item['title'] ?></td>
+					<td nowrap>&nbsp;&nbsp;<?= $this->h($item['title']) ?></td>
 					<td width="100%">&nbsp;</td>
 				</tr><tr>
 					<td>&nbsp;</td>
@@ -48,11 +48,11 @@
 		<? if (count($this->mySections) > 0): ?>
 		<table cellpadding="0" cellspacing="0">
 			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
-			<tr><td class="boxtitle"><?= $this->mySection['title_sidebar']?> </td></tr>
+			<tr><td class="boxtitle"><?= $this->h($this->mySection['title_sidebar']) ?> </td></tr>
 			<tr><td class="box">
 
       <? foreach ($this->mySections as $section): ?>
-				&bull;&nbsp;<a href="<?= $section['url'] ?>"><?= $section['title_sidebar'] ?></a><br>
+				&bull;&nbsp;<a href="<?= $section['url'] ?>"><?= $this->h($section['title_sidebar']) ?></a><br>
       <? endforeach ?>
 			</td></tr>
 		</table>
