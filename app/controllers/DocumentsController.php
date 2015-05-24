@@ -71,7 +71,8 @@ class DocumentsController extends ApplicationController
                         $stmt->execute(array('id' => $doc['id']));
 
                         // send the document file
-                        $filename = $this->_getLocalFilename($doc);
+                        $folder = $this->folders[count($this->folders)-1];
+                        $filename = $this->_getLocalFilename($doc, $folder);
                         $options = array('type' => 'application/octet-stream');
                         $ext = pathinfo($filename, PATHINFO_EXTENSION);
                         if ($ext == 'pdf') { $options['type'] = 'application/pdf'; }
@@ -88,14 +89,11 @@ class DocumentsController extends ApplicationController
 
         // Get subfolders of the current folder
         $this->myFolder = $this->folders[count($this->folders)-1];
-
-        $myId = $this->folders[count($this->folders)-1]['id'];
-
         $sql="SELECT * FROM document_folders
               WHERE parent_folder_id = :id
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id' => $myId));
+        $stmt->execute(array('id' => $this->myFolder['id']));
         $this->myFolders = $stmt->fetchAll();
 
         for ($i=0; $i<count($this->myFolders); $i++) {
@@ -125,7 +123,7 @@ class DocumentsController extends ApplicationController
         foreach ($this->myFolder['docs'] as &$doc) {
             if ($doc['filesize'] != 0) { continue; }
 
-            $filename = $this->_getLocalFilename($doc);
+            $filename = $this->_getLocalFilename($doc, $this->myFolder);
             if (! file_exists($filename)) { continue; }
 
             $doc['filesize'] = filesize($filename);
@@ -146,7 +144,7 @@ class DocumentsController extends ApplicationController
             if ($doc['pages'] != 0) { continue; }
 
             // get pdf page count, or 0 if error
-            $filename = $this->_getLocalFilename($doc);
+            $filename = $this->_getLocalFilename($doc, $this->myFolder);
             $pages = $this->_getPdfPageCount($filename);
             if ($pages == 0) { continue; }
 
@@ -191,10 +189,10 @@ class DocumentsController extends ApplicationController
     }
 
     // Get the full path to the document on disk
-    protected function _getLocalFilename($doc)
+    protected function _getLocalFilename($doc, $folder)
     {
         return dirname(MAD_ROOT) . '/archive.6502.org/public/'
-                                 . $this->myFolder['path']
+                                 . $folder['path']
                                  . $doc['filename'];
     }
 
