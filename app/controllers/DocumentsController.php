@@ -70,10 +70,12 @@ class DocumentsController extends ApplicationController
                         $stmt = $this->pdo->prepare($sql);
                         $stmt->execute(array('id' => $doc['id']));
 
-                        $url = "http://archive.6502.org/" .
-                               $this->folders[count($this->folders)-1]['path'] .
-                               $doc['filename'];
-                        $this->redirectTo($url);
+                        // send the document file
+                        $filename = $this->_getLocalFilename($doc);
+                        $options = array('type' => 'application/octet-stream');
+                        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                        if ($ext == 'pdf') { $options['type'] = 'application/pdf'; }
+                        $this->sendFile($filename, $options);
                         return;
                     }
                 } else {
@@ -121,23 +123,19 @@ class DocumentsController extends ApplicationController
     protected function _updateFileSizes()
     {
         foreach ($this->myFolder['docs'] as &$doc) {
-            if ($doc['filesize'] == 0) {
-                $filespec = dirname(MAD_ROOT)
-                          . '/archive.6502.org/public/'
-                          . $this->myFolder['path']
-                          . $doc['filename'];
+            if ($doc['filesize'] != 0) { continue; }
 
-                if (file_exists($filespec)) {
-                    $doc['filesize'] = filesize($filespec);
+            $filename = $this->_getLocalFilename($doc);
+            if (! file_exists($filename)) { continue; }
 
-                    $sql = 'UPDATE document_files
-                            SET filesize = :filesize
-                            WHERE id = :id';
-                    $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute(array('filesize' => $doc['filesize'],
-                                         'id'       => $doc['id']));
-                }
-            }
+            $doc['filesize'] = filesize($filename);
+
+            $sql = 'UPDATE document_files
+                    SET filesize = :filesize
+                    WHERE id = :id';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array('filesize' => $doc['filesize'],
+                                 'id'       => $doc['id']));
         }
     }
 
@@ -147,13 +145,9 @@ class DocumentsController extends ApplicationController
         foreach ($this->myFolder['docs'] as &$doc) {
             if ($doc['pages'] != 0) { continue; }
 
-            // get filename on disk, ensure it exists
-            $filespec = dirname(MAD_ROOT)
-                      . '/archive.6502.org/public/'
-                      . $this->myFolder['path']
-                      . $doc['filename'];
-
-            $pages = $this->_getPdfPageCount($filespec);
+            // get pdf page count, or 0 if error
+            $filename = $this->_getLocalFilename($doc);
+            $pages = $this->_getPdfPageCount($filename);
             if ($pages == 0) { continue; }
 
             // update row with page count
@@ -167,7 +161,7 @@ class DocumentsController extends ApplicationController
         }
     }
 
-    // Get page count of a PDF, or 0 if any error
+    // Get page count of a PDF file, or 0 if any error
     protected function _getPdfPageCount($filename)
     {
         if (! file_exists($filename)) { return 0; }
@@ -194,6 +188,14 @@ class DocumentsController extends ApplicationController
         // get page count from pdf info
         if (! array_key_exists("Pages", $properties)) { return 0; }
         return (int)$properties["Pages"];
+    }
+
+    // Get the full path to the document on disk
+    protected function _getLocalFilename($doc)
+    {
+        return dirname(MAD_ROOT) . '/archive.6502.org/public/'
+                                 . $this->myFolder['path']
+                                 . $doc['filename'];
     }
 
 }
