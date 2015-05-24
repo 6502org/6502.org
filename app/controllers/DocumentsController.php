@@ -51,7 +51,7 @@ class DocumentsController extends ApplicationController
     			if (count($this->sections) > 0) {
                     $sql = 'SELECT *
                             FROM docs_items
-                            WHERE (filename = :key) AND FIND_IN_SET(:id, section_ids)
+                            WHERE (filename = :key) AND (section_id = :id)
                             LIMIT 1';
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->execute(array('key' => $key,
@@ -87,7 +87,7 @@ class DocumentsController extends ApplicationController
       	$myId = $this->sections[count($this->sections)-1]['id'];
 
         $sql="SELECT * FROM docs_sections
-              WHERE FIND_IN_SET(:id, parent_id)
+              WHERE (filename = :key) AND (section_id = :id)
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
