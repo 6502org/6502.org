@@ -5,13 +5,13 @@ class DocumentsHelper extends ApplicationHelper
     public function breadcrumbs()
     {
         $crumbs = array();
-        $last = count($this->sections) -1;
+        $last = count($this->folders) -1;
 
-        foreach ($this->sections as $i => $section) {
+        foreach ($this->folders as $i => $folder) {
             if ($i == $last) {
-                $crumbs[] = $this->h($section['title']);
+                $crumbs[] = $this->h($folder['title']);
             } else {
-                $crumbs[] = $this->linkTo($section['title'], $section['url']);
+                $crumbs[] = $this->linkTo($folder['title'], $folder['url']);
             }
         }
 
