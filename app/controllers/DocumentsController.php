@@ -70,7 +70,8 @@ class DocumentsController extends ApplicationController
                         $stmt = $this->pdo->prepare($sql);
                         $stmt->execute(array('id' => $doc['id']));
 
-                        // send the document file
+                        // TODO: send the document file
+                        /*
                         $folder = $this->folders[count($this->folders)-1];
                         $filename = $this->_getLocalFilename($doc, $folder);
                         $options = array('type' => 'application/octet-stream');
@@ -80,6 +81,12 @@ class DocumentsController extends ApplicationController
                             $options['disposition'] = 'inline';
                         }
                         $this->sendFile($filename, $options);
+                        return;
+                        */
+                        $url = "http://archive.6502.org/" .
+                               $this->folders[count($this->folders)-1]['path'] .
+                               $doc['filename'];
+                        $this->redirectTo($url);
                         return;
                     }
                 } else {
