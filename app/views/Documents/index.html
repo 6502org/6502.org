@@ -23,18 +23,18 @@
 
 		<div style="padding: 5px 0px 0px 15px;">
 			<table cellpadding="0" cellspacing="0">
-			<? foreach ($this->myFolder['items'] as $item): ?>
+			<? foreach ($this->myFolder['docs'] as $doc): ?>
 				<tr>
 					<td>
-					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($item), ['border' => 0]), $item['url']) ?>
+					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
 					</td>
-					<td nowrap>&nbsp;&nbsp;<?= $this->h($item['title']) ?></td>
+					<td nowrap>&nbsp;&nbsp;<?= $this->h($doc['title']) ?></td>
 					<td width="100%">&nbsp;</td>
 				</tr><tr>
 					<td>&nbsp;</td>
 					<td nowrap style="padding-bottom: 15px;">&nbsp;&nbsp;
-					  <a href="<?= $item['url'] ?>"><?= $this->h($item['filename']) ?></a> -
-				      <?= $item['pages'] ?> pages, <?= $this->numberToHumanSize($item['filesize']) ?>
+					  <a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
+				      <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSize($doc['filesize']) ?>
 					</td>
 				</tr>
 			<? endforeach ?>

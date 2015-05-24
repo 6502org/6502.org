@@ -56,9 +56,9 @@ class DocumentsController extends ApplicationController
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->execute(array('key' => $key,
                                          'id'  => $this->folders[count($this->folders)-1]['id']));
-                    $item = $stmt->fetch();
+                    $doc = $stmt->fetch();
 
-    				if (empty($item)) {
+    				if (empty($doc)) {
     					// If the filename could not be found, redirect to last known-good keys.
     					header ("Location: $url");
     					exit();
@@ -68,9 +68,9 @@ class DocumentsController extends ApplicationController
                                 SET downloads = downloads + 1
                                 WHERE id = :id';
                         $stmt = $this->pdo->prepare($sql);
-                        $stmt->execute(array('id' => $item['id']));
+                        $stmt->execute(array('id' => $doc['id']));
 
-    					header ("Location: http://archive.6502.org/" . $this->folders[count($this->folders)-1]['path'] . $item['filename']);
+    					header ("Location: http://archive.6502.org/" . $this->folders[count($this->folders)-1]['path'] . $doc['filename']);
     					exit();
     				}
     			} else {
@@ -102,14 +102,14 @@ class DocumentsController extends ApplicationController
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
-		$this->myFolder['items'] = $stmt->fetchAll();
+		$this->myFolder['docs'] = $stmt->fetchAll();
 
         $this->_updateFileSizes();
         $this->_updatePageCounts();
 
-        /* Create URL for each item */
-        foreach ($this->myFolder['items'] as &$item) {
-            $item['url'] = $url . $item['filename'];
+        /* Create URL for each doc */
+        foreach ($this->myFolder['docs'] as &$doc) {
+            $doc['url'] = $url . $doc['filename'];
         }
 
     }
@@ -117,22 +117,22 @@ class DocumentsController extends ApplicationController
     // Update size of any file whose filesize is 0
     protected function _updateFileSizes()
     {
-        foreach ($this->myFolder['items'] as &$item) {
-    		if ($item['filesize'] == 0) {
+        foreach ($this->myFolder['docs'] as &$doc) {
+    		if ($doc['filesize'] == 0) {
                 $filespec = dirname(MAD_ROOT)
                           . '/archive.6502.org/public/'
                           . $this->myFolder['path']
-                          . $item['filename'];
+                          . $doc['filename'];
 
     	  		if (file_exists($filespec)) {
-    		  		$item['filesize'] = filesize($filespec);
+    		  		$doc['filesize'] = filesize($filespec);
 
                     $sql = 'UPDATE document_files
                             SET filesize = :filesize
                             WHERE id = :id';
                     $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute(array('filesize' => $item['filesize'],
-                                         'id'       => $item['id']));
+                    $stmt->execute(array('filesize' => $doc['filesize'],
+                                         'id'       => $doc['id']));
     	  		}
     		}
     	}
@@ -141,26 +141,26 @@ class DocumentsController extends ApplicationController
     // Update PDF page counts of any file whose count is 0
     protected function _updatePageCounts()
     {
-        foreach ($this->myFolder['items'] as &$item) {
-            if ($item['pages'] != 0) { continue; }
+        foreach ($this->myFolder['docs'] as &$doc) {
+            if ($doc['pages'] != 0) { continue; }
 
             // get filename on disk, ensure it exists
             $filespec = dirname(MAD_ROOT)
                       . '/archive.6502.org/public/'
                       . $this->myFolder['path']
-                      . $item['filename'];
+                      . $doc['filename'];
 
             $pages = $this->_getPdfPageCount($filespec);
             if ($pages == 0) { continue; }
 
             // update row with page count
-            $item['pages'] = $pages;
+            $doc['pages'] = $pages;
             $sql = 'UPDATE document_files
                     SET pages = :pages
                     WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('pages' => $item['pages'],
-                                 'id'    => $item['id']));
+            $stmt->execute(array('pages' => $doc['pages'],
+                                 'id'    => $doc['id']));
         }
     }
 
