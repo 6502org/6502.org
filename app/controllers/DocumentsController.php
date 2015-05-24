@@ -104,7 +104,7 @@ class DocumentsController extends ApplicationController
               WHERE folder_id = :id
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id' => $myId));
+        $stmt->execute(array('id' => $this->myFolder['id']));
         $this->myFolder['docs'] = $stmt->fetchAll();
 
         $this->_updateFileSizes();
