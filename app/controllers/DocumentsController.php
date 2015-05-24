@@ -172,14 +172,14 @@ class DocumentsController extends ApplicationController
 
             // get page count from pdf info
             if (! array_key_exists("Pages", $properties)) { continue; }
-            $pages = (int)$properties["Pages"];
+            $item['size_kb'] = (int)$properties["Pages"];
 
             // update row with page count
             $sql = 'UPDATE docs_items
                     SET pages = :pages
                     WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('pages' => $pages,
+            $stmt->execute(array('pages' => $item['size_kb'],
                                  'id'    => $item['id']));
         }
     }
