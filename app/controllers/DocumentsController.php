@@ -20,14 +20,14 @@ class DocumentsController extends ApplicationController
     	$title = "Documents Archive";
     	$description = "A collection of useful documents pertaining to the 6502 microprocessor.";
 
-      /* Validate all keys by retrieving the section information for
+      /* Validate all keys by retrieving the folder information for
          each key from the database.  If an invalid key is found, redirect the URL
          using the preceeding known-good keys.  */
-        $this->sections = array();
+        $this->folders = array();
     	$url = "/";
     	foreach($keyList as $key) {
-            if (!empty($this->sections)) {
-                $parent_folder_id = $this->sections[count($this->sections)-1]['id'];
+            if (!empty($this->folders)) {
+                $parent_folder_id = $this->folders[count($this->folders)-1]['id'];
             } else {
                 $parent_folder_id = 0;
             }
@@ -39,23 +39,23 @@ class DocumentsController extends ApplicationController
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array('slug' => $key,
                                  'parent_folder_id' => $parent_folder_id));
-            $section = $stmt->fetch();
+            $folder = $stmt->fetch();
 
-    		if (!empty($section)) {
-    			$url .= $section['slug'] . '/';
-    			$section['url'] = $url;
-    			array_push($this->sections, $section);
+    		if (!empty($folder)) {
+    			$url .= $folder['slug'] . '/';
+    			$folder['url'] = $url;
+    			array_push($this->folders, $folder);
     		} else {
     			/* If the key does not exist, it might also be a filename.  If it is,
     			   update the download counter and redirect.  */
-    			if (count($this->sections) > 0) {
+    			if (count($this->folders) > 0) {
                     $sql = 'SELECT *
                             FROM docs_items
                             WHERE (filename = :key) AND (folder_id = :id)
                             LIMIT 1';
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->execute(array('key' => $key,
-                                         'id'  => $this->sections[count($this->sections)-1]['id']));
+                                         'id'  => $this->folders[count($this->folders)-1]['id']));
                     $item = $stmt->fetch();
 
     				if (empty($item)) {
@@ -70,7 +70,7 @@ class DocumentsController extends ApplicationController
                         $stmt = $this->pdo->prepare($sql);
                         $stmt->execute(array('id' => $item['id']));
 
-    					header ("Location: http://archive.6502.org/" . $this->sections[count($this->sections)-1]['path'] . $item['filename']);
+    					header ("Location: http://archive.6502.org/" . $this->folders[count($this->folders)-1]['path'] . $item['filename']);
     					exit();
     				}
     			} else {
@@ -81,20 +81,20 @@ class DocumentsController extends ApplicationController
     		}
     	}
 
-        /* Get subsections of the current section */
-      	$this->mySection = $this->sections[count($this->sections)-1];
+        /* Get subfolders of the current folder */
+      	$this->myFolder = $this->folders[count($this->folders)-1];
 
-      	$myId = $this->sections[count($this->sections)-1]['id'];
+      	$myId = $this->folders[count($this->folders)-1]['id'];
 
         $sql="SELECT * FROM document_folders
               WHERE parent_folder_id = :id
               ORDER BY title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
-        $this->mySections = $stmt->fetchAll();
+        $this->myFolders = $stmt->fetchAll();
 
-    	for ($i=0; $i<count($this->mySections); $i++) {
-    		$this->mySections[$i]['url'] = $url . $this->mySections[$i]['slug'] . '/';
+    	for ($i=0; $i<count($this->myFolders); $i++) {
+    		$this->myFolders[$i]['url'] = $url . $this->myFolders[$i]['slug'] . '/';
     	}
 
         $sql="SELECT * FROM docs_items
@@ -102,13 +102,13 @@ class DocumentsController extends ApplicationController
               ORDER BY sort_title, title ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $myId));
-		$this->mySection['items'] = $stmt->fetchAll();
+		$this->myFolder['items'] = $stmt->fetchAll();
 
         $this->_updateFileSizes();
         $this->_updatePageCounts();
 
         /* Create URL for each item */
-        foreach ($this->mySection['items'] as &$item) {
+        foreach ($this->myFolder['items'] as &$item) {
             $item['url'] = $url . $item['filename'];
         }
 
@@ -117,11 +117,11 @@ class DocumentsController extends ApplicationController
     // Update size of any file whose filesize is 0
     protected function _updateFileSizes()
     {
-        foreach ($this->mySection['items'] as &$item) {
+        foreach ($this->myFolder['items'] as &$item) {
     		if ($item['filesize'] == 0) {
                 $filespec = dirname(MAD_ROOT)
                           . '/archive.6502.org/public/'
-                          . $this->mySection['path']
+                          . $this->myFolder['path']
                           . $item['filename'];
 
     	  		if (file_exists($filespec)) {
@@ -141,13 +141,13 @@ class DocumentsController extends ApplicationController
     // Update PDF page counts of any file whose count is 0
     protected function _updatePageCounts()
     {
-        foreach ($this->mySection['items'] as &$item) {
+        foreach ($this->myFolder['items'] as &$item) {
             if ($item['pages'] != 0) { continue; }
 
             // get filename on disk, ensure it exists
             $filespec = dirname(MAD_ROOT)
                       . '/archive.6502.org/public/'
-                      . $this->mySection['path']
+                      . $this->myFolder['path']
                       . $item['filename'];
 
             $pages = $this->_getPdfPageCount($filespec);
