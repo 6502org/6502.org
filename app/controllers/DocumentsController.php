@@ -149,32 +149,12 @@ class DocumentsController extends ApplicationController
                       . '/archive.6502.org/public/'
                       . $this->mySection['path']
                       . $item['filename'];
-            if (! file_exists($filespec)) { continue; }
 
-            // ensure file is pdf
-            $ext = pathinfo($filespec, PATHINFO_EXTENSION);
-            if ($ext != "pdf") { continue; }
-
-            // run pdfinfo on file
-            $escaped = escapeshellarg($filespec);
-            exec("pdfinfo $escaped", $lines, $retval);
-            if ($retval != 0) { continue; }
-
-            // parse pdfinfo output into key/value pairs
-            $properties = array();
-            foreach ($lines as $line) {
-                $exploded = explode(":", $line, 2);
-                if (count($exploded) != 2) { continue; }
-                $key = trim($exploded[0]);
-                $value = trim($exploded[1]);
-                if (strlen($key) && strlen($value)) { $properties[$key] = $value; }
-            }
-
-            // get page count from pdf info
-            if (! array_key_exists("Pages", $properties)) { continue; }
-            $item['pages'] = (int)$properties["Pages"];
+            $pages = $this->_getPdfPageCount($filespec);
+            if ($pages == 0) { continue; }
 
             // update row with page count
+            $item['pages'] = $pages;
             $sql = 'UPDATE docs_items
                     SET pages = :pages
                     WHERE id = :id';
@@ -182,6 +162,35 @@ class DocumentsController extends ApplicationController
             $stmt->execute(array('pages' => $item['pages'],
                                  'id'    => $item['id']));
         }
+    }
+
+    // Get page count of a PDF, or 0 if any error
+    protected function _getPdfPageCount($filename)
+    {
+        if (! file_exists($filename)) { return 0; }
+
+        // ensure file is pdf
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($ext != "pdf") { return 0; }
+
+        // run pdfinfo on file
+        $escaped = escapeshellarg($filename);
+        exec("pdfinfo $escaped", $lines, $retval);
+        if ($retval != 0) { return 0; }
+
+        // parse pdfinfo output into key/value pairs
+        $properties = array();
+        foreach ($lines as $line) {
+            $exploded = explode(":", $line, 2);
+            if (count($exploded) != 2) { return 0; }
+            $key = trim($exploded[0]);
+            $value = trim($exploded[1]);
+            if (strlen($key) && strlen($value)) { $properties[$key] = $value; }
+        }
+
+        // get page count from pdf info
+        if (! array_key_exists("Pages", $properties)) { return 0; }
+        return (int)$properties["Pages"];
     }
 
 }
