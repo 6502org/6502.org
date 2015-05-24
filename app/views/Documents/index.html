@@ -48,15 +48,15 @@
 		<? if (count($this->mySections) > 0): ?>
 		<table cellpadding="0" cellspacing="0">
 			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
-			<tr><td class="boxtitle"><?= $this->h($this->mySection['title_sidebar']) ?> </td></tr>
+			<tr><td class="boxtitle"><?= $this->h($this->truncate($this->mySection['title'], 30)) ?> </td></tr>
 			<tr><td class="box">
 
-      <? foreach ($this->mySections as $section): ?>
-				&bull;&nbsp;<a href="<?= $section['url'] ?>"><?= $this->h($section['title_sidebar']) ?></a><br>
-      <? endforeach ?>
+      		<? foreach ($this->mySections as $section): ?>
+				&bull;&nbsp;<a href="<?= $section['url'] ?>"><?= $this->h($this->truncate($section['title'], 30)) ?></a><br>
+      		<? endforeach ?>
 			</td></tr>
 		</table>
-    <? endif ?>
+    	<? endif ?>
 
 		<table cellpadding="0" cellspacing="0">
 			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>

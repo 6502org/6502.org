@@ -9,9 +9,9 @@ class DocumentsHelper extends ApplicationHelper
 
         foreach ($this->sections as $i => $section) {
             if ($i == $last) {
-                $crumbs[] = $this->h($section['title_sidebar']);
+                $crumbs[] = $this->h($section['title']);
             } else {
-                $crumbs[] = $this->linkTo($section['title_sidebar'], $section['url']);
+                $crumbs[] = $this->linkTo($section['title'], $section['url']);
             }
         }
 
