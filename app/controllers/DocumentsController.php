@@ -105,6 +105,7 @@ class DocumentsController extends ApplicationController
 		$this->mySection['items'] = $stmt->fetchAll();
 
         $this->_updateFileSizes();
+        $this->_updatePageCounts();
 
         /* Create URL for each item */
         foreach ($this->mySection['items'] as &$item) {
@@ -135,6 +136,52 @@ class DocumentsController extends ApplicationController
     	  		}
     		}
     	}
+    }
+
+    // Update PDF page counts of any file whose count is 0
+    protected function _updatePageCounts()
+    {
+        foreach ($this->mySection['items'] as &$item) {
+            if ($item['pages'] != 0) { continue; }
+
+            // get filename on disk, ensure it exists
+            $filespec = dirname(MAD_ROOT)
+                      . '/archive.6502.org/public/'
+                      . $this->mySection['path']
+                      . $item['filename'];
+            if (! file_exists($filespec)) { continue; }
+
+            // ensure file is pdf
+            $ext = pathinfo($filespec, PATHINFO_EXTENSION);
+            if ($ext != "pdf") { continue; }
+
+            // run pdfinfo on file
+            $escaped = escapeshellarg($filespec);
+            exec("pdfinfo $escaped", $lines, $retval);
+            if ($retval != 0) { continue; }
+
+            // parse pdfinfo output into key/value pairs
+            $properties = array();
+            foreach ($lines as $line) {
+                $exploded = explode(":", $line, 2);
+                if (count($exploded) != 2) { continue; }
+                $key = trim($exploded[0]);
+                $value = trim($exploded[1]);
+                if (strlen($key) && strlen($value)) { $properties[$key] = $value; }
+            }
+
+            // get page count from pdf info
+            if (! array_key_exists("Pages", $properties)) { continue; }
+            $pages = (int)$properties["Pages"];
+
+            // update row with page count
+            $sql = 'UPDATE docs_items
+                    SET pages = :pages
+                    WHERE id = :id';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array('pages' => $pages,
+                                 'id'    => $item['id']));
+        }
     }
 
 }
