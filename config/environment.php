@@ -13,3 +13,4 @@ $config = Mad_Madness_Initializer::run();
 
 $config->end();
 
+define('CONTACT_EMAIL', 'mike@naberezny.com');
