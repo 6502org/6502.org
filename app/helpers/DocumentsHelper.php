@@ -26,4 +26,14 @@ class DocumentsHelper extends ApplicationHelper
         return "files/$ext.gif";
     }
 
+    public function numberToHumanSizeWithDotZero($num)
+    {
+        $humanSize = $this->numberToHumanSize($zero);
+        if (strpos($humanSize, '.') === false) {
+            list($numericPart, $unitsPart) = explode(' ', $humanSize);
+            $humanSize = $numericPart . '.0 ' . $unitsPart;
+        }
+        return $humanSize;
+    }
+
 }

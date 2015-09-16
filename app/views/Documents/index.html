@@ -34,7 +34,7 @@
 					<td>&nbsp;</td>
 					<td nowrap style="padding-bottom: 15px;">&nbsp;&nbsp;
 					  <a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
-				      <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSize($doc['filesize']) ?>
+				      <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
 					</td>
 				</tr>
 			<? endforeach ?>
