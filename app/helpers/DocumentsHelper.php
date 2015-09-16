@@ -28,7 +28,7 @@ class DocumentsHelper extends ApplicationHelper
 
     public function numberToHumanSizeWithDotZero($num)
     {
-        $humanSize = $this->numberToHumanSize($zero);
+        $humanSize = $this->numberToHumanSize($num);
         if (strpos($humanSize, '.') === false) {
             list($numericPart, $unitsPart) = explode(' ', $humanSize);
             $humanSize = $numericPart . '.0 ' . $unitsPart;
