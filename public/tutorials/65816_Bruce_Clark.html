@@ -12,8 +12,9 @@
 <hr>
 <br>
 <p>
-Raw text import for future reference (not valid HTML)
+Tweaked text import for future reference (valid HTML)
 <pre>
+
 Table of contents:
 
 1        INTRODUCTION
@@ -96,7 +97,7 @@ BCD (Binary Coded Decimal) arithmetic in decimal mode.  The 65C816 has 10
 combinations of modes of which binary mode and decimal mode are a part.
 
 Also a part of these combinations are the width (8 or 16 bits) of the
-accumulator (and read-modify-write "memory" instructions, such as DEC), the
+accumulator (and read-modify-write &quot;memory&quot; instructions, such as DEC), the
 width of the X and Y index registers (likewise, 8 or 16 bits), and native or
 emulation mode.  The 10 combinations are:
 
@@ -111,12 +112,12 @@ decimal mode, native mode, 8-bit accumulator mode, 16-bit index register mode
 decimal mode, native mode, 16-bit accumulator mode, 8-bit index register mode
 decimal mode, native mode, 16-bit accumulator mode, 16-bit index register mode
 
-In emulation mode, both the accumulator (and "memory") width and the index
+In emulation mode, both the accumulator (and &quot;memory&quot;) width and the index
 register width are always 8 bits, which is why there are 10 combinations
 (rather than 16 combinations).  As on the 65C02 and NMOS 6502, ADC and SBC
 use binary arithmetic in binary mode, and BCD arithmetic in decimal mode.
 Whether instructions such as ASL, CMP, and CPX operate on 8-bit or 16-bit
-data depends on the accumulator (and "memory") width (for ASL and CMP) or
+data depends on the accumulator (and &quot;memory&quot;) width (for ASL and CMP) or
 the index register width (for CPX).  In emulation mode, as its name implies,
 the 65C816 emulates the operation of a 65C02 (albeit with the cycle counts
 of NMOS 6502).  In native mode, the 65C816 can operate on 16-bit data, and
@@ -183,7 +184,7 @@ different assemblers have different approaches for specifying immediate data
 width.  Consider the following code:
 
            CLC            ; set native mode
-           XCE            ; "
+           XCE            ; &quot;
            REP #$30       ; 16-bit accumulator and index registers
            LDA #0         ; this needs to be assembled as three bytes
            JSR SUBROUTINE
@@ -225,14 +226,14 @@ directive.  For example:
 .macro accindex8
        SEP #$30 ; put the 65C816 in 8-bit accumulator and index register mode
       .m8       ; tell the assembler about it
-      .x8       ; "
+      .x8       ; &quot;
 .endmacro
 
 and so on.
 
-A variation of this approach is for the assembler to attempt to "follow
+A variation of this approach is for the assembler to attempt to &quot;follow
 
-along" and switch automatically when a REP or SEP instruction is assembled
+along&quot; and switch automatically when a REP or SEP instruction is assembled
 (it might also look for a SEC XCE sequence that puts the 65C816 in
 emulation mode which uses 8-bit data exclusively).  The previous
 directive(s) are also provided to allow the user to override the assembler.
@@ -244,7 +245,7 @@ complicated.  For cases like that, it is usually up to the programmer to
 supply the correct assembler directive before the LDY to get the assembler
 into the correct mode; the assembler might simply switch to 8-bit mode at
 the SEP, then simply remain in 8-bit mode when it reached the LDY
-instruction.  A "following along" feature can be convenient, but it can also
+instruction.  A &quot;following along&quot; feature can be convenient, but it can also
 lead to errors that are difficult to find.
 
 A different approach is for the assembler to use different operand syntaxes
@@ -275,9 +276,9 @@ the B in the name of the XBA instruction refers to the B accumulator, but
 the B in the name of the PHB instruction refers to the DBR.  The convention
 used in this document is to use lower case names for flags and upper case
 names for registers.  Also, at the risk of being excessively verbose, terms
-such as "d flag" and "D register" will be used, in the belief that clarity
+such as &quot;d flag&quot; and &quot;D register&quot; will be used, in the belief that clarity
 is more helpful than succinctness.  Likewise, in the interests of clarity,
-the terms "B accumulator" and "DBR" will be used to avoid ambiguity.
+the terms &quot;B accumulator&quot; and &quot;DBR&quot; will be used to avoid ambiguity.
 Furthermore, there are times when it will be useful to refer specifically to
 the upper 8 bits and lower 8 bits of a 16-bit register, so terms will be
 defined for this purpose.
@@ -301,7 +302,7 @@ The Carry flag
 The Decimal mode flag
 The Emulation mode flag
 The Interrupt disable flag
-The accumulator and "Memory" width flag
+The accumulator and &quot;Memory&quot; width flag
 The Negative flag
 The oVerflow flag
 The index register width flag
@@ -336,21 +337,21 @@ c flag: the carry flag
 d flag: the decimal mode flag
 e flag: the emulation mode flag
 i flag: the interrupt disable flag
-m flag: the accumulator and "memory" width flag
+m flag: the accumulator and &quot;memory&quot; width flag
 n flag: the negative flag
 v flag: the overflow flag
 x flag: the index register width flag
 z flag: the zero flag
 
-The term "accumulator" without any additional qualifiers means the 16-bit
+The term &quot;accumulator&quot; without any additional qualifiers means the 16-bit
 accumulator (i.e. the C accumulator) when the m flag is 0, and the 8-bit
 accumulator (i.e. the A accumulator) when the m flag is 1.  Furthermore,
-although "X register" and "Y register" refer to the 16-bit registers, when
+although &quot;X register&quot; and &quot;Y register&quot; refer to the 16-bit registers, when
 the x flag is 1, they are equivalent to the XL and YL registers, since the
 XH and YH register are forced to $00 when the x flag is 1.  (See below.)  In
-effect, "X register" means the 16-bit register when the x flag is 0, and the
+effect, &quot;X register&quot; means the 16-bit register when the x flag is 0, and the
 8-bit register (i.e. the XL register) when the x flag is 1.  Likewise for
-"Y register".
+&quot;Y register&quot;.
 
 The P register contains 9 (yes, 9) of the flags.
 
@@ -381,8 +382,8 @@ The v flag is 1 when an arithmetic overflow occurs.  The v flag is 0 if
 
 there was no arithmetic overflow.
 
-When the m flag is 0, the accumulator (and "memory") width is 16 bits.  When
-the m flag is 1, the accumulator (and "memory") width is 8 bits.
+When the m flag is 0, the accumulator (and &quot;memory&quot;) width is 16 bits.  When
+the m flag is 1, the accumulator (and &quot;memory&quot;) width is 8 bits.
 Unfortunately, the smaller value (zero) is the larger width (16 bits), and
 vice versa, making it easy to get confused.
 
@@ -428,7 +429,7 @@ The z flag is 1 when the result is zero.  The z flag is 0 when the result
 is non-zero.
 
 The c flag is 1 when there is an arithmetic carry (carry has the same
-meaning that "carrying the one" meant when you learned addition in school).
+meaning that &quot;carrying the one&quot; meant when you learned addition in school).
 The c flag is 0 when where was not an arithmetic carry.
 
 When the e flag is 0, the 65C816 is in native mode.  When the e flag is 1,
@@ -439,7 +440,7 @@ register are forced to $00 (see above).  This means that after:
 
 CLC
 XCE        ; native mode
-REP #$30   ; 16-bit accumulator/"memory" and 16-bit index registers
+REP #$30   ; 16-bit accumulator/&quot;memory&quot; and 16-bit index registers
 LDX #$1234
 LDY #$5678
 LDA #$ABCD
@@ -508,7 +509,7 @@ boundaries are crossed or not.
 
 5.1.1  PAGE BOUNDARY WRAPPING
 
-Page boundary wrapping only occurs in emulation mode, and only for "old"
+Page boundary wrapping only occurs in emulation mode, and only for &quot;old&quot;
 instructions and addressing modes, i.e. instructions and addressing modes
 that are available on the 65C02.  Page boundary wrapping only occurs in the
 following situations:
@@ -525,9 +526,9 @@ An example of case B is when the S register is $01FF and the e flag is 1; in
 that case, a PLA reads (i.e. pulls) from memory location $000100 rather than
 $000200.
 
-Note that because stack,S addressing is a "new" addressing mode (i.e. this
+Note that because stack,S addressing is a &quot;new&quot; addressing mode (i.e. this
 addressing mode was not available on the 65C02), it does not wrap at a bank
-boundary under any circumstances.  Likewise, since PEI is a "new"
+boundary under any circumstances.  Likewise, since PEI is a &quot;new&quot;
 instruction, PEI $FF does not wrap at a page boundary (either the direct
 page part, or the (pushing onto the) stack part).
 
@@ -536,7 +537,7 @@ page part, or the (pushing onto the) stack part).
 
 Bank boundary wrapping occurs in both native and emulation mode (and does
 not depend on which mode the 65C816 is in).  The following are confined to
-bank 0 ("confined to" means they address bank 0 and wrap at the bank 0
+bank 0 (&quot;confined to&quot; means they address bank 0 and wrap at the bank 0
 boundary):
 
 A. The direct page
@@ -566,7 +567,7 @@ example, adding an index register to an address should be considered a
 
 should be truncated at 8 bits.
 
-A 24-bit calculation is represented by a "triple wide" box:
+A 24-bit calculation is represented by a &quot;triple wide&quot; box:
 
 +-----------+-----------+-----------+
 !             $HHMMLL+X             !
@@ -575,7 +576,7 @@ A 24-bit calculation is represented by a "triple wide" box:
 If $HHMMLL is $00FFEE and X is $44, then the address is $01 (high byte), $00
 (middle byte), $32 (low byte).
 
-A calculation that is truncated at 16 bits is represented by a "double wide"
+A calculation that is truncated at 16 bits is represented by a &quot;double wide&quot;
 box:
 
 +-----------+-----------+-----------+
@@ -585,7 +586,7 @@ box:
 If S is $FFEE and $LL is $44, then the address is $00 (high byte), $00
 (middle byte), $32 (low byte).
 
-A calculation that is truncated at 8 bits is represented by a "single wide"
+A calculation that is truncated at 8 bits is represented by a &quot;single wide&quot;
 box:
 
 +-----------+-----------+-----------+
@@ -633,9 +634,9 @@ then the address of the (low byte of the) data is $ABCDEF.  So, for example:
 shows the formula for the address of the low byte of the pointer.  In
 addition, the following quantities are used in the formulas:
 
-$ll = the low byte of the pointer (i.e. the byte at address "pointer lo")
-$mm = the middle byte of the pointer (i.e. the byte at address "pointer mid")
-$hh = the high byte of the pointer (i.e. the byte at address "pointer hi")
+$ll = the low byte of the pointer (i.e. the byte at address &quot;pointer lo&quot;)
+$mm = the middle byte of the pointer (i.e. the byte at address &quot;pointer mid&quot;)
+$hh = the high byte of the pointer (i.e. the byte at address &quot;pointer hi&quot;)
 $rr = the (value of the) DBR
 
 In the previous example $ll would be $EF (the value of the low byte of the
@@ -650,7 +651,7 @@ Note that $rrHHLL is a 24-bit value whose high byte is $rr, whose middle
 byte is $HH, and whose low byte is $LL.  This is analogous to $223344 whose
 high, middle, and low bytes are $22, $33, and $44.  This allows 16-bit and
 24-bit quantities to be easily composed from 8-bit quantities and makes the
-formulas much more succinct than they would be if ($HH << 8) | $LL or
+formulas much more succinct than they would be if ($HH &lt;&lt; 8) | $LL or
 256 * $HH + $LL were used.
 
 Although a lowercase l can be confused with a 1, you should not confuse
@@ -859,7 +860,7 @@ letter label A, and do not allow it to be used in source code.)
 
 Length: 2 bytes, $OP $LL
 
-For "old" instructions (PEI is the only "new" instruction for this
+For &quot;old&quot; instructions (PEI is the only &quot;new&quot; instruction for this
 addressing mode), when the e flag is 1 and the DL register is $00 (all three
 conditions -- the instruction, the e flag, and the DL register -- must be
 met), the address of the data is:
@@ -1263,7 +1264,7 @@ further details.
 Length: 1 byte, $OP
 
 Instructions with implied addressing (e.g. CLC) have no operand.  The name
-"implied" comes from the fact that the instruction itself implies which
+&quot;implied&quot; comes from the fact that the instruction itself implies which
 
 register, flag, or memory location will be used by the instruction.
 
@@ -1330,14 +1331,14 @@ address of the relative8 instruction), whereas the branch distance is
 actually the distance from the next instruction; hence the formula uses PC+2
 rather than PC.  Treating the branch displacement as a signed number (this
 formula is also valid when treating the branch displacement as an unsigned
-number and $00 <= $LL <= $7F, i.e. $LL ranges from 0 to 127), the branch
+number and $00 &lt;= $LL &lt;= $7F, i.e. $LL ranges from 0 to 127), the branch
 destination address is:
 
 +-----------+-----------+-----------+
 !     K     !       PC+2+$LL        !
 +-----------+-----------+-----------+
 
-When treating the branch displacement as unsigned number and $80 <= $LL <=
+When treating the branch displacement as unsigned number and $80 &lt;= $LL &lt;=
 $FF, (i.e. $LL ranges from 128 to 255), the branch destination address is:
 
 +-----------+-----------+-----------+
@@ -1470,7 +1471,7 @@ Likewise, after pulling N bytes:
 In emulation mode, SL will be incremented N times
 In native mode, S will be incremented N times
 
-For all interrupts and "old" instructions, when the e flag is 1, the address
+For all interrupts and &quot;old&quot; instructions, when the e flag is 1, the address
 of the data for an 8-bit push is:
 
 +-----------+-----------+-----------+
@@ -1483,7 +1484,7 @@ Otherwise, the address of the data for an 8-bit push is:
 !     0     !           S           ! data lo
 +-----------+-----------+-----------+
 
-For all interrupts and "old" instructions, when the e flag is 1, the address
+For all interrupts and &quot;old&quot; instructions, when the e flag is 1, the address
 of the data for a 16-bit push is:
 
 +-----------+-----------+-----------+
@@ -1518,7 +1519,7 @@ The address of the data for a 24-bit push is:
 !     0     !          S-2          ! data lo
 +-----------+-----------+-----------+
 
-For all interrupts and "old" instructions, when the e flag is 1, the address
+For all interrupts and &quot;old&quot; instructions, when the e flag is 1, the address
 of the data for a pull is:
 
 +-----------+-----------+-----------+
@@ -1604,7 +1605,7 @@ x = x flag
 Again, for example, 3-m is a succinct way of saying 3 cycles when the m flag
 is 0, and 2 cycles when the m flag is 1.
 
-In the "nvmxdizc e" column:
+In the &quot;nvmxdizc e&quot; column:
 
 0 = flag is cleared
 1 = flag is set
@@ -2356,8 +2357,8 @@ bit 5) will be set; because, in emulation mode, as on the NMOS 6502 and
 handler to distinguish a BRK from an IRQ.  COP in emulation mode may seem
 somewhat paradoxical, since it was not available on the NMOS 6502 or 65C02,
 but COP can be used in emulation mode, and when pushing onto the stack it
-will wrap at the page 1 boundary (in other words, it is treated as an "old"
-instruction, rather than a "new" instruction).
+will wrap at the page 1 boundary (in other words, it is treated as an &quot;old&quot;
+instruction, rather than a &quot;new&quot; instruction).
 
 The i flag is set after pushing the P register; furthermore, like the 65C02
 (but unlike the NMOS 6502), the d flag is cleared after pushing the P
@@ -2368,7 +2369,7 @@ An important note: as on the NMOS 6502 and 65C02, the correct way for an
 emulation mode BRK/IRQ handler to distinguish a BRK from an IRQ is to use
 the stacked value of the b flag (i.e. bit 5 of the stacked value of the P
 register).  Thus, this is correct (assuming that 2,S is within page 1; i.e.
-that S < $01FE, which is usually the case):
+that S &lt; $01FE, which is usually the case):
 
 EMULATION_BRKIRQ_HANDLER
    PHA
@@ -2471,7 +2472,7 @@ ABORT (like COP) in emulation mode may seem somewhat paradoxical, since
 there is no ABORTB pin on the NMOS 6502 or 65C02, but when an ABORT
 interrupt occurs in emulation mode, (again, like COP) when pushing onto the
 stack it will wrap at the page 1 boundary (in other words, it is treated as
-an "old" hardware interrupt, rather than a "new" one).
+an &quot;old&quot; hardware interrupt, rather than a &quot;new&quot; one).
 
 The interrupt vectors for native (e flag = 0) and emulation mode (e flag = 1)
 are:
@@ -3170,8 +3171,8 @@ of the result is 0.  The z flag is 1 when the result is zero, and the z flag
 is 0 when the result is nonzero.
 
 TAD, TAS, TDA, and TSA are alternate names for these instructions, and are
-allowed by many 65C816 assemblers.  Note that the "C" names are somewhat
-more accurate names than the "A" names, since these instructions are always
+allowed by many 65C816 assemblers.  Note that the &quot;C&quot; names are somewhat
+more accurate names than the &quot;A&quot; names, since these instructions are always
 16-bit operations, while other instruction names where A refers to the
 accumulator (e.g. PHA) are 8-bit operations or 16-bit operations, depending
 on the value of the m flag.
@@ -3263,12 +3264,12 @@ located at an address specifically chosen so that page boundary crossings
 will not occur (and thus a branch taken is 3 cycles in both emulation and
 native mode).
 
-Something else that was not explicitly stated above is that "new" (again,
-"new" meaning "not present on the 65C02") addressing modes and instructions
+Something else that was not explicitly stated above is that &quot;new&quot; (again,
+&quot;new&quot; meaning &quot;not present on the 65C02&quot;) addressing modes and instructions
 are functional (i.e. not NOPs) in emulation mode, and in most cases can be
 useful.  (One exception is the block move instructions, MVN and MVP, which
 are of limited use in emulation mode, since the high byte of the X and Y
-register is forced to $00.)  Why use "new" addressing modes and/or
+register is forced to $00.)  Why use &quot;new&quot; addressing modes and/or
 instructions in emulation mode?  While the 65C816 has 24-bit addresses and
 16-bit data, there are some useful subsets.  Using 16-bit addresses and
 
@@ -3279,7 +3280,7 @@ data, and 8-bit immediate data takes less space; thus it's as though the
 system is a 65C02 with a larger address space.  With emulation mode, you can
 have 24-bit addresses, 8-bit data, and direct page wrap around.
 
-However, because "new" addressing modes and/or instructions were intended
+However, because &quot;new&quot; addressing modes and/or instructions were intended
 for native mode, they do not incorporate behavior that is specific to
 emulation mode such as page wrap around.  For example, if the D register is
 $0000 (and the e flag is 1), then LDA ($FF) uses a pointer whose low byte is
@@ -3296,8 +3297,8 @@ replacing PHP and PLP with PHB and PLB in the preceding example, PHB pushes
 to $000100 (like PHP), but PLB pulls from $000200.  PEA, when the S register
 is $0100 (and the e flag is 1), has similar behavior; it pushes the high
 byte to $000100, the low byte to $0000FF, and leaves the stack pointer at
-$0001FE.  Likewise for other "new" instructions that push to, and pull from,
-the stack.  JSR (absolute,X) is "new", even though JSR was present on the
+$0001FE.  Likewise for other &quot;new&quot; instructions that push to, and pull from,
+the stack.  JSR (absolute,X) is &quot;new&quot;, even though JSR was present on the
 65C02 (with absolute addressing) and (absolute,X) addressing is available on
 the 65C02 (with JMP), since that combination of instruction and addressing
 mode was not available on the 65C02.  Generally, page 1 wrap around is not
