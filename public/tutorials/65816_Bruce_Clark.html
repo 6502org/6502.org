@@ -14,67 +14,69 @@
 
 Table of contents:
 
-<p><a href="#1">1        INTRODUCTION</a>
-<p><a href="#2">2        MODES AND MEMORY ORGANIZATION</a>
-<p><a href="#3">3        A NOTE ON 65C816 ASSEMBLERS AND IMMEDIATE DATA</a>
-<p><a href="#4">4        REGISTERS AND FLAGS</a>
-<p><a href="#5">5        ADDRESSING MODES</a>
-<p><a href="#5.1">5.1      PAGE AND BANK BOUNDARY WRAPPING</a>
-<p><a href="#5.1.1">5.1.1    PAGE BOUNDARY WRAPPING</a>
-<p><a href="#5.1.2">5.1.2    BANK BOUNDARY WRAPPING</a>
-<p><a href="#5.1.3">5.1.3    NOTATION</a>
-<p><a href="#5.2">5.2      ABSOLUTE</a>
-<p><a href="#5.3">5.3      ABSOLUTE,X AND ABSOLUTE,Y</a>
-<p><a href="#5.4">5.4      (ABSOLUTE) AND [ABSOLUTE]</a>
-<p><a href="#5.5">5.5      (ABSOLUTE,X)</a>
-<p><a href="#5.6">5.6      ACCUMULATOR</a>
-<p><a href="#5.7">5.7      DIRECT</a>
-<p><a href="#5.8">5.8      DIRECT,X AND DIRECT,Y</a>
-<p><a href="#5.9">5.9      (DIRECT)</a>
-<p><a href="#5.10">5.10     [DIRECT]</a>
-<p><a href="#5.11">5.11     (DIRECT,X)</a>
-<p><a href="#5.12">5.12     (DIRECT),Y</a>
-<p><a href="#5.13">5.13     [DIRECT],Y</a>
-<p><a href="#5.14">5.14     IMMEDIATE</a>
-<p><a href="#5.15">5.15     IMPLIED</a>
-<p><a href="#5.16">5.16     LONG</a>
-<p><a href="#5.17">5.17     LONG,X</a>
-<p><a href="#5.18">5.18     RELATIVE8 AND RELATIVE16</a>
-<p><a href="#5.19">5.19     SOURCE,DESTINATION</a>
-<p><a href="#5.20">5.20     STACK,S</a>
-<p><a href="#5.21">5.21     (STACK,S),Y</a>
-<p><a href="#5.22">5.22     PAGE AND BANK BOUNDARY WRAPPING OF THE STACK</a>
-<p><a href="#5.23">5.23     A NOTE ON OPERAND ADDRESSES</a>
-<p><a href="#6">6        INSTRUCTIONS</a>
-<p><a href="#6.1.1.1">6.1.1.1  ADC SBC</a>
-<p><a href="#6.1.1.2">6.1.1.2  CMP CPX CPY</a>
-<p><a href="#6.1.1.3">6.1.1.3  DEC DEX DEY INC INX INY</a>
-<p><a href="#6.1.2.1">6.1.2.1  AND EOR ORA</a>
-<p><a href="#6.1.2.2">6.1.2.2  BIT</a>
-<p><a href="#6.1.2.3">6.1.2.3  TRB TSB</a>
-<p><a href="#6.1.3">6.1.3    ASL LSR ROL ROR</a>
-<p><a href="#6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a>
-<p><a href="#6.2.1.2">6.2.1.2  BRL</a>
-<p><a href="#6.2.2.1">6.2.2.1  JMP JSL JSR</a>
-<p><a href="#6.2.2.2">6.2.2.2  RTL RTS</a>
-<p><a href="#6.3.1">6.3.1    BRK COP</a>
-<p><a href="#6.3.1.1">6.3.1.1  HARDWARE INTERRUPTS</a>
-<p><a href="#6.3.2">6.3.2    RTI</a>
-<p><a href="#6.4.1">6.4.1    CLC CLD CLI CLV SEC SED SEI</a>
-<p><a href="#6.4.2">6.4.2    REP SEP</a>
-<p><a href="#6.5">6.5      LDA LDX LDY STA STX STY STZ</a>
-<p><a href="#6.6">6.6      MVN MVP</a>
-<p><a href="#6.7">6.7      NOP WDM</a>
-<p><a href="#6.8.1">6.8.1    PEA PEI PER</a>
-<p><a href="#6.8.2">6.8.2    PHA PHX PHY PLA PLX PLY</a>
-<p><a href="#6.8.3">6.8.3    PHB PHD PHK PHP PLB PLD PLP</a>
-<p><a href="#6.9">6.9      STP WAI</a>
-<p><a href="#6.10.1">6.10.1   TAX TAY TSX TXA TXS TXY TYA TYX</a>
-<p><a href="#6.10.2">6.10.2   TCD TCS TDC TSC</a>
-<p><a href="#6.10.3">6.10.3   XBA</a>
-<p><a href="#6.10.4">6.10.4   XCE</a>
+<ul>
+<li style="display:block"><a href="#1">1        INTRODUCTION</a>
+<li style="display:block"><a href="#2">2        MODES AND MEMORY ORGANIZATION</a>
+<li style="display:block"><a href="#3">3        A NOTE ON 65C816 ASSEMBLERS AND IMMEDIATE DATA</a>
+<li style="display:block"><a href="#4">4        REGISTERS AND FLAGS</a>
+<li style="display:block"><a href="#5">5        ADDRESSING MODES</a>
+<li style="display:block"><a href="#5.1">5.1      PAGE AND BANK BOUNDARY WRAPPING</a>
+<li style="display:block"><a href="#5.1.1">5.1.1    PAGE BOUNDARY WRAPPING</a>
+<li style="display:block"><a href="#5.1.2">5.1.2    BANK BOUNDARY WRAPPING</a>
+<li style="display:block"><a href="#5.1.3">5.1.3    NOTATION</a>
+<li style="display:block"><a href="#5.2">5.2      ABSOLUTE</a>
+<li style="display:block"><a href="#5.3">5.3      ABSOLUTE,X AND ABSOLUTE,Y</a>
+<li style="display:block"><a href="#5.4">5.4      (ABSOLUTE) AND [ABSOLUTE]</a>
+<li style="display:block"><a href="#5.5">5.5      (ABSOLUTE,X)</a>
+<li style="display:block"><a href="#5.6">5.6      ACCUMULATOR</a>
+<li style="display:block"><a href="#5.7">5.7      DIRECT</a>
+<li style="display:block"><a href="#5.8">5.8      DIRECT,X AND DIRECT,Y</a>
+<li style="display:block"><a href="#5.9">5.9      (DIRECT)</a>
+<li style="display:block"><a href="#5.10">5.10     [DIRECT]</a>
+<li style="display:block"><a href="#5.11">5.11     (DIRECT,X)</a>
+<li style="display:block"><a href="#5.12">5.12     (DIRECT),Y</a>
+<li style="display:block"><a href="#5.13">5.13     [DIRECT],Y</a>
+<li style="display:block"><a href="#5.14">5.14     IMMEDIATE</a>
+<li style="display:block"><a href="#5.15">5.15     IMPLIED</a>
+<li style="display:block"><a href="#5.16">5.16     LONG</a>
+<li style="display:block"><a href="#5.17">5.17     LONG,X</a>
+<li style="display:block"><a href="#5.18">5.18     RELATIVE8 AND RELATIVE16</a>
+<li style="display:block"><a href="#5.19">5.19     SOURCE,DESTINATION</a>
+<li style="display:block"><a href="#5.20">5.20     STACK,S</a>
+<li style="display:block"><a href="#5.21">5.21     (STACK,S),Y</a>
+<li style="display:block"><a href="#5.22">5.22     PAGE AND BANK BOUNDARY WRAPPING OF THE STACK</a>
+<li style="display:block"><a href="#5.23">5.23     A NOTE ON OPERAND ADDRESSES</a>
+<li style="display:block"><a href="#6">6        INSTRUCTIONS</a>
+<li style="display:block"><a href="#6.1.1.1">6.1.1.1  ADC SBC</a>
+<li style="display:block"><a href="#6.1.1.2">6.1.1.2  CMP CPX CPY</a>
+<li style="display:block"><a href="#6.1.1.3">6.1.1.3  DEC DEX DEY INC INX INY</a>
+<li style="display:block"><a href="#6.1.2.1">6.1.2.1  AND EOR ORA</a>
+<li style="display:block"><a href="#6.1.2.2">6.1.2.2  BIT</a>
+<li style="display:block"><a href="#6.1.2.3">6.1.2.3  TRB TSB</a>
+<li style="display:block"><a href="#6.1.3">6.1.3    ASL LSR ROL ROR</a>
+<li style="display:block"><a href="#6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a>
+<li style="display:block"><a href="#6.2.1.2">6.2.1.2  BRL</a>
+<li style="display:block"><a href="#6.2.2.1">6.2.2.1  JMP JSL JSR</a>
+<li style="display:block"><a href="#6.2.2.2">6.2.2.2  RTL RTS</a>
+<li style="display:block"><a href="#6.3.1">6.3.1    BRK COP</a>
+<li style="display:block"><a href="#6.3.1.1">6.3.1.1  HARDWARE INTERRUPTS</a>
+<li style="display:block"><a href="#6.3.2">6.3.2    RTI</a>
+<li style="display:block"><a href="#6.4.1">6.4.1    CLC CLD CLI CLV SEC SED SEI</a>
+<li style="display:block"><a href="#6.4.2">6.4.2    REP SEP</a>
+<li style="display:block"><a href="#6.5">6.5      LDA LDX LDY STA STX STY STZ</a>
+<li style="display:block"><a href="#6.6">6.6      MVN MVP</a>
+<li style="display:block"><a href="#6.7">6.7      NOP WDM</a>
+<li style="display:block"><a href="#6.8.1">6.8.1    PEA PEI PER</a>
+<li style="display:block"><a href="#6.8.2">6.8.2    PHA PHX PHY PLA PLX PLY</a>
+<li style="display:block"><a href="#6.8.3">6.8.3    PHB PHD PHK PHP PLB PLD PLP</a>
+<li style="display:block"><a href="#6.9">6.9      STP WAI</a>
+<li style="display:block"><a href="#6.10.1">6.10.1   TAX TAY TSX TXA TXS TXY TYA TYX</a>
+<li style="display:block"><a href="#6.10.2">6.10.2   TCD TCS TDC TSC</a>
+<li style="display:block"><a href="#6.10.3">6.10.3   XBA</a>
+<li style="display:block"><a href="#6.10.4">6.10.4   XCE</a>
 
-<p><a href="#APPENDIX:">APPENDIX: EMULATION MODE</a>
+<li style="display:block"><a href="#APPENDIX:">APPENDIX: EMULATION MODE</a>
+</ul>
 
 
 <h3><a name="1">1  INTRODUCTION</a></h3>
@@ -2036,7 +2038,8 @@ CMP, CPX, and CPY compare the accumulator, X register, and Y register
 (respectively) to the data.  CMP is a 16-bit comparison when the m flag is
 0, and an 8-bit comparison when the m flag is 1.  CPX and CPY are 16-bit
 comparisons when the x flag is 0, and 8-bit comparisons when the x flag is
-<p><a href="#1.">1.</a>
+<ul>
+<li style="display:block"><a href="#1.">1.</a>
 
 CMP is similar to SBC, except:
 
