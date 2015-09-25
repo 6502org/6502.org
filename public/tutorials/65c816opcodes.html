@@ -80,12 +80,12 @@ Table of contents:
 
 <h3><a name="1">1  INTRODUCTION</a></h3>
 
-<ul>
-<li>The 65C816 is a member of the 6502 microprocessor family, capable of
-<li>addressing 16 megabytes of memory (i.e. 24-bit addressing), with
-<li>instructions that operate on 8-bit and 16-bit data.  It also includes an
-<li>emulation mode for executing 65C02 and NMOS 6502 code.
-</ul>
+<p>
+The 65C816 is a member of the 6502 microprocessor family, capable of
+addressing 16 megabytes of memory (i.e. 24-bit addressing), with
+instructions that operate on 8-bit and 16-bit data.  It also includes an
+emulation mode for executing 65C02 and NMOS 6502 code.
+
 
 <h3><a name="2">2  MODES AND MEMORY ORGANIZATION</a></h3>
 
@@ -356,17 +356,18 @@ The terms used for these registers and flags will be:
 <li>YL register: the lower 8 bits of the Y index register
 <li>YH register: The upper 8 bits of the Y index register
 </ul>
-b flag: the break flag
-c flag: the carry flag
-d flag: the decimal mode flag
-e flag: the emulation mode flag
-i flag: the interrupt disable flag
-m flag: the accumulator and &quot;memory&quot; width flag
-n flag: the negative flag
-v flag: the overflow flag
-x flag: the index register width flag
-z flag: the zero flag
-
+<ul>
+<li>b flag: the break flag
+<li>c flag: the carry flag
+<li>d flag: the decimal mode flag
+<li>e flag: the emulation mode flag
+<li>i flag: the interrupt disable flag
+<li>m flag: the accumulator and &quot;memory&quot; width flag
+<li>n flag: the negative flag
+<li>v flag: the overflow flag
+<li>x flag: the index register width flag
+<li>z flag: the zero flag
+</ul>
 <p>
 The term &quot;accumulator&quot; without any additional qualifiers means the 16-bit
 accumulator (i.e. the C accumulator) when the m flag is 0, and the 8-bit
@@ -378,18 +379,18 @@ effect, &quot;X register&quot; means the 16-bit register when the x flag is 0, a
 8-bit register (i.e. the XL register) when the x flag is 1.  Likewise for
 &quot;Y register&quot;.
 
-<p>
 The P register contains 9 (yes, 9) of the flags.
 
-P register bit 7: n flag
-P register bit 6: v flag
-P register bit 5: m flag (native mode)
-P register bit 4: x flag (native mode), b flag (emulation mode)
-P register bit 3: d flag
-P register bit 2: i flag
-P register bit 1: z flag
-P register bit 0: c flag
-
+<ul>
+<li>P register bit 7: n flag
+<li>P register bit 6: v flag
+<li>P register bit 5: m flag (native mode)
+<li>P register bit 4: x flag (native mode), b flag (emulation mode)
+<li>P register bit 3: d flag
+<li>P register bit 2: i flag
+<li>P register bit 1: z flag
+<li>P register bit 0: c flag
+</ul>
 <p>
 The e flag is separate from the P register but is accessed via the c flag
 using the XCE instruction (details below).
@@ -564,7 +565,7 @@ following situations:
 
 <ul>
 <li>A. When the DL register is $00 (and in emulation mode -- both conditions
-<li>   must be met), the direct page wraps at a page boundary
+   must be met), the direct page wraps at a page boundary
 <li>B. In emulation mode, the stack wraps at the page 1 boundary
 </ul>
 <p>
@@ -597,15 +598,15 @@ boundary):
 <li>A. The direct page
 <li>B. The stack
 <li>C. [absolute] and (absolute) addressing modes (JMP is the only instruction
-<li>   available for either addressing mode)
+   available for either addressing mode)
 </ul>
 The following are confined to bank K:
 
 <ul>
 <li>A. (absolute,X) addressing mode (JMP and JSR are the only instructions
-<li>   available for this addressing mode)
+   available for this addressing mode)
 <li>B. The Program Counter (i.e. the PC register); again, this means branches
-<li>   wrap at the bank K boundary
+   wrap at the bank K boundary
 </ul>
 source,destination addressing (i.e. the MVN and MVP instructions) wraps at
 both the source and destination bank boundaries.
@@ -2044,10 +2045,10 @@ CMP is similar to SBC, except:
 <ul>
 <li>A. It is always a binary subtraction (i.e. SBC as though the d flag was 0)
 <li>B. It does not include the carry in the formula (i.e. register - data; in
-<li>   other words, SBC as though the carry was set before the SBC)
+   other words, SBC as though the carry was set before the SBC)
 <li>C. The v flag is not affected
 <li>D. The result is only reflected in the n, z, and c flags; the accumulator, X
-<li>   register, and Y register are left unchanged.
+   register, and Y register are left unchanged.
 </ul>
 <p>
 Likewise for CPX and CPY, except the X and Y registers, respectively, are
@@ -2823,16 +2824,16 @@ an &quot;old&quot; hardware interrupt, rather than a &quot;new&quot; one).
 The interrupt vectors for native (e flag = 0) and emulation mode (e flag = 1)
 are:
 
-<ul>
-<li>e = 0  e = 1
-<li>------ ------
-<li>00FFE4 00FFF4 COP
-<li>00FFE6 00FFFE BRK
-<li>00FFE8 00FFF8 ABORT
-<li>00FFEA 00FFFA NMI
-<li>       00FFFC RESET
-<li>00FFEE 00FFFE IRQ
-</ul>
+<pre>
+e = 0  e = 1
+------ ------
+00FFE4 00FFF4 COP
+00FFE6 00FFFE BRK
+00FFE8 00FFF8 ABORT
+00FFEA 00FFFA NMI
+       00FFFC RESET
+00FFEE 00FFFE IRQ
+</pre>
 <p>
 The address decoding circuitry can use the VPB signal to tell the 65C816 to
 fetch any or all of these interrupt vectors from any address desired.  A
@@ -3758,6 +3759,5 @@ interrupts do not push (and RTI does not pull) the bank byte on the stack,
 but as long as you can guarantee that interrupts will not occur when in a
 nonzero bank (other than RESET, since you wouldn't return from that),
 then nonzero banks can be used for code as well as data.
-
 <p><font size="-1">Last Updated September 23, 2015; Content Dated 27 April 2011.</font>
 </body></html>
