@@ -78,7 +78,7 @@ Table of contents:
 </ul>
 
 
-<h3><a name="1">1  INTRODUCTION</a></h3>
+<p><br><h3><a name="1">1  INTRODUCTION</a></h3>
 
 <p>
 The 65C816 is a member of the 6502 microprocessor family, capable of
@@ -87,7 +87,7 @@ instructions that operate on 8-bit and 16-bit data.  It also includes an
 emulation mode for executing 65C02 and NMOS 6502 code.
 
 
-<h3><a name="2">2  MODES AND MEMORY ORGANIZATION</a></h3>
+<p><br><h3><a name="2">2  MODES AND MEMORY ORGANIZATION</a></h3>
 
 <p>
 Both the 65C02 and the NMOS 6502 have two modes: binary mode and decimal
@@ -161,7 +161,7 @@ bank boundaries.  Specifics are described below (including exceptions to the
 general behavior mentioned above).
 
 
-<h3><a name="3">3  A NOTE ON 65C816 ASSEMBLERS AND IMMEDIATE DATA</a></h3>
+<p><br><h3><a name="3">3  A NOTE ON 65C816 ASSEMBLERS AND IMMEDIATE DATA</a></h3>
 
 <p>
 Most microprocessors whose instructions can operate on two or more data
@@ -280,7 +280,7 @@ immediate data.  You may find it worthwhile to spend some time searching
 and/or experimenting to find an assembler that fits your programming style.
 
 
-<h3><a name="4">4  REGISTERS AND FLAGS</a></h3>
+<p><br><h3><a name="4">4  REGISTERS AND FLAGS</a></h3>
 
 <p>
 On the 65C02 and NMOS 6502 all registers and flags have unique one-letter
@@ -532,7 +532,7 @@ $13FFC0 rather than $12FFC0.  Likewise, a BRL $2000 at $13E000 will branch
 to $132000 rather than $142000.
 
 
-<h3><a name="5">5  ADDRESSING MODES</a></h3>
+<p><br><h3><a name="5">5  ADDRESSING MODES</a></h3>
 
 <p>
 The official names of the addressing modes of the 65C816 can be confusing
@@ -547,7 +547,7 @@ code generated is the address itself or whether it is relative to the value
 of the Program Counter.
 
 
-<h3><a name="5.1">5.1  PAGE AND BANK BOUNDARY WRAPPING</a></h3>
+<p><br><h3><a name="5.1">5.1  PAGE AND BANK BOUNDARY WRAPPING</a></h3>
 
 <p>
 Although each addressing mode will be described in detail below, there are
@@ -555,7 +555,7 @@ a few rules of thumb that you can use to derive whether page and/or bank
 boundaries are crossed or not.
 
 
-<h3><a name="5.1.1">5.1.1  PAGE BOUNDARY WRAPPING</a></h3>
+<p><br><h3><a name="5.1.1">5.1.1  PAGE BOUNDARY WRAPPING</a></h3>
 
 <p>
 Page boundary wrapping only occurs in emulation mode, and only for &quot;old&quot;
@@ -586,7 +586,7 @@ instruction, PEI $FF does not wrap at a page boundary (either the direct
 page part, or the (pushing onto the) stack part).
 
 
-<h3><a name="5.1.2">5.1.2  BANK BOUNDARY WRAPPING</a></h3>
+<p><br><h3><a name="5.1.2">5.1.2  BANK BOUNDARY WRAPPING</a></h3>
 
 <p>
 Bank boundary wrapping occurs in both native and emulation mode (and does
@@ -615,7 +615,7 @@ both the source and destination bank boundaries.
 Otherwise, wrapping does not occur at bank boundaries.
 
 
-<h3><a name="5.1.3">5.1.3  NOTATION</a></h3>
+<p><br><h3><a name="5.1.3">5.1.3  NOTATION</a></h3>
 
 <p>
 To help illustrate when and if page and bank boundary wrapping occurs, a
@@ -748,7 +748,7 @@ than composing $hilo from $hi and $lo or composing $phpl from $ph (pointer
 hi) and $pl.)
 
 
-<h3><a name="5.2">5.2  ABSOLUTE</a></h3>
+<p><br><h3><a name="5.2">5.2  ABSOLUTE</a></h3>
 
 <p>
 Length: 3 bytes, $OP $LL $HH
@@ -781,7 +781,7 @@ low byte of the data from address $12FFFF, and the high byte from address
 $130000
 
 
-<h3><a name="5.3">5.3  ABSOLUTE,X AND ABSOLUTE,Y</a></h3>
+<p><br><h3><a name="5.3">5.3  ABSOLUTE,X AND ABSOLUTE,Y</a></h3>
 
 <p>
 Length: 3 bytes, $OP $LL $HH
@@ -828,7 +828,7 @@ zero page addressing always wraps at the page boundary on a 65C02 and NMOS
 6502 (i.e. when the X register is $80, LDA $C0,X loads from address $40).
 
 
-<h3><a name="5.4">5.4  (ABSOLUTE) AND [ABSOLUTE]</a></h3>
+<p><br><h3><a name="5.4">5.4  (ABSOLUTE) AND [ABSOLUTE]</a></h3>
 
 <p>
 Length: 3 bytes, $OP $LL $HH
@@ -905,7 +905,7 @@ wrap on a page boundary, which was unintentional (i.e. a bug); there, a JMP
 high byte of the destination address from $1200 (rather than $1300).
 
 
-<h3><a name="5.5">5.5  (ABSOLUTE,X)</a></h3>
+<p><br><h3><a name="5.5">5.5  (ABSOLUTE,X)</a></h3>
 
 <p>
 Length: 3 bytes, $OP $LL $HH
@@ -941,7 +941,7 @@ $000009 contains $56
 then JMP ($FFFE) jumps to $123456
 
 
-<h3><a name="5.6">5.6  ACCUMULATOR</a></h3>
+<p><br><h3><a name="5.6">5.6  ACCUMULATOR</a></h3>
 
 <p>
 Length: 1 byte, $OP
@@ -966,7 +966,7 @@ syntaxes.  (For this reason, many 6502 family assemblers reserve the one
 letter label A, and do not allow it to be used in source code.)
 
 
-<h3><a name="5.7">5.7  DIRECT</a></h3>
+<p><br><h3><a name="5.7">5.7  DIRECT</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1006,7 +1006,7 @@ loads the low byte of the data from address $00FFFF, and the high byte from
 address $000000
 
 
-<h3><a name="5.8">5.8  DIRECT,X AND DIRECT,Y</a></h3>
+<p><br><h3><a name="5.8">5.8  DIRECT,X AND DIRECT,Y</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1064,7 +1064,7 @@ flag is 0, then LDA $FE,X loads the low byte of the data from address
 $000008, and the high byte from address $000009
 
 
-<h3><a name="5.9">5.9  (DIRECT)</a></h3>
+<p><br><h3><a name="5.9">5.9  (DIRECT)</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1138,7 +1138,7 @@ then LDA ($FF) loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
 
-<h3><a name="5.10">5.10  [DIRECT]</a></h3>
+<p><br><h3><a name="5.10">5.10  [DIRECT]</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1190,7 +1190,7 @@ then LDA [$FF] loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
 
-<h3><a name="5.11">5.11  (DIRECT,X)</a></h3>
+<p><br><h3><a name="5.11">5.11  (DIRECT,X)</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1265,7 +1265,7 @@ then LDA ($FE,X) loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
 
-<h3><a name="5.12">5.12  (DIRECT),Y</a></h3>
+<p><br><h3><a name="5.12">5.12  (DIRECT),Y</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1350,7 +1350,7 @@ then LDA ($FF),Y loads the low byte of the data from address $130008, and
 the high byte from $130009.
 
 
-<h3><a name="5.13">5.13  [DIRECT],Y</a></h3>
+<p><br><h3><a name="5.13">5.13  [DIRECT],Y</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1403,7 +1403,7 @@ then LDA [$FE],Y loads the low byte of the data from address $130006, and
 the high byte from $130007.
 
 
-<h3><a name="5.14">5.14  IMMEDIATE</a></h3>
+<p><br><h3><a name="5.14">5.14  IMMEDIATE</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL (for 8-bit data)
@@ -1441,7 +1441,7 @@ than immediate addressing.  See the section on the PER instruction for
 further details.
 
 
-<h3><a name="5.15">5.15  IMPLIED</a></h3>
+<p><br><h3><a name="5.15">5.15  IMPLIED</a></h3>
 
 <p>
 Length: 1 byte, $OP
@@ -1459,7 +1459,7 @@ only one addressing mode are implied addressing.  For example. BCC and JSL
 each have only one addressing mode, yet are not implied addressing.
 
 
-<h3><a name="5.16">5.16  LONG</a></h3>
+<p><br><h3><a name="5.16">5.16  LONG</a></h3>
 
 <p>
 Length: 4 bytes, $OP $LL $MM $HH
@@ -1489,7 +1489,7 @@ low byte of the data from address $12FFFF, and the high byte from address
 $130000.
 
 
-<h3><a name="5.17">5.17  LONG,X</a></h3>
+<p><br><h3><a name="5.17">5.17  LONG,X</a></h3>
 
 <p>
 Length: 4 bytes, $OP $LL $MM $HH
@@ -1512,7 +1512,7 @@ loads the low byte of the data from address $130008, and the high byte from
 address $130009.
 
 
-<h3><a name="5.18">5.18  RELATIVE8 AND RELATIVE16</a></h3>
+<p><br><h3><a name="5.18">5.18  RELATIVE8 AND RELATIVE16</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL (for relative8 addressing)
@@ -1559,7 +1559,7 @@ address is:
 +-----------+-----------+-----------+
 </pre>
 
-<h3><a name="5.19">5.19  SOURCE,DESTINATION</a></h3>
+<p><br><h3><a name="5.19">5.19  SOURCE,DESTINATION</a></h3>
 
 <p>
 Length: 3 bytes, $OP $TT $SS
@@ -1589,7 +1589,7 @@ the data at $12FFFF to $340000
 the data at $120000 to $340001
 
 
-<h3><a name="5.20">5.20  STACK,S</a></h3>
+<p><br><h3><a name="5.20">5.20  STACK,S</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1613,7 +1613,7 @@ loads the low byte of the data from address $00000A, and the high byte from
 address $00000B.
 
 
-<h3><a name="5.21">5.21  (STACK,S),Y</a></h3>
+<p><br><h3><a name="5.21">5.21  (STACK,S),Y</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
@@ -1660,7 +1660,7 @@ then LDA ($FA,S),Y loads the low byte of the data from address $130040, and
 the high byte from $130041.
 
 
-<h3><a name="5.22">5.22  PAGE AND BANK BOUNDARY WRAPPING OF THE STACK</a></h3>
+<p><br><h3><a name="5.22">5.22  PAGE AND BANK BOUNDARY WRAPPING OF THE STACK</a></h3>
 
 <p>
 The previous sections covered the addressing of the instruction operands.
@@ -1782,7 +1782,7 @@ Otherwise, the address of the data for a pull is:
 !     0     !          S+3          ! data hi
 +-----------+-----------+-----------+
 </pre>
-<h3><a name="5.23">5.23  A NOTE ON OPERAND ADDRESSES</a></h3>
+<p><br><h3><a name="5.23">5.23  A NOTE ON OPERAND ADDRESSES</a></h3>
 
 <p>
 On the 65C02 and NMOS 6502, LDA $12 (direct addressing) and LDA $0012
@@ -1815,7 +1815,7 @@ explicitly specify whether direct, absolute, or long addressing will be
 used.
 
 
-<h3><a name="6">6  INSTRUCTIONS</a></h3>
+<p><br><h3><a name="6">6  INSTRUCTIONS</a></h3>
 
 The columns of the tables that describe the instructions are:
 
@@ -1880,7 +1880,7 @@ NMOS 6502, but the formula here is 5-m cycles, which is 4 cycles for the
 8-bit case (i.e. when the m flag is 1).
 
 
-<h3><a name="6.1.1.1">6.1.1.1  ADC SBC</a></h3>
+<p><br><h3><a name="6.1.1.1">6.1.1.1  ADC SBC</a></h3>
 
 <pre>
 ADd with Carry
@@ -2002,7 +2002,7 @@ the z flag will be 0
 the c flag will be 0
 
 
-<h3><a name="6.1.1.2">6.1.1.2  CMP CPX CPY</a></h3>
+<p><br><h3><a name="6.1.1.2">6.1.1.2  CMP CPX CPY</a></h3>
 
 <p>
 CoMPare (to accumulator)
@@ -2075,7 +2075,7 @@ The z flag will be 1
 The c flag will be 1
 
 
-<h3><a name="6.1.1.3">6.1.1.3  DEC DEX DEY INC INX INY</a></h3>
+<p><br><h3><a name="6.1.1.3">6.1.1.3  DEC DEX DEY INC INX INY</a></h3>
 
 <pre>
 DECrement
@@ -2154,7 +2154,7 @@ the n flag will be 1
 the z flag will be 0
 
 
-<h3><a name="6.1.2.1">6.1.2.1  AND EOR ORA</a></h3>
+<p><br><h3><a name="6.1.2.1">6.1.2.1  AND EOR ORA</a></h3>
 
 bitwise AND
 bitwise Exclusive OR
@@ -2247,7 +2247,7 @@ the n flag will be 1
 the z flag will be 0
 
 
-<h3><a name="6.1.2.2">6.1.2.2  BIT</a></h3>
+<p><br><h3><a name="6.1.2.2">6.1.2.2  BIT</a></h3>
 
 test BITs
 
@@ -2300,7 +2300,7 @@ the v flag will be 0
 the z flag will be 1
 
 
-<h3><a name="6.1.2.3">6.1.2.3  TRB TSB</a></h3>
+<p><br><h3><a name="6.1.2.3">6.1.2.3  TRB TSB</a></h3>
 
 <p>
 Test and Reset Bits
@@ -2340,7 +2340,7 @@ the z flag will be 1
 $12ABCD will contain $DF
 
 
-<h3><a name="6.1.3">6.1.3  ASL LSR ROL ROR</a></h3>
+<p><br><h3><a name="6.1.3">6.1.3  ASL LSR ROL ROR</a></h3>
 
 <p>
 Arithmetic Shift Left
@@ -2444,7 +2444,7 @@ the z flag will be 0
 the c flag will be 1
 
 
-<h3><a name="6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a></h3>
+<p><br><h3><a name="6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a></h3>
 
 <p>
 Branch if Carry Clear
@@ -2522,7 +2522,7 @@ $ABC023.  (The displacement is $21 since the instruction after the BNE is at
 $ABC002.)
 
 
-<h3><a name="6.2.1.2">6.2.1.2  BRL</a></h3>
+<p><br><h3><a name="6.2.1.2">6.2.1.2  BRL</a></h3>
 
 <pre>
 BRanch Long
@@ -2551,7 +2551,7 @@ Example: A BRL $C045 at $ABC000 will branch to $ABC045.  (The displacement
 is $0042 since the instruction after the BRL is at $ABC003.)
 
 
-<h3><a name="6.2.2.1">6.2.2.1  JMP JSL JSR</a></h3>
+<p><br><h3><a name="6.2.2.1">6.2.2.1  JMP JSL JSR</a></h3>
 
 <p>
 JuMP
@@ -2622,7 +2622,7 @@ then jumps to $12ABCD, and
 the S register will be $01FD
 
 
-<h3><a name="6.2.2.2">6.2.2.2  RTL RTS</a></h3>
+<p><br><h3><a name="6.2.2.2">6.2.2.2  RTL RTS</a></h3>
 
 <p>
 ReTurn from subroutine Long
@@ -2656,7 +2656,7 @@ then an RTS will return to $123457, and
 the S register will be $01FF
 
 
-<h3><a name="6.3.1">6.3.1  BRK COP</a></h3>
+<p><br><h3><a name="6.3.1">6.3.1  BRK COP</a></h3>
 
 <pre>
 BReaKpoint
@@ -2795,7 +2795,7 @@ the d flag will be 0
 the i flag will be 1
 
 
-<h3><a name="6.3.1.1">6.3.1.1  HARDWARE INTERRUPTS</a></h3>
+<p><br><h3><a name="6.3.1.1">6.3.1.1  HARDWARE INTERRUPTS</a></h3>
 
 <p>
 In addition to the two software interrupts (BRK and COP), the 65C816 has
@@ -2893,7 +2893,7 @@ the d flag will be 0
 the i flag will be 1
 
 
-<h3><a name="6.3.2">6.3.2  RTI</a></h3>
+<p><br><h3><a name="6.3.2">6.3.2  RTI</a></h3>
 
 <p>
 ReTurn from Interrupt
@@ -2936,7 +2936,7 @@ the S register will be $01FF
 the P register will be $08
 
 
-<h3><a name="6.4.1">6.4.1  CLC CLD CLI CLV SEC SED SEI</a></h3>
+<p><br><h3><a name="6.4.1">6.4.1  CLC CLD CLI CLV SEC SED SEI</a></h3>
 
 <pre>
 CLear Carry
@@ -2974,7 +2974,7 @@ Example: after a CLC,
 the c flag is 0
 
 
-<h3><a name="6.4.2">6.4.2  REP SEP</a></h3>
+<p><br><h3><a name="6.4.2">6.4.2  REP SEP</a></h3>
 
 <pre>
 REset Processor status bits
@@ -3006,7 +3006,7 @@ the m and c flags will be 1
 the n, v, x, d, i, and z flags will not be affected
 
 
-<h3><a name="6.5">6.5  LDA LDX LDY STA STX STY STZ</a></h3>
+<p><br><h3><a name="6.5">6.5  LDA LDX LDY STA STX STY STZ</a></h3>
 
 <p>
 LoaD Accumulator
@@ -3099,7 +3099,7 @@ the n flag will be 1
 the z flag will be 0
 
 
-<h3><a name="6.6">6.6  MVN MVP</a></h3>
+<p><br><h3><a name="6.6">6.6  MVN MVP</a></h3>
 
 <p>
 MoVe memory Negative
@@ -3232,7 +3232,7 @@ $001FFF will contain $AB
 $002000 will contain $CD
 
 
-<h3><a name="6.7">6.7  NOP WDM</a></h3>
+<p><br><h3><a name="6.7">6.7  NOP WDM</a></h3>
 
 <p>
 No OPeration
@@ -3270,7 +3270,7 @@ executed, because the WDM opcode ($42) will treat it as immediate data and
 ignore it.  (The X register will be decremented when entering at LABEL2.)
 
 
-<h3><a name="6.8.1">6.8.1  PEA PEI PER</a></h3>
+<p><br><h3><a name="6.8.1">6.8.1  PEA PEI PER</a></h3>
 
 <p>
 Push Effective Address
@@ -3343,7 +3343,7 @@ $0001FE will contain $12
 the S register will be $01FD
 
 
-<h3><a name="6.8.2">6.8.2  PHA PHX PHY PLA PLX PLY</a></h3>
+<p><br><h3><a name="6.8.2">6.8.2  PHA PHX PHY PLA PLX PLY</a></h3>
 
 <p>
 PusH Accumulator
@@ -3397,7 +3397,7 @@ the n flag will be 1
 the z flag will be 0
 
 
-<h3><a name="6.8.3">6.8.3  PHB PHD PHK PHP PLB PLD PLP</a></h3>
+<p><br><h3><a name="6.8.3">6.8.3  PHB PHD PHK PHP PLB PLD PLP</a></h3>
 
 <p>
 PusH data Bank register
@@ -3455,7 +3455,7 @@ the n flag will be 1
 the z flag will be 0
 
 
-<h3><a name="6.9">6.9  STP WAI</a></h3>
+<p><br><h3><a name="6.9">6.9  STP WAI</a></h3>
 
 <pre>
 SToP the clock
@@ -3492,7 +3492,7 @@ not end with an RTI, resulting in fewer cycles needed to handle the
 interrupt.
 
 
-<h3><a name="6.10.1">6.10.1  TAX TAY TSX TXA TXS TXY TYA TYX</a></h3>
+<p><br><h3><a name="6.10.1">6.10.1  TAX TAY TSX TXA TXS TXY TYA TYX</a></h3>
 
 <p>
 Transfer Accumulator to X register
@@ -3558,7 +3558,7 @@ the n flag will be 1 (since only $CD was actually transferred)
 the z flag will be 0
 
 
-<h3><a name="6.10.2">6.10.2  TCD TCS TDC TSC</a></h3>
+<p><br><h3><a name="6.10.2">6.10.2  TCD TCS TDC TSC</a></h3>
 
 <p>
 Transfer C accumulator to Direct register
@@ -3603,7 +3603,7 @@ the n flag will be 0
 the z flag will be 0
 
 
-<h3><a name="6.10.3">6.10.3  XBA</a></h3>
+<p><br><h3><a name="6.10.3">6.10.3  XBA</a></h3>
 
 eXchange B and A accumulator
 
@@ -3639,7 +3639,7 @@ the n flag will be 0
 the z flag will be 0
 
 
-<h3><a name="6.10.4">6.10.4  XCE</a></h3>
+<p><br><h3><a name="6.10.4">6.10.4  XCE</a></h3>
 
 eXchange Carry and Emulation flags
 
@@ -3660,7 +3660,7 @@ the c flag will be 1
 the e flag will be 0
 
 
-<h3><a name="APPENDIX:">APPENDIX: EMULATION MODE</a></h3>
+<p><br><h3><a name="APPENDIX:">APPENDIX: EMULATION MODE</a></h3>
 
 <p>
 The sections above which described the addressing modes and instructions
