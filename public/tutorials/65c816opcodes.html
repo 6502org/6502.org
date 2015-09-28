@@ -253,7 +253,7 @@ directive.  For example:
 .endmacro
 </pre>
 and so on.
-
+<p>
 A variation of this approach is for the assembler to attempt to &quot;follow
 
 along&quot; and switch automatically when a REP or SEP instruction is assembled
@@ -270,7 +270,7 @@ into the correct mode; the assembler might simply switch to 8-bit mode at
 the SEP, then simply remain in 8-bit mode when it reached the LDY
 instruction.  A &quot;following along&quot; feature can be convenient, but it can also
 lead to errors that are difficult to find.
-
+<p>
 A different approach is for the assembler to use different operand syntaxes
 for 8-bit immediate data and 16-bit immediate data.  For example:
 
@@ -307,7 +307,7 @@ the terms &quot;B accumulator&quot; and &quot;DBR&quot; will be used to avoid am
 Furthermore, there are times when it will be useful to refer specifically to
 the upper 8 bits and lower 8 bits of a 16-bit register, so terms will be
 defined for this purpose.
-
+<p>
 There are 9 registers.  They are:
 
 <ul>
@@ -382,7 +382,7 @@ XH and YH register are forced to $00 when the x flag is 1.  (See below.)  In
 effect, &quot;X register&quot; means the 16-bit register when the x flag is 0, and the
 8-bit register (i.e. the XL register) when the x flag is 1.  Likewise for
 &quot;Y register&quot;.
-
+<p>
 The P register contains 9 (yes, 9) of the flags.
 
 <ul>
@@ -518,6 +518,7 @@ For example, if an INX instruction at $12FFFF is executed, the next
 instruction to be executed will be at instruction at $120000 rather than
 $130000.
 
+<p>
 Likewise, if the memory contents are as follows:
 
 <ul>
@@ -628,7 +629,7 @@ example, adding an index register to an address should be considered a
 24-bit calculation, when it should be truncated at 16 bits, and when it
 
 should be truncated at 8 bits.
-
+<p>
 A 24-bit calculation is represented by a &quot;triple wide&quot; box:
 
 <pre>
@@ -640,7 +641,7 @@ A 24-bit calculation is represented by a &quot;triple wide&quot; box:
 If $HHMMLL is $00FFEE and X is $44, then the address is $01 (high byte), $00
 (middle byte), $32 (low byte).
 
-A calculation that is truncated at 16 bits is represented by a &quot;double wide&quot;
+<p>A calculation that is truncated at 16 bits is represented by a &quot;double wide&quot;
 box:
 
 <pre>
@@ -651,7 +652,7 @@ box:
 <p>
 If S is $FFEE and $LL is $44, then the address is $00 (high byte), $00
 (middle byte), $32 (low byte).
-
+<p>
 A calculation that is truncated at 8 bits is represented by a &quot;single wide&quot;
 box:
 
@@ -897,7 +898,7 @@ Example: If the K register is $12 and
 <li>$00FFFF contains $56
 </ul>
 then JMP ($FFFF) jumps to $123456
-
+<p>
 (Some assemblers allow the syntax JML (absolute) which is equivalent to JMP
 [absolute]; however, the use of the latter syntax is more consistent with
 syntax of the [direct] and (direct) addressing modes, where parentheses
@@ -1875,7 +1876,7 @@ In the LEN column:
 <p>
 Thus, for example, 3-m is a succinct way of saying 3 bytes when the m flag
 is 0, and 2 bytes when the m flag is 1.
-
+<p>
 In the CYCLES column:
 
 <ul>
@@ -1889,7 +1890,7 @@ In the CYCLES column:
 <p>
 Again, for example, 3-m is a succinct way of saying 3 cycles when the m flag
 is 0, and 2 cycles when the m flag is 1.
-
+<p>
 In the &quot;nvmxdizc e&quot; column:
 
 <ul>
@@ -1966,7 +1967,7 @@ flag is 1, BCD arithmetic is used.  Note that like the NMOS 6502, but unlike
 the 65C02, decimal mode (i.e. when the d flag is 1) takes no additional
 
 cycles.
-
+<p>
 The formula for ADC is:
 
 <ul>
@@ -1981,7 +1982,7 @@ The formula for SBC can be written several ways; one way is:
 In other words, the formula is accumulator = accumulator - data - 1 when the
 carry (i.e. the c flag) is 0, and accumulator = accumulator - data when the
 carry is 1.
-
+<p>
 When the d flag is 0:
 
 <ul>
@@ -1998,9 +1999,8 @@ numbers, $00 to $7F represents 0 to 127, and $80 to $FF represents -128 to
 
 32767, and $8000 to $FFFF represents -32768 to -1; a 16-bit arithmetic
 overflow occurs when the result is outside the range -32768 to 32767.
-</ul>
 
-<ul>
+
 <li>The z flag is 0 when the 16-bit (when m flag is 0) or 8-bit (when the m flag
 is 1) result is nonzero, and the z flag is 1 when the result is zero.
 
@@ -2080,7 +2080,7 @@ CMP, CPX, and CPY compare the accumulator, X register, and Y register
 0, and an 8-bit comparison when the m flag is 1.  CPX and CPY are 16-bit
 comparisons when the x flag is 0, and 8-bit comparisons when the x flag is
 1.
-
+<p>
 CMP is similar to SBC, except:
 
 <ul>
@@ -2142,7 +2142,7 @@ C8 1   2           imp       x.....x. . INY
 </pre>
 DEC, DEX, and DEY decrement (i.e. subtract 1 from) and INC, INX, and INY
 increment (i.e. add 1 to) a register or the data.
-
+<p>
 DEX, DEY decrement the X and Y registers respectively, and INX and INY
 increment the X and Y registers respectively.  DEX, DEY, INX, and INY are
 16-bit operations when the x flag is 0 and 8-bit operations when the x flag
@@ -2173,7 +2173,7 @@ INC A
 <p>
 For this reason, in some assemblers, the label A is reserved and cannot be
 used in source code.
-
+<p>
 For all 6 instructions:
 
 <ul>
@@ -2266,7 +2266,7 @@ bits 1, 2, 3, etc.
 For ORA, if bit 0 of the accumulator (input) and bit 0 of the data are both
 0, then bit 0 of the accumulator (result) will be 0, otherwise, bit 0 of
 the accumulator result will be 1.  And so on for bits 1, 2, 3, etc.
-
+<p>
 For all 3 instructions:
 
 <ul>
@@ -2437,7 +2437,7 @@ bit is shifted into the c flag (result).
 <p>
 ROR shifts right; the (input) c flag is shifted into the high bit; the low
 bit is shifted into the c flag (result).
-
+<p>
 For all 4 instructions:
 
 <ul>
@@ -2584,7 +2584,7 @@ BRL is like BRA, except that the branch displacement is 16 bits, instead of
 of the next instruction (or -32765 to 32770 bytes from the address of the
 BRL instruction).  However, since BRL wraps at bank boundaries, this means
 it can branch anywhere within the current (program) bank.
-
+<p>
 BRL is one cycle longer than JMP absolute (which also can jump anywhere
 
 within the current bank).  The reason BRL is used is for code (e.g. a
@@ -2634,7 +2634,7 @@ opcode $DC (i.e. JMP [absolute]), which is a 24-bit pointer, rather than a
 (direct) and [direct], where parentheses indicate a 16-bit pointer, and
 
 square brackets indicate a 24-bit pointer.
-
+<p>
 JSL pushes the K register (i.e. program bank register), then pushes the
 
 16-bit address (high byte first, then low byte) of the JSL instruction plus
@@ -2642,7 +2642,7 @@ JSL pushes the K register (i.e. program bank register), then pushes the
 address specified by the operand.  Thus, if the JSL instruction (i.e. the
 $22 opcode) is at $12FFFD, then the bytes pushed are (in order): $12, $00,
 and $00, rather than $13, $00, and $00.
-
+<p>
 JSR pushes the 16-bit address (i.e. the program counter) of the JSR
 instruction plus 2 onto the stack, and jumps to an address within the
 current program bank.  In other words, the address pushed is one less than
@@ -2660,10 +2660,10 @@ that is quite difficult to follow and/or debug.
 
 <p>
 Example: If the S register is $01FF, then a JSR $ABCD at $123456
-
-stores $34 at $0001FF
-stores $58 at $0001FE
-
+<ul>
+<li>stores $34 at $0001FF
+<li>stores $58 at $0001FE
+</ul>
 then jumps to $12ABCD, and
 
 <ul>
@@ -2688,7 +2688,7 @@ stack, then increments the program counter, then pulls the K register (i.e.
 the program bank register) from the stack.  This means that if $FF, $FF, and
 $12 are pulled from the stack, the instruction at $120000 (rather than
 $130000) will be executed next.
-
+<p>
 RTS returns from a subroutine called with JSR (within the current program
 bank).  It pulls the low byte, then the high byte of the program counter
 from the stack, then increments the program counter.
@@ -3015,7 +3015,7 @@ F8 1   2           imp       ....1... . SED
 78 1   2           imp       .....1.. . SEI
 </pre>
 CLC, CLD, CLI, and CLV clear the c, d, i, and v flags respectively.
-
+<p>
 SEC, SED, and SEI set the c, d, and i flags respectively.
 
 <p>
@@ -3182,7 +3182,7 @@ destination address.  The source bank and the destination bank are specified
 in the operand.  Both the source and the destination address wrap at the
 bank boundary.  For MVN, X and Y are the start (i.e. lowest address) of the
 block, but for MVP, X and Y are the end (i.e. highest address) of the block.
-
+<p>
 MVN and MVP decrement the (16-bit) accumulator and increment (for MVN) or
 decrement (for MVP) both X and Y each time a byte is moved; this means that
 the accumulator will be $FFFF after an MVN or MVP (since it contained the
@@ -3311,7 +3311,7 @@ NOP, as its name implies, performs no operation (affecting no flags or
 registers); it is primarily useful for (a) delaying 2 cycles when a routine
 requires exact, or special, timing, (b) disabling code via patch, or (c)
 reserving space for self-modifying code.
-
+<p>
 WDM are the initials of William D. Mensch, Jr, the designer of the 65C816
 (and the 65C02).  This opcode is reserved for future expansion.  On the
 
@@ -3361,7 +3361,7 @@ Note, however, that the names of these instructions are a bit misleading.
 The 16-bit value that is pushed onto the stack need not be an address; it
 could be a constant.  Because of the names, the operand syntax permitted (or
 required) can vary from assembler to assembler.
-
+<p>
 PEA #$1234 is the syntax that is most consistent with the operation of the
 instruction, since it simply pushes the value $1234, but does not access
 memory location $1234 (in any bank).  This is analogous to LDA #$1234 vs.
@@ -3489,7 +3489,7 @@ AB 1   4           imp       *.....*. . PLB
 PHB, PHD, PHK, and PHP push the DBR, the D register, the K register, and the
 P register, respectively, onto the stack.  PLB, PLD, and PLP pull the DBR,
 the D register, and the P register, respectively, from the stack.
-
+<p>
 PHP, PHK, PHP, PLB, and PLP push and pull one byte from the stack; PHD and
 PLD push and pull two bytes from the stack.
 
@@ -3540,7 +3540,7 @@ STP stops the clock input of the 65C816, effectively shutting down the
 65C816 until a hardware reset (interrupt) occurs.  This puts the 65C816 into
 a low power state.  This is useful for applications (circuits) that require
 low power consumption, but STP is rarely seen otherwise.
-
+<p>
 WAI puts the 65C816 into a low power sleep state until a hardware interrupt
 occurs.  In addition to reducing power consumption, using WAI also ensures
 that the interrupt will be recognized immediately.  In other words, if an
