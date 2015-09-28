@@ -11,7 +11,10 @@
 <hr>
 <br>
 
-Table of contents:
+Thanks to everyone who read over the early draft.  Thanks to BigEd for the
+helpful feedback.
+<p>
+<h3>Table of contents:</h3>
 
 <ul>
 <li style="display:block"><a href="#1">1</a> INTRODUCTION
@@ -98,7 +101,7 @@ combinations of modes of which binary mode and decimal mode are a part.
 
 <p>
 Also a part of these combinations are the width (8 or 16 bits) of the
-accumulator (and read-modify-write &quot;memory&quot; instructions, such as DEC), the
+accumulator (and read-modify-write memory instructions, such as DEC), the
 width of the X and Y index registers (likewise, 8 or 16 bits), and native or
 emulation mode.  The 10 combinations are:
 
@@ -115,12 +118,13 @@ emulation mode.  The 10 combinations are:
 <li>decimal mode, native mode, 16-bit accumulator mode, 16-bit index register mode
 </ul>
 <p>
-In emulation mode, both the accumulator (and &quot;memory&quot;) width and the index
+In emulation mode, both the accumulator (and memory) width and the index
 register width are always 8 bits, which is why there are 10 combinations
 (rather than 16 combinations).  As on the 65C02 and NMOS 6502, ADC and SBC
 use binary arithmetic in binary mode, and BCD arithmetic in decimal mode.
 Whether instructions such as ASL, CMP, and CPX operate on 8-bit or 16-bit
-data depends on the accumulator (and &quot;memory&quot;) width (for ASL and CMP) or
+data depends on the accumulator (and memory) width (for ASL and CMP) or
+
 the index register width (for CPX).  In emulation mode, as its name implies,
 the 65C816 emulates the operation of a 65C02 (albeit with the cycle counts
 of NMOS 6502).  In native mode, the 65C816 can operate on 16-bit data, and
@@ -310,7 +314,7 @@ There are 9 registers.  They are:
 <li>The Accumulator (16 bits wide)
 <li>The Data Bank Register (8 bits wide)
 <li>The Direct register (16 bits wide)
-<li>The program bank register (8 bits wide)
+<li>The program banK register (8 bits wide)
 <li>The Program Counter (16 bits wide)
 <li>The Processor status register (8 bits wide)
 <li>The Stack pointer (16 bits wide)
@@ -325,10 +329,10 @@ There are 10 flags.  Each is one bit wide.  They are:
 <li>The Decimal mode flag
 <li>The Emulation mode flag
 <li>The Interrupt disable flag
-<li>The accumulator and &quot;Memory&quot; width flag
+<li>The accumulator and Memory width flag
 <li>The Negative flag
 <li>The oVerflow flag
-<li>The index register width flag
+<li>The indeX register width flag
 <li>The Zero flag
 </ul>
 The terms used for these registers and flags will be:
@@ -362,7 +366,7 @@ The terms used for these registers and flags will be:
 <li>d flag: the decimal mode flag
 <li>e flag: the emulation mode flag
 <li>i flag: the interrupt disable flag
-<li>m flag: the accumulator and &quot;memory&quot; width flag
+<li>m flag: the accumulator and memory width flag
 <li>n flag: the negative flag
 <li>v flag: the overflow flag
 <li>x flag: the index register width flag
@@ -414,19 +418,19 @@ The v flag is 1 when an arithmetic overflow occurs.  The v flag is 0 if
 there was no arithmetic overflow.
 
 <p>
-When the m flag is 0, the accumulator (and &quot;memory&quot;) width is 16 bits.  When
-the m flag is 1, the accumulator (and &quot;memory&quot;) width is 8 bits.
-Unfortunately, the smaller value (zero) is the larger width (16 bits), and
-vice versa, making it easy to get confused.
+When the m flag is 0, the accumulator (and memory) width is 16 bits.  When
+the m flag is 1, the accumulator (and memory) width is 8 bits.  One way to
+remember what's what is that the even flag value (i.e. 0) is the width that
+is an even number of bytes (i.e. 2), and the odd flag value is an odd number
+of bytes.
 
 <p>
-Likewise, when the x flag is 0, the index register width 16 bits.  When the
-x flag is 1, the index register width is 8 bits.  Again, the smaller value
-(zero) is the larger width (16 bits), and vice versa.  One important
-difference from the m flag is that when the x flag is 1 (8-bit index
-registers), the XH register and the YH register are both forced to $00.
-
-This means that after:
+Likewise, when the x flag is 0, the index register width is 16 bits.  When the
+x flag is 1, the index register width is 8 bits.  Again, the even flag value
+is an even number of bytes and the odd flag value is an odd number of bytes.
+One important difference from the m flag is that when the x flag is 1 (8-bit
+index registers), the XH register and the YH register are both forced to
+$00.  This means that after:
 
 <pre>
 CLC
@@ -481,7 +485,7 @@ register are forced to $00 (see above).  This means that after:
 <pre>
 CLC
 XCE        ; native mode
-REP #$30   ; 16-bit accumulator/&quot;memory&quot; and 16-bit index registers
+REP #$30   ; 16-bit accumulator/memory and 16-bit index registers
 LDX #$1234
 LDY #$5678
 LDA #$ABCD
@@ -712,13 +716,14 @@ addition, the following quantities are used in the formulas:
 <li>$rr = the (value of the) DBR
 </ul>
 <p>
-In the previous example $ll would be $EF (the value of the low byte of the
-pointer).  D, DH, K, X, and Y are, as you might expect, the value of the
-D, DH, K, X, and Y registers respectively.  $OP is not used in the formulas,
-but simply indicates the opcode byte.  For example, the bytes of an
-instruction with absolute addressing are $OP $LL $HH.  This simply means
-that the instruction has three bytes: an opcode, a operand low byte, and an
-operand high byte.
+In the previous LDA ($12) example, $ll would be $EF (the value of the low
+byte of the pointer).  D, DH, K, X, and Y are, as you might expect, the
+
+value of the D, DH, K, X, and Y registers respectively.  $OP is not used in
+the formulas, but simply indicates the opcode byte.  For example, the bytes
+of an instruction with absolute addressing are $OP $LL $HH.  This simply
+means that the instruction has three bytes: an opcode, a operand low byte,
+and an operand high byte.
 
 <p>
 Note that $rrHHLL is a 24-bit value whose high byte is $rr, whose middle
@@ -845,9 +850,8 @@ Length: 3 bytes, $OP $LL $HH
 !     0     !        $HHLL+1        ! pointer hi
 +-----------+-----------+-----------+
 </pre>
-<p>
-The jump destination address is (JMP is the only instruction that uses this
-addressing mode):
+JMP is the only instruction that uses this addressing mode; the jump
+destination address is:
 
 <pre>
 +-----------+-----------+-----------+
@@ -873,8 +877,8 @@ address of the pointer is:
 +-----------+-----------+-----------+
 </pre>
 <p>
-The jump destination address is (again, JMP is the only instruction that
-uses this addressing mode):
+Likewise, JMP is the only instruction that uses this addressing mode; the
+jump destination address is:
 
 <pre>
 +-----------+-----------+-----------+
@@ -884,14 +888,14 @@ uses this addressing mode):
 <p>
 Example: If the K register is $12 and
 
-$00FFFF contains $34
-$000000 contains $56
+$000000 contains $34
+$00FFFF contains $56
 
 then JMP ($FFFF) jumps to $123456
 
 (Some assemblers allow the syntax JML (absolute) which is equivalent to JMP
 [absolute]; however, the use of the latter syntax is more consistent with
-syntax of the [direct] and (direct) addressing modes, where parenthesis
+syntax of the [direct] and (direct) addressing modes, where parentheses
 
 indicate a 16-bit pointer and square brackets indicate a 24-bit pointer.)
 
@@ -923,9 +927,8 @@ is:
 !     K     !       $HHLL+X+1       ! pointer hi
 +-----------+-----------+-----------+
 </pre>
-<p>
-The jump destination address is (JMP and JSR are the only instructions that
-use this addressing mode):
+JMP and JSR are the only instructions that use this addressing mode; the
+jump destination address is:
 
 <pre>
 +-----------+-----------+-----------+
@@ -935,10 +938,10 @@ use this addressing mode):
 <p>
 Example: If the K register is $12, the X register is $000A, and
 
-$000008 contains $34
-$000009 contains $56
+$120008 contains $56
+$120009 contains $34
 
-then JMP ($FFFE) jumps to $123456
+then JMP ($FFFE,X) jumps to $123456
 
 
 <p><br><h3><a name="5.6">5.6  ACCUMULATOR</a></h3>
@@ -995,15 +998,14 @@ Otherwise, the address of the data is:
 +-----------+-----------+-----------+
 </pre>
 <p>
-Example 1: If the D register is $FF00 and the e flag is 1, then LDA $FF
-
-loads the low byte of the data from address $00FFFF
+Example 1: If the D register is $FF00 and the e flag is 1 (note that this
+means the m flag must be 1), then LDA $FF loads the low byte of the data
+from address $00FFFF
 
 <p>
-Example 2: If the D register is $FF00 and the m flag is 0, then LDA $FF
-
-loads the low byte of the data from address $00FFFF, and the high byte from
-address $000000
+Example 2: If the D register is $FF00 and the m flag is 0 (note that this
+means the e flag must be 0), then LDA $FF loads the low byte of the data
+from address $00FFFF, and the high byte from address $000000
 
 
 <p><br><h3><a name="5.8">5.8  DIRECT,X AND DIRECT,Y</a></h3>
@@ -1055,13 +1057,14 @@ Otherwise, for direct,Y addressing, the address of the data is:
 </pre>
 <p>
 Example 1: If the D register is $FF00, the X register is $000A, and the e
-flag is 1, then LDA $FE,X loads the low byte of the data from address
-$00FF08
+flag is 1 (note that this means the m flag must be 1), then LDA $FE,X loads
+the low byte of the data from address $00FF08
 
 <p>
 Example 2: If the D register is $FF00, the X register is $000A, and the m
-flag is 0, then LDA $FE,X loads the low byte of the data from address
-$000008, and the high byte from address $000009
+flag is 0 (note that this means the e flag must be 0), then LDA $FE,X loads
+the low byte of the data from address $000008, and the high byte from
+address $000009
 
 
 <p><br><h3><a name="5.9">5.9  (DIRECT)</a></h3>
@@ -1115,10 +1118,10 @@ Note that this means that the address of the pointer wraps at a bank
 boundary, but the address of the data does not.
 
 <p>
-Example 1: if the D register is $FF00 and the e flag is 1, then for LDA
-
-($FF), the address of the low byte of the pointer is $00FFFF and the address
-of the high byte is $00FF00.  Furthermore, if the DBR is $12 and
+Example 1: if the D register is $FF00 and the e flag is 1 (note this means
+the m flag must be 1), then for LDA ($FF), the address of the low byte of
+the pointer is $00FFFF and the address of the high byte is $00FF00.
+Furthermore, if the DBR is $12 and
 
 $00FF00 contains $FF
 $00FFFF contains $FF
@@ -1126,10 +1129,10 @@ $00FFFF contains $FF
 then LDA ($FF) loads the low byte of the data from address $12FFFF.
 
 <p>
-Example 2: if the D register is $FF00 and the m flag is 0, then for LDA
-
-($FF), the address of the low byte of the pointer is $00FFFF and the address
-of the high byte is $000000.  Furthermore, if the DBR is $12 and
+Example 2: if the D register is $FF00 and the m flag is 0 (note this means
+the e flag must be 0), then for LDA ($FF), the address of the low byte of
+the pointer is $00FFFF and the address of the high byte is $000000.
+Furthermore, if the DBR is $12 and
 
 $000000 contains $FF
 $00FFFF contains $FF
@@ -1186,7 +1189,7 @@ $000000 contains $12
 $00FFFE contains $FF
 $00FFFF contains $FF
 
-then LDA [$FF] loads the low byte of the data from address $12FFFF, and the
+then LDA [$FE] loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
 
@@ -1243,9 +1246,9 @@ but the address of the data does not.
 
 <p>
 Example 1: if the D register is $FF00, the X register is $000A, and the e
-flag is 1, then for LDA ($FE,X), the address of the low byte of the pointer
-is $00FF08 and the address of the high byte is $00FF09.  Furthermore, if the
-DBR is $12 and
+flag is 1 (note that this means the m flag must be 1), then for LDA ($FE,X),
+the address of the low byte of the pointer is $00FF08 and the address of the
+high byte is $00FF09.  Furthermore, if the DBR is $12 and
 
 $00FF08 contains $FF
 $00FF09 contains $FF
@@ -1254,9 +1257,9 @@ then LDA ($FE,X) loads the low byte of the data from address $12FFFF.
 
 <p>
 Example 2: if the D register is $FF00, the X register is $000A, and the m
-flag is 0, then for LDA ($FE,X), the address of the low byte of the pointer
-is $000008 and the address of the high byte is $000009.  Furthermore, if the
-DBR is $12 and
+flag is 0 (note that this means the e flag must be 0), then for LDA ($FE,X),
+the address of the low byte of the pointer is $000008 and the address of the
+high byte is $000009.  Furthermore, if the DBR is $12 and
 
 $000008 contains $FF
 $000009 contains $FF
@@ -1322,15 +1325,15 @@ different behavior than the 65C02 or NMOS 6502.  Since the 65C02 and NMOS
 6502 have a 16-bit address space, if the address of the data were $FFFE+Y
 and the Y register were $0A, the address of the data would be $0008.  On the
 65C816, the address of the data would be $010008 (assuming the DBR was $00).
-In practice, this is not a problem, since code written for the 65C02 or NMOS
-6502 would almost never use a pointer that would wrap at the 16-bit address
-space boundary like that.
+In practice, this is typically not a problem, since code written for the
+65C02 or NMOS 6502 would almost never use a pointer that would wrap at the
+16-bit address space boundary like that.
 
 <p>
-Example 1: if the D register is $FF00 and the e flag is 1, then for
-LDA ($FF),Y, the address of the low byte of the pointer is $00FFFF and the
-address of the high byte is $00FF00.  Furthermore, if the DBR is $12, the Y
-register is $000A, and
+Example 1: if the D register is $FF00 and the e flag is 1 (note that this
+means the m flag must be 1), then for LDA ($FF),Y, the address of the low
+byte of the pointer is $00FFFF and the address of the high byte is $00FF00.
+Furthermore, if the DBR is $12, the Y register is $000A, and
 
 $00FF00 contains $FF
 $00FFFF contains $FE
@@ -1338,10 +1341,10 @@ $00FFFF contains $FE
 then LDA ($FF),Y loads the low byte of the data from address $130008.
 
 <p>
-Example 2: if the D register is $FF00 and the m flag is 0, then for
-LDA ($FF),Y, the address of the low byte of the pointer is $00FFFF and the
-address of the high byte is $000000.  Furthermore, if the DBR is $12, the Y
-register is $000A, and
+Example 2: if the D register is $FF00 and the m flag is 0 (note that this
+means the e flag must be 0), then for LDA ($FF),Y, the address of the low
+byte of the pointer is $00FFFF and the address of the high byte is $000000.
+Furthermore, if the DBR is $12, the Y register is $000A, and
 
 $000000 contains $FF
 $00FFFF contains $FE
@@ -1484,9 +1487,8 @@ For all other instructions, the address of the data is:
 +-----------+-----------+-----------+
 </pre>
 <p>
-Example: If the DBR is $12 and the m flag is 0, then LDA $FFFF loads the
-low byte of the data from address $12FFFF, and the high byte from address
-$130000.
+Example: If the m flag is 0, then LDA $12FFFF loads the low byte of the data
+from address $12FFFF, and the high byte from address $130000.
 
 
 <p><br><h3><a name="5.17">5.17  LONG,X</a></h3>
@@ -1975,7 +1977,7 @@ than 65535.  For subtraction (8-bit or 16-bit), there is a carry when the
 accumulator is greater than or equal to the data.
 
 <p>
-When the d flag is 1, the n, z and c flags have the same meaning (i.e. the
+When the d flag is 1, the n, z, and c flags have the same meaning (i.e. the
 n flag reflects the high bit of the result, the z flag indicates when the
 result is zero, and the carry indicates when the result is outside the
 range 0 to 9999).  The v flag is overwritten, but BCD is really an unsigned
@@ -2427,9 +2429,10 @@ Again, for this reason, in some assemblers, the label A is reserved and
 cannot be used in source code.
 
 <p>
-Note that for absolute,X addressing, when the m flag is 1 (and the DL
-register is $00), the cycle count matches the NMOS 6502 timing (7 cycles
-always) rather than the 65C02 (6 cycles if a page boundary was not crossed).
+Note that for absolute,X addressing, when the m flag is 1, the cycle count
+matches the NMOS 6502 timing (7 cycles always) rather than the 65C02 (6
+
+cycles if a page boundary was not crossed).
 
 <p>
 Example: If the DBR is $12, the m flag is 1, and
@@ -2534,7 +2537,7 @@ OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 </pre>
 BRL is like BRA, except that the branch displacement is 16 bits, instead of
 8 bits, which means it can branch -32768 to 32767 bytes from the address
-of the next instruction (or -32766 to 32769 bytes from the address of the
+of the next instruction (or -32765 to 32770 bytes from the address of the
 BRL instruction).  However, since BRL wraps at bank boundaries, this means
 it can branch anywhere within the current (program) bank.
 
@@ -2615,7 +2618,7 @@ that is quite difficult to follow and/or debug.
 Example: If the S register is $01FF, then a JSR $ABCD at $123456
 
 stores $34 at $0001FF
-stores $57 at $0001FE
+stores $58 at $0001FE
 
 then jumps to $12ABCD, and
 
@@ -2969,7 +2972,7 @@ have to remember whether i flag 0 means disable interrupts (it doesn't) or
 enable interrupts (it does).
 
 <p>
-Example: after a CLC,
+Example: after a CLC
 
 the c flag is 0
 
@@ -3187,8 +3190,6 @@ $001001 contains $CD
 
 then after an MVN #0,#0
 
-$001000 will contain $AB
-$001001 will contain $CD
 $001002 will contain $AB
 $001003 will contain $CD
 $001004 will contain $AB
@@ -3197,10 +3198,10 @@ $001005 will contain $CD
 <p>
 This happens because
 
-the byte at $001000 ($AB) is moved to $001002
-the byte at $001001 ($CD) is moved to $001003
-the byte at $001002 (which now contains $AB) is moved to $001004
-the byte at $001003 (which now contains $CD) is moved to $001005
+the byte at $001000 ($AB) is stored at $001002
+the byte at $001001 ($CD) is stored at $001003
+the byte at $001002 (which now contains $AB) is stored at $001004
+the byte at $001003 (which now contains $CD) is stored at $001005
 
 <p>
 Incidentally, some assemblers allow an alternate syntax (in addition to the
@@ -3339,7 +3340,7 @@ fetched.
 Example: If the S register is $01FF, then after PEA #$1234,
 
 $0001FF will contain $12
-$0001FE will contain $12
+$0001FE will contain $34
 the S register will be $01FD
 
 
@@ -3395,6 +3396,7 @@ then after a PLA
 the accumulator will be $CDAB
 the n flag will be 1
 the z flag will be 0
+the S register will be $01FF
 
 
 <p><br><h3><a name="6.8.3">6.8.3  PHB PHD PHK PHP PLB PLD PLP</a></h3>
@@ -3453,7 +3455,7 @@ then after a PLD
 the D register will be $CDAB
 the n flag will be 1
 the z flag will be 0
-
+the S register will be $01FF
 
 <p><br><h3><a name="6.9">6.9  STP WAI</a></h3>
 
@@ -3673,11 +3675,12 @@ To begin with, emulation mode has slightly different behavior than 8-bit
 updating an NMOS 6502 or 65C02 routine (or program) for 16-bit data, you may
 find it helpful to get it working in 8-bit native mode first, then modify it
 for 16-bit mode.  The two biggest differences are (a) emulation mode has
-direct page (zero page) wrap around (when DL is $00, which is typically the
-case), but native mode does not, and (b) after a TXS, in emulation mode, the
+direct page wrap around (when DL is $00, which is typically the case), but
+native mode does not, and (b) after a TXS, in emulation mode, the
 stack is on page 1 (since SH is forced to $01), but in 8-bit native mode,
-the stack is on page 0 (since XH is forced to $00 when the x flag is 1) and
-TXS transfers all 16 bits (since the S register is 16 bits wide).
+TXS transfers all 16 bits of the X register (since the S register is 16 bits
+wide) thus the stack is then on page 0 (since XH is forced to $00 when the x
+flag is 1).
 
 <p>
 There are also minor differences.  In native mode, RTI pulls 4 bytes (versus
@@ -3743,7 +3746,8 @@ mode) when the DL register is $00; the DH register need not be zero.  In
 fact, this can be very useful, since it allows you locate the direct page on
 any bank 0 page.  For instance, if you have a program that makes heavy use
 of the direct page (e.g. a programming language interpreter, like BASIC, or
-an operating system) and you wish to avoid zero page conflict with I/O
+an operating system) and you wish to avoid zero page conflicts with I/O
+
 routines, then you can adjust the D register when calling an I/O routine so
 that the program and the I/O routines use different pages for the direct
 page.
