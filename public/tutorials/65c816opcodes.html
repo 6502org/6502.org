@@ -2044,11 +2044,12 @@ and the c flag is 1, then after SBC #$2003
 
 <p><br><h3><a name="6.1.1.2">6.1.1.2  CMP CPX CPY</a></h3>
 
-<p>
+<pre>
 CoMPare (to accumulator)
 ComPare to X register
 ComPare to Y register
-
+</pre>
+           
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2191,11 +2192,11 @@ Example: If the X register is $7FFF and the x flag is 0, then after INX
 </ul>
 
 <p><br><h3><a name="6.1.2.1">6.1.2.1  AND EOR ORA</a></h3>
-
+<pre>
 bitwise AND
 bitwise Exclusive OR
 bitwise OR Accumulator
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2285,7 +2286,8 @@ Example: If the accumulator is $0F06 and the m flag is 0, then after EOR
 
 <p><br><h3><a name="6.1.2.2">6.1.2.2  BIT</a></h3>
 
-test BITs
+<pre>test BITs
+</pre>
 
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
@@ -2338,10 +2340,10 @@ then after BIT $ABCD
 
 <p><br><h3><a name="6.1.2.3">6.1.2.3  TRB TSB</a></h3>
 
-<p>
+<pre>
 Test and Reset Bits
 Test and Set Bits
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2380,12 +2382,12 @@ then after TSB $ABCD
 
 <p><br><h3><a name="6.1.3">6.1.3  ASL LSR ROL ROR</a></h3>
 
-<p>
+<pre>
 Arithmetic Shift Left
 Logical Shift Right
 ROtate Left
 ROtate Right
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2490,7 +2492,7 @@ then after ASL $ABCD
 
 <p><br><h3><a name="6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a></h3>
 
-<p>
+<pre>
 Branch if Carry Clear
 Branch if Carry Set
 Branch if EQual
@@ -2500,7 +2502,7 @@ Branch if PLus
 BRanch Always
 Branch if oVerflow Clear
 Branch if oVerflow Set
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2598,11 +2600,11 @@ is $0042 since the instruction after the BRL is at $ABC003.)
 
 <p><br><h3><a name="6.2.2.1">6.2.2.1  JMP JSL JSR</a></h3>
 
-<p>
+<pre>
 JuMP
 Jump to Subroutine Long
 Jump to SubRoutine
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2670,10 +2672,10 @@ then jumps to $12ABCD, and
 
 <p><br><h3><a name="6.2.2.2">6.2.2.2  RTL RTS</a></h3>
 
-<p>
+<pre>
 ReTurn from subroutine Long
 ReTurn from Subroutine
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -2831,12 +2833,12 @@ and
 <li>$00FFE7 contains $CD
 </ul>
 then a BRK at $123456
-
-stores $12 at $0001FF
-stores $34 at $0001FE
-stores $58 at $0001FD
-stores $08 at $0001FC
-
+<ul>
+<li>stores $12 at $0001FF
+<li>stores $34 at $0001FE
+<li>stores $58 at $0001FD
+<li>stores $08 at $0001FC
+</ul>
 then jumps to $00CDAB, and
 
 <ul>
@@ -2947,9 +2949,9 @@ then the 65C816 will jump to $00CDAB; afterwards
 
 <p><br><h3><a name="6.3.2">6.3.2  RTI</a></h3>
 
-<p>
+<pre>
 ReTurn from Interrupt
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3064,7 +3066,7 @@ Example: If the e flag is 0, then after SEP #$21
 
 <p><br><h3><a name="6.5">6.5  LDA LDX LDY STA STX STY STZ</a></h3>
 
-<p>
+<pre>
 LoaD Accumulator
 LoaD X register
 LoaD Y register
@@ -3072,7 +3074,7 @@ STore Accumulator
 STore X register
 STore Y register
 STore Zero
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3159,10 +3161,10 @@ then after a LDA $123456
 
 <p><br><h3><a name="6.6">6.6  MVN MVP</a></h3>
 
-<p>
+<pre>
 MoVe memory Negative
 MoVe memory Positive
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3295,10 +3297,10 @@ then after an MVP #0,#0
 
 <p><br><h3><a name="6.7">6.7  NOP WDM</a></h3>
 
-<p>
+<pre>
 No OPeration
 William D. Mensch, Jr.
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3333,11 +3335,11 @@ ignore it.  (The X register will be decremented when entering at LABEL2.)
 
 <p><br><h3><a name="6.8.1">6.8.1  PEA PEI PER</a></h3>
 
-<p>
+<pre>
 Push Effective Address
 Push Effective Indirect address
 Push Effective Relative address
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3407,14 +3409,14 @@ Example: If the S register is $01FF, then after PEA #$1234,
 
 <p><br><h3><a name="6.8.2">6.8.2  PHA PHX PHY PLA PLX PLY</a></h3>
 
-<p>
+<pre>
 PusH Accumulator
 PusH X register
 PusH Y register
 PulL Accumulator
 PulL X register
 PulL Y register
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3464,7 +3466,7 @@ then after a PLA
 
 <p><br><h3><a name="6.8.3">6.8.3  PHB PHD PHK PHP PLB PLD PLP</a></h3>
 
-<p>
+<pre>
 PusH data Bank register
 PusH Direct register
 PusH K register
@@ -3472,7 +3474,7 @@ PusH Processor status register
 PulL data Bank register
 PulL Direct register
 PulL Processor status register
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3561,7 +3563,7 @@ interrupt.
 
 <p><br><h3><a name="6.10.1">6.10.1  TAX TAY TSX TXA TXS TXY TYA TYX</a></h3>
 
-<p>
+<pre>
 Transfer Accumulator to X register
 Transfer Accumulator to Y register
 Transfer Stack pointer to X register
@@ -3570,7 +3572,7 @@ Transfer X register to Stack pointer
 Transfer X register to Y register
 Transfer Y register to Accumulator
 Transfer Y register to X register
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3629,12 +3631,12 @@ flag is 1, then after a TXA
 
 <p><br><h3><a name="6.10.2">6.10.2  TCD TCS TDC TSC</a></h3>
 
-<p>
+<pre>
 Transfer C accumulator to Direct register
 Transfer C accumulator to Stack pointer
 Transfer Direct register to C accumulator
 Transfer Stack pointer to C accumulator
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3676,8 +3678,9 @@ Example: If the D register is $1234, then after a TDC
 
 <p><br><h3><a name="6.10.3">6.10.3  XBA</a></h3>
 
+<pre>
 eXchange B and A accumulator
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
@@ -3714,8 +3717,9 @@ Example: If the accumulator is $6789, then after an XBA
 
 <p><br><h3><a name="6.10.4">6.10.4  XCE</a></h3>
 
+<pre>
 eXchange Carry and Emulation flags
-
+</pre>
 <pre>
 OP LEN CYCLES      MODE      nvmxdizc e SYNTAX
 -- --- ----------- --------- ---------- ------
