@@ -681,10 +681,11 @@ example:
 shows the formula for the address of the low byte of the data (in this case,
 for long,X addressing).
 
-24-bit quantities have high, middle, and low bytes.
-16-bit quantities have only high and low bytes.
-8-bit quantities have only low bytes.
-
+<ul>
+<li>24-bit quantities have high, middle, and low bytes.
+<li>16-bit quantities have only high and low bytes.
+<li>8-bit quantities have only low bytes.
+</ul>
 <p>
 For example, when the x flag is 1, then LDX loads only 8 bits of data, and
 the formula for the high byte would not apply in that instance.
@@ -757,6 +758,7 @@ hi) and $pl.)
 
 <p>
 Length: 3 bytes, $OP $LL $HH
+<p>
 
 For JMP and JSR, the jump destination address is:
 
@@ -790,6 +792,7 @@ $130000
 
 <p>
 Length: 3 bytes, $OP $LL $HH
+<p>
 
 For absolute,X addressing the address of the data is:
 
@@ -837,6 +840,7 @@ zero page addressing always wraps at the page boundary on a 65C02 and NMOS
 
 <p>
 Length: 3 bytes, $OP $LL $HH
+<p>
 
 (absolute) addressing uses a 16-bit pointer.  The address of the pointer is:
 
@@ -888,9 +892,10 @@ jump destination address is:
 <p>
 Example: If the K register is $12 and
 
-$000000 contains $34
-$00FFFF contains $56
-
+<ul>
+<li>$000000 contains $34
+<li>$00FFFF contains $56
+</ul>
 then JMP ($FFFF) jumps to $123456
 
 (Some assemblers allow the syntax JML (absolute) which is equivalent to JMP
@@ -913,6 +918,7 @@ high byte of the destination address from $1200 (rather than $1300).
 
 <p>
 Length: 3 bytes, $OP $LL $HH
+<p>
 
 (absolute,X) addressing uses a 16-bit pointer.  The address of the pointer
 is:
@@ -938,9 +944,10 @@ jump destination address is:
 <p>
 Example: If the K register is $12, the X register is $000A, and
 
-$120008 contains $56
-$120009 contains $34
-
+<ul>
+<li>$120008 contains $56
+<li>$120009 contains $34
+</ul>
 then JMP ($FFFE,X) jumps to $123456
 
 
@@ -948,6 +955,7 @@ then JMP ($FFFE,X) jumps to $123456
 
 <p>
 Length: 1 byte, $OP
+<p>
 
 <p>
 The accumulator addressing mode is used by the instructions ASL, DEC, INC,
@@ -973,6 +981,7 @@ letter label A, and do not allow it to be used in source code.)
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 <p>
 For &quot;old&quot; instructions (PEI is the only &quot;new&quot; instruction for this
@@ -1012,6 +1021,7 @@ from address $00FFFF, and the high byte from address $000000
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 <p>
 For direct,X addressing, when the e flag is 1 and the DL register is $00
@@ -1071,6 +1081,7 @@ address $000009
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 (direct) addressing uses a 16-bit pointer.  When the e flag is 1 and the DL
 register is $00 (both conditions must be met), the address of the pointer
@@ -1123,9 +1134,10 @@ the m flag must be 1), then for LDA ($FF), the address of the low byte of
 the pointer is $00FFFF and the address of the high byte is $00FF00.
 Furthermore, if the DBR is $12 and
 
-$00FF00 contains $FF
-$00FFFF contains $FF
-
+<ul>
+<li>$00FF00 contains $FF
+<li>$00FFFF contains $FF
+</ul>
 then LDA ($FF) loads the low byte of the data from address $12FFFF.
 
 <p>
@@ -1134,9 +1146,10 @@ the e flag must be 0), then for LDA ($FF), the address of the low byte of
 the pointer is $00FFFF and the address of the high byte is $000000.
 Furthermore, if the DBR is $12 and
 
-$000000 contains $FF
-$00FFFF contains $FF
-
+<ul>
+<li>$000000 contains $FF
+<li>$00FFFF contains $FF
+</ul>
 then LDA ($FF) loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
@@ -1145,6 +1158,7 @@ high byte from $130000.
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 [direct] addressing uses a 24-bit pointer.  The address of the pointer is:
 
@@ -1185,10 +1199,11 @@ the address of the low byte of the pointer is $00FFFE, the address of the
 middle byte is $00FFFF, and the address of the high byte is $000000.
 Furthermore, if
 
-$000000 contains $12
-$00FFFE contains $FF
-$00FFFF contains $FF
-
+<ul>
+<li>$000000 contains $12
+<li>$00FFFE contains $FF
+<li>$00FFFF contains $FF
+</ul>
 then LDA [$FE] loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
@@ -1197,6 +1212,7 @@ high byte from $130000.
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 (direct,X) addressing uses a 16-bit pointer.  When the e flag is 1 and the
 DL register is $00 (both conditions must be met), the address of the pointer
@@ -1250,9 +1266,10 @@ flag is 1 (note that this means the m flag must be 1), then for LDA ($FE,X),
 the address of the low byte of the pointer is $00FF08 and the address of the
 high byte is $00FF09.  Furthermore, if the DBR is $12 and
 
-$00FF08 contains $FF
-$00FF09 contains $FF
-
+<ul>
+<li>$00FF08 contains $FF
+<li>$00FF09 contains $FF
+</ul>
 then LDA ($FE,X) loads the low byte of the data from address $12FFFF.
 
 <p>
@@ -1261,9 +1278,10 @@ flag is 0 (note that this means the e flag must be 0), then for LDA ($FE,X),
 the address of the low byte of the pointer is $000008 and the address of the
 high byte is $000009.  Furthermore, if the DBR is $12 and
 
-$000008 contains $FF
-$000009 contains $FF
-
+<ul>
+<li>$000008 contains $FF
+<li>$000009 contains $FF
+</ul>
 then LDA ($FE,X) loads the low byte of the data from address $12FFFF, and the
 high byte from $130000.
 
@@ -1272,6 +1290,7 @@ high byte from $130000.
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 (direct),Y addressing uses a 16-bit pointer.  When the e flag is 1 and the
 DL register is $00 (both conditions must be met), the address of the pointer
@@ -1335,9 +1354,10 @@ means the m flag must be 1), then for LDA ($FF),Y, the address of the low
 byte of the pointer is $00FFFF and the address of the high byte is $00FF00.
 Furthermore, if the DBR is $12, the Y register is $000A, and
 
-$00FF00 contains $FF
-$00FFFF contains $FE
-
+<ul>
+<li>$00FF00 contains $FF
+<li>$00FFFF contains $FE
+</ul>
 then LDA ($FF),Y loads the low byte of the data from address $130008.
 
 <p>
@@ -1346,9 +1366,10 @@ means the e flag must be 0), then for LDA ($FF),Y, the address of the low
 byte of the pointer is $00FFFF and the address of the high byte is $000000.
 Furthermore, if the DBR is $12, the Y register is $000A, and
 
-$000000 contains $FF
-$00FFFF contains $FE
-
+<ul>
+<li>$000000 contains $FF
+<li>$00FFFF contains $FE
+</ul>
 then LDA ($FF),Y loads the low byte of the data from address $130008, and
 the high byte from $130009.
 
@@ -1357,6 +1378,7 @@ the high byte from $130009.
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 [direct],Y addressing uses a 24-bit pointer.  The address of the pointer is:
 
@@ -1398,10 +1420,11 @@ LDA [$FE],Y, the address of the low byte of the pointer is $00FFFE, the
 address of the middle byte is $00FFFF, and the address of the high byte is
 $000000.  Furthermore, if the Y register is $000A, and
 
-$000000 contains $12
-$00FFFE contains $FC
-$00FFFF contains $FF
-
+<ul>
+<li>$000000 contains $12
+<li>$00FFFE contains $FC
+<li>$00FFFF contains $FF
+</ul>
 then LDA [$FE],Y loads the low byte of the data from address $130006, and
 the high byte from $130007.
 
@@ -1410,7 +1433,9 @@ the high byte from $130007.
 
 <p>
 Length: 2 bytes, $OP $LL (for 8-bit data)
+<p>
 Length: 3 bytes, $OP $LL $HH (for 16-bit data)
+<p>
 
 $LL (or $HHLL for 16-bit data) is the data; thus, the address of the data
 is:
@@ -1429,11 +1454,12 @@ is:
 The width of the immediate data depends on the instruction.  There are four
 cases.
 
-A. The data width depends on the value of the m flag (e.g. LDA)
-B. The data width depends on the value of the x flag (e.g. LDX)
-C. The data is 8 bits wide (e.g. REP)
-D. The data is 16 bits wide (e.g. PEA)
-
+<ul>
+<li>A. The data width depends on the value of the m flag (e.g. LDA)
+<li>B. The data width depends on the value of the x flag (e.g. LDX)
+<li>C. The data is 8 bits wide (e.g. REP)
+<li>D. The data is 16 bits wide (e.g. PEA)
+</ul>
 <p>
 Incidentally, PER is an unusual case.  It can be considered 16-bit immediate
 data, like PEA.  Unlike PEA (which pushes the immediate data onto the
@@ -1448,6 +1474,7 @@ further details.
 
 <p>
 Length: 1 byte, $OP
+<p>
 
 <p>
 Instructions with implied addressing (e.g. CLC) have no operand.  The name
@@ -1466,6 +1493,7 @@ each have only one addressing mode, yet are not implied addressing.
 
 <p>
 Length: 4 bytes, $OP $LL $MM $HH
+<p>
 
 For JMP, the jump destination address is:
 
@@ -1495,6 +1523,7 @@ from address $12FFFF, and the high byte from address $130000.
 
 <p>
 Length: 4 bytes, $OP $LL $MM $HH
+<p>
 
 The address of the data is:
 
@@ -1518,7 +1547,9 @@ address $130009.
 
 <p>
 Length: 2 bytes, $OP $LL (for relative8 addressing)
+<p>
 Length: 3 bytes, $OP $LL $HH (for relative16 addressing)
+<p>
 
 <p>
 For relative8 addressing, $LL is a signed 8-bit branch displacement, where
@@ -1565,6 +1596,7 @@ address is:
 
 <p>
 Length: 3 bytes, $OP $TT $SS
+<p>
 
 <p>
 This is the addressing mode of the MVN and MVP instructions.  The move
@@ -1586,15 +1618,17 @@ The move destination address is:
 Example: If the accumulator is $0002, the X register is $FFFE, and the Y
 register is $FFFF, then MVN #$12,#$34 moves
 
-the data at $12FFFE to $34FFFF
-the data at $12FFFF to $340000
-the data at $120000 to $340001
-
+<ul>
+<li>the data at $12FFFE to $34FFFF
+<li>the data at $12FFFF to $340000
+<li>the data at $120000 to $340001
+</ul>
 
 <p><br><h3><a name="5.20">5.20  STACK,S</a></h3>
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 The address of the data is:
 
@@ -1619,6 +1653,7 @@ address $00000B.
 
 <p>
 Length: 2 bytes, $OP $LL
+<p>
 
 (stack,S),Y addressing uses a 16-bit pointer.  The address of the pointer
 is:
@@ -1655,9 +1690,10 @@ LDA ($FA,S),Y, the address of the low byte of the pointer is $00000A and the
 address of the high byte is $00000B.  Furthermore, if the DBR is $12, the Y
 register is $0050, and
 
-$00000A contains $F0
-$00000B contains $FF
-
+<ul>
+<li>$00000A contains $F0
+<li>$00000B contains $FF
+</ul>
 then LDA ($FA,S),Y loads the low byte of the data from address $130040, and
 the high byte from $130041.
 
@@ -1680,10 +1716,10 @@ bits in native mode), and the P register (8 bits), rather than a single
 (24-bit or 32-bit) push.  Likewise, RTI is treated as two separate pulls:
 the P register and the address.
 
-<ul>
-<li>Note that in these formulas, S and SL refer to values of the S and SL
-<li>registers before the instruction was executed.  After pushing N bytes:
-</ul>
+<p>
+Note that in these formulas, S and SL refer to values of the S and SL
+registers before the instruction was executed.  After pushing N bytes:
+
 <ul>
 <li>In emulation mode, SL will be decremented N times
 <li>In native mode, S will be decremented N times
@@ -1793,10 +1829,11 @@ is not always the case.  For example, if the DBR is $12, the D register
 
 is $3400, and the m flag is 1, then
 
+<pre>
 LDA $56 (direct addressing) loads data from $003456
 LDA $0056 (absolute addressing) loads data from $120056
 LDA $000056 (long addressing) loads data from $000056
-
+</pre>
 <p>
 When encountering an operand address whose high byte is $00, almost all
 
@@ -2293,8 +2330,9 @@ The z flag reflects whether the result (of the bitwise And) is zero.
 <p>
 Example: If the accumulator is $43, the DBR is $12, the m flag is 1, and
 
-$12ABCD contains $9C
-
+<ul>
+<li>$12ABCD contains $9C
+</ul>
 then after BIT $ABCD
 
 the n flag will be 1
@@ -2334,8 +2372,9 @@ The z flag reflects whether the result (of the bitwise And) is zero.
 <p>
 Example: If the accumulator is $43, the DBR is $12, the m flag is 1, and
 
-$12ABCD contains $9C
-
+<ul>
+<li>$12ABCD contains $9C
+</ul>
 then after TSB $ABCD
 
 the z flag will be 1
@@ -2437,15 +2476,17 @@ cycles if a page boundary was not crossed).
 <p>
 Example: If the DBR is $12, the m flag is 1, and
 
-$12ABCD contains $8F
-
+<ul>
+<li>$12ABCD contains $8F
+</ul>
 then after ASL $ABCD
 
-$12ABCD will contain $1E
-the n flag will be 0
-the z flag will be 0
-the c flag will be 1
-
+<ul>
+<li>$12ABCD will contain $1E
+<li>the n flag will be 0
+<li>the z flag will be 0
+<li>the c flag will be 1
+</ul>
 
 <p><br><h3><a name="6.2.1.1">6.2.1.1  BCC BCS BEQ BMI BNE BPL BRA BVC BVS</a></h3>
 
@@ -2493,6 +2534,7 @@ always takes 3 cycles, no matter where the BRA instruction is located in
 memory, since the branch destination is the next instruction, i.e. they are
 the same address, and thus on the same page.
 
+<pre>
 BCC branches if the c flag is 0
 BCS branches if the c flag is 1
 BEQ branches if the z flag is 1
@@ -2501,7 +2543,7 @@ BNE branches if the z flag is 0
 BPL branches if the n flag is 0
 BVC branches if the v flag is 0
 BVS branches if the v flag is 1
-
+</pre>
 <p>
 The names BEQ and BNE come from the fact that these two instructions often
 follow a compare (CMP, CPX, or CPY) and thus will branch if the register and
@@ -2651,9 +2693,10 @@ from the stack, then increments the program counter.
 <p>
 Example: if the K register is $12, the S register is $01FD, and
 
-$0001FE contains $56
-$0001FF contains $34
-
+<ul>
+<li>$0001FE contains $56
+<li>$0001FF contains $34
+</ul>
 then an RTS will return to $123457, and
 
 the S register will be $01FF
@@ -2781,9 +2824,10 @@ mode before returning from the handler.
 Example: If the S register is $01FF, the e flag is 0, the P register is $08,
 and
 
-$00FFE6 contains $AB
-$00FFE7 contains $CD
-
+<ul>
+<li>$00FFE6 contains $AB
+<li>$00FFE7 contains $CD
+</ul>
 then a BRK at $123456
 
 stores $12 at $0001FF
@@ -2878,9 +2922,10 @@ an RTI instruction.
 Example: If the S register is $01FF, the e flag is 0, the P register is $08,
 and
 
-$00FFE6 contains $AB
-$00FFE7 contains $CD
-
+<ul>
+<li>$00FFE6 contains $AB
+<li>$00FFE7 contains $CD
+</ul>
 and an NMI occurs after the first cycle of a LDA #$1122 instruction at
 $345678, then the LDA instruction will be completed, then
 
@@ -2928,11 +2973,12 @@ bytes are pulled from the stack.
 <p>
 Example: If the S register is $01FB, the e flag is 0, and
 
-$0001FC contains $08
-$0001FD contains $12
-$0001FE contains $34
-$0001FF contains $56
-
+<ul>
+<li>$0001FC contains $08
+<li>$0001FD contains $12
+<li>$0001FE contains $34
+<li>$0001FF contains $56
+</ul>
 then an RTI will jump to $563412, and
 
 the S register will be $01FF
@@ -3092,9 +3138,10 @@ zero, and 0 when the result is nonzero.
 <p>
 Example: If the m flag is 0, and
 
-$123456 contains $AB
-$123457 contains $CD
-
+<ul>
+<li>$123456 contains $AB
+<li>$123457 contains $CD
+</ul>
 then after a LDA $123456
 
 the accumulator will be $CDAB
@@ -3185,16 +3232,18 @@ accumulator is $0003, the X register is $1000, the Y register is $1002,
 
 and
 
-$001000 contains $AB
-$001001 contains $CD
-
+<ul>
+<li>$001000 contains $AB
+<li>$001001 contains $CD
+</ul>
 then after an MVN #0,#0
 
-$001002 will contain $AB
-$001003 will contain $CD
-$001004 will contain $AB
-$001005 will contain $CD
-
+<ul>
+<li>$001002 will contain $AB
+<li>$001003 will contain $CD
+<li>$001004 will contain $AB
+<li>$001005 will contain $CD
+</ul>
 <p>
 This happens because
 
@@ -3220,9 +3269,10 @@ the first page (i.e. addresses $0000 to $00FF) of the block.
 Example: If the accumulator is $0001, the X register is $1000, the Y
 register is $2000, and
 
-$000FFF contains $AB
-$001000 contains $CD
-
+<ul>
+<li>$000FFF contains $AB
+<li>$001000 contains $CD
+</ul>
 then after an MVP #0,#0
 
 the accumulator will be $FFFF
@@ -3339,10 +3389,11 @@ fetched.
 <p>
 Example: If the S register is $01FF, then after PEA #$1234,
 
-$0001FF will contain $12
-$0001FE will contain $34
-the S register will be $01FD
-
+<ul>
+<li>$0001FF will contain $12
+<li>$0001FE will contain $34
+<li>the S register will be $01FD
+</ul>
 
 <p><br><h3><a name="6.8.2">6.8.2  PHA PHX PHY PLA PLX PLY</a></h3>
 
@@ -3388,9 +3439,10 @@ result is nonzero.
 <p>
 Example: If the S register is $01FD, the m flag is 0, and
 
-$0001FE contains $AB
-$0001FF contains $CD
-
+<ul>
+<li>$0001FE contains $AB
+<li>$0001FF contains $CD
+</ul>
 then after a PLA
 
 the accumulator will be $CDAB
@@ -3447,9 +3499,10 @@ transfer instructions that change the DBR.
 <p>
 Example: If the S register is $01FD and
 
-$0001FE contains $AB
-$0001FF contains $CD
-
+<ul>
+<li>$0001FE contains $AB
+<li>$0001FF contains $CD
+</ul>
 then after a PLD
 
 the D register will be $CDAB
@@ -3763,5 +3816,5 @@ interrupts do not push (and RTI does not pull) the bank byte on the stack,
 but as long as you can guarantee that interrupts will not occur when in a
 nonzero bank (other than RESET, since you wouldn't return from that),
 then nonzero banks can be used for code as well as data.
-<p><font size="-1">Last Updated September 25, 2015; Content Dated 27 April 2011.</font>
+<p><font size="-1">Last Updated September 28, 2015; Content Dated 27 April 2011.</font>
 </body></html>
