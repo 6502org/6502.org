@@ -143,30 +143,30 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      *
      * ==== Examples
      *   stylesheetLinkTag("style") # =>
-     *     <link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("style.css") # =>
-     *     <link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("http://www.railsapplication.com/style.css") # =>
-     *     <link href="http://www.railsapplication.com/style.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="http://www.railsapplication.com/style.css" media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("style", :media => "all") # =>
-     *     <link href="/stylesheets/style.css" media="all" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style.css" media="all" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("style", :media => "print") # =>
-     *     <link href="/stylesheets/style.css" media="print" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style.css" media="print" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("random.styles", "/css/stylish") # =>
-     *     <link href="/stylesheets/random.styles" media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/css/stylish.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/random.styles" media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/css/stylish.css" media="screen" rel="stylesheet" type="text/css" >
      *
      * You can also include all styles in the stylesheet directory using 'all' as the source:
      *
      *   stylesheetLinkTag('all') # =>
-     *     <link href="/stylesheets/style1.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/styleB.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/styleX2.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style1.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/styleB.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/styleX2.css" media="screen" rel="stylesheet" type="text/css" >
      *
      * == Caching multiple stylesheets into one
      *
@@ -177,20 +177,20 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      *
      * ==== Examples
      *   stylesheetLinkTag('all', array('cache' => true)) # when 'perform_caching' is false =>
-     *     <link href="/stylesheets/style1.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/styleB.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/styleX2.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/style1.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/styleB.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/styleX2.css" media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag('all', array('cache' => true)) # when 'perform_caching' is true =>
-     *     <link href="/stylesheets/all.css"  media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/all.css"  media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("shop", "cart", "checkout", array('cache' => "payment")) # when 'perform_caching' is false =>
-     *     <link href="/stylesheets/shop.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/cart.css"  media="screen" rel="stylesheet" type="text/css" />
-     *     <link href="/stylesheets/checkout.css" media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/shop.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/cart.css"  media="screen" rel="stylesheet" type="text/css" >
+     *     <link href="/stylesheets/checkout.css" media="screen" rel="stylesheet" type="text/css" >
      *
      *   stylesheetLinkTag("shop", "cart", "checkout", array('cache' => "payment")) # when ActionController::Base.perform_caching is true =>
-     *     <link href="/stylesheets/payment.css"  media="screen" rel="stylesheet" type="text/css" />
+     *     <link href="/stylesheets/payment.css"  media="screen" rel="stylesheet" type="text/css" >
      *
      * @todo caching needs to be implemented
      */
@@ -206,7 +206,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
                               'type'  => 'text/css',
                               'media' => 'screen',
                               'href'  => $this->h($this->stylesheetPath($source)));
-            $tags[] = $this->tag('link', array_merge($defaults, $options), false, false);
+            $tags[] = $this->tag('link', array_merge($defaults, $options), true);
         }
         $tags = implode("\n", $tags);
         return $tags;
