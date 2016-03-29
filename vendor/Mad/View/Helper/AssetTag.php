@@ -268,22 +268,22 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      *
      * ==== Examples
      *  $this->imageTag("icon")  # =>
-     *    <img src="/images/icon" alt="Icon" />
+     *    <img src="/images/icon" alt="Icon" >
      * 
      *  $this->imageTag("icon.png")  # =>
-     *    <img src="/images/icon.png" alt="Icon" />
+     *    <img src="/images/icon.png" alt="Icon" >
      * 
      *  $this->imageTag("icon.png", :size => "16x10", :alt => "Edit Entry")  # =>
-     *    <img src="/images/icon.png" width="16" height="10" alt="Edit Entry" />
+     *    <img src="/images/icon.png" width="16" height="10" alt="Edit Entry" >
      * 
      *  $this->imageTag("/icons/icon.gif", :size => "16x16")  # =>
-     *    <img src="/icons/icon.gif" width="16" height="16" alt="Icon" />
+     *    <img src="/icons/icon.gif" width="16" height="16" alt="Icon" >
      * 
      *  $this->imageTag("/icons/icon.gif", :height => '32', :width => '32') # =>
-     *    <img alt="Icon" height="32" src="/icons/icon.gif" width="32" />
+     *    <img alt="Icon" height="32" src="/icons/icon.gif" width="32" >
      * 
      *  $this->imageTag("/icons/icon.gif", :class => "menu_icon") # =>
-     *    <img alt="Icon" class="menu_icon" src="/icons/icon.gif" />
+     *    <img alt="Icon" class="menu_icon" src="/icons/icon.gif" >
      */
     public function imageTag($source, $options = array())
     {
@@ -315,7 +315,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
             }
             unset($options['size']);
         }
-        return $this->tag("img", $options);
+        return $this->tag("img", $options, true);
     }
     
     /**
