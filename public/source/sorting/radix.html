@@ -1,0 +1,365 @@
+<html><head><title>6502.org: Source: Radix 256 Counting Sort</title>
+<meta name="description" content="A 6502 assembly language routine for a Radix 256 Counting Sort">
+</head>
+<body>
+<a href="/">[Return to Main Page]</a>
+<P><FONT SIZE=+1>Radix 256 Counting Sort</FONT><FONT SIZE=-1> by Dwight Elvey</FONT>
+<BR clear=all><A HREF="/source">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P><B>Radix 256 Counting Sort</B></p>
+<p>
+I often see it stated that QuickSort is the fastest sort. That is just wrong.
+For larger data sets, there are a number of sorts that are so much faster that
+it is a myth.  QuickSort is the fastest in place sort but by no means the fastest
+sort.
+</p>
+
+<p>
+I have written a 6502 radix 256 counting sort here to demonstrate that other
+sorts can be significantly faster.  This does a signed 16 bit integer sort of
+1K of data. I'll admit that is is optimized for 1K but the concept can be
+generalized.  This type of sort should beat QuickSort on integers at around
+30 to 100 someplace. It is many times faster on 1K of integers.
+</p>
+
+<p>
+Here is how a counting sort works. Say you had a handful of cards, of mixed
+partial decks. You wanted to sort them based on suite and then value.  You'd
+first count how many diamonds, clubs, hearts and spades you have. Say you have
+20 diamonds, 15 clubs, 13 hearts and 17 spades.
+</p>
+
+<p>
+You have 65 cards so you have 65 slots to put them in.  If a 0 based array,
+you start putting the card into the array. The diamond start at 0, the clubs
+at 20, the hearts at 20+15=35 and the spades at 20+15+13=48.  This is why it
+is called a counting sort, because it depends on knowing the counting of the
+values.  You'd pick up the cards in order and repeat this, using the values of
+the cards for counts. Say 6 aces, 5 2's etc.
+</p>
+
+<p>
+In this code, I split the data into MSBs and LSBs. I first count them all into
+two 256 arrays that have the totals of each value.  I convert the totals into
+pointers by adding the number of elements of the previous count.  When making
+the totals, I offset the first location by $80 on the MSBs to get signed
+order, for the sort.
+</p>
+
+<p>
+It should be noted that any sort order could be applied at this point with
+a simple pass through a translation table to the desired order. The penalty
+is only payed once for each block of data values. On a large data set it is
+almost no cost. QuickSort would need to apply it at every compare.
+</p>
+
+<p>
+Now that I have array pointers I simply pick the pieces and use their values
+as pointer into the pointer arrays to transfer the data.  It makes two passes,
+using the LSBs first and then the MSBs. This takes second array to temporarily
+hold the data after the LSBs sort.
+</p>
+
+<p>
+What makes it so fast compared to QuickSort is that it only moves any data
+element twice. It makes one pass through the data to make the counts and two
+passes through the counts to create the totals pointers.
+</p>
+
+<p>
+QuickSort moves the data many many times in a fashion similar to the
+bubble sort. It is of the form:
+</p>
+
+<pre>
+K(n Log(n))
+</pre>
+
+<p>
+This sort is of the form:
+</p>
+
+<pre>
+Kn+c
+</pre>
+
+<p>
+While the overhead of c can be large and Ks can be different, one can easily
+see that for some data size it will out perform QuickSort.
+</p>
+
+<p>
+The zero page usage can be cut in almost half by reusing pointer space not
+needed for each step.
+</p>
+
+<p>
+Locations of the DATA and the temporary BUFF need aligned to $100 boundaries
+and the counter arrays need to be $100 aligned and sequential for the
+ZEROS100 subroutine.
+</p>
+
+<p>
+There are other optimizations, I'm sure but this is my first significant 6502 program.
+</p>
+
+<p>
+The code was debugged by a friend. I don't have a 6502 machine with enough
+RAM to run it on.  This clearly takes much more code than QuickSort but is
+so much faster on large data sets that it is worth the space.
+</p>
+
+<PRE>
+4000          .DISP_SORT
+4000 A9 00    LDA #0
+4002 A2 14    LDX #20
+4004 9D 10 04 .iloop  STA &amp;410,X  \ Zero BASIC integer variables D% to H%
+4007 CA       DEX
+4008 10 FA    BPL iloop
+400A          .INITS
+400A          \ Zero cycle counter
+400A 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+400B 10 04    EQUW &amp;410   \ Address of BASIC integer variable D%
+400D
+400D A2 00    LDX # 0     ; assumes &amp;100 aligned and consecutive
+400F 86 84    STX PNTR
+4011 A2 48    LDX # LCPLoc DIV &amp;100
+4013 86 85    STX PNTR+1
+4015 20 5E 41 JSR ZEROS100
+4018 20 5E 41 JSR ZEROS100
+401B 20 5E 41 JSR ZEROS100
+401E 20 5E 41 JSR ZEROS100
+4021 A2 00    .DOCNTS  LDX # 0   ; setup from DATA as input values
+4023 86 70    STX FROMPNTR
+4025 A0 30    LDY # data DIV &amp;100
+4027 84 71    STY FROMPNTR+1
+4029 86 74    STX LPNTR
+402B A0 48    LDY # LCPLoc  DIV &amp;100
+402D 84 75    STY LPNTR+1
+402F 86 76    STX LPNTRH
+4031 A0 49    LDY # LCPLocH DIV &amp;100
+4033 84 77    STY LPNTRH+1
+4035 86 78    STX MPNTR
+4037 A0 4A    LDY # MCPLoc  DIV &amp;100
+4039 84 79    STY MPNTR+1
+403B 86 7A    STX MPNTRH
+403D A0 4B    LDY # MCPLocH DIV &amp;100
+403F 84 7B    STY MPNTRH+1
+4041 A2 08    LDX #DSIZE*2 DIV &amp;100 ; How many &amp;80 16 bit value loops to do
+4043 18       CLC
+4044 A0 00    LDY #0  ; is the to index
+4046 84 86    STY TEMPY
+4048          \            BEGIN    ;  needs 8 loop to do &amp;400 words or &amp;800
+4048          .loop1
+4048          \              BEGIN   ; Over &amp;100 but only &amp;80 words
+4048          .loop2
+4048 18       CLC
+4049 A4 86    LDY TEMPY        ; Y is even for LSBs
+404B B1 70    LDA (FROMPNTR),Y ; first LSBs value
+404D A8       TAY
+404E A9 02    LDA #2
+4050 71 74    ADC (LPNTR),Y
+4052 91 74    STA (LPNTR),Y
+4054          \                IF CARRY
+4054 90 06    BCC nocarry1
+4056 A9 00    LDA # 0
+4058 71 76    ADC (LPNTRH),Y ; notice how these arrays are split.
+405A          \ It reduces the amount of Y fiddling
+405A 91 76    STA (LPNTRH),Y ;  at no extra cost in space
+405C          .nocarry1
+405C          \                ENDIF
+405C E6 86    INC TEMPY
+405E A4 86    LDY TEMPY        ; Y is odd  for MSBs
+4060 B1 70    LDA (FROMPNTR),Y ; now MSB
+4062 A8       TAY
+4063 A9 02    LDA #2
+4065 71 78    ADC (MPNTR),Y
+4067 91 78    STA (MPNTR),Y
+4069          \                IF CARRY
+4069 90 06    BCC nocarry2
+406B A9 00    LDA # 0
+406D 71 7A    ADC (MPNTRH),Y
+406F 91 7A    STA (MPNTRH),Y
+4071          .nocarry2
+4071          \                ENDIF
+4071 E6 86    INC TEMPY  ; Y is even
+4073 D0 D3    BNE loop2
+4075          \              UNTIL ZER0
+4075          \ ONLY DID 1/4 of DATA for each loop
+4075 E6 71    INC FROMPNTR+1
+4077 CA       DEX
+4078 D0 CE    BNE loop1
+407A          \            UNTIL ZERO      ; do the rest
+407A          \ COUNTS ARE DONE
+407A          \ now change the counters to pointers
+407A          .CONVRT2PNTRS
+407A 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+407B 20 04    EQUW &amp;420   \ Address of BBC BASIC integer variable H%
+407D          \ LSB counters to pointers
+407D A2 00    LDX # 0
+407F 86 7C    STX PNTRL
+4081 A0 48    LDY # LCPLoc DIV &amp;100
+4083 84 7D    STY PNTRL+1
+4083 84 7D    STY PNTRL+1
+4085 86 7E    STX PNTRH
+4087 A0 49    LDY # LCPLocH DIV &amp;100
+4089 84 7F    STY PNTRH+1
+408B 86 82    STX total
+408D A0 38    LDY # BUFF DIV &amp;100
+408F 84 83    STY total+1
+4091 A0 00    LDY # 0  ; no sign offset for LSBs
+4093 20 40 41 JSR MKPNTR
+4096 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+4097 1C 04    EQUW &amp;41C   \ Address of BBC BASIC integer variable G%
+4099          \ Now MSB counter to pointers
+4099 A2 00    LDX # 0
+409B 86 7C    STX PNTRL
+409D A0 4A    LDY # MCPLoc DIV &amp;100
+409F 84 7D    STY PNTRL+1
+40A1 86 7E    STX PNTRH
+40A3 A0 4B    LDY # MCPLocH DIV &amp;100
+40A5 84 7F    STY PNTRH+1
+40A7 86 82    STX total
+40A9 A0 30    LDY # data DIV &amp;100
+40AB 84 83    STY total+1
+40AD A0 80    LDY # &amp;80  ; does signed by starting at the center
+40AF 20 40 41 JSR MKPNTR
+40B2 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+40B3 18 04    EQUW &amp;418   \ Address of BBC BASIC integer variable F%
+40B5          \ Now LCPLoc and MCPLoc have the pointers to move data.
+40B5 A2 00    LDX # 0
+40B7 86 7C    STX PNTRL
+40B9 A0 48    LDY # LCPLoc DIV &amp;100
+40BB 84 7D    STY PNTRL+1
+40BD 86 7E    STX PNTRH
+40BF A0 49    LDY # LCPLocH DIV &amp;100
+40C1 84 7F    STY PNTRH+1
+40C3 86 70    STX FROMPNTR
+40C5 A0 30    LDY # data DIV &amp;100
+40C7 84 71    STY FROMPNTR+1
+40C9 86 72    STX topntr
+40CB A0 38    LDY # BUFF DIV &amp;100
+40CD 84 73    STY topntr+1
+40CF A0 00    LDY # 0         ; DATA OFFSET FOR MSB AND LSB
+40D1 20 08 41 JSR moveit
+40D4 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+40D5 14 04    EQUW &amp;414   \ Address of BBC BASIC integer variable E%
+40D7 A2 00    LDX # 0
+40D9 86 7C    STX PNTRL
+40DB A0 4A    LDY # MCPLoc DIV &amp;100
+40DD 84 7D    STY PNTRL+1
+40DF 86 7E    STX PNTRH
+40E1 A0 4B    LDY # MCPLocH DIV &amp;100
+40E3 84 7F    STY PNTRH+1
+40E5 86 70    STX FROMPNTR
+40E7 A0 38    LDY # BUFF DIV &amp;100
+40E9 84 71    STY FROMPNTR+1
+40EB 86 72    STX topntr
+40ED A0 30    LDY # data DIV &amp;100
+40EF 84 73    STY topntr+1
+40F1 A0 01    LDY # 1  ; DATA OFFSET FOR MSB AND LSB
+40F3 20 08 41 JSR moveit
+40F6 2B       EQUB &amp;2B    \ SCC (Swap Cycle Count) (Emulator hack!)
+40F7 10 04    EQUW &amp;410   \ Address of BBC BASIC integer variable D%
+40F9          \    DONE    JMP DONE ; replace with RTS if called from someplace
+40F9 60       RTS
+40FA          \ subroutines
+40FA
+40FA          .IncPH  \ Here if carry
+40FA B1 7E    LDA (PNTRH),Y
+40FC 69 00    ADC #0
+40FE 91 7E    STA (PNTRH),Y
+4100 4C 22 41 JMP nocarry3
+4103          .IncFRH \ If carry
+4103 E6 71    INC FROMPNTR+1
+4105 4C 35 41 JMP nocarry4
+4108          .moveit     \ used to move items from DATA to BUFF and back
+4108 A2 08    LDX # DSIZE*2 DIV &amp;100
+410A          \         BEGIN  ; 8 times
+410A          .loop3
+410A          \ FETCH POINTER AND PUT IN TOPNTR
+410A          \ INCREMENT THE POINTER BY 2
+410A          \ MOVE THE @ FROMPNTR TO @ TOPNTR
+410A 86 87    STX TEMPX
+410C A2 80    LDX # &amp;80
+410E          \           BEGIN ; &amp;80 times over &amp;100 address
+410E          .loop4
+410E 84 86    STY TEMPY
+4110 B1 70    LDA (FROMPNTR),Y   ; Y is 0 or 1 depending on LSB or MSB poi
+4112 A8       TAY
+4113 B1 7C    LDA (PNTRL),Y
+4115 85 72    STA topntr
+4117 18       CLC
+4118 69 02    ADC #2
+411A 91 7C    STA (PNTRL),Y
+411C B1 7E    LDA (PNTRH),Y
+411E 85 73    STA topntr+1
+4120 B0 D8    BCS IncPH
+4122          .nocarry3
+4122          \ MOVE THE @ FROMPNTR TO @ TOPNTR
+4122 A0 00    LDY # 0
+4124 B1 70    LDA (FROMPNTR),Y
+4126 91 72    STA (topntr),Y
+4128 C8       INY
+4129 B1 70    LDA (FROMPNTR),Y
+412B 91 72    STA (topntr),Y
+412D A4 70    LDY FROMPNTR
+412F C8       INY
+4130 C8       INY
+4131 84 70    STY FROMPNTR
+4133 F0 CE    BEQ IncFRH
+4135          .nocarry4
+4135 A4 86    LDY TEMPY
+4137 E8       INX
+4138 D0 D4    BNE loop4
+413A          \           UNTIL ZERO
+413A A6 87    LDX TEMPX
+413C CA       DEX
+413D D0 CB    BNE loop3
+413F          \         UNTIL ZERO
+413F 60       RTS
+4140          .MKPNTR   \ X IS NUMBER TO DO    Y IS FIRST ADDRESS, 0 OR &amp;80
+4140 18       CLC
+4141          \         BEGIN     ; &amp;100 times
+4141          .loop5
+4141 B1 7C    LDA (PNTRL),Y
+4143 85 80    STA TEMP
+4145 A5 82    LDA total
+4147 91 7C    STA (PNTRL),Y
+4149 65 80    ADC TEMP
+414B 85 82    STA total
+414D B1 7E    LDA (PNTRH),Y
+414F 85 81    STA TEMP+1
+4151 A5 83    LDA total+1
+4153 91 7E    STA (PNTRH),Y
+4155 65 81    ADC TEMP+1
+4157 85 83    STA total+1
+4159 C8       INY
+415A E8       INX
+415B D0 E4    BNE loop5
+415D          \         UNTIL ZERO
+415D 60       RTS
+415E          .ZEROS100  \ ZEROS &amp;100 bytes at PNTR for begining counts
+415E A9 00    LDA # 0
+4160 A8       TAY
+4161          \            BEGIN            \ ASSUMES CNTZ MODULO 4 = 0
+4161          .loop6
+4161 91 84    STA(PNTR),Y
+4163 C8       INY
+4164 D0 FB    BNE loop6
+4166          \            UNTIL ZERO
+4166 E6 85    INC PNTR+1
+4168 60       RTS
+</PRE>
+
+<p>
+To run sort, enter CALL &amp;4000
+</p>
+
+<p>
+To view cycle counts (emulator only), enter PRINT H%,G%,F%,E%,D%
+</p>
+
+<P><FONT SIZE=-1>Last page update: January 28, 2017.</FONT>
+</body></html>
