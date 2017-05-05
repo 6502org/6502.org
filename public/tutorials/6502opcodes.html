@@ -1,5 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>6502.org: Tutorials and Aids</title>
 <meta name="description" content="Learn how to do all kinds of things with the 6502 microprocessor.">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
 <a href="/">[Return to Main Page]</a>
@@ -9,8 +11,7 @@ Updated by Bruce Clark and by Ed Spittles</FONT>
 <BR>
 <HR>
 <h2>INDEX</h2>
-<P><TT>
-<TABLE border=2 cellpadding=2 width="90%">
+<TABLE border=2 cellpadding=2 width="90%" style="font-family:'Lucida Console', monospace">
   <TBODY>
   <TR>
     <TD align="center"><A
@@ -148,7 +149,6 @@ Updated by Bruce Clark and by Ed Spittles</FONT>
     href="#TXS">TXS</A></TD>
     <TD align="center"><A
     href="#TYA">TYA</A></TD></TR></TBODY></TABLE>
-</TT>
 <P><A name=ADC>&nbsp;</A>
 <H2>ADC (ADd with Carry)</H2>
 <P>Affects Flags: S V Z C <PRE>MODE           SYNTAX       HEX LEN TIM
@@ -402,9 +402,9 @@ Indirect      JMP ($5597)   $6C  3   5
 
 </PRE>JMP transfers program execution to the following address (absolute) or to
 the location contained in the following address (indirect). Note that there is
-no carry associated with the indirect jump so: <PRE><H3>AN INDIRECT JUMP MUST NEVER USE A</H3>
-<H3>VECTOR BEGINNING ON THE LAST BYTE</H3>
-<H3>OF A PAGE</H3>
+no carry associated with the indirect jump so: <PRE><strong>AN INDIRECT JUMP MUST NEVER USE A
+VECTOR BEGINNING ON THE LAST BYTE
+OF A PAGE</strong>
 </PRE>For example if address $3000 contains $40, $30FF contains $80, and $3100
 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080
 rather than $5080 as you intended i.e. the 6502 took the low byte of the address
@@ -713,5 +713,5 @@ Zero Page,X   STY $44,X     $94  2   4
 Absolute      STY $4400     $8C  3   4
 </PRE>
 <P>
-<P><FONT SIZE="-1">Last Updated March 30, 2001.</FONT>
+<P><FONT SIZE="-1">Last Updated May 5, 2017.</FONT>
 </body></html>
