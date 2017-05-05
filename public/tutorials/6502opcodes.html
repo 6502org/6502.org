@@ -215,6 +215,9 @@ CLOSEX LDA #12    register still at $10
        STA ICCOM,X upon arrival here.
 
 </PRE>
+Beware: a BIT instruction used in this way as a NOP does have effects: the flags
+may be modified, and the read of the absolute address, if it happens to access an
+I/O device, may cause an unwanted action.
 <P><A name=BCC>&nbsp;</A> <A name=BCS>&nbsp;</A> <A name=BEQ>&nbsp;</A> <A
 name=BNE>&nbsp;</A> <A name=BMI>&nbsp;</A> <A name=BPL>&nbsp;</A> <A
 name=BVC>&nbsp;</A> <A name=BVS>&nbsp;</A> <A name=BRA>&nbsp;</A>
