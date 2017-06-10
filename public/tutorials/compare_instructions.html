@@ -1,9 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>6502.org: Tutorials: Compare Instructions</title>
 <meta name="description" content="A tutorial on the 6502 microprocessor's compare instructions.">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
 <a href="/">[Return to Main Page]</a>
-<FONT size=+1>6502 Compare
+<FONT size="+1">6502 Compare
 Instructions</FONT>&nbsp;<FONT SIZE=-1>from 6502 Software Design, Updated by Bruce Clark</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR><P> The
 compare instructions set or clear three of the status flags (Carry, Zero,
@@ -15,7 +17,7 @@ align="center">Instruction</td><td align="center">Description</td>
 <tr><td>CMP</td><td><U>C</U>o<u>mp</U>are Memory and Accumulator</td></tr>
 <tr><td>CPX</td><td><U>C</u>om<u>p</u>are Memory and Index
 <u>X</u></td></tr> <tr><td>CPY</td><td><u>C</u>om<u>p</u>are Memory and
-Index <u>Y</u></td></tr> </table> </center> <p> The CMP instruction
+Index <u>Y</u></td></tr> </table> <p> The CMP instruction
 supports eight different addressing modes, the same ones supported by the
 ADC and SBC instructions.  Since the X and Y registers function primarily
 as counters and indexes, the CPX and CPY instructions do not require this
@@ -55,7 +57,7 @@ THERE                ;Execute this if Accumulator is less than location $20.
         .
         .
         .
-</pre></tr></td></table>
+</pre></tr></table>
 <p>
 The table below lists the branch instruction(s) that should follow the
 compare instruction, for each register/data relationship.  In this table,
@@ -92,7 +94,7 @@ memory locations are identical, and sets a flag in memory to so indicate.
         BNE  DONE
         INX          ;Yes, set flag to one
 DONE    STX  $22     ;Store flag
-</pre></tr></td></table>
+</pre></td></tr></table>
 <p>
 Below is another memory-to-memory comparison routine.  It stores the larger
 of two values in the higher memory location.
@@ -112,7 +114,7 @@ of two values in the higher memory location.
 DONE     .
          .
          .
-</pre></tr></td></table>
+</pre></td></tr></table>
 <p>
 The next example contains a register-to-constant comparison routine in which
 two branch instructions are used with one compare instruction, so that the
@@ -140,7 +142,7 @@ GT3     STA  $22     ;Accumulator greater than 3
 DONE     .
          .
          .
-</pre></tr></td></table>
+</pre></td></tr></table>
 <p>
 Thus far, our discussion has concentrated on the CMP instruction, which compares
 the accumulator with memory.  Of what value are the other compare instructions
@@ -164,7 +166,7 @@ NXTBYT  LDA  $20,X   ;Load next byte
         INX          ;Increment index
         CPX  $1F     ;All bytes moved?
         BNE  NXTBYT  ;If not, move next byte
-</pre></tr></td></table>
+</pre></td></tr></table>
 <p>
 The compare instructions compare two "entire" 8-bit values.  There are situations,
 however, when you will need to test one or more individual bits in a memory
