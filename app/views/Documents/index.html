@@ -24,6 +24,7 @@
 		<div style="padding: 5px 0px 0px 15px;">
 			<table cellpadding="0" cellspacing="0">
 			<? foreach ($this->myFolder['docs'] as $doc): ?>
+				<? if ($doc['visible']): ?>
 				<tr>
 					<td>
 					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
@@ -37,6 +38,7 @@
 				      <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
 					</td>
 				</tr>
+				<? endif ?>
 			<? endforeach ?>
 			</table>
 		</div>
