@@ -1,0 +1,41 @@
+<html><head><title>6502.org: Source: efficient nybble-swap</title>
+<meta name="description" content="efficient 6502 nybble swap">
+</head>
+<body>
+<a href="/">[Return to Main Page]</a>
+<P><FONT SIZE=+1>Efficient nybble-swap on 6502</FONT><FONT SIZE=-1> by Garth Wilson</FONT>
+<BR clear=all><A HREF="/source">[Up to Source Code Repository]</A>
+<BR clear=all><P>
+<HR>
+<P>David Galloway made this suggestion on the facebook 6502 Programming group, for
+swapping nybbles.  $36 becomes $63, $A1 becomes $1A, etc..  It takes only 8 bytes
+and 12 clock cycles, and no variables, no stack usage, no look-up table, no X or Y
+usage.  It uses only the accumulator and status register.
+
+<PRE>
+        ASL  A
+        ADC  #$80
+        ROL  A
+        ASL  A
+        ADC  #$80
+        ROL  A
+
+</PRE>
+Straight-lining it takes only five bytes more than a subroutine call and cuts the execution time in half.  It could of course be put in a macro.  How that is done exactly will depend on your assembler, but might go something like:
+<PRE>
+
+SWN:    MACRO
+        ASL  A
+        ADC  #$80
+        ROL  A
+        ASL  A
+        ADC  #$80
+        ROL  A
+        ENDM
+ ;-------------
+
+</PRE>
+and would be called simply with<font face="courier"> SWN </font> as if it were an assembly-language mnemonic.  You probably won't use it many times in a program anyway for the straight-lining to take up appreciable memory, but you might want it pretty fast when you do.
+
+<P><FONT SIZE=-1>Last page update: Oct 27, 2017.</FONT>
+</body></html>
