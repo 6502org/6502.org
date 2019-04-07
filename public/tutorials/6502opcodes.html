@@ -151,7 +151,7 @@ Updated by Bruce Clark and by Ed Spittles</FONT>
     href="#TYA">TYA</A></TD></TR></TBODY></TABLE>
 <P><A name=ADC>&nbsp;</A>
 <H2>ADC (ADd with Carry)</H2>
-<P>Affects Flags: S V Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N V Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     ADC #$44      $69  2   2
 Zero Page     ADC $44       $65  2   3
 Zero Page,X   ADC $44,X     $75  2   4
@@ -171,7 +171,7 @@ packed BCD (Binary Coded Decimal).
 
 <P><A name=AND>&nbsp;</A>
 <H2>AND (bitwise AND with accumulator) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     AND #$44      $29  2   2
 Zero Page     AND $44       $25  2   3
 Zero Page,X   AND $44,X     $35  2   4
@@ -186,7 +186,7 @@ Indirect,Y    AND ($44),Y   $31  2   5+
 
 <P><A name=ASL>&nbsp;</A>
 <H2>ASL (Arithmetic Shift Left) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Accumulator   ASL A         $0A  1   2
 Zero Page     ASL $44       $06  2   5
 Zero Page,X   ASL $44,X     $16  2   6
@@ -274,7 +274,7 @@ two-byte instruction for debugging and the subsequent RTI will be correct.
 <P>
 <P><A name=CMP>&nbsp;</A>
 <H2>CMP (CoMPare accumulator) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     CMP #$44      $C9  2   2
 Zero Page     CMP $44       $C5  2   3
 Zero Page,X   CMP $44,X     $D5  2   4
@@ -288,12 +288,12 @@ Indirect,Y    CMP ($44),Y   $D1  2   5+
 
 </PRE>Compare sets flags as if a subtraction had been carried out. If the value
 in the accumulator is equal or greater than the compared value, the Carry will
-be set. The equal (Z) and sign (S) flags will be set based on equality or lack
+be set. The equal (Z) and negative (N) flags will be set based on equality or lack
 thereof and the sign (i.e. A&gt;=$80) of the accumulator.
 <P>
 <P><A name=CPX>&nbsp;</A>
 <H2>CPX (ComPare X register) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     CPX #$44      $E0  2   2
 Zero Page     CPX $44       $E4  2   3
 Absolute      CPX $4400     $EC  3   4
@@ -303,7 +303,7 @@ href="#CMP">CMP</A> ops.
 <P>
 <P><A name=CPY>&nbsp;</A>
 <H2>CPY (ComPare Y register) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     CPY #$44      $C0  2   2
 Zero Page     CPY $44       $C4  2   3
 Absolute      CPY $4400     $CC  3   4
@@ -313,7 +313,7 @@ href="#CMP">CMP</A> ops.
 <P>
 <P><A name=DEC>&nbsp;</A>
 <H2>DEC (DECrement memory) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Zero Page     DEC $44       $C6  2   5
 Zero Page,X   DEC $44,X     $D6  2   6
 Absolute      DEC $4400     $CE  3   6
@@ -322,7 +322,7 @@ Absolute,X    DEC $4400,X   $DE  3   7
 </PRE>
 <P><A name=EOR>&nbsp;</A>
 <H2>EOR (bitwise Exclusive OR) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     EOR #$44      $49  2   2
 Zero Page     EOR $44       $45  2   3
 Zero Page,X   EOR $44,X     $55  2   4
@@ -385,7 +385,7 @@ overflow but a BIT test on an RTS instruction will do the trick.
 <P>
 <P><A name=INC>&nbsp;</A>
 <H2>INC (INCrement memory) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Zero Page     INC $44       $E6  2   5
 Zero Page,X   INC $44,X     $F6  2   6
 Absolute      INC $4400     $EE  3   6
@@ -424,7 +424,7 @@ code.
 <P>
 <P><A name=LDA>&nbsp;</A>
 <H2>LDA (LoaD Accumulator) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     LDA #$44      $A9  2   2
 Zero Page     LDA $44       $A5  2   3
 Zero Page,X   LDA $44,X     $B5  2   4
@@ -440,7 +440,7 @@ Indirect,Y    LDA ($44),Y   $B1  2   5+
 <P>
 <P><A name=LDX>&nbsp;</A>
 <H2>LDX (LoaD X register) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     LDX #$44      $A2  2   2
 Zero Page     LDX $44       $A6  2   3
 Zero Page,Y   LDX $44,Y     $B6  2   4
@@ -453,7 +453,7 @@ Absolute,Y    LDX $4400,Y   $BE  3   4+
 <P>
 <P><A name=LDY>&nbsp;</A>
 <H2>LDY (LoaD Y register) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     LDY #$44      $A0  2   2
 Zero Page     LDY $44       $A4  2   3
 Zero Page,X   LDY $44,X     $B4  2   4
@@ -466,7 +466,7 @@ Absolute,X    LDY $4400,X   $BC  3   4+
 <P>
 <P><A name=LSR>&nbsp;</A>
 <H2>LSR (Logical Shift Right) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Accumulator   LSR A         $4A  1   2
 Zero Page     LSR $44       $46  2   5
 Zero Page,X   LSR $44,X     $56  2   6
@@ -546,7 +546,7 @@ out existing code.
 <P>
 <P><A name=ORA>&nbsp;</A>
 <H2>ORA (bitwise OR with Accumulator) </H2>
-<P>Affects Flags: S Z <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     ORA #$44      $09  2   2
 Zero Page     ORA $44       $05  2   3
 Zero Page,X   ORA $44,X     $15  2   4
@@ -564,7 +564,7 @@ Indirect,Y    ORA ($44),Y   $11  2   5+
 name=TYA>&nbsp;</A> <A name=INX>&nbsp;</A> <A name=DEX>&nbsp;</A> <A
 name=INY>&nbsp;</A> <A name=DEY>&nbsp;</A>
 <H2>Register Instructions </H2>
-<P>Affect Flags: S Z
+<P>Affect Flags: N Z
 <P>These instructions are implied mode, have a length of one byte and require
 two machine cycles. <PRE>MNEMONIC                 HEX
 TAX (Transfer A to X)    $AA
@@ -580,7 +580,7 @@ INY (INcrement Y)        $C8
 <P>
 <P><A name=ROL>&nbsp;</A>
 <H2>ROL (ROtate Left) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Accumulator   ROL A         $2A  1   2
 Zero Page     ROL $44       $26  2   5
 Zero Page,X   ROL $44,X     $36  2   6
@@ -593,7 +593,7 @@ the original bit 7 is shifted into the Carry.
 <P>
 <P><A name=ROR>&nbsp;</A>
 <H2>ROR (ROtate Right) </H2>
-<P>Affects Flags: S Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Accumulator   ROR A         $6A  1   2
 Zero Page     ROR $44       $66  2   5
 Zero Page,X   ROR $44,X     $76  2   6
@@ -647,7 +647,7 @@ EXEC
 <P>
 <P><A name=SBC>&nbsp;</A>
 <H2>SBC (SuBtract with Carry)</H2>
-<P>Affects Flags: S V Z C <PRE>MODE           SYNTAX       HEX LEN TIM
+<P>Affects Flags: N V Z C <PRE>MODE           SYNTAX       HEX LEN TIM
 Immediate     SBC #$44      $E9  2   2
 Zero Page     SBC $44       $E5  2   3
 Zero Page,X   SBC $44,X     $F5  2   4
