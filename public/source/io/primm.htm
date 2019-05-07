@@ -158,6 +158,35 @@ PSIX2   jmp     (DPL)           ; return to byte following final NULL
 </PRE>
 </UL>
 
+Mike Barry provided another version.  This one requires 65C02 opcodes but is shorter and preserves the Y register.
+
+<UL>
+<PRE>
+DPL     =   $fd
+DPH     =   $fe
+primm:
+      pla               ; get low part of (string address-1)
+      sta   DPL
+      pla               ; get high part of (string address-1)
+      sta   DPH
+      bra   primm3
+primm2:
+      jsr   COUT        ; output a string char
+primm3:
+      inc   DPL         ; advance the string pointer
+      bne   primm4
+      inc   DPH
+primm4:
+      lda   (DPL)       ; get string char
+      bne   primm2      ; output and continue if not NUL
+      lda   DPH
+      pha
+      lda   DPL
+      pha
+      rts               ; proceed at code following the NUL
+</PRE>
+</UL>
+
 <P>
-<FONT SIZE=-1>Last page update: April 16, 2001.</FONT>
+<FONT SIZE=-1>Last page update: May 7, 2019.</FONT>
 </body></html>
