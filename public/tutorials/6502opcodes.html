@@ -203,7 +203,7 @@ Zero Page     BIT $44       $24  2   3
 Absolute      BIT $4400     $2C  3   4
 
 </PRE>BIT sets the Z flag as though the value in the address tested were ANDed
-with the accumulator. The S and V flags are set to match bits 7 and 6
+with the accumulator. The N and V flags are set to match bits 7 and 6
 respectively in the value stored at the tested address.
 <P>BIT is often used to skip one or two following bytes as in:
 <P><PRE>CLOSE1 LDX #$10   If entered here, we
