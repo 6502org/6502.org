@@ -1,3 +1,5 @@
+[See also wozfp2.txt for errata]
+
 Dr. Dobb's Journal, August 1976, pages 17-19.
 
 Floating Point Routines for the 6502
@@ -245,11 +247,11 @@ documentation may contain errors in concept or in detail.
 1DCD  7E 6F     LN10   DCM 0.4342945
       2D ED
 1DD1  80 5A     R22    DCM 1.4142136   SQRT(2)
-      02 7A
+      82 7A
 1DD5  7F 58     LE2    DCM 0.69314718  LOG BASE E OF 2
       B9 0C
 1DD9  80 52     A1     DCM 1.2920074
-      80 40
+      B0 40
 1DDD  81 AB     MB     DCM -2.6398577
       86 49
 1DE1  80 6A     C      DCM 1.6567626
