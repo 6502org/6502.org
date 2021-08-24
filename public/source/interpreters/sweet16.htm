@@ -14,13 +14,18 @@ written by Steve Wozniak and used in the Apple II, Sweet 16 can also be ported t
 to provide useful 16-bit functionality.  This article includes the source code for Sweet 16, along with a brief history,
 programming instructions, and notes to help port it.
 
-<p>This material was provided by Carsten Strotmann, who has built a working
-<a href="http://www.strotmann.de/twiki/bin/view/APG/AsmSweetSixteenAtari">Atari Port of Sweet 16</a>.
+<p>This material was provided by Carsten Strotmann, who has built a working Atari Port of Sweet 16,
+<a href="https://atariwiki.org/wiki/Wiki.jsp?page=Sweet16Bibo">for BIBO</a> and 
+<a href="https://atariwiki.org/wiki/Wiki.jsp?page=Sweet16Mac65">for Mac/65</a> assemblers.
+See also <a href="#Appendix_Additional_Material">the appendix</a> for material added later, after
+<a href="http://forum.6502.org/viewtopic.php?t=6745">a discussion on the 6502 forum</a>.
 
 <ul>
 <li> <a href="#Porting_Sweet_Sixteen">Porting Sweet 16</a>
 </li>
-<li> <a href="#The_Story_of_Sweet_Sixteen">The Story of Sweet 16</a>
+<li> <a href="#The_Story_of_Sweet_Sixteen">The Story of Sweet 16 (as told by Woz)</a>
+</li>
+<li> <a href="#Sweet_Sixteen_Source_sheldon">Source code (Sweet 16)</a>
 </li>
 <li> <a href="#SWEET_16_INTRODUCTION">Sweet 16 - Introduction</a>
 </li>
@@ -57,6 +62,8 @@ programming instructions, and notes to help port it.
 <li> <a href="#SWEET_16_OPCODES">Sweet 16 Opcodes</a>
 </li>
 </ul>
+</li>
+<li><a href="#Appendix_Additional_Material">Appendix: Additional Material</a>
 </li>
 </ul>
 
@@ -142,17 +149,21 @@ nice project,  extending an open-source  6502 Assembler  (like CA65 from CC65)
 with the Sweet 16 opcodes would be one :)
 
 <p>
-<h2><a name ="The_Story_of_Sweet_Sixteen"> The Story of Sweet 16 </a></h2>
+<h2><a name ="The_Story_of_Sweet_Sixteen"> The Story of Sweet 16 (as told by Woz) </a></h2>
 
 While writing Apple BASIC, I ran into the problem of manipulating the 16 bit pointer data and its arithmetic in an 8 bit machine.
 <p>
 My solution to this problem of handling 16 bit data, notably pointers, with an 8 bit microprocessor was to implement a non-existent 16 bit processor in software, interpreter fashion, which I refer to as SWEET16.  SWEET16 contains sixteen internal 16 bit registers, actually the first 32 bytes in main memory, labelled R0 through R15.  R0 is defined as the accumulator, R15 as the program counter, and R14 as a status register.  R13 stores the result of all COMPARE operations for branch testing.  The user acceses SWEET16 with a subroutine call to hexadecimal address F689.  Bytes stored after the subroutine call are thereafter interpreted and executed by SWEET16.  One of SWEET16's commands returns the user back to 6502 mode, even restoring the original register contents.
 <p>
 Implemented in only 300 bytes of code, SWEET16 has a very simple instruction set tailored to operations such as memory moves and stack manipulation.  Most opcodes are only one byte long, but since she runs approximately ten times slower than equivalent 6502 code, SWEET16 should be employed only when code is at a premium or execution is not.  As an example of her usefulness, I have estimated that about 1K byte could be weeded out of my 5K byte Apple-II BASIC interpreter with no observable performance degradation by selectively applying
-SWEET16. []
+SWEET16.
+[Full article in BYTE magazine <a href="https://archive.org/details/BYTE_Vol_02-11_1977-11_Sweet_16/page/n150/mode/1up">here</a>.]
 <p>
 <hr>
 <p>
+<h2><a name ="Sweet_Sixteen_Source_sheldon"> Source code (Sweet 16) </a></h2>
+<p>
+The following is from a 1994 post to Usenet group comp.sys.apple2.programmer by Sheldon Simms.
 <pre>
 Article 1684 of comp.sys.apple2.programmer:
 Newsgroups: comp.sys.apple2.programmer
@@ -452,7 +463,7 @@ might not know...
 <p>
 <h2><a name ="SWEET_16_INTRODUCTION"> </a> Sweet 16 - Introduction </h2>
 <p>
-by Dick Sedgewick
+by Dick Sedgewick (from Merlin Users Manual)
 <p>
 <p>
 Sweet 16 is probably the least used and least understood seed in the Apple ][.
@@ -1591,5 +1602,22 @@ Here are a few examples which illustrate programming in SWEET-16.
 <p>
 
 <p>
-<FONT SIZE=-1>Last page update: March 21, 2004.</FONT>
+<h2><a name ="Appendix_Additional_Material"> Appendix: Additional Material </a></h2>
+
+<p>
+A <a href="http://forum.6502.org/viewtopic.php?t=6745">discussion in August 2021</a>
+on the 6502 forum notes that some of this document is derived from
+<a href="https://web.archive.org/web/20150130072500/http://www.fadden.com:80/dl-apple2/sweet16.txt">the file sweet16.txt</a>,
+possibly collated by W. Sheldon Simms and posted to Usenet, and in turn drawing from
+BYTE, and from the Merlin assembler documentation.
+Another source is
+<a href="https://web.archive.org/web/20110927173944/http://www.applefritter.com/files/Call-APPLE%20Woz%20Pak%202%201979.pdf">Call-A.P.P.L.E. Woz Pak II</a>
+from 1979.
+
+<p>
+Also noted in the discussion, the original listing from the BYTE article was captured by Paul R. Santa-Maria in
+<a href="http://www.easy68k.com/paulrsm/6502/SW16RB.TXT">SW16RB.TXT</a>.
+
+<p>
+<FONT SIZE=-1>Last page update: August 24, 2021.</FONT>
 </body></html>
