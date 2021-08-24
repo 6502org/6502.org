@@ -1,9 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>6502.org: Source: Porting Sweet 16</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <meta name="description" content="Sweet 16 is a 16-bit pseudo-microprocessor implemented in 6502 assembly language.">
 </head>
 <body>
 <a href="/">[Return to Main Page]</a>
-<P><FONT SIZE=+1>Porting Sweet 16</FONT>&nbsp;<FONT SIZE=-1>by Carsten Strotmann (carsten@strotmann.de)</FONT>
+<P><FONT SIZE="+1">Porting Sweet 16</FONT>&nbsp;<FONT SIZE=-1>by Carsten Strotmann (carsten@strotmann.de)</FONT>
 <BR clear=all><A HREF="/source">[Up to Source Code Repository]</A>
 <BR clear=all><P>
 <HR>
@@ -59,7 +61,7 @@ programming instructions, and notes to help port it.
 </ul>
 
 
-<p />
+<p>
 <h2><a name ="Porting_Sweet_Sixteen"> Porting Sweet 16 </a></h2>
 
 Sweet 16 is not a  teen-magazine,  nor is it a brand  name for  candy. It is a
@@ -139,18 +141,18 @@ Sweet 16  enhanced  6502 source in the future. If someone is searching  for a
 nice project,  extending an open-source  6502 Assembler  (like CA65 from CC65)
 with the Sweet 16 opcodes would be one :)
 
-<p />
+<p>
 <h2><a name ="The_Story_of_Sweet_Sixteen"> The Story of Sweet 16 </a></h2>
 
 While writing Apple BASIC, I ran into the problem of manipulating the 16 bit pointer data and its arithmetic in an 8 bit machine.
-<p />
+<p>
 My solution to this problem of handling 16 bit data, notably pointers, with an 8 bit microprocessor was to implement a non-existent 16 bit processor in software, interpreter fashion, which I refer to as SWEET16.  SWEET16 contains sixteen internal 16 bit registers, actually the first 32 bytes in main memory, labelled R0 through R15.  R0 is defined as the accumulator, R15 as the program counter, and R14 as a status register.  R13 stores the result of all COMPARE operations for branch testing.  The user acceses SWEET16 with a subroutine call to hexadecimal address F689.  Bytes stored after the subroutine call are thereafter interpreted and executed by SWEET16.  One of SWEET16's commands returns the user back to 6502 mode, even restoring the original register contents.
-<p />
+<p>
 Implemented in only 300 bytes of code, SWEET16 has a very simple instruction set tailored to operations such as memory moves and stack manipulation.  Most opcodes are only one byte long, but since she runs approximately ten times slower than equivalent 6502 code, SWEET16 should be employed only when code is at a premium or execution is not.  As an example of her usefulness, I have estimated that about 1K byte could be weeded out of my 5K byte Apple-II BASIC interpreter with no observable performance degradation by selectively applying
 SWEET16. []
-<p />
-<hr />
-<p />
+<p>
+<hr>
+<p>
 <pre>
 Article 1684 of comp.sys.apple2.programmer:
 Newsgroups: comp.sys.apple2.programmer
@@ -444,32 +446,32 @@ might not know...
 -Sheldon
 
 </pre>
-<p />
-<hr />
-<p />
-<p />
+<p>
+<hr>
+<p>
+<p>
 <h2><a name ="SWEET_16_INTRODUCTION"> </a> Sweet 16 - Introduction </h2>
-<p />
+<p>
 by Dick Sedgewick
-<p />
-<p />
+<p>
+<p>
 Sweet 16 is probably the least used and least understood seed in the Apple ][.
-<p />
+<p>
 In exactly the same sense that Integer and Applesoft Basics are languages, SWEET 16 is a language. Compared to the Basics, however, it would be classed as low level with a strong likeness to conventional 6502 Assembly language.
-<p />
+<p>
 
 To use SWEET 16, you must learn the language - and to quote "WOZ", "The opcode list is short and uncomplicated". "WOZ" (Steve Wozniak), of course is Mr. Apple, and the creator of SWEET 16.
-<p />
+<p>
 SWEET 16 is ROM based in every Apple ][ from $F689 to $F7FC. It has it's own set of opcodes and instruction sets, and uses the SAVE and RESTORE routines from the Apple Monitor to preserve the 6502 registers when in use, allowing SWEET 16 to be used as a subroutine.
-<p />
+<p>
 It uses the first 32 locations on zero page to set up its 16 double byte registers, and is therefore not compatible with Applesoft Basic without some additional efforts.
-<p />
+<p>
 The original article, "SWEET 16: The 6502 Dream Machine", first appeared in Byte Magazine, November 1977 and later in the original "WOZ PAK". The article is included here and again as test material to help understand the use and implementation of SWEET 16.
-<p />
+<p>
 Examples of the use of SWEET 16 are found in the Programmer's Aid #1, in the Renumber, Append, and Relocate programs. The Programmer's Aid Operating Manual contains complete source assembly listings, indexed on page 65.
-<p />
+<p>
 The demonstration program is written to be introductory and simple, consisting of three parts:
-<p />
+<p>
 <ol>
 <li> Integer Basic Program
 </li>
@@ -479,13 +481,13 @@ The demonstration program is written to be introductory and simple, consisting o
 <li> SWEET 16 Subroutine
 </li>
 </ol>
-<p />
+<p>
 The task of the program will be to move data. Parameters of the move will be entered in the Integer Basic Program.
-<p />
+<p>
 The "CALL 768" ($300) at line 120, enters a 6502 machine language subroutine having the single purpose of entering SWEET 16 and subsequently returning to BASIC (addresses $300, $301, $302, and $312 respectively). The SWEET 16 subroutine of course performs the move, and is entered at Hex locations $303 to $311 (see listing Number 3).
-<p />
+<p>
 After the move, the screen will display three lines of data, each 8 bytes long, and await entry of a new set of parameters. The three lines of data displayed on the screen are as follows:
-<p />
+<p>
 <ul>
 <li> Line 1: The first 8 bytes of data starting at $800, which is the fixed source data to be moved (in this case, the string A$).
 </li>
@@ -495,24 +497,24 @@ After the move, the screen will display three lines of data, each 8 bytes long, 
 <li> Line 3: The first 8 bytes of data starting at $0000 (the first four SWEET 16 registers).
 </li>
 </ul>
-<p />
+<p>
 The display of 8 bytes of data was chosen to simplify the illustration of what goes on.
-<p />
+<p>
 Integer Basic has its own way of recording the string A$. Because the name chosen for the string "A$" is stored in 2 bytes, a total of five housekeeping bytes precede the data entered as A$, leaving only three additional bytes available for display. Integer Basic also adds a housekeeping byte at the end of a string, known as the "string terminator".
-<p />
+<p>
 Consequently, for convenience purposes of the display, and to see the string terminator as the 8th byte, the string data entered via the keyboard should be limited to two characters, and will appear as the 6th and 7th bytes. Additionally, parameters to be entered include the number of bytes to be moved. A useful range for this demonstration would be 1-8 inclusive, but of course 1-255 will work.
-<p />
+<p>
 Finally, the starting address of the destination of the move must be entered. Again, for simplicity, only the high-order byte is entered, and the program allows a choice between Decimal 9 and high-order byte of program pointer 1, to avoid unnecessary problems (in this demonstration enter a decimal number between 9 and 144 for a 48K APPLE).
-<p />
+<p>
 The 8 bytes of data displayed starting at $00 will enable one to observe the condition of the SWEET 16 registers after a move has been accomplished, and thereby understand how the SWEET 16 program works.
-<p />
+<p>
 From the article "SWEET 16: A 6502 Dream Machine", remember that SWEET 16 can establish 16 double byte registers starting at $00. This means that SWEET 16 can use the first 32 addresses on zero page.
 
-<p />
+<p>
 The "events" occurring in this demonstration program can be studied in the first four SWEET 16 registers. Therefore, the 8 byte display starting at $0000 is large enough for this purpose.
-<p />
+<p>
 These four registers are established as R0, R1, R2, R3:
-<p />
+<p>
 <pre>
 R0        $0000     &amp;   0001       -SWEET 16 accumulator
 R1        $0002     &amp;   0003       -Source address
@@ -525,33 +527,33 @@ R14       $001C     &amp;   001D       -Prior result register
 R15       $001E     &amp;   001F       -SWEET 16 Program counter
 
 </pre>
-<p />
+<p>
 Additionally, an examination of registers R14 and R15 will extend and understanding of SWEET 16, as fully explained in the "WOZ" text. Notice that the high order byte of R14, (located at $1D) contains $06, and is the doubled register specification (3X2=$06). R15, the SWEET 16 program counter contains the address of the next operation as it did for each step during execution of the program, which was $0312 when
 execution ended and the 6502 code resumed.
-<p />
+<p>
 To try a sample run, enter the Integer Basic program as shown in Listing #1. Of course, REM statements can be omitted, and line 10 is only helpful if the machine code is to be stored on disk. Listing #2 must also be entered starting at $300.
-<p />
+<p>
 NOTE: A 6502 disassembly does not look like listing #3, but the SOURCEROR disassembler would create a correct disassembly.
-<p />
+<p>
 <pre>
      Enter "RUN" and hit RETURN
      Enter "12" and hit RETURN (A$ - A$ string data)
      Enter "18" and hit RETURN (high-order byte of destination)
 </pre>
-<p />
+<p>
 The display should appear as follows:
-<p />
+<p>
 <pre>
      $0800-C1 40 00 10 08 B1 B2 1E  (SOURCE)
      $0A00-C1 40 00 10 08 B1 B2 1E  (Dest.)
      $0000-1E 00 08 08 08 0A 00 00  (SWEET 16)
 
 </pre>
-<p />
+<p>
 NOTE: The 8 bytes stored at $0A00 are identical to the 8 bytes starting at $0800, indicating that an accurate move of 8 bytes length has been made. They are moved one byte at a time starting with token C1 and ending with token 1E. If moving less than 8 bytes, the data following the moved data would be whatever existed at those locations before the move.
-<p />
+<p>
 The bytes have the following significance:
-<p />
+<p>
 <pre>
 A Token$
 
@@ -562,7 +564,7 @@ A Token$
 
 </pre>
 The SWEET 16 registers are as shown:
-<p />
+<p>
 <pre>
      low   high     low   high     low   high     low   high
 $0000 1E    00       08    08       08    0A       00    00
@@ -574,23 +576,23 @@ $0000 1E    00       08    08       08    0A       00    00
 
 </pre>
 The low order byte of R0, the SWEET 16 accumulator, has $1E in it, the last byte moved (the 8th).
-<p />
+<p>
 
 The low order byte of the source register R1 started as $00 and was incremented eight times, once for each byte of moved data.
-<p />
+<p>
 The high order byte of the destination register R2 contains $0A, which was entered at 10 (the variable) and poked into the SWEET 16 code. The low-order byte of R2 was incremented exactly like R1.
-<p />
+<p>
 Finally, register R3, the register that stores the number of bytes to be moved, has been poked to 8 (the variable B) and decremented eight times as each byte got moved, ending up $0000.
-<p />
+<p>
 By entering character strings and varying the number of bytes to be moved, the SWEET 16 registers can be observed and the contents predicted.
-<p />
+<p>
 Working with this demonstration program, and study of the text material will enable you to write SWEET 16 programs that perform additional 16 bit manipulations. The unassigned opcodes mentioned in the "WOZ Dream Machine" article should present a most interesting opportunity to "play".
-<p />
+<p>
 SWEET 16 as a language - or tool - opens a new direction to Apple ][ owners without spending a dime, and it's been there all the time.
-<p />
+<p>
 "Apple-ites" who desire to learn machine language programming, can use SWEET 16 as a starting point. With this text material to use, and less opcodes to learn, a user can quickly be effective.
-<p />
-<p />
+<p>
+<p>
 Listing #1
 <pre>
 
@@ -642,29 +644,29 @@ Data will be poked from the Integer Basic program:
           "A"       from Line 100
           "B"       from Line 60
 </pre>
-<p />
-<hr />
-<p />
-<p />
+<p>
+<hr>
+<p>
+<p>
 <h2><a name ="SWEET_16_A_Pseudo_16_Bit_Micropr"> </a> SWEET 16: A Pseudo 16 Bit Microprocessor </h2>
-<p />
+<p>
 by Steve Wozniak
-<p />
+<p>
 
-<p />
+<p>
 <h3><a name ="Description_"> Description: </a></h3>
-<p />
+<p>
 While writing APPLE BASIC for a 6502 microprocessor, I repeatedly encountered a variant of MURPHY'S LAW. Briefly stated, any routine operating on 16-bit data will require at least twice the code that it should. Programs making extensive use of 16-bit pointers (such
 as compilers, editors, and assemblers) are included in this category. In my case, even the addition of a few double-byte instructions to the 6502 would have only slightly alleviated the problem. What I really needed was a 6502/RCA 1800 hybrid - an abundance of 16-bit registers and excellent pointer capability.
-<p />
+<p>
 My solution was to implement a non-existant (meta) 16-bit processor in software, interpreter style, which I call SWEET 16.
-<p />
+<p>
 SWEET 16 is based on sixteen 16-bit registers (R0-15), which are actually 32 memory locations. R0 doubles as the SWEET 16 accumulator (ACC), R15 as the program counter (PC), and R14 as the status register. R13 holds compare instruction results and R12 is the subroutine return stack pointer if SWEET 16 subroutines are used. All other SWEET 16 registers are at the user's unrestricted disposal.
-<p />
+<p>
 SWEET 16 instructions fall into register and non-register categories. The register ops specify one of the sixteen registers to be used as either a data element or a pointer to data in memory, depending on the specific instruction. For example INR R5 uses R5 as data and ST @R7 uses R7 as a pointer to data in memory. Except for the SET instruction, register ops take one byte of code each. The non-register ops are primarily 6502 style branches with the second byte specifying a +/-127 byte displacement relative to the address of the following  instruction. Providing that the prior register op result meets a specified branch condition, the displacement is added to the SWEET 16 PC, effecting a branch.
-<p />
+<p>
 SWEET 16 is intended as a 6502 enhancement package, not a stand alone processor. A 6502 program switches to SWEET 16 mode with a subroutine call and subsequent code is interpreted as SWEET 16 instructions. The nonregister op RTN returns the user program to 6502 mode after restoring the internal register contents (A, X, Y, P, and S). The following example illustrates how to use SWEET 16.
-<p />
+<p>
 <pre>
 300  B9 00 02           LDA   IN,Y     ;get a char
 303  C9 CD              CMP   #"M"     ;"M" for move
@@ -681,21 +683,21 @@ SWEET 16 is intended as a 6502 enhancement package, not a stand alone processor.
 
 </pre>
 NOTE:  Registers A, X, Y, P, and S are not disturbed by SWEET 16.
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="Instruction_Descriptions_"> Instruction Descriptions: </a></h3>
-<p />
+<p>
 The SWEET 16 opcode listing is short and uncomplicated. Excepting relative branch displacements, hand assembly is trivial. All register opcodes are formed by combining two Hex digits, one for the opcode and one to specify a register. For example, opcodes 15 and 45 both specify register R5 while codes 23, 27, and 29 are all ST ops. Most register ops are assigned in complementary pairs to facilitate remembering them. Therefore, LD ans ST are opcodes 2N and 3N respectively, while LD @ and ST @ are codes 4N and 5N.
-<p />
+<p>
 Opcodes 0 to C (Hex) are assigned to the thirteen non-register ops. Except for RTN (opcode 0), BK (0A), and RS (0B), the non register ops are 6502 style branches. The second byte of a branch instruction contains a +/-127 byte displacement value (in two's complement form)
 relative to the address of the instruction immediately following the branch.
-<p />
+<p>
 If a specified branch condition is met by the prior register op result, the displacement is added to the PC effecting a branch. Except for the BR (Branch always) and BS (Branch to a Subroutine), the branch opcodes are assigned in complementary pairs, rendering them easily remembered for hand coding. For example, Branch if Plus and Branch if Minus are opcodes 4 and 5 while Branch if Zero and Branch if <span style='background : #FFFFCE;'><font color="#0000FF">NonZero</font></span><a href="/twiki/bin/edit/APG/NonZero?topicparent=APG.AsmSweetSixteen">?</a> are opcodes 6 and 7.
 
-<p />
+<p>
 <h3><a name ="SWEET_16_Opcode_Summary_"> </a> SWEET 16 Opcode Summary: </h3>
-<p />
-<p />
+<p>
+<p>
 Register OPS-
 <pre>
      1n        SET       Rn     Constant  (Set)
@@ -734,63 +736,63 @@ Non-register OPS-
      0F                         (Unassigned)
 </pre>
 
-<p />
+<p>
 <h3><a name ="Register_Instructions_"> Register Instructions: </a></h3>
-<p />
-<p />
+<p>
+<p>
 SET:
-<p />
+<p>
      SET Rn,Constant     [ 1n Low High ]
-<p />
+<p>
      The 2-byte constant is loaded into Rn (n=0 to F, Hex) and
      branch conditions set accordingly. The carry is cleared.
-<p />
+<p>
      EXAMPLE:
 <pre>
 
      15 34 A0   SET  R5   $A034     ;R5 now contains $A034
 </pre>
-<p />
+<p>
 LOAD:
-<p />
+<p>
      LD Rn               [ 2n ]
-<p />
+<p>
      The ACC (R0) is loaded from Rn and branch conditions set
      according to the data transferred. The carry is cleared and
      contents of Rn are not disturbed.
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034
      25         LD   R5             ;ACC now contains $A034
 
 </pre>
-<p />
+<p>
 STORE:
-<p />
+<p>
      ST Rn               [ 3n ]
-<p />
+<p>
      The ACC is stored into Rn and branch conditions set according
      to the data transferred. The carry is cleared and the ACC
      contents are not disturbed.
-<p />
+<p>
      EXAMPLE:
 <pre>
      25         LD   R5              ;Copy the contents
      36         ST   R6              ;of R5 to R6
 </pre>
-<p />
+<p>
 
 LOAD INDIRECT:
-<p />
+<p>
      LD @Rn              [ 4n ]
-<p />
+<p>
      The low-order ACC byte is loaded from the memory location
      whose address resides in Rn and the high-order ACC byte is
      cleared. Branch conditions reflect the final ACC contents
      which will always be positive and never minus 1. The carry
      is cleared. After the transfer, Rn is incremented by 1.
-<p />
+<p>
      EXAMPLE
 <pre>
      15 34 A0   SET  R5   $A034
@@ -798,17 +800,17 @@ LOAD INDIRECT:
                                     ;location $A034
                                     ;R5 is incr to $A035
 </pre>
-<p />
+<p>
 STORE INDIRECT:
-<p />
+<p>
 
      ST @Rn              [ 5n ]
-<p />
+<p>
      The low-order ACC byte is stored into the memory location
      whose address resides in Rn. Branch conditions reflect the
      2-byte ACC contents. The carry is cleared. After the transfer
      Rn is incremented by 1.
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034     ;Load pointers R5, R6 with
@@ -816,30 +818,30 @@ STORE INDIRECT:
      45         LD   @R5            ;Move byte from $A034 to $9022
      56         ST   @R6            ;Both ptrs are incremented
 </pre>
-<p />
+<p>
 LOAD DOUBLE-BYTE INDIRECT:
-<p />
+<p>
      LDD @Rn             [ 6n ]
 
-<p />
+<p>
      The low order ACC byte is loaded from memory location whose
      address resides in Rn, and Rn is then incremented by 1. The
      high order ACC byte is loaded from the memory location whose
      address resides in the incremented Rn, and Rn is again
      incremented by 1. Branch conditions reflect the final ACC
      contents. The carry is cleared.
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034     ;The low-order ACC byte is loaded
      65         LDD  @R6            ;from $A034, high-order from
                                     ;$A035, R5 is incr to $A036
 </pre>
-<p />
+<p>
 STORE DOUBLE-BYTE INDIRECT:
-<p />
+<p>
      STD @Rn            [ 7n ]
-<p />
+<p>
      The low-order ACC byte is stored into memory location
      whose address resides in Rn, and Rn is the incremented
      by 1. The high-order ACC byte is stored into the memory
@@ -847,7 +849,7 @@ STORE DOUBLE-BYTE INDIRECT:
      is again incremented by 1. Branch conditions reflect the ACC
      contents which are not disturbed. The carry is cleared.
 
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034     ;Load pointers R5, R6
@@ -856,11 +858,11 @@ STORE DOUBLE-BYTE INDIRECT:
      76         STD  @R6            ;$A034-35 to $9022-23.
                                     ;Both pointers incremented by 2.
 </pre>
-<p />
+<p>
 POP INDIRECT:
-<p />
+<p>
      POP @Rn             [ 8n ]
-<p />
+<p>
      The low-order ACC byte is loaded from the memory location
      whose address resides in Rn after Rn is decremented by 1,
      and the high order ACC byte is cleared. Branch conditions
@@ -869,7 +871,7 @@ POP INDIRECT:
      Rn is decremented prior to loading the ACC, single byte
      stacks may be implemented with the ST @Rn and POP @Rn ops
      (Rn is the stack pointer).
-<p />
+<p>
      EXAMPLE:
 
 <pre>
@@ -884,11 +886,11 @@ POP INDIRECT:
      85         POP  @R5            ;Pop 5 off stack
      85         POP  @R5            ;Pop 4 off stack
 </pre>
-<p />
+<p>
 STORE POP INDIRECT:
-<p />
+<p>
      STP @Rn             [ 9n ]
-<p />
+<p>
      The low-order ACC byte is stored into the memory location
      whose address resides in Rn after Rn is decremented by 1.
      Branch conditions will reflect the 2-byte ACC contents which
@@ -896,7 +898,7 @@ STORE POP INDIRECT:
      move data blocks beginning at the greatest address and
      working down. Additionally, single-byte stacks may be
      implemented with the STP @Rn ops.
-<p />
+<p>
      EXAMPLE:
 <pre>
      14 34 A0   SET  R4   $A034     ;Init pointers
@@ -907,16 +909,16 @@ STORE POP INDIRECT:
      95         STP  @R5            ;$A032 to $9020
 
 </pre>
-<p />
+<p>
 ADD:
-<p />
+<p>
      ADD Rn              [ An ]
-<p />
+<p>
      The contents of Rn are added to the contents of ACC (R0),
      and the low-order 16 bits of the sum restored in ACC. the
      17th sum bit becomes the carry and the other branch
      conditions reflect the final ACC contents.
-<p />
+<p>
      EXAMPLE:
 <pre>
      10 34 76   SET  R0   $7634     ;Init R0 (ACC) and R1
@@ -925,24 +927,24 @@ ADD:
      A0         ADD  R0             ;Double ACC (R0) to $70B6
                                     ;with carry set.
 </pre>
-<p />
+<p>
 
 SUBTRACT:
-<p />
+<p>
      SUB Rn              [ Bn ]
-<p />
+<p>
      The contents of Rn are subtracted from the ACC contents by
      performing a two's complement addition:
-<p />
+<p>
      ACC = ACC + Rn + 1
-<p />
+<p>
      The low order 16 bits of the subtraction are restored in the
      ACC, the 17th sum bit becomes the carry and other branch
      conditions reflect the final ACC contents. If the 16-bit
      unsigned ACC contents are greater than or equal to the 16-bit
      unsigned Rn contents, then the carry is set, otherwise it is
      cleared. Rn is not disturbed.
-<p />
+<p>
      EXAMPLE:
 <pre>
 
@@ -952,11 +954,11 @@ SUBTRACT:
                                     ;(diff=$340D with c set)
      B0         SUB  R0             ;clears ACC. (R0)
 </pre>
-<p />
+<p>
 POP DOUBLE-BYTE INDIRECT:
-<p />
+<p>
      POPD @Rn            [ Cn ]
-<p />
+<p>
      Rn is decremented by 1 and the high-order ACC byte is loaded
      from the memory location whose address now resides in Rn. Rn is
      again decremented by 1 and the low-order ACC byte is loaded from
@@ -965,7 +967,7 @@ POP DOUBLE-BYTE INDIRECT:
      decremented prior to loading each of the ACC halves, double-byte
      stacks may be implemented with the STD @Rn and POPD @Rn ops
      (Rn is the stack pointer).
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034     ;Init stack pointer
@@ -977,11 +979,11 @@ POP DOUBLE-BYTE INDIRECT:
      C5         POPD @R5            ;Pop $AA12 off stack
 
 </pre>
-<p />
+<p>
 COMPARE:
-<p />
+<p>
      CPR Rn              [ Dn ]
-<p />
+<p>
      The ACC (R0) contents are compared to Rn by performing the 16
      bit binary subtraction ACC-Rn and storing the low order 16
      difference bits in R13 for subsequent branch tests. If the 16
@@ -989,7 +991,7 @@ COMPARE:
      bit unsigned Rn contents, then the carry is set, otherwise it
      is cleared. No other registers, including ACC and Rn, are
      disturbed.
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0           SET  R5   $A034     ;Pointer to memory
@@ -1001,15 +1003,15 @@ COMPARE:
      D6                 CPR  R6             ;to limit R6
      02 FA              BNC  LOOP1          ;loop if C clear
 </pre>
-<p />
+<p>
 
 INCREMENT:
-<p />
+<p>
      INR Rn              [ En ]
-<p />
+<p>
      The contents of Rn are incremented by 1. The carry is cleared
      and other branch conditions reflect the incremented value.
-<p />
+<p>
      EXAMPLE:
 <pre>
      15 34 A0   SET  R5   $A034     ;(Pointer)
@@ -1019,15 +1021,15 @@ INCREMENT:
      55         ST   @R5            ;Clrs location $A036
                                     ;(not $A035)
 </pre>
-<p />
+<p>
 DECREMENT:
-<p />
+<p>
 
      DCR Rn              [ Fn ]
-<p />
+<p>
      The contents of Rn are decremented by 1. The carry is cleared
      and other branch conditions reflect the decremented value.
-<p />
+<p>
      EXAMPLE:  (Clear 9 bytes beginning at location A034)
 <pre>
      15 34 A0           SET  R5   $A034     ;Init pointer
@@ -1037,33 +1039,33 @@ DECREMENT:
      F4                 DCR  R4             ;Decrement count
      07 FC              BNZ  LOOP2          ;Loop until Zero
 </pre>
-<p />
-<p />
+<p>
+<p>
 Non-Register Instructions:
-<hr />
-<p />
+<hr>
+<p>
 
 RETURN TO 6502 MODE:
-<p />
+<p>
      RTN 00
-<p />
+<p>
      Control is returned to the 6502 and program execution continues
      at the location immediately following the RTN instruction. the
      6502 registers and status conditions are restored to their
      original contents (prior to entering SWEET 16 mode).
-<p />
-<p />
+<p>
+<p>
 BRANCH ALWAYS:
-<p />
+<p>
      BR ea               [ 01 d ]
-<p />
+<p>
      An effective address (ea) is calculated by adding the signed
      displacement byte (d) to the PC. The PC contains the address
      of the instruction immediately following the BR, or the address
      of the BR op plus 2. The displacement is a signed two's
      complement value from -128 to +127. Branch conditions are not
      changed.
-<p />
+<p>
 
      NOTE: The effective address calculation is identical to that
      for 6502 relative branches. The Hex add &amp; Subtract features of
@@ -1083,34 +1085,34 @@ BRANCH ALWAYS:
 <pre>
      $300:  01 50  BR $352
 </pre>
-<p />
+<p>
 BRANCH IF NO CARRY:
-<p />
+<p>
 
      BNC ea              [ 02 d ]
-<p />
+<p>
      A branch to the effective address is taken only is the carry is
      clear, otherwise execution resumes as normal with the next
      instruction. Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF CARRY SET:
-<p />
+<p>
      BC ea               [ 03 d ]
-<p />
+<p>
      A branch is effected only if the carry is set. Branch conditions
      are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF PLUS:
 
-<p />
+<p>
      BP ea               [ 04 d ]
-<p />
+<p>
      A branch is effected only if the prior 'result' (or most
      recently transferred dat) was positive. Branch conditions are
      not changed.
-<p />
+<p>
      EXAMPLE: (Clear mem from A034 to A03F)
 <pre>
      15 34 A0           SET  R5   $A034     ;Init pointer
@@ -1122,80 +1124,80 @@ BRANCH IF PLUS:
      D5                 CPR  R5             ;to pointer
      04 FA              BP   LOOP3          ;Loop until done
 </pre>
-<p />
+<p>
 BRANCH IF MINUS:
-<p />
+<p>
      BM ea               [ 05 d ]
 
-<p />
+<p>
      A branch is effected only if prior 'result' was minus (negative,
      MSB = 1). Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF ZERO:
-<p />
+<p>
      BZ ea               [ 06 d ]
-<p />
+<p>
      A Branch is effected only if the prior 'result' was zero. Branch
      conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF NONZERO
-<p />
+<p>
      BNZ ea              [ 07 d ]
 
-<p />
+<p>
      A branch is effected only if the priot 'result' was non-zero
      Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF MINUS ONE
-<p />
+<p>
      BM1 ea              [ 08 d ]
-<p />
+<p>
      A branch is effected only if the prior 'result' was minus one
      ($FFFF Hex). Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH IF NOT MINUS ONE
-<p />
+<p>
      BNM1 ea             [ 09 d ]
 
-<p />
+<p>
      A branch effected only if the prior 'result' was not minus 1.
      Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BREAK:
-<p />
+<p>
      BK                  [ 0A ]
-<p />
+<p>
      A 6502 BRK (break) instruction is executed. SWEET 16 may be
      re-entered non destructively at SW16d after correcting the
      stack pointer to its value prior to executing the BRK.
-<p />
-<p />
+<p>
+<p>
 RETURN FROM SWEET 16 SUBROUTINE:
-<p />
+<p>
      RS                  [ 0B ]
 
-<p />
+<p>
      RS terminates execution of a SWEET 16 subroutine and returns to the
      SWEET 16 calling program which resumes execution (in SWEET 16 mode).
      R12, which is the SWEET 16 subroutine return stack pointer, is
      decremented twice. Branch conditions are not changed.
-<p />
-<p />
+<p>
+<p>
 BRANCH TO SWEET 16 SUBROUTINE:
-<p />
+<p>
      BS ea               [ 0c d ]
-<p />
+<p>
      A branch to the effective address (PC + 2 + d) is taken and
      execution is resumed in SWEET 16 mode. The current PC is pushed
      onto a SWEET 16 subroutine return address stack whose pointer is
      R12, and R12 is incremented by 2. The carry is cleared and branch
      conditions set to indicate the current ACC contents.
-<p />
+<p>
      EXAMPLE: (Calling a 'memory move' subroutine to move A034-A03B
               to 3000-3007)
 <pre>
@@ -1211,24 +1213,24 @@ BRANCH TO SWEET 16 SUBROUTINE:
      0B                RS                  ;Return
 
 </pre>
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="Theory_of_Operation_"> Theory of Operation: </a></h3>
-<p />
+<p>
 SWEET 16 execution mode begins with a subroutine call to SW16. All 6502 registers are saved at this time, to be restored when a SWEET 16 RTN instruction returns control to the 6502. If you can tolerate indefinate 6502 register contents upon exit, approximately 30 usec may be saved by entering at SW16 + 3. Because this might cause an inadvertant switch from Hex to Decimal mode, it is advisable to enter at SW16 the first time through.
-<p />
+<p>
 After saving the 6502 registers, SWEET 16 initializes its PC (R15) with the subroutine return address off the 6502 stack. SWEET 16's PC points to the location preceding the next instruction to be executed. Following the subroutine call are 1-,2-, and 3-byte SWEET 16  instructions, stored in ascending memory like 6502 instructions. the main loop at SW16B repeatedly calls the 'execute instruction' routine to execute it.
-<p />
+<p>
 Subroutine SW16C increments the PC (R15) and fetches the next opcode, which is either a register op of the form OP REG with OP between 1 and 15 or a non-register op of the form 0 OP with OP between 0 and 13. Assuming a register op, the register specification is doubled to account for the 3 byte SWEET 16 registers and placed in the X-reg for indexing. Then the instruction type is determined. Register ops place the doubled register specification in the high order byte of R14 indicating the 'prior result register' to subsequent branch instructions. Non-register ops treat the register specifcation (right-hand half-byte) as their opcode, increment the SWEET 16 PC to point at the  displacement byte of branch instructions, load the A-reg with the 'prior result register' index for branch condition testing, and clear the Y-reg.
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="When_is_an_RTS_really_a_JSR_"> </a> When is an RTS really a JSR? </h3>
 
-<p />
-<p />
+<p>
+<p>
 Each instruction type has a corresponding subroutine. The subroutine entry points are stored in a table which is directly indexed into by
 the opcode. By assigning all the entries to a common page, only a single byte to address need be stored per routine. The 6502 indirect jump might have been used as follows to transfer control to the appropriate subroutine.
-<p />
+<p>
 <pre>
      LDA     #ADRH       ;High-order byte.
      STA     IND+1
@@ -1236,51 +1238,51 @@ the opcode. By assigning all the entries to a common page, only a single byte to
      STA     IND
      JMP     (IND)
 </pre>
-<p />
+<p>
 To save code, the subroutine entry address (minus 1) is pushed onto the stack, high-order byte first. A 6502 RTS (return from subroutine) is used to pop the address off the stack and into the 6502 PC (after incrementing by 1). The net result is that the desired subroutine is reached by executing a subroutine return instruction!
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="Opcode_Subroutines_"> Opcode Subroutines: </a></h3>
-<p />
+<p>
 The register op routines make use of the 6502 'zero page indexed by X' and 'indexed by X direct' addressing modes to access the specified
 registers and indirect data. The 'result' of most register ops is left in the specified register and can be sensed by subsequent branch
 instructions, since the register specification is saved in the high-order byte of R14. This specification is changed to indicate R0 (ACC)
 for ADD and SUB instructions and R13 for the CPR (compare) instruction.
 
-<p />
+<p>
 Normally the high-order R14 byte holds the 'prior result register' index times 2 to account for the 2-byte SWEET 16 registers and the LSB is zero. If ADD, SUB, or CPR instructions generate carries, then this index is incremented, setting the LSB.
-<p />
+<p>
 The SET instruction increments the PC twice, picking up data bytes in the specified register. In accordance with 6502 convention, the low-order data byte precedes the high-order byte.
-<p />
+<p>
 Most SWEET 16 non-register ops are relative branches. The corresponding subroutines determine whether or not the 'prior result' meets the
 specified branch condition and if so, update the SWEET 16 PC by adding the displacement value (-128 to +127 bytes).
-<p />
+<p>
 The RTN op restores the 6502 register contents, pops the subroutine return stack and jumps indirect through the SWEET 16 PC. This transfers
 control to the 6502 at the instruction immediately following the RTN instruction.
-<p />
+<p>
 The BK op actually executes a 6502 break instruction (BRK), transferring control to the interrupt handler.
-<p />
+<p>
 Any number of subroutine levels may be implemented within SWEET 16 code via the BS (Branch to Subroutine) and RS (Return from Subroutine)
 instructions. The user must initialize and otherwise not disturb R12 if the SWEET 16 subroutine capability is used since it is utilized as the automatic return stack pointer.
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="Memory_Allocation_"> Memory Allocation: </a></h3>
 
-<p />
+<p>
 The only storage that must be allocated for SWEET 16 variables are 32 consecutive locations in page zero for the SWEET 16 registers, four
 locations to save the 6502 register contents, and a few levels of the 6502 subroutine return address stack. if you don't need to preserve the 6502 register contents, delete the SAVE and RESTORE subroutines and the corresponding subroutine calls. This will free the four page zero locations ASAV, XSAV, YSAV, and PSAV.
-<p />
+<p>
 <h3><a name ="User_Modifications_"> User Modifications: </a></h3>
-<p />
+<p>
 You may wish to add some of your own instructions to this implementation of SWEET 16. If you use the unassigned opcodes $0E and $0F, remember that SWEET 16 treats these as 2-byte instructions. You may wish to handle the break instruction as a SWEET 16 call, saving two bytes of code each time you transfer into SWEET 16 mode. Or you may wish to use the SWEET 16 BK (break) op as a 'CHAROUT' call in the interrupt handler. You can perform absolute jumps within SWEET 16 by loading the ACC (R0) with the address you wish to jump to (minus 1) and executing a ST R15 instruction.
-<p />
+<p>
 
-<p />
+<p>
 <h2><a name ="Woz_Notes"> Notes from Apple II System Description </a></h2>
-<p />
+<p>
 This is kind of old stuff, but I ran across the issue of Byte that had the
 Apple II system description by Steve Wozniak:
-<p />
+<p>
 <pre>
 00   1   Return to 6502 mode
 01   2   Branch Always
@@ -1311,7 +1313,7 @@ ER   1   R&lt;-R+1
 FR   1   R&lt;-R-1
 
 </pre>
-<p />
+<p>
 notes
 <ol>
 <li> All braches are followed by a 1 byte relative displacement. Works identically to 6502 branches.
@@ -1334,15 +1336,15 @@ notes
 <li> Length of instructions: Branches are always two bytes: opcodes followed by relative displacement.  Load register immediate (1R) is three bytes: the hexadecimal opcode 10 to 1F followed by the 2 byte literal value of a 16 bit number.  All other instructions are one byte in length.
 </li>
 </ol>
-<p />
+<p>
 And from that issue of Byte (Apr 1977, I think)...some words from the Woz
 himself.  Retyped without permission.
 
-<hr />
+<hr>
 
-<p />
+<p>
 <h2><a name ="Sweet_16_S_C_Macro_Assembler_Tex"> Sweet 16 S-C Macro Assembler Text </a></h2>
-<p />
+<p>
 SWEET-16 is a powerful programming tool developed by Steve Wozniak in
 the early days of Apple.  Chances are that you do have this tool,
 whether you know it or not.  The standard version is hidden away
@@ -1351,7 +1353,7 @@ mother board, or in a firmware card, or in a 16K RAM card, then you
 have SWEET-16.  I have included a commented source file of SWEET-16
 on your S-C MACRO ASSEMBLER II disk, so you can assemble your own
 copy if you wish.
-<p />
+<p>
 
 SWEET-16 is really a language, just like 6502 machine language,
 BASIC, Pascal, FORTRAN.  It looks a lot like a machine language for a
@@ -1361,29 +1363,29 @@ Magazine (November, 1977, pages 150-159): "SWEET-16 -- The 6502 Dream
 Machine".  Another article you may want to find is "SWEET-16
 Revisited", by Charles F. Taylor. in MICRO--The 6502/6809 Journal.
 January, 1982, pages 25-42.
-<p />
+<p>
 The beauty of SWEET-16 is in its ability to perform 16-bit arithmetic
 and data moves using automatically updated address pointers.  And to
 add icing to the cake, most of the instructions are only one byte
 long!  You can write extremely compact code, if you are willing to
 pay the price of slower execution.  (A typical program will take half
 as many bytes, but ten times longer to execute.)
-<p />
+<p>
 Does anyone really use SWEET-16?  Yes, in a big way.  I used it in
 several places inside the early versions of S-C Assembler II. The
 TED/ASM assembler, and all its descendants (including DOS Tool Kit,
 TED 11+, Big Mac, Merlin, and others) use SWEET-16 heavily.  Several
 of the programs in the Apple Programmer's Aid ROM use SWEET-16.
 including the Integer BASIC Renumber/Append program.
-<p />
+<p>
 The standard version of SWEET-16 is invoked by the 6502 instruction
 "JSR $F689"; the bytes immediately following contain opcodes for
 SWEET-16 to process.  SWEET-16 opcodes will be executed until the
 "RTN" opcode, which returns to 6502 mode.
-<p />
-<p />
+<p>
+<p>
 <h3><a name ="Programming_Model"> Programming Model </a></h3>
-<p />
+<p>
 The SWEET-16 "machine" has sixteen 16-bit registers (R0-R15). R0 is
 actually the two memory bytes at $0000 and $0001.  The next two bytes
 are called R1; R15 is stored in $001E and $001F. Several of the
@@ -1391,7 +1393,7 @@ registers have special functions: R0 is used as an accumulator (like
 the 6502's A-register); R12 is the subroutine return stack pointer;
 R13 receives the results of comparisons; R14 is a status register;
 R15 is the program address counter.
-<p />
+<p>
 <pre>
     SWEET-16 REGISTERS
 
@@ -1410,7 +1412,7 @@ R15 is the program address counter.
       15          $1E,1F        Program address
 
 </pre>
-<p />
+<p>
 There are two general types of opoodes recognized by SWEET-16:
 register and non-register opcodes.  The non-register opcodes all have
 the form "0x", where x is a hexadecimal digit from 0 through C.
@@ -1418,9 +1420,9 @@ the form "0x", where x is a hexadecimal digit from 0 through C.
 relative branches, subroutine call and return, and to leave SWEET-16.
 The register opcodes have the format "xR", where x is a hexadecimal
 digit from 0 through F, and R is a register number (0-F).
-<p />
+<p>
 <h3><a name ="SWEET_16_OPCODES"> </a> SWEET-16 OPCODES </h3>
-<p />
+<p>
     Non-Register Opcodes: RTN, BK, and RS are one byte opcodes.  The
     rest have a second byte which is a relative address, similar to
     the relative branch addresses used in 6502 opcodes.  The conditional
@@ -1440,7 +1442,7 @@ digit from 0 through F, and R is a register number (0-F).
     0B      RS           Return from SWEET-16 subroutine.
     0C ea   BS   addr    Call SWEET-16 subroutine.
 </pre>
-<p />
+<p>
     Register Opcodes: The SET opcode uses three bytes, to load a 16-bit
     immediate value into a register.  All the rest of the register
     opcodes only use one byte.  ("MA" = memory address)
@@ -1471,11 +1473,11 @@ digit from 0 through F, and R is a register number (0-F).
     Fn          DCR  n          Rn &lt;-- (Rn) - 1.
 
 </pre>
-<p />
+<p>
 The S-C Assembler II includes all of the SWEET-16 opcodes, in the
 formats shown above.  You can write programs which mix both 6502 code
 and SWEET-16 together in any combination.
-<p />
+<p>
 Here are a few examples which illustrate programming in SWEET-16.
 <pre>
                     1000 *-------------------------------------
@@ -1586,7 +1588,7 @@ Here are a few examples which illustrate programming in SWEET-16.
     0000 ERRORS IN ASSEMBLY
 
 </pre>
-<p />
+<p>
 
 <p>
 <FONT SIZE=-1>Last page update: March 21, 2004.</FONT>
