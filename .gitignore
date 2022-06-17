@@ -1,6 +1,7 @@
 .DS_Store
 .redcar
 *.pyc
+/*.php
 /config/database.yml
 /db/*.sql
 /log/*
