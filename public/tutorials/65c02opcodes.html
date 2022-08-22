@@ -2,12 +2,13 @@
 <meta name="description" content="Differences between the 6502 and 65C02 are documented in this article.">
 <body>
 <a href="/">[Return to Main Page]</A>
-<FONT size=+1>65C02 Opcodes</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark</FONT>
+<FONT size=+1>65C02 Opcodes</FONT>&nbsp;<FONT SIZE=-1>by Bruce Clark, augmented by Jeff Laughton</FONT>
 <BR><A HREF="tutorials.htm">[Up to Tutorials and Aids]</A> <P><HR>
 <P>
-<b>Table of Contents</b>
+<strong>Table of Contents</strong>
 
 <p>
+
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><a href="#1">1</a></td><td>&nbsp;&nbsp;</td><td>Introduction</td></tr>
 <tr><td><a href="#2">2</a></td><td>&nbsp;&nbsp;</td><td>Instructions with additional addressing modes</td></tr>
@@ -15,13 +16,15 @@
 <tr><td><a href="#4">4</a></td><td>&nbsp;&nbsp;</td><td>Additional Rockwell 65C02 and WDC 65C02 instructions</td></tr>
 <tr><td><a href="#5">5</a></td><td>&nbsp;&nbsp;</td><td>Additional WDC 65C02 instructions</td></tr>
 <tr><td><a href="#6">6</a></td><td>&nbsp;&nbsp;</td><td>Instructions with functional differences</td></tr>
+
 <tr><td><a href="#7">7</a></td><td>&nbsp;&nbsp;</td><td>Instructions with different cycle counts</td></tr>
-<tr><td><a href="#8">8</a></td><td>&nbsp;&nbsp;</td><td>Instructions with functional and cycle count differences</td></tr>
+<tr><td><a href="#8">8</a></td><td>&nbsp;&nbsp;</td><td>Instructions with functional and cycle-count differences</td></tr>
+<tr><td><a href="#9">9</a></td><td>&nbsp;&nbsp;</td><td>Unused opcodes (undocumented NOPs)</td></tr>
 </table>
 <p>
 <hr>
 
-<p><a name="1"><b>1. Introduction</b></a></p>
+<p><a name="1"><strong>1. Introduction</strong></a></p>
 
 <p>The 65C02 has many similarities to the NMOS 6502, but the 65C02 has
 additional instructions and addressing modes available.  In addition, there
@@ -40,11 +43,12 @@ These differences are documented below.</p>
 </ul>
 
 <p>
-The CYC column may also contain a lower case letter.  This indicates a
+
+The CYC column may also contain a lower-case letter.  This indicates a
 footnote which describes the conditions when the cycle count is different.
 </p>
 
-<p><a name="2"><b>2. 6502 instructions with additional addressing modes</b></a></p>
+<p><a name="2"><strong>2. 6502 instructions with additional addressing modes</strong></a></p>
 
 <p>
 ADC AND CMP EOR LDA ORA SBC STA - (zp) addressing mode
@@ -72,21 +76,25 @@ a) 6 cycles if the D flag is set (decimal mode)
 </p>
 
 <p>
-The new (zp) addressing mode is available with eight instructions: ADC, AND,
-CMP, EOR, LDA ORA, SBC, and STA.  As would be expected, the (zp) addressing
-mode is exactly like the (zp),Y addressing mode when Y is zero, including the
-cycle count.  The ADC (zp) and SBC (zp) instructions take 6 cycles when in
-decimal mode; in fact, one difference between the 6502 and the 65C02 is that
-all addressing modes of ADC and SBC take an additional cycle in decimal mode.
-This change is discussed in further detail below.
+The new (zp) addressing mode is available with eight instructions: ADC,
+AND, CMP, EOR, LDA ORA, SBC, and STA.  You might expect the (zp)
+addressing mode to be identical to (zp),Y addressing when Y is zero, and
+it is... almost. Comparing the cycle counts, we see that STA (zp),Y is
+always 6 cycles but STA (zp) is always 5.
+Also, comparing decimal mode with binary mode we see that ADC (zp) and
+SBC (zp) instructions take an extra cycle (6, not 5) when in decimal mode.
+This isn't unique to (zp) mode; in fact, one difference between the 6502
+and the 65C02 is that all addressing modes of ADC and SBC take an
+additional cycle in decimal mode. This change is discussed in further
+detail below.
 </p>
 
 <p>
-Two other points of note: first, while (zp) is otherwise functionally
-identical to (zp,X) when X is zero, (zp) instructions take one fewer cycle
-than (zp,X) instructions.  Second, the flags affected for each of the eight
-instructions is the same for all addressing modes, and the flags affected are
-the same as the 6502.
+Two other points of note: first, comparing (zp) to (zp,X) when X is zero,
+we see they're functionally identical except that (zp) instructions take
+one fewer cycle than (zp,X) instructions.  Second, the flags affected for
+each of the eight instructions is the same for all addressing modes, and
+the flags affected are the same as the 6502.
 </p>
 
 <p>
@@ -123,6 +131,7 @@ words, which flags are affected depends on the addressing mode.
 </p>
 
 <p>
+
 DEC INC - acc addressing mode
 </p>
 
@@ -140,12 +149,13 @@ OP LEN CYC MODE FLAGS    SYNTAX
 <p>
 DEC and INC (without operands) are like DEX, DEY, INX, and INY, but decrement
 or increment the accumulator rather than the X or Y registers.  Note that the
-cycle count is the same as DEX, DEY, INX and INY.
+cycle count is the same as DEX, DEY, INX, and INY.
 </p>
 
 <p>
 Some assemblers may require (or allow) a slightly different syntax to be used
 for these instructions.  For DEC, two possibilities are:
+
 
 <pre>
 DEA
@@ -177,9 +187,8 @@ OP LEN CYC MODE    FLAGS    SYNTAX
 The new (abs,X) addressing mode is available with the JMP instruction.  As
 would be expected, the X register is added to the absolute address, and the
 resulting address contains the address to jump to, low byte first.  For
-example, if X is $FF, memory location $1456 contains $CD, and memory location
-$1457 contains $AB, then JMP ($1357,X) will jump to $ABCD.
-</p>
+example, if X is $FF, memory location $1456 contains $CD, and memory
+location $1457 contains $AB, then JMP ($1357,X) will jump to $ABCD.</p>
 
 <p>
 This addressing mode is useful for creating jump tables, particularly with
@@ -207,6 +216,7 @@ Note that the equivalent 65C02 routine takes fewer bytes and is faster:
        TAX
        JMP (TABLE,X)
 TABLE: DW  ROUTINE0,ROUTINE1,ROUTINE2  ; note: no -1
+
 </pre>
 
 Another common way jump tables were implemented on the 6502 was:
@@ -253,7 +263,7 @@ TABLE: DW  ROUTINE0,ROUTINE1,ROUTINE2,ROUTINE3
        DW  ROUTINE252,ROUTINE253,ROUTINE254,ROUTINE255
 </pre>
 
-<p><a name="3"><b>3. Additional instructions</b></a></p>
+<p><a name="3"><strong>3. Additional instructions</strong></a></p>
 
 <p>
 BRA - BRanch Always
@@ -271,14 +281,15 @@ OP LEN CYC MODE FLAGS    SYNTAX
 
 <p>
 a) 4 cycles if the branch is to a different page
+
 </p>
 
 <p>
 BRA is like the other branch instructions except it branches unconditionally.
 The address of the branch destination (LABEL in the syntax example above)
 must be within -128 to 127 bytes (inclusive) of the address of the next
-instruction (or data) after the BRA, that is, 2 bytes plus the address of the
-BRA opcode.  The branch is to a different page when the next instruction
+instruction (or data) after the BRA, that is, 2 bytes plus the address of
+the BRA opcode.  The branch is to a different page when the next instruction
 after the BRA is on a different page than the branch destination.
 </p>
 
@@ -286,7 +297,7 @@ after the BRA is on a different page than the branch destination.
 Note that this is the same cycle count as the other branch instructions.
 Since the other branches are conditional, they will take 2 cycles if the
 branch is not taken (i.e. the branch condition is false), but since a BRA
-always branches, the 2 cycle case never occurs.
+always branches, the 2-cycle case never occurs.
 </p>
 
 <p>
@@ -334,14 +345,14 @@ OP LEN CYC MODE  FLAGS    SYNTAX
 <p>
 STZ is fairly straightforward.  It stores $00 in the memory location
 specified in the operand.  It's like STA when A=$00, but it doesn't require
-a register to be cleared beforehand.  Note that the cycle counts are the same
-as STA.
+a register to be cleared beforehand.  Note that the cycle counts are the
+same as STA.
 </p>
 
 <p>
 It's also worth noting that STZ often does not provide all that much
-performance improvement.  For example, the following code clears a page of
-memory:
+performance improvement.  For example, the following code clears a page
+of memory:
 
 <pre>
      LDX #$00
@@ -351,11 +362,11 @@ LOOP STA $1000,X
      BNE LOOP
 </pre>
 
-The STA can be replaced with an STZ and the TXA can be then be deleted, which
-results in only a very slight improvement: one fewer byte, and two fewer
-cycles total (2561 vs. 2563 cycles, or 2817 vs. 2819 cycles if the BNE
-crosses a page boundary), since the clearing of the accumulator takes place
-outside the loop.
+The STA can be replaced with an STZ and the TXA can be then be deleted,
+which results in only a very slight improvement: one fewer byte, and two
+fewer cycles total (2561 vs. 2563 cycles, or 2817 vs. 2819 cycles if the
+BNE crosses a page boundary), since the clearing of the accumulator takes
+place outside the loop.
 </p>
 
 <p>
@@ -387,8 +398,8 @@ function than the effect on memory.
 <p>
 TRB has the same effect on the Z flag that a BIT instruction does.
 Specifically, it is based on whether the result of a bitwise AND of the
-accumulator with the contents of the memory location specified in the operand
-is zero.  Also, like BIT, the accumulator is not affected.
+accumulator with the contents of the memory location specified in the
+operand is zero.  Also, like BIT, the accumulator is not affected.
 </p>
 
 <p>
@@ -397,7 +408,7 @@ operand are cleared and which are not affected.  The bits in the accumulator
 that are ones are cleared (in memory), and the bits that are zeros (in the
 accumulator) are not affected (in memory).  This is the same as saying that
 the resulting memory contents are the bitwise AND of the memory contents with
-the complement of the accumulator (i.e. the exclusive-or of the accululator
+the complement of the accumulator (i.e. the exclusive-or of the accumulator
 with $FF).  Thus, the operation of TRB operand is similar to
 
 <pre>
@@ -442,6 +453,7 @@ STA $00
 LDA #$41
 TRB $00
 </pre>
+
 the Z flag is 1 ($A6 AND $41 = $00), memory location $00 contains $A6 ($A6
 AND ($41 XOR $FF) = $A6), and again, the accumulator is unaffected by the
 TRB instruction (and thus contains $41 from the LDA instruction).
@@ -468,18 +480,19 @@ OP LEN CYC MODE FLAGS    SYNTAX
 -- --- --- ---- -----    ------
 04 2   5   zp   ......Z. TSB $12
 0C 3   6   abs  ......Z. TSB $3456
+
 </pre>
 
 <p>
-TSB, like TRB, can be confusing.  For one, like TRB, the effect on the Z flag is
-determined by a different function than the effect on memory.
+TSB, like TRB, can be confusing.  For one, like TRB, the effect on the Z flag
+is determined by a different function than the effect on memory.
 </p>
 
 <p>
 TSB, like TRB, has the same effect on the Z flag that a BIT instruction does.
 Specifically, it is based on whether the result of a bitwise AND of the
-accumulator with the contents of the memory location specified in the operand
-is zero.  Also, like BIT (and TRB), the accumulator is not affected.
+accumulator with the contents of the memory location specified in the
+operand is zero.  Also, like BIT (and TRB), the accumulator is not affected.
 </p>
 
 <p>
@@ -528,13 +541,14 @@ LDA #$A6
 STA $00
 LDA #$41
 TSB $00
+
 </pre>
 the Z flag is 1 ($A6 AND $41 = $00), memory location $00 contains $E7 ($A6
 OR $41 = $E7), and again, the accumulator is unaffected by the TSB
 instruction (and thus contains $41 from the LDA instruction).
 </p>
 
-<p><a name="4"><b>4. Additional Rockwell 65C02 and WDC 65C02 instructions</b></a></p>
+<p><a name="4"><strong>4. Additional Rockwell 65C02 and WDC 65C02 instructions</strong></a></p>
 
 <p>
 Four additional instructions and one additional addressing mode are available
@@ -548,26 +562,31 @@ BBR BBS - Branch on Bit Reset or Set
 <p>
 Flags affected: none
 
+
 <pre>
-OP LEN CYC MODE   FLAGS    SYNTAX
--- --- --- ----   -----    ------
-0F 3   5   zp,rel ........ BBR0 $12,LABEL
-1F 3   5   zp,rel ........ BBR1 $12,LABEL
-2F 3   5   zp,rel ........ BBR2 $12,LABEL
-3F 3   5   zp,rel ........ BBR3 $12,LABEL
-4F 3   5   zp,rel ........ BBR4 $12,LABEL
-5F 3   5   zp,rel ........ BBR5 $12,LABEL
-6F 3   5   zp,rel ........ BBR6 $12,LABEL
-7F 3   5   zp,rel ........ BBR7 $12,LABEL
-8F 3   5   zp,rel ........ BBS0 $12,LABEL
-9F 3   5   zp,rel ........ BBS1 $12,LABEL
-AF 3   5   zp,rel ........ BBS2 $12,LABEL
-BF 3   5   zp,rel ........ BBS3 $12,LABEL
-CF 3   5   zp,rel ........ BBS4 $12,LABEL
-DF 3   5   zp,rel ........ BBS5 $12,LABEL
-EF 3   5   zp,rel ........ BBS6 $12,LABEL
-FF 3   5   zp,rel ........ BBS7 $12,LABEL
+OP LEN CYC  MODE   FLAGS    SYNTAX
+-- --- ---  ----   -----    ------
+0F 3   5 a  zp,rel ........ BBR0 $12,LABEL
+1F 3   5 a  zp,rel ........ BBR1 $12,LABEL
+2F 3   5 a  zp,rel ........ BBR2 $12,LABEL
+3F 3   5 a  zp,rel ........ BBR3 $12,LABEL
+4F 3   5 a  zp,rel ........ BBR4 $12,LABEL
+5F 3   5 a  zp,rel ........ BBR5 $12,LABEL
+6F 3   5 a  zp,rel ........ BBR6 $12,LABEL
+7F 3   5 a  zp,rel ........ BBR7 $12,LABEL
+8F 3   5 a  zp,rel ........ BBS0 $12,LABEL
+9F 3   5 a  zp,rel ........ BBS1 $12,LABEL
+AF 3   5 a  zp,rel ........ BBS2 $12,LABEL
+BF 3   5 a  zp,rel ........ BBS3 $12,LABEL
+CF 3   5 a  zp,rel ........ BBS4 $12,LABEL
+DF 3   5 a  zp,rel ........ BBS5 $12,LABEL
+EF 3   5 a  zp,rel ........ BBS6 $12,LABEL
+FF 3   5 a  zp,rel ........ BBS7 $12,LABEL
 </pre>
+ 
+a) 1 additional cycle if the branch is taken and it's within the same page,
+or 2 additional cycles if the branch is taken and it's to a different page.
+
 
 <p>
 BBR and BBS test the specified zero page location and branch if the specified
@@ -628,6 +647,7 @@ RMB SMB - Reset or Set Memory Bit
 </p>
 
 <p>
+
 Flags affected: none
 
 <pre>
@@ -652,10 +672,10 @@ F7 2   5   zp   ........ SMB7 $12
 </pre>
 
 <p>
-RMB and SMB clear (RMB) or set (SMB) the specified bit in the specified zero
-page location, and can be used in conjuction with the BBR and BBS
-instructions.  Again, note that as with BBR and TRB, the term reset in RMB is
-used to mean clear.
+RMB and SMB clear (RMB) or set (SMB) the specified bit in the specified
+zero page location, and can be used in conjunction with the BBR and BBS
+instructions.  Again, note that as with BBR and TRB, the term reset in
+RMB is used to mean clear.
 </p>
 
 <p>
@@ -690,14 +710,15 @@ allows the bit to test (in the example, 0) to be a numeric expression, for
 the reasons stated above.
 </p>
 
-<p><a name="5"><b>5. Additional WDC 65C02 instructions</b></a></p>
+<p><a name="5"><strong>5. Additional WDC 65C02 instructions</strong></a></p>
 
 <p>
-Two additional instructions (i.e. besides BBR, BBS, RMS, and SMB) are
+Two additional instructions (i.e. besides BBR, BBS, RMB, and SMB) are
 available on 65C02s manufactured by WDC.
 </p>
 
 <p>
+
 STP - STop the Processor
 </p>
 
@@ -721,6 +742,7 @@ WAI - WAit for Interrupt
 </p>
 
 <p>
+
 Flags affected: none
 
 <pre>
@@ -736,15 +758,15 @@ immediately.  In other words, if an interrupt (e.g. an NMI) occurs in the
 middle of an instruction (e.g. ADC), the instruction must finish before the
 interrupt will be recognized (i.e. before jumping to the interrupt vector).
 When WAI is used, once its third cycle is complete, the 65C02 will wait for
-the interrupt and can respond to it without any additional delay whenever it
-occurs.
+the interrupt and can respond to it without any additional delay whenever
+it occurs.
 </p>
 
 <p>
 The above is true of an IRQ when the I (interrupt disable) flag is clear
-(i.e. interrupts are enabled).  WAI is also useful with IRQs when the I flag
-is set (i.e. interrupts are disabled).  In this case, when an IRQ occurs
-(after the WAI instruction), the 65C02 will continue with with the next
+(i.e. interrupts are enabled).  WAI is also useful with IRQs when the I
+flag is set (i.e. interrupts are disabled).  In this case, when an IRQ
+occurs (after the WAI instruction), the 65C02 will continue with the next
 instruction rather than jumping to the interrupt vector.  This means an
 </p>
 
@@ -754,13 +776,13 @@ effectively inline code, rather than a separate routine, and thus it does not
 end with an RTI, resulting in fewer cycles needed to handle the interrupt.
 </p>
 
-<p><a name="6"><b>6. Instructions with functional differences</b></a></p>
+<p><a name="6"><strong>6. Instructions with functional differences</strong></a></p>
 
 <p>
 The BRK instruction is the only instruction on the 65C02 that has a
-functional difference from the 6502, but the same cycle count.  The IRQ, NMI,
-and RESET hardware interrupts have the same functional difference (and like
-BRK, an unchanged cycle count), which is covered below.
+functional difference from the 6502, but the same cycle count.  The IRQ,
+NMI, and RESET hardware interrupts have the same functional difference
+(and like BRK, an unchanged cycle count), which is covered below.
 <p>
 
 <p>
@@ -778,16 +800,17 @@ OP LEN CYC MODE FLAGS    SYNTAX
 
 The only difference in the BRK instruction on the 65C02 and the 6502 is that
 the 65C02 clears the D (decimal) flag on the 65C02, whereas the D flag is not
-affected on the 6502.  On both, the value of processor status (P) register is
-pushed onto the stack (after the high and low bytes of the return address
+affected on the 6502.  On both, the value of processor status (P) register
+is pushed onto the stack (after the high and low bytes of the return address
 have been pushed) with bit 4 (the B "flag") set (i.e. one), then the I flag
 is set.  When an IRQ occurs, the processor status register is pushed onto the
 stack (again, after the return address has been pushed) with bit 4 clear.
-Thus, an BRK and IRQ interrupt handler can determine whether a BRK or an IRQ
-occured using bit 4 of the processor status register value that was pushed
+Thus, a BRK and IRQ interrupt handler can determine whether a BRK or an IRQ
+occurred using bit 4 of the processor status register value that was pushed
 onto the stack.  For example, the interrupt handler can use:
 
 <pre>
+
 PHX
 TSX
 PHA
@@ -821,15 +844,16 @@ do not affect the D flag, and the D flag is undetermined after a RESET).
 Thus it is not necessary for any interrupt handler to use a CLD instruction
 to put the D flag in a known state.  This is not such a big deal with RESET
 handlers, but saving two cycles (the CLD instruction) in interrupt handlers
-can be significant, since interrupt handlers often are usually intended to be
-as fast as possible.
+can be significant, since interrupt handlers often are usually intended to
+be as fast as possible.
 </p>
 
-<p><a name="7"><b>7. Instructions with different cycle counts</b></a></p>
+<p><a name="7"><strong>7. Instructions with different cycle counts</strong></a></p>
 
 <p>
-Four instructions are functionally identical on the 65C02 and 6502, but have
-different cycle counts.
+
+Four instructions are functionally identical on the 65C02 and 6502, but
+have different cycle counts.
 </p>
 
 <p>
@@ -867,17 +891,19 @@ take 7 cycles regardless of whether a page boundary was crossed or not.
 Unfortunately, this is not always documented correctly, as some 65C02
 documentation mistakenly assumes that DEC and INC have the same timing as
 ASL, LSR, ROL, and ROR; namely that INC abs,X and DEC abs,X take 6 cycles
-when a page boundary is not crossed, which is, once again, incorrect.  DEC
-abs,X and INC abs,X always take 7 cycles.
+when a page boundary is not crossed, which is, once again, incorrect.
+DEC abs,X and INC abs,X always take 7 cycles.
 </p>
 
-<p><a name="8"><b>8. Instructions with functional and cycle count differences</b></a></p>
+<p><a name="8"><strong>8. Instructions with functional and cycle-count
+differences</strong></a></p>
 
 <p>
 ADC SBC
 </p>
 
 <p>
+
 Flags affected: N V Z C (same as before)
 
 <pre>
@@ -903,14 +929,14 @@ FD 3   4 b abs,X  NV....ZC SBC $5678,X
 F9 3   4 b abs,Y  NV....ZC SBC $5678,Y
 </pre>
 
-a) one additional cycle if the D flag is set (decimal mode)<br/>
+a) one additional cycle if the D flag is set (decimal mode)<br>
 b) one additional cycle if the D flag is set (decimal mode), and
-   one additional cycle if indexing across a page boundary
+   another additional cycle if indexing across a page boundary
 
 <p>
 In binary mode (i.e. when the D flag is clear) ADC and SBC behave exactly the
 same on the 6502 and 65C02.  In decimal mode (i.e. when the D flag is set),
-there are functional differences and cycle count differences.
+there are functional differences and cycle-count differences.
 </p>
 
 <p>
@@ -922,17 +948,18 @@ other value (including when the accumulator is not a valid BCD number -- i.e.
 when one or both hex digits are A-F).  BCD (Binary Coded Decimal) is really
 an unsigned representation, so the N flag result isn't really an indication
 of the sign of the result (although it could be interpreted that way);
-instead, the N flag indicates whether the high bit (bit 7) was set or clear,
-which a common way of looking at the N flag in other instances.
+instead, the N flag indicates whether the high bit (bit 7) was set or
+clear, which a common way of looking at the N flag in other instances.
 </p>
 
 <p>
-Since BCD is not a signed respresentation, the V flag really doesn't have any
+
+Since BCD is not a signed representation, the V flag really doesn't have any
 useful meaning.  As it turns out the V flag result is the same on the 6502,
-65C02, and 65816 in decimal mode.  In other words, in decimal mode the V flag
-will be the same on the 6502, 65C02, and 65816 after an ADC NUMBER
-instruction, assuming the accumulator and C flag were the same prior to the
-ADC instruction.  The same is also true of a SBC NUMBER instruction.
+65C02, and 65816 in decimal mode.  In other words, in decimal mode the V
+flag will be the same on the 6502, 65C02, and 65816 after an ADC NUMBER
+instruction, assuming the accumulator and C flag were the same prior to
+the ADC instruction.  The same is also true of a SBC NUMBER instruction.
 </p>
 
 <p>
@@ -961,7 +988,7 @@ SBC #$0F
 </pre>
 
 <p>
-the accumulator will contain $0B on a 65C02, but the accumuator will contain
+the accumulator will contain $0B on a 65C02, but the accumulator will contain
 $1B on the 6502 (and the 65816).
 </p>
 
@@ -981,109 +1008,210 @@ OP LEN CYC MODE  FLAGS    SYNTAX
 On the 6502, JMP (abs) had a bug when the low byte of the operand was $FF,
 e.g. JMP ($12FF).  In this example, the low byte of the address to jump to
 was taken from $12FF, but the high byte of the address to jump to was taken
-from $1200 rather than $1300.  This bug has been fixed on the 65C02, thus in
-the example the high byte is taken from $1300 rather than $1200.
+from $1200 rather than $1300.  This bug has been fixed on the 65C02, thus
+in the example the high byte is taken from $1300 rather than $1200.
 Consequently, a JMP (abs) takes 6 cycles on the 65C02, whereas it took only
 5 cycles on the 6502.
 
-<p>
-Unused opcodes (guaranteed NOPs)
-<p>
+<p><a name="9"><strong>9. Unused opcodes (undocumented NOPs)</strong></a></p>
 
 <p>
-On the 6502, with the valid combinations the instructions and their
-addressing modes, 151 of the 256 possible opcodes were used.  The remaining
-105 opcodes were not handled specially, but were just simply fed to the
-internal decoding logic and executed.  This resulted in some rather unhelpful
-behavior; for example, if the opcode $02 was executed, the 6502 locked up.
-On the 65C02, all unused opcodes are guaranteed to have no operation, and are
-documented as such.  They differ from the standard NOP (opcode $EA) only in
-size (i.e. the number of bytes) and cycle count.  (On the 65816, only opcode
-$42 is unused.  It is documented as having no operation, but is reserved for
-future instruction set expansion.)  The following table summarizes the unused
-opcodes of the 65C02.  The first number is the size in bytes, and the second
-number is the number of cycles taken.  After the second number, a lower case
-letter may be present; when it is present it indicates a footnote.
+On the 6502, only 151 of the 256 possible opcodes had behavior that was planned
+and coherent. But the remaining 105 opcodes would get fed to the internal
+decoding logic and executed anyway. The results, though chaotic overall, did
+happen to have a degree of utility for some of the undefined opcodes.  But there
+was also some rather unhelpful behavior; for example, if the opcode $02 was
+executed, the 6502 locked up. In contrast, the 65C02 is a great deal tidier.
+All the unused opcodes are NOPs &mdash; or at least that's how the manufacturers
+<em>describe</em> them!  And this much, at least, is true: no flags, registers
+or memory locations get altered (ie, <em>written</em> to).</p>
+
+<p>Nevertheless, there are some un-NOP-like side effects.  As mentioned in
+footnotes g, h, i, and j to the table below, some of the undocumented NOPs cause
+memory <em>reads</em> to occur &mdash; reads other than those that fetch the
+NOP's instruction byte(s) at PC, that is.  These unexpected reads have potential
+to cause a hard-to-find bug if I/O gets touched. Also, experiments I (Jeff) did
+years ago revealed that the one-cycle NOPs (but not the other undefined NOPs)
+temporarily delay interrupts, as follows. An interrupt sequence will never begin
+immediately after a one-cycle NOP. Instead, the NOP's execution apparently
+attaches or merges with that of the following instruction. (In fact, even
+multiple consecutive one-cycle NOPs will jointly merge execution with whatever
+non-one-cycle-NOP instruction is eventually encountered.)</p>
+
+<p>These quirks present remarkable opportunities for a certain segment of the
+65xx community.  Some of us relish the challenge of expanding the 65C02's
+instruction set or its 64K address range by means of simple (or perhaps quite
+ambitious) schemes involving external logic. There needs to be some way for your
+program to tell the logic when to do something special, and the 65C02's one-cycle
+NOPs (see columns x3, x7, xB and xF in the table) are an ideal way to encode this
+special meaning.  They're small and fast (1-byte, 1-cycle), have a bit-pattern
+that (in conjunction with SYNC) makes them easy to detect in the instruction
+stream, and there are lots of them available (30 on a modern WDC 65C02; 32 or
+more on other 65C02s).  It's
+<a href="http://forum.6502.org/viewtopic.php?p=16338#p16338">very simple</a> to
+arrange for an action to be triggered by a one-cycle NOP acting on its own.  
+And if you throw in a shift register or some other means of counting cycles, a
+one-cycle NOP can act as a Prefix Byte that gives additional meaning &mdash;
+such as a momentary bank switch &mdash; to the <em>following instruction</em>.
+And, interestingly, the interrupt delay noted above magically avoids a very
+serious potential problem with Prefix Bytes.  It's like a wish come true that
+the Prefix and its target instruction execute atomically; ie, with a guarantee
+of no intervening interrupt. (Such an interrupt would be a wrench in the works
+due to the Prefix getting "forgotten.")  Finally, let's return briefly to the
+<em>multi</em>-cycle NOPs mentioned in footnotes g, h, and i. These use real
+address modes to do real memory reads. The CPU ignores the data that's fetched,
+but external logic can latch it into a register you've created for banking or
+any other purpose. This is dramatically faster than copying from memory to an
+ordinary,  memory-mapped  register because it can be done without involving A,
+X, Y, or the flags. You could even provide another instruction to write your
+special register back <em>to</em> memory, if that happens to be a desirable
+goal. Just choose a different multi-cycle NOP to generate the address as before,
+and jam the contents of the special register on the data bus when the
+appropriate cycle arrives. You'll need to hoodwink the RAM into writing rather
+than reading, but that's easy enough, and you'll begin to enjoy getting
+creative with all these different kinds of sneaky tricks. 
+</p>
+
+<p>The following table lists the undocumented NOPs of the 65C02. You'll see
+they don't necessarily match the two-byte, two-cycle characteristics of the
+standard NOP (opcode $EA). For each entry in the table, the first number is
+the size in bytes and the second number is the number of cycles taken.  After
+the second number, a lower-case letter may be present, indicating a footnote. 
 
 <pre>
-    02     03     04     07     0B     0C     0F
-    -----  -----  -----  -----  -----  -----  -----
-00  2 2    1 1    . .    1 1 a  1 1    . .    1 1 b
-10  . .    1 1    . .    1 1 a  1 1    . .    1 1 b
-20  2 2    1 1    . .    1 1 a  1 1    . .    1 1 b
-30  . .    1 1    . .    1 1 a  1 1    . .    1 1 b
-40  2 2    1 1    2 3    1 1 a  1 1    . .    1 1 b
-50  . .    1 1    2 4    1 1 a  1 1    3 8    1 1 b
-60  2 2    1 1    . .    1 1 a  1 1    . .    1 1 b
-70  . .    1 1    . .    1 1 a  1 1    . .    1 1 b
-80  2 2    1 1    . .    1 1 c  1 1    . .    1 1 d
-90  . .    1 1    . .    1 1 c  1 1    . .    1 1 d
-A0  . .    1 1    . .    1 1 c  1 1    . .    1 1 d
-B0  . .    1 1    . .    1 1 c  1 1    . .    1 1 d
-C0  2 2    1 1    . .    1 1 c  1 1 e  . .    1 1 d
-D0  . .    1 1    2 4    1 1 c  1 1 f  3 4    1 1 d
-E0  2 2    1 1    . .    1 1 c  1 1    . .    1 1 d
-F0  . .    1 1    2 4    1 1 c  1 1    3 4    1 1 d
+      x2:     x3:     x4:     x7:     xB:     xC:     xF:
+     -----   -----   -----   -----   -----   -----   -----
+0x:  2 2 .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+1x:  . . .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+2x:  2 2 .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+3x:  . . .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+4x:  2 2 .   1 1 .   2 3 g   1 1 a   1 1 .   . . .   1 1 c
+5x:  . . .   1 1 .   2 4 h   1 1 a   1 1 .   3 8 j   1 1 c
+6x:  2 2 .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+7x:  . . .   1 1 .   . . .   1 1 a   1 1 .   . . .   1 1 c
+8x:  2 2 .   1 1 .   . . .   1 1 b   1 1 .   . . .   1 1 d
+9x:  . . .   1 1 .   . . .   1 1 b   1 1 .   . . .   1 1 d
+Ax:  . . .   1 1 .   . . .   1 1 b   1 1 .   . . .   1 1 d
+Bx:  . . .   1 1 .   . . .   1 1 b   1 1 .   . . .   1 1 d
+Cx:  2 2 .   1 1 .   . . .   1 1 b   1 1 e   . . .   1 1 d
+Dx:  . . .   1 1 .   2 4 h   1 1 b   1 1 f   3 4 i   1 1 d
+Ex:  2 2 .   1 1 .   . . .   1 1 b   1 1 .   . . .   1 1 d
+Fx:  . . .   1 1 .   2 4 h   1 1 b   1 1 .   3 4 i   1 1 d
 </pre>
 
-a) RMB instruction on Rockwell 65C02 and WDC 65C02<br/>
-b) BBR instruction on Rockwell 65C02 and WDC 65C02<br/>
-c) SMB instruction on Rockwell 65C02 and WDC 65C02<br/>
-d) BBS instruction on Rockwell 65C02 and WDC 65C02<br/>
-e) WAI instruction on WDC 65C02<br/>
-f) STP instruction on WDC 65C02<br/>
+a) 1-cycle NOP on some older 65C02s; RMB instruction on Rockwell and on modern WDC 65C02s<br>
+b) 1-cycle NOP on some older 65C02s; SMB instruction on Rockwell and on modern WDC 65C02s<br>
+c) 1-cycle NOP on some older 65C02s; BBR instruction on Rockwell and on modern WDC 65C02s<br>
+d) 1-cycle NOP on some older 65C02s; BBS instruction on Rockwell and on modern WDC 65C02s<br>
+
+e) $CB is the WAI instruction on WDC 65C02<br>
+f) $DB is the STP instruction on WDC 65C02<br>
+g) $44 uses zp address mode to read memory<br>
+h) $54, $D4, and $F4 use zp,X address mode to read memory<br>
+i) $DC and $FC use absolute address mode to read memory<br>
+j) $5C reads from somewhere in the 64K range, using no known address mode
 
 <p>
-These unused opcodes may prove useful in some situations.  Note, however,
-that any code that makes use of them is limited to the 65C02.
+The undocumented NOPs may prove useful in some situations.  Just remember that,
+generally speaking, any program that makes use of them is limited to the 65C02.
+But at least one of the undocumented 65C02 NOPs does have the same behavior on
+another processor. $42 behaves identically on the 65816, where it bears the
+mnemonic WDM (which is a NOP).
 </p>
 
 <p>
-First, many opcodes behave as one byte, one cycle NOPs.  This can more useful
-than the standard one byte, two cycle NOP (opcode $EA).
+Many of the opcodes behave as one-byte, one-cycle NOPs.  When trying to achieve
+an exact cycle count, this can be more useful than the standard one-byte,
+<em>two</em>-cycle NOP (opcode $EA). Just remember you might want to exercise
+caution with the one-byte, one-cycle NOPs &mdash; especially a <em>string</em>
+of such NOPs &mdash; due to the adverse effect on interrupt latency noted above.
 </p>
 
 <p>
-Second, a common sequence on the 6502 family is:
+Next, let's see how the undocumented NOPs can add flexibility to an old-fashioned
+trick used to sidestep the need for a JMP or BRA. Here's an example.
 
 <pre>
-CLEAR_FLAG CLC
+           ...    ; (preceding code)
+           ...    ; (preceding code)
+           CLC    ; so that a 0 will get rotated into FLAGBYTE
            DB  $B0
-SET_FLAG   SEC
-           ROR FLAG
-           RTS
+SET_FLAG:  SEC
+           ROR FLAGBYTE
+           ...    ; etc
 </pre>
+There are two possible execution paths. When entering via SET_FLAG, the SEC will
+be executed (and a 1 will get rotated into FLAGBYTE).  But when falling through
+from the preceding code, the SEC is not executed.  That's because the $B0 gets
+interpreted as the opcode of a BCS instruction.  The BCS is not taken (since
+carry is clear at this point), but BCS is a 2-byte instruction and the CPU will
+step over two bytes. And that's the goal of the $B0  &mdash; to step over the
+following byte.  Of course there are other ways we could skip past that byte,
+but doing it this way saves memory. A JMP would take three bytes, a BRA would
+take two, but the $B0 is just one byte.
 
-When entering via CLEAR_FLAG, the $B0 becomes a 2-cycle BCS instruction,
-which is not taken (since the carry is clear).  Since BCS does not affect any
-flags, it serves, in this situation, as a two byte, two cycle NOP and
-provides a subtle, but useful way to efficiently skip the SEC instruction.
-However, using a branch instruction to skip a one byte instruction requires a
-flag value to be known beforehand (so that the branch won't be taken).  On
-the 65C02, the opcode $42 could be used instead.  This has a few advantages.
+Of course, the $B0 won't work unless we somehow ensure  that carry is clear.
+With this particular example we require a CLC anyway (because the scenario
+assumes we want the fall-through path to shift a 0 into FLAGBYTE), but
+speaking more generally it would be better if the byte-skip trick didn't
+require carry or any other flags to be in a specific state.  And this is
+possible if we use an undefined NOP instead.  In the following (somewhat
+contrived) example we use $42 instead of $B0, and again the following byte
+will be skipped. That's because $42 is the opcode for one of the undefined
+2-byte, 2-cycle NOPs.  Therefore the CPU will step over the $42 and the
+following byte.
+
+<pre>
+           ...    ; (preceding code)
+           ...    ; (preceding code)
+           DB  $42
+INC_X:     INX
+           LDA SOMELOCATION,X
+           ...    ; etc
+</pre>
+This has a few advantages.
 First, the next byte will be skipped regardless of the flag values.  Second,
-it does not affect any flags or registers.  Third, it will only take two
-cycles, which is the fastest any two byte instruction can take.  Fourth, it
-will work the same way on the 65816, since opcode $42 is two bytes, takes two
-cycles and is documented as having no operation.
+$42 does not affect any flags or registers.  Third, it will only take two
+cycles, which is the fastest any two-byte instruction can take.  Fourth, it
+will work the same way on the 65816, since opcode $42 aka WDM is two bytes,
+takes two cycles, and is documented as having no operation.
 </p>
 
 <p>
-Finally, another common sequence on the 6502 family is:
+Finally, here's another old trick, and this trick skips over two bytes rather
+than one. But there are some downsides, and unfortunately not all of them are
+remedied by updating the trick to use undocumented NOPs.
 
 <pre>
-LO LDA #$0F
-   DB  $2C
-HI LDA #$F0
-   STA MASK
+           ...    ; (preceding code)
+           ...    ; (preceding code)
+           DB  $2C
+OVERRIDE:  LDA #$FF
+           STA WHEREVER
+           ...    ; etc
 </pre>
+When entering via OVERRIDE, the LDA #$FF is executed, updating the accumulator.
+By contrast, when falling through from the preceding code there's no accumulator
+update.  The $2C gets interpreted as the opcode of a BIT abs instruction... but,
+as you may've guessed, performing a BIT isn't really the goal.  BIT abs is a
+3-byte instruction and the CPU will step over three bytes: the opcode, the ADL
+operand, and the ADH operand. The two-byte LDA #$FF instruction won't be
+interpreted as such because it's sitting where the operand bytes are expected.</p>
 
-In this case, when the entering via LO, the $2C becomes a BIT $F0A9 (opcode
-$A9 is LDA immediate).  This can be a problem when $F0A9 is an I/O location
-rather than RAM or ROM.  For this reason, the $2C is often replaced with a
-BNE (or BPL) instruction, which is one byte longer (and, when a page boundary
-is not crossed, one cycle shorter).  On the 65C02, a BRA instruction could be
-used, but either the opcode $DC or $FC could be used instead.  These take 4
-cycles, like BIT abs, and would take one less byte than a BRA instruction.
+<p>Just remember that the BIT abs <em>does</em> execute, which means it will
+ read from the address specified by the operand bytes and then update the flags.
+ (Sometimes the trick uses $CD instead, which is CMP abs, but it still causes a
+ read as specified by the operand bytes and then an update to the flags.)</p>
+
+<p>We can avoid the undesired update to the flags if we replace the BIT abs or
+CMP abs with an undefined NOP which likewise occupies three bytes.  $DC or $FC
+would be a good choice, as these use absolute address mode and will be
+interpreted as having ADL then ADH in the following two bytes. In other words,
+using the trick with $DC or $FC instead of $2C or $CD allows the flags to remain
+intact while still skipping the following two bytes.  But one drawback remains,
+and it applies to all variations of this skip-two-bytes trick. They all cause a
+read according to ADL and ADH, and trouble can result if that read touches an
+I/O device.
+ 
 </p>
 </body></html>
