@@ -320,15 +320,16 @@ are both much shorter and much faster on the '816 than on the '02; but here I
 chose to speed it up a little more by using the 65816's MVN instruction to
 move the data into N for work, using X for loop indexing, and eliminating the
 need to jump to POP at the end, which altogether added nearly 20 lines.  (This
-ends with JMP NEXT.  NEXT is Forth's inner loop, not part of the divide
+ends with JMP NEXT.  NEXT is ITC Forth's inner loop, not part of the divide
 routine.)  Add also the overflow prediction embodied in the corrected '02
 versions above, and you end up with a somewhat long routine.  Ultimately with
-the '816, I may go for a large 1/X table and multiplication table to make
+the '816, I may go for a <a href="http://wilsonminesco.com/16bitMathTables/"
+target="_blank">large 1/X table and multiplication table</a> to make
 things much faster.
 
 <P>
-Begin with accumulator already in 16-bit mode and the processor in native
-mode.
+Begin with the processor in native mode and accumulator width already set to
+16 bits.
 
 <P>The macros shown first here are much more readable than their
 one-line contents.
@@ -337,15 +338,15 @@ one-line contents.
 <TABLE CELLPADDING="8" CELLSPACING="0" BORDER="1">
 <TR><TD>
 <PRE>
-INDEX_16:       MACRO                   ; Put X &amp; Y into 16-bit mode.
-                REP     #00010000B
- ;              NOP                     ; NOP necessary for early versions of
-                ENDM                    ; '802 and '816 >4MHz.
+INDEX_16:   MACRO                   ; Put X &amp; Y register width to 16-bit.
+            REP     #00010000B
+ ;          NOP                     ; NOP necessary for early versions of
+            ENDM                    ; '802 and '816 >4MHz.
  ;-------------------
-INDEX_8:        MACRO                   ; Put X &amp; Y into 8-bit mode.
-                SEP     #00010000B
- ;              NOP                     ; NOP necessary for early versions of
-                ENDM                    ; '802 and '816 >4MHz.
+INDEX_8:    MACRO                   ; Put X &amp; Y register width to 8-bit.
+            SEP     #00010000B
+ ;          NOP                     ; NOP necessary for early versions of
+            ENDM                    ; '802 and '816 >4MHz.
  ;-------------------
 
         HEADER "UM/MOD", NOT_IMMEDIATE                  ; ( ud u -- rem quot )
@@ -376,7 +377,7 @@ UMsMOD: CODE            ; To save a cycle from every stack load or store, move
         BEQ     umend   ; rotation.     Branch to the end if finished.
 
         ROL     N+2     ; Shift hi cell of dividend left one bit, also shifting
-        LDA     #0      ; next bit in from high bit of lo cell.
+        LDA     #0      ; next bit in from hi bit of lo cell.
         ROL     A
         STA     N+6     ; Store old hi bit of dividend in N+6.
 
@@ -407,5 +408,5 @@ UMsMOD: CODE            ; To save a cycle from every stack load or store, move
 </PRE>
 </TD></TR></TABLE>
 <P>
-<FONT SIZE=-1>Last page update: October 18, 2002.</FONT>
+<FONT SIZE=-1>Last page update: October 9, 2022.</FONT>
 </body></html>
