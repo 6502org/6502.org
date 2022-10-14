@@ -886,10 +886,10 @@ SCMP1   RTS
 SUCMP   JSR SCMP   ; Signed (and unsigned) comparison
         BCC SUCMP2 ; Branch if N1 &lt; N2 (unsigned)
         BPL SUCMP1 ; N1 &gt;= N2 (unsigned), branch if N1 &gt;= N2 (signed)
-        TSX        ; reset stack and exit with ERROR = 1
+        TXS        ; reset stack and exit with ERROR = 1
 SUCMP1  RTS
 SUCMP2  BMI SUCMP3 ; N1 &lt; N2 (unsigned), branch if N1 &lt; N2 (signed)
-        TSX        ; reset stack and exit with ERROR = 1
+        TXS        ; reset stack and exit with ERROR = 1
 SUCMP3  RTS
 </pre>
 
