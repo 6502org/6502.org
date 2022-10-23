@@ -77,7 +77,7 @@ The <a href="http://westerndesigncenter.com" target="_blank"><b>Western Design C
 <a href="http://westerndesigncenter.com/wdc/w65c816s-chip.cfm" target="_blank"><b>W65C816S microprocessor</b></a>
 (hereafter referred to as the 65C816) extends the 65C02 eight bit microprocessor
 to a 16 bit capable device with added instructions and features.&nbsp;
-Among those features are interrupt processing capabilities that have no analog in 
+Among those features are interrupt processing capabilities that have no analog in
 the eight bit 6502 family.&nbsp;
 These capabilities can be harnessed in concert with other 65C816-unique features,
 such as stack pointer relative addressing, to create advanced software routines
@@ -86,25 +86,25 @@ When applied to existing interrupt-driven functions, execution speed improvement
 and reductions in code size are possible with a modicum of effort.
 <br>
 <br>
-Before you start reading please understand that <b><i>this article is not a 
-general 6502 interrupt primer</i></b>, nor does it discuss operation of the 
+Before you start reading please understand that <b><i>this article is not a
+general 6502 interrupt primer</i></b>, nor does it discuss operation of the
 65C816 in its 65C02 emulation mode.&nbsp;
 Everything herein pertains to native mode operation only, although some of the
 discussion on coding style is certainly applicable to any member of the 6502 family.
 <br>
 <br>
-Although this article will present some material on the electrical 
-characteristics of the 65C816's interrupt inputs and the circuits to 
-which they may be connected, hardware design will be largely ignored.&nbsp; 
+Although this article will present some material on the electrical
+characteristics of the 65C816's interrupt inputs and the circuits to
+which they may be connected, hardware design will be largely ignored.&nbsp;
 Much of this discussion will also be applicable to the W65C802, which is
 an obsolete W65C02S plug-compatible form of the 65C816.&nbsp;
-As the 65C802 was designed to replace a W65C02S in-circuit, some hardware signals 
+As the 65C802 was designed to replace a W65C02S in-circuit, some hardware signals
 described herein are not present.
 <br>
 <br>
-In writing this article, we have assumed that you are a reasonably 
-proficient programmer who knows the 65C816 assembly language, has 
-developed a sound coding style, knows what an interrupt is and 
+In writing this article, we have assumed that you are a reasonably
+proficient programmer who knows the 65C816 assembly language, has
+developed a sound coding style, knows what an interrupt is and
 understands why computers use interrupts.&nbsp;
 If these assumptions don't describe you then you need to seek out other references
 before continuing.&nbsp;
@@ -116,13 +116,13 @@ into your assembly language programs.&nbsp;
 Enjoy the 1980s-style cartoons as well!
 <br>
 <br>
-<b><i>We caution that if you do not understand the concepts presented in 
-Garth's primer then you will experience difficulty in understanding the 
+<b><i>We caution that if you do not understand the concepts presented in
+Garth's primer then you will experience difficulty in understanding the
 material presented herein</i></b>.&nbsp;
-This article has not been written to the level of a novice.&nbsp; An 
+This article has not been written to the level of a novice.&nbsp; An
 enormous amount of information about the 6502 family can be found both in
 printed form and on-line, as it is arguably the most documented microprocessor family ever developed.&nbsp;
-Two good places at which to start looking on-line are <a target="_blank" href="http://6502.org"><b>6502.org</b></a> and <a target="_blank" href="http://wilsonminesco.com"><b>wilsonminesco.com</b></a>,
+Two good places at which to start looking on-line are <a target="_blank" href="/"><b>6502.org</b></a> and <a target="_blank" href="http://wilsonminesco.com"><b>wilsonminesco.com</b></a>,
 the latter which is Garth Wilson's extensive 6502-oriented website.&nbsp;
 Or enter "65C816" into your favorite search engine.
 <br>
@@ -132,7 +132,7 @@ Western Design Center's <a target="_blank" href="http://65xx.com/65xx-store-2/65
 Encompassing some 450 pages, this manual has a wealth of information for the beginning 6502 assembly language programmer, as well considerable detail for those who already know the 6502 assembly language and want to get the most out of the 65C816.
 <br>
 <br>
-All 65C816 assembly language examples will use MOS Technology standard assembler syntax, which has been carried forward with suitable modifications to account 
+All 65C816 assembly language examples will use MOS Technology standard assembler syntax, which has been carried forward with suitable modifications to account
 for 24 bit operands and new addressing modes by WDC in their syntax standard for the 65C816.&nbsp; If your assembler conforms to this standard, great!&nbsp; If not, you may have to do some adjusting to code examples.
 <br>
 <br>
@@ -140,7 +140,7 @@ for 24 bit operands and new addressing modes by WDC in their syntax standard for
 <br>
 <br>
 <h2><a name="toc:acronyms_symbols">ACRONYMS, SYMBOLS <font size="-1">AND</font> NOTES</a></h2>
-Throughout this article, various acronyms and symbols will be used to 
+Throughout this article, various acronyms and symbols will be used to
 refer to 65C816 features, frequently-used programming elements and other concepts:
 <blockquote>
   <table bgcolor="#ccffff" border="3" cellpadding="5" cellspacing="2">
@@ -246,7 +246,7 @@ Text references to the 65C816's registers are as follows:
   </table>
 </blockquote>
 A brief digression on the <tt>DB</tt> and <tt>PB</tt> registers:<br>
-<blockquote>During program execution, the effective program address (<tt>EPA</tt>) seen by other hardware in the system is the 16 bit content in <tt>PC</tt> catenated with the eight bit content in <tt>PB</tt>, resulting in a 24 bit address in which <tt>PB</tt> 
+<blockquote>During program execution, the effective program address (<tt>EPA</tt>) seen by other hardware in the system is the 16 bit content in <tt>PC</tt> catenated with the eight bit content in <tt>PB</tt>, resulting in a 24 bit address in which <tt>PB</tt>
 represents bits 16-23 and <tt>PC</tt> represents bits 0-15.&nbsp;
 The <tt>EPA</tt> is where the 65C816 will fetch an instruction opcode and its operand, if any.&nbsp;
 Note that there is no direct programmatic means by which the content of <tt>PB</tt> can be changed.
@@ -256,7 +256,7 @@ Similarly, the effective data address (<tt>EDA</tt>) is the concatenation of the
 which represents bits 16-23, with the 16 bit address derived from a 16 bit address
 operand, or from a 16 bit address stored in a pair of contiguous direct page locations,
 resulting in a <tt>24</tt> bit address from which data will be read or written.&nbsp;
-<tt>EDA</tt> and <tt>EPA</tt> are always <tt>$00xxxx</tt> in a system in which no bank latching hardware is 
+<tt>EDA</tt> and <tt>EPA</tt> are always <tt>$00xxxx</tt> in a system in which no bank latching hardware is
 present, regardless of the actual values in <tt>DB</tt> and <tt>PB</tt>.&nbsp; Furthermore, the value in <tt>DB</tt> will be ignored if an instruction has a 24 bit operand or if the addressing mode involves direct page, for example, <tt>LDA $12</tt>.&nbsp; Direct page and hardware stack accesses are always addressed to bank <tt>$00</tt>.
 </blockquote>
 <a href="#toc:toc"><b>Table of Contents</b></a>
@@ -265,29 +265,29 @@ present, regardless of the actual values in <tt>DB</tt> and <tt>PB</tt>.&nbsp; F
 <h2><a name="toc:interrupts"></a>65C816 INTERRUPTS</h2>
 As is typical of almost all microprocessors, the 65C816's interrupt types broadly fall into two classes: hardware and software.<br>
 <ul>
-  <li><b>A hardware interrupt occurs when a specific electrical input on the 
-65C816 is asserted by other hardware in the system</b>, such as an 
+  <li><b>A hardware interrupt occurs when a specific electrical input on the
+65C816 is asserted by other hardware in the system</b>, such as an
 input/output (I/O) device.&nbsp; <b><i>Asserted</i></b> means the input
  has been brought to
- state that is opposite of the normal or quiescent operating 
-state.&nbsp; 6502 family interrupt inputs are quiescent when at logic 
-one, which is 
-approximately five volts in many applications, and thus are brought low 
-(logic zero, which is near zero volts) when asserted, a type of logic 
-referred to as "low-true."&nbsp; The manner in which the 65C816 reacts 
-to a 
+ state that is opposite of the normal or quiescent operating
+state.&nbsp; 6502 family interrupt inputs are quiescent when at logic
+one, which is
+approximately five volts in many applications, and thus are brought low
+(logic zero, which is near zero volts) when asserted, a type of logic
+referred to as "low-true."&nbsp; The manner in which the 65C816 reacts
+to a
 hardware interrupt is determined by which input has been asserted and in
- some cases, by when the input has been asserted relative to the 
-instruction cycle.&nbsp; Hardware interrupts are asynchronous in 
-nature, meaning they must be expected to occur at any time with no 
+ some cases, by when the input has been asserted relative to the
+instruction cycle.&nbsp; Hardware interrupts are asynchronous in
+nature, meaning they must be expected to occur at any time with no
 advance warning to a running program (the "foreground task").
   </li>
 </ul>
 <ul>
   <li>
-    <b>A software interrupt is caused by the 65C816 executing a program 
-instruction that triggers an interrupt-like sequence in the 
-microprocessor's internal circuits</b>.&nbsp; As software interrupts are 
+    <b>A software interrupt is caused by the 65C816 executing a program
+instruction that triggers an interrupt-like sequence in the
+microprocessor's internal circuits</b>.&nbsp; As software interrupts are
 generated under program control, they are synchronous, which means the executing
 program will always "know" when one is going to occur.
 </li>
@@ -349,54 +349,54 @@ The 65C816 has four hardware interrupt inputs, summarized as follows:
 Some key points related to the above follow:
 <ul>
   <li><b><i>Interrupt mnemonic</i></b> is a convenient way to refer to the interrupt in a
- textual context.&nbsp; Saying "NMI" or "IRQ" is more convenient than 
-"non-maskable interrupt" or "interrupt request."&nbsp; An interrupt mnemonic 
-is also useful in hardware electrical schematics.&nbsp; In such cases, it is 
-customary to add a symbol that indicates the low-true nature of the 
+ textual context.&nbsp; Saying "NMI" or "IRQ" is more convenient than
+"non-maskable interrupt" or "interrupt request."&nbsp; An interrupt mnemonic
+is also useful in hardware electrical schematics.&nbsp; In such cases, it is
+customary to add a symbol that indicates the low-true nature of the
 signal, such as <tt>/NMI</tt> or <tt>*NMI</tt>. Overlining, for example, <span style="text-decoration: overline;"><tt>NMI</tt></span>, is often found in typeset literature, but rarely seen in schematics.
 <br>
 <br>
   </li>
-  <li><b><i>Input type</i></b> refers to the nature of the electrical signal that is 
+  <li><b><i>Input type</i></b> refers to the nature of the electrical signal that is
 required for the 65C816 to recognize that it is being interrupted:<br>
     <br>
   </li>
   <ul>
-    <li><b><i>Level</i></b> means the 65C816 responds to the interrupt input any time 
+    <li><b><i>Level</i></b> means the 65C816 responds to the interrupt input any time
 the signal level is logic zero or low.<br>
       <br>
     </li>
-    <li><b><i>Edge</i></b> means the 65C816 responds to the interrupt input only when 
+    <li><b><i>Edge</i></b> means the 65C816 responds to the interrupt input only when
 the signal level makes a transition from logic one (high) to logic zero.</li>
   </ul>
 </ul>
-<blockquote>While no attempt will be made here to delve into the more arcane 
-aspects of interrupt circuit design, understanding the characteristics 
+<blockquote>While no attempt will be made here to delve into the more arcane
+aspects of interrupt circuit design, understanding the characteristics
 of level versus edge sensitive interrupt inputs, as well as other factors, is essential to writing a
- trouble-free interrupt service routine, especially for a system that 
+ trouble-free interrupt service routine, especially for a system that
 will run at a high &Oslash;2 rate (the 65C816 has been successfully operated at
  speeds as high as 20 megahertz (MHz) in commercial products, and much higher speeds
- are attainable in FPGA designs).&nbsp; Some discussion on this will be 
+ are attainable in FPGA designs).&nbsp; Some discussion on this will be
 presented later on.
 </blockquote>
 <ul>
-<li><b><i>Input name</i></b> is the official designation in the <a target="_blank" href="http://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf"><b>65C816 data sheet</b></a> of 
-the chip pin corresponding to the interrupt input.&nbsp; In WDC data 
-sheets, a <b><tt>B</tt></b> on the end of the input name, for example, <tt>IRQB</tt>, signifies 
+<li><b><i>Input name</i></b> is the official designation in the <a target="_blank" href="http://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf"><b>65C816 data sheet</b></a> of
+the chip pin corresponding to the interrupt input.&nbsp; In WDC data
+sheets, a <b><tt>B</tt></b> on the end of the input name, for example, <tt>IRQB</tt>, signifies
 that it is a low-true input.</li>
 </ul>
 <ul>
-  <li>Each interrupt input is associated with a specific hardware vector 
-from which the 65C816 will get the address of the corresponding 
-interrupt service routine.&nbsp; <b><i>The listed hardware vectors are for native 
-mode operation only</i></b>, with one exception: the reset vector is the same 
-for both native and emulation modes, as the 65C816 is reverted to 
+  <li>Each interrupt input is associated with a specific hardware vector
+from which the 65C816 will get the address of the corresponding
+interrupt service routine.&nbsp; <b><i>The listed hardware vectors are for native
+mode operation only</i></b>, with one exception: the reset vector is the same
+for both native and emulation modes, as the 65C816 is reverted to
 emulation mode when <tt>RESB</tt> is asserted.
 </li>
 </ul>
 <ul>
-<li>In the event two or more interrupt inputs are simultaneously 
-asserted, the 65C816 will respond in a defined order, that is, it will 
+<li>In the event two or more interrupt inputs are simultaneously
+asserted, the 65C816 will respond in a defined order, that is, it will
 give interrupts a response priority:
 </li>
 </ul>
@@ -409,122 +409,122 @@ give interrupts a response priority:
     </li>
   </ol>
 </blockquote>
-<blockquote>This list simply means that if, for example, <tt>ABORTB</tt> and <tt>NMIB</tt> are 
+<blockquote>This list simply means that if, for example, <tt>ABORTB</tt> and <tt>NMIB</tt> are
 simultaneously asserted, the 65C816 will respond to <tt>ABORTB</tt> and then upon
- completion of the abort interrupt service routine, will respond to 
+ completion of the abort interrupt service routine, will respond to
   <tt>NMIB</tt>, assuming that <tt>NMIB</tt> is still asserted.<br>
 </blockquote>
 <ul>
-<li>Normally, the 65C816 doesn't "look" at its interrupt inputs until 
-the currently executing instruction has been completed.&nbsp; When response 
-to an interrupt does occur, the 65C816 has to save its state on the 
+<li>Normally, the 65C816 doesn't "look" at its interrupt inputs until
+the currently executing instruction has been completed.&nbsp; When response
+to an interrupt does occur, the 65C816 has to save its state on the
 stack before loading the interrupt vector and proceeding.&nbsp; If the 65C816
- is operating in native mode, eight &Oslash;2 clock cycles will be consumed in 
-responding to the interrupt and saving state.&nbsp; If the interrupt happens 
-to occur just as the current instruction's opcode is being fetched, as 
-many as eight additional &Oslash;2 cycles may elapse before interrupt 
-recognition.&nbsp; Therefore, an <a href="http://en.wikipedia.org/wiki/Interrupt_latency" target="_blank""><b>interrupt latency</b></a> of as many as 16 &Oslash;2 cycles is possible, depending on the instruction being executed and when 
-during the instruction sequence the interrupt input is asserted.&nbsp; The 
+ is operating in native mode, eight &Oslash;2 clock cycles will be consumed in
+responding to the interrupt and saving state.&nbsp; If the interrupt happens
+to occur just as the current instruction's opcode is being fetched, as
+many as eight additional &Oslash;2 cycles may elapse before interrupt
+recognition.&nbsp; Therefore, an <a href="http://en.wikipedia.org/wiki/Interrupt_latency" target="_blank""><b>interrupt latency</b></a> of as many as 16 &Oslash;2 cycles is possible, depending on the instruction being executed and when
+during the instruction sequence the interrupt input is asserted.&nbsp; The
 effects of variable interrupt latency will be discussed later on.</li>
 </ul>
 A more detailed explanation of each interrupt type follows.&nbsp;
 In the lists that describe the sequence of actions for each interrupt type, the
- event numbers are merely for list purposes, and do not imply how many 
+ event numbers are merely for list purposes, and do not imply how many
 &Oslash;2 clock cycles have elapsed at any given point in the sequence.
 <ul>
   <li><b><a name="toc:interrupt_abort"></a>Abort</b></li>
 </ul>
-<blockquote>The abort interrupt is used in systems that have specialized memory 
+<blockquote>The abort interrupt is used in systems that have specialized memory
 management logic to cope with unusual hardware conditions that may arise
  during program execution.&nbsp; In such systems, an abort interrupt might be
- triggered if a running program accesses memory that either doesn't 
-exist&mdash;a "page fault" in a virtual memory system, or is privileged&mdash;an 
-"access violation" or "memory fault" in a multitasking protected memory 
-environment.&nbsp; Few homebrew computers are likely to be built with such 
-features&mdash;the required hardware logic is quite complicated.&nbsp; Hence discussion on processing an abort interrupt will be 
+ triggered if a running program accesses memory that either doesn't
+exist&mdash;a "page fault" in a virtual memory system, or is privileged&mdash;an
+"access violation" or "memory fault" in a multitasking protected memory
+environment.&nbsp; Few homebrew computers are likely to be built with such
+features&mdash;the required hardware logic is quite complicated.&nbsp; Hence discussion on processing an abort interrupt will be
 limited to describing how the 65C816 reacts when <tt>ABORTB</tt> is asserted.&nbsp; If
- you are sufficiently hardware-savvy to be able to design a system that 
-can take advantage of this interrupt then it is a sure bet you won't need 
+ you are sufficiently hardware-savvy to be able to design a system that
+can take advantage of this interrupt then it is a sure bet you won't need
 any assistance in determining how to process it when it occurs.<br>
 </blockquote>
-<blockquote>When the 65C816 receives an abort interrupt, the following actions 
+<blockquote>When the 65C816 receives an abort interrupt, the following actions
 occur:<br>
 </blockquote>
 <blockquote>
   <ol>
-    <li>All steps of the current instruction are completed but <b><i>no 
+    <li>All steps of the current instruction are completed but <b><i>no
 changes are made to the registers or memory</i></b>.</li>
     <li><tt>PB</tt> is pushed to the hardware stack.</li>
-    <li>The aborted instruction's address is pushed to the stack, MSB 
+    <li>The aborted instruction's address is pushed to the stack, MSB
 first followed by LSB.</li>
     <li><tt>SR</tt> is pushed to the stack.</li>
     <li>The <tt>I</tt> (IRQ disable) bit in <tt>SR</tt> is set.</li>
     <li>The <tt>D</tt> (decimal mode) bit in <tt>SR</tt> is cleared.</li>
     <li><tt>PB</tt> is loaded with <tt>$00</tt>.</li>
-    <li><tt>PC</tt> is loaded with the contents of the abort hardware vector at 
+    <li><tt>PC</tt> is loaded with the contents of the abort hardware vector at
       <tt>$00FFE8</tt> (LSB) and <tt>$00FFE9</tt> (MSB).</li>
     <li>Execution is transferred to the abort interrupt service routine.</li>
   </ol>
 </blockquote>
-<blockquote>Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt> 
-and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon 
-executing an <tt>RTI</tt> instruction, the above sequence will be logically 
-reversed to return the 65C816 to the state it was in at the time of the 
+<blockquote>Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt>
+and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon
+executing an <tt>RTI</tt> instruction, the above sequence will be logically
+reversed to return the 65C816 to the state it was in at the time of the
 interrupt, and unless the address that was pushed to the stack in steps 2
- and 3 is altered within the interrupt service routine, the 65C816 will 
-return to and again execute the aborted instruction in the interrupted 
+ and 3 is altered within the interrupt service routine, the 65C816 will
+return to and again execute the aborted instruction in the interrupted
 program.<br>
   <br>
-It should be noted that despite the interrupt's name, <b><i>an "aborted" 
-instruction isn't actually aborted</i></b>&mdash;all steps of the instruction will be 
-completed before the 65C816 reacts to the interrupt.&nbsp; What is aborted 
-are computational changes to a register and/or memory that the 
-instruction would have made had it not been "aborted."&nbsp; <tt>ABORTB</tt> has 
-strict timing requirements relative to the instruction sequence that 
-must be satisfied in order to assure that the above behavior will 
-actually occur.&nbsp; Understanding these requirements and the character of 
-an abort interrupt is crucial to being able to design a system that can 
-support hardware memory protection and/or instruction execution 
+It should be noted that despite the interrupt's name, <b><i>an "aborted"
+instruction isn't actually aborted</i></b>&mdash;all steps of the instruction will be
+completed before the 65C816 reacts to the interrupt.&nbsp; What is aborted
+are computational changes to a register and/or memory that the
+instruction would have made had it not been "aborted."&nbsp; <tt>ABORTB</tt> has
+strict timing requirements relative to the instruction sequence that
+must be satisfied in order to assure that the above behavior will
+actually occur.&nbsp; Understanding these requirements and the character of
+an abort interrupt is crucial to being able to design a system that can
+support hardware memory protection and/or instruction execution
 trapping.<br>
 </blockquote>
 <ul>
 <li><b><a name="toc:interrupt_irq"></a>Interrupt request
     </b></li>
 </ul>
-<blockquote>An interrupt request (IRQ) is also referred to as a maskable 
-interrupt, which means the microprocessor can be made to ignore an IRQ.&nbsp; 
- As the <tt>IRQB</tt> input is level-sensitive, it is practical to connect 
-multiple interrupt sources to it in a configuration referred to as 
-"wired-OR."&nbsp; In a typical wired-OR configuration, the interrupt service 
-routine has to determine which devices are interrupting by using a 
-procedure referred to as "polling."&nbsp; More advanced systems may include 
-hardware that can tell the 65C816 which device has interrupted, which 
-helps to reduce software-induced interrupt latency by eliminating the 
-necessity of polling each possible IRQ source.&nbsp; If <tt>IRQB</tt> is still low 
-after an interrupt source has been serviced and cleared, a new IRQ will 
+<blockquote>An interrupt request (IRQ) is also referred to as a maskable
+interrupt, which means the microprocessor can be made to ignore an IRQ.&nbsp;
+ As the <tt>IRQB</tt> input is level-sensitive, it is practical to connect
+multiple interrupt sources to it in a configuration referred to as
+"wired-OR."&nbsp; In a typical wired-OR configuration, the interrupt service
+routine has to determine which devices are interrupting by using a
+procedure referred to as "polling."&nbsp; More advanced systems may include
+hardware that can tell the 65C816 which device has interrupted, which
+helps to reduce software-induced interrupt latency by eliminating the
+necessity of polling each possible IRQ source.&nbsp; If <tt>IRQB</tt> is still low
+after an interrupt source has been serviced and cleared, a new IRQ will
 occur.<br>
   <br>
-In most systems, an IRQ is the primary means by which input/output 
-(I/O) devices get the 65C816's attention when they need service.&nbsp; For 
-example, a disk controller would assert <tt>IRQB</tt> to indicate that it is 
-ready for some data.&nbsp; Or serial interface hardware, such as a UART 
+In most systems, an IRQ is the primary means by which input/output
+(I/O) devices get the 65C816's attention when they need service.&nbsp; For
+example, a disk controller would assert <tt>IRQB</tt> to indicate that it is
+ready for some data.&nbsp; Or serial interface hardware, such as a UART
 (<b>U</b>niversal <b>A</b>synchronous <b>R</b>eceiver/<b>T</b>ransmitter),
 may interrupt when a user types at a terminal.&nbsp;
-In many systems, a hardware timer running at a 
-constant rate generates a <a target="_blank" href="http://en.wikipedia.org/wiki/Jiffy_%28time%29#Computing"><b>jiffy IRQ</b></a> that is used for general 
+In many systems, a hardware timer running at a
+constant rate generates a <a target="_blank" href="http://en.wikipedia.org/wiki/Jiffy_%28time%29#Computing"><b>jiffy IRQ</b></a> that is used for general
 timekeeping, process scheduling, etc.&nbsp; Therefore, an IRQ service routine
- may be quite complex and lengthy, and could involve considerable hardware 
-interaction, depending on the number and nature of the I/O devices in 
+ may be quite complex and lengthy, and could involve considerable hardware
+interaction, depending on the number and nature of the I/O devices in
 the system.<br>
   <br>
 When the 65C816 receives an interrupt request, the following actions
  occur:<br>
   <ol>
-    <li>All steps of the current instruction are completed and memory 
+    <li>All steps of the current instruction are completed and memory
 and/or registers are updated as required.</li>
     <li>The <tt>I</tt> bit in <tt>SR</tt> is tested and if set, the IRQ is ignored&mdash;none of
  the following steps will be executed.</li>
-    <li>If the <tt>I</tt> bit in SR is clear the 65C816 will process the 
+    <li>If the <tt>I</tt> bit in SR is clear the 65C816 will process the
 interrupt and start by pushing <tt>PB</tt> to the stack.</li>
     <li><tt>PC</tt>, which is pointing to the next instruction to be executed, is
  pushed to the stack, MSB first followed by LSB.</li>
@@ -532,36 +532,36 @@ interrupt and start by pushing <tt>PB</tt> to the stack.</li>
     <li>The <tt>I</tt> bit in <tt>SR</tt> is set.</li>
     <li>The <tt>D</tt> bit in <tt>SR</tt> is cleared.</li>
     <li><tt>PB</tt> is loaded with <tt>$00</tt>.</li>
-    <li><tt>PC</tt> is loaded with the contents of the IRQ hardware vector at 
+    <li><tt>PC</tt> is loaded with the contents of the IRQ hardware vector at
       <tt>$00FFEE</tt> (LSB) and <tt>$00FFEF</tt> (MSB).</li>
     <li>Execution is transferred to the IRQ service routine.</li>
   </ol>
-Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt> 
-and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon 
-executing an <tt>RTI</tt> instruction, the above sequence will be logically 
-reversed to return the 65C816 to the state it was in at the time of the 
+Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt>
+and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon
+executing an <tt>RTI</tt> instruction, the above sequence will be logically
+reversed to return the 65C816 to the state it was in at the time of the
 interrupt, and unless the address that was pushed to the stack in steps 3
- and 4 is altered within the interrupt service routine, the 65C816 will 
+ and 4 is altered within the interrupt service routine, the 65C816 will
 execute the next instruction in the interrupted program.<br>
 </blockquote>
 <ul>
   <li><b><a name="toc:interrupt_nmi"></a>Non-maskable interrupt</b></li>
 </ul>
-<blockquote>A non-maskable interrupt (NMI) is similar to an IRQ in effect, 
-except there is no programmatic means by which an NMI can be blocked.&nbsp; 
-Typically, an NMI would be used to interrupt the microprocessor in 
-response to one very high priority event.&nbsp; For example, NMIB may be 
+<blockquote>A non-maskable interrupt (NMI) is similar to an IRQ in effect,
+except there is no programmatic means by which an NMI can be blocked.&nbsp;
+Typically, an NMI would be used to interrupt the microprocessor in
+response to one very high priority event.&nbsp; For example, NMIB may be
 driven by a timekeeper so as to guarantee that the device is immediately
- serviced when it interrupts.&nbsp; Although multiple interrupt sources may 
-be connected to NMIB in a wired-OR configuration, such an arrangement 
-will be problematic, as <tt>NMIB</tt> is edge-sensitive.&nbsp; Unless all NMI sources 
-are checked and cleared by the NMI service routine, the 65C816 will not 
-respond to another NMI, since <tt>NMIB</tt> will continue to be held at logic zero by the 
+ serviced when it interrupts.&nbsp; Although multiple interrupt sources may
+be connected to NMIB in a wired-OR configuration, such an arrangement
+will be problematic, as <tt>NMIB</tt> is edge-sensitive.&nbsp; Unless all NMI sources
+are checked and cleared by the NMI service routine, the 65C816 will not
+respond to another NMI, since <tt>NMIB</tt> will continue to be held at logic zero by the
 device that wasn't serviced.&nbsp; In many 6502-based homebrew computers,
- <tt>NMIB</tt> is not used at all or is wired to a push button circuit so the 
+ <tt>NMIB</tt> is not used at all or is wired to a push button circuit so the
 user can interrupt a runaway program and regain control.<br>
 <br>
-When the 65C816 receives a non-maskable interrupt, the following 
+When the 65C816 receives a non-maskable interrupt, the following
 actions occur:<br>
 <ol>
   <li>All steps of the current instruction are completed and memory or
@@ -573,62 +573,62 @@ actions occur:<br>
   <li>The <tt>I</tt> bit in <tt>SR</tt> is set.</li>
   <li>The <tt>D</tt> bit in <tt>SR</tt> is cleared.</li>
   <li>PB is loaded with $00.</li>
-  <li>PC is loaded with the contents of the NMI hardware vector at 
+  <li>PC is loaded with the contents of the NMI hardware vector at
 $00FFEA (LSB) and $00FFEB (MSB).</li>
   <li>Execution is transferred to the NMI service routine.</li>
 </ol>
-Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt> 
-and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon 
-executing an <tt>RTI</tt> instruction, the above sequence will be logically 
-reversed to return the 65C816 to the state it was in at the time of the 
+Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt>
+and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon
+executing an <tt>RTI</tt> instruction, the above sequence will be logically
+reversed to return the 65C816 to the state it was in at the time of the
 NMI, and unless the address that was pushed to the stack in steps 2 and 3
- is altered within the interrupt service routine, the 65C816  will 
+ is altered within the interrupt service routine, the 65C816  will
 execute the next instruction in the interrupted program.
 </blockquote>
 <ul>
   <li><b><a name="toc:interrupt_reset"></a>Reset</b></li>
 </ul>
-<blockquote>Although you may not consider a reset to be an interrupt, 
-  <tt>RESB</tt> is an interrupt input and triggers some internal  actions that are 
-like those of other interrupt types.&nbsp; In the overwhelming majority of 
+<blockquote>Although you may not consider a reset to be an interrupt,
+  <tt>RESB</tt> is an interrupt input and triggers some internal  actions that are
+like those of other interrupt types.&nbsp; In the overwhelming majority of
 applications, <tt>RESB</tt> is wired to a circuit that includes a push-button for
- manual restarting of the system.&nbsp; The same circuit is usually designed 
-to hold <tt>RESB</tt> low for a short period of time after power is applied so 
-that all voltages and other circuit conditions will have time to 
-stabilize before the 65C816 commences code execution.&nbsp; Embedded 
-controller applications may use <tt>RESB</tt> as an actual interrupt in cases 
-where the controller idles for long periods of time awaiting activity 
-and the 65C816 has been stopped to conserve power while waiting.&nbsp; Some 
-controllers may have a watchdog timer wired to <tt>RESB</tt> to force a restart 
+ manual restarting of the system.&nbsp; The same circuit is usually designed
+to hold <tt>RESB</tt> low for a short period of time after power is applied so
+that all voltages and other circuit conditions will have time to
+stabilize before the 65C816 commences code execution.&nbsp; Embedded
+controller applications may use <tt>RESB</tt> as an actual interrupt in cases
+where the controller idles for long periods of time awaiting activity
+and the 65C816 has been stopped to conserve power while waiting.&nbsp; Some
+controllers may have a watchdog timer wired to <tt>RESB</tt> to force a restart
 if system fatality occurs.<br>
   <br>
-When <tt>RESB</tt> is brought low the 65C816 will immediately halt whatever 
-it is doing and remain in a halted state as long as <tt>RESB</tt> is held low.&nbsp; 
+When <tt>RESB</tt> is brought low the 65C816 will immediately halt whatever
+it is doing and remain in a halted state as long as <tt>RESB</tt> is held low.&nbsp;
 Upon release of <tt>RESB</tt>, the following actions will occur:<br>
   <ol>
-    <li>The internal clock, which is driven by the &Oslash;2 clock generator 
-circuit, will be restarted if it had previously been stopped by an <tt>STP</tt> 
-or <tt>WAI</tt> instruction (described in the <a href="#toc:high_speed_interrupt"><b>high speed interrupt response 
+    <li>The internal clock, which is driven by the &Oslash;2 clock generator
+circuit, will be restarted if it had previously been stopped by an <tt>STP</tt>
+or <tt>WAI</tt> instruction (described in the <a href="#toc:high_speed_interrupt"><b>high speed interrupt response
 subsection</b></a>).</li>
     <li>The <tt>I</tt> bit in <tt>SR</tt> will be set.</li>
     <li>The <tt>D</tt> bit in <tt>SR</tt> will be cleared.</li>
-    <li>The hidden <tt>E</tt> (emulation) bit in <tt>SR</tt> will be set, causing the 
+    <li>The hidden <tt>E</tt> (emulation) bit in <tt>SR</tt> will be set, causing the
 65C816 to revert to W65C02S emulation mode.</li>
-    <li>The <tt>m</tt> and <tt>x</tt> bits in <tt>SR</tt> will be set and made inaccessible, thus 
+    <li>The <tt>m</tt> and <tt>x</tt> bits in <tt>SR</tt> will be set and made inaccessible, thus
 forcing the accumulator and index register sizes to eight bits.</li>
     <li><tt>DB</tt> and <tt>PB</tt> will be set to <tt>$00</tt>, thus "hard wiring" all accesses to
  bank <tt>$00</tt> and limiting the highest accessible address to <tt>$00FFFF</tt>.</li>
-    <li><tt>DP</tt> will be set to <tt>$0000</tt>, thus "hard wiring" direct page program 
+    <li><tt>DP</tt> will be set to <tt>$0000</tt>, thus "hard wiring" direct page program
 references to the physical zero page in RAM.</li>
-    <li>The MSB of <tt>SP</tt> will be set to <tt>$01</tt>, thus "hard wiring" the stack 
+    <li>The MSB of <tt>SP</tt> will be set to <tt>$01</tt>, thus "hard wiring" the stack
 to <tt>$000100</tt>-<tt>$0001FF</tt> in RAM.</li>
     <li><tt>PC</tt> will be loaded with the contents of the reset hardware vector
  at <tt>$00FFFC</tt> (LSB) and <tt>$00FFFD</tt> (MSB).</li>
     <li>Execution will be commence at the system reset handler.</li>
   </ol>
-The LSB of <tt>SP</tt> is undefined following a reset and must be explicitly 
-set in the reset handler code, typically to <tt>$FF</tt>, since stack growth is 
-downward.&nbsp; Also, the <tt>C</tt>, <tt>N</tt>, <tt>V</tt> and <tt>Z</tt> bits in <tt>SR</tt> will be in undefined 
+The LSB of <tt>SP</tt> is undefined following a reset and must be explicitly
+set in the reset handler code, typically to <tt>$FF</tt>, since stack growth is
+downward.&nbsp; Also, the <tt>C</tt>, <tt>N</tt>, <tt>V</tt> and <tt>Z</tt> bits in <tt>SR</tt> will be in undefined
 states.
 </blockquote>
 <h3><a name="toc:interrupt_soft"></a>Software Interrupts</h3>
@@ -662,24 +662,24 @@ Key points are as follows:
   <li>Both <tt>BRK</tt> and <tt>COP</tt> cause hardware interrupt-like sequences to occur in
  the 65C816, as will be shortly described.<br><br>
   </li>
-  <li><tt>BRK</tt> and <tt>COP</tt> are treated as two byte instructions by the 65C816.&nbsp; 
-However, standard assembly language syntax for <tt>BRK</tt> usually doesn't 
-accept an operand, although one may be added by the programmer using an 
-appropriate assembler pseudo-op.&nbsp; <tt>COP</tt>, on the other hand, must be 
-assembled with an operand.&nbsp; The byte that follows <tt>BRK</tt> or <tt>COP</tt> is 
+  <li><tt>BRK</tt> and <tt>COP</tt> are treated as two byte instructions by the 65C816.&nbsp;
+However, standard assembly language syntax for <tt>BRK</tt> usually doesn't
+accept an operand, although one may be added by the programmer using an
+appropriate assembler pseudo-op.&nbsp; <tt>COP</tt>, on the other hand, must be
+assembled with an operand.&nbsp; The byte that follows <tt>BRK</tt> or <tt>COP</tt> is
 customarily referred to as a "signature byte."<br>
     <br>
   </li>
-  <li>Unlike the eight bit 6502 family members, the 65C816's <tt>BRK</tt> 
-instruction has its own hardware vector when operating in native mode.&nbsp; 
-This features eliminates the need to examine the stack copy of the 
-status register to differentiate between an interrupt caused by <tt>BRK</tt> and 
+  <li>Unlike the eight bit 6502 family members, the 65C816's <tt>BRK</tt>
+instruction has its own hardware vector when operating in native mode.&nbsp;
+This features eliminates the need to examine the stack copy of the
+status register to differentiate between an interrupt caused by <tt>BRK</tt> and
 one caused by asserting <tt>IRQB</tt>.<br>
     <br>
   </li>
-  <li>Software interrupts are preempted by hardware interrupts if one of 
+  <li>Software interrupts are preempted by hardware interrupts if one of
 the latter occurs during the opcode fetch part of an instruction cycle.&nbsp;
-For example, if <tt>IRQB</tt> is asserted at the same time the 65C816 is fetching a 
+For example, if <tt>IRQB</tt> is asserted at the same time the 65C816 is fetching a
     <tt>COP</tt> opcode, the IRQ will be processed first.&nbsp; Only after the IRQ service
  routine has exited with <tt>RTI</tt> will the <tt>COP</tt> instruction be executed.</li>
 </ul>
@@ -687,13 +687,13 @@ A more detailed explanation of COP and BRK follows.
 <ul>
   <li><b><a name="toc:interrupt_brk"></a>Break</b></li>
 </ul>
-<blockquote><tt>BRK</tt> is the "traditional" software interrupt with which all 6502 
-assembly language programmers are, or should be, familiar.&nbsp; <tt>BRK</tt> is most 
-commonly used during software debugging to stop the program undergoing 
-testing and start a machine language monitor to inspect memory and/or 
+<blockquote><tt>BRK</tt> is the "traditional" software interrupt with which all 6502
+assembly language programmers are, or should be, familiar.&nbsp; <tt>BRK</tt> is most
+commonly used during software debugging to stop the program undergoing
+testing and start a machine language monitor to inspect memory and/or
 the microprocessor's registers.&nbsp; In the past, <tt>BRK</tt> was used to patch
- PROMs when program bugs were discovered,&nbsp; a practice that was obsoleted 
-when EPROMs became readily available.&nbsp; In some cases, <tt>BRK</tt> has been used 
+ PROMs when program bugs were discovered,&nbsp; a practice that was obsoleted
+when EPROMs became readily available.&nbsp; In some cases, <tt>BRK</tt> has been used
 as a supervisor call instruction to invoke operating system services.
 <br>
 <br>
@@ -707,40 +707,40 @@ Upon executing <tt>BRK</tt> the following actions occur:
     <li>The <tt>I</tt> bit in <tt>SR</tt> is set.</li>
     <li>The <tt>D</tt> bit in <tt>SR</tt> is cleared.</li>
     <li><tt>PB</tt> is loaded with <tt>$00</tt>.</li>
-    <li><tt>PC</tt> is loaded with the contents of the <tt>BRK</tt> hardware vector at 
+    <li><tt>PC</tt> is loaded with the contents of the <tt>BRK</tt> hardware vector at
       <tt>$00FFE6</tt> (LSB) and <tt>$00FFE7</tt> (MSB).</li>
     <li>Execution is transferred to the <tt>BRK</tt> service routine.</li>
   </ol>
 </blockquote>
-<blockquote>Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt> 
-and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon 
-executing an <tt>RTI</tt> instruction, the above sequence will be logically 
-reversed to return the 65C816 to the state it was in at the time of the 
+<blockquote>Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt>
+and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon
+executing an <tt>RTI</tt> instruction, the above sequence will be logically
+reversed to return the 65C816 to the state it was in at the time of the
 interrupt, and unless the address that was pushed to the stack in steps 1
-and 2 is altered within the interrupt service routine, the 65C816 will 
+and 2 is altered within the interrupt service routine, the 65C816 will
 execute the next instruction in the interrupted program.&nbsp; As <tt>PC</tt> is twice
-incremented before being pushed to the stack, the "next instruction" 
+incremented before being pushed to the stack, the "next instruction"
 will be at the address of the <tt>BRK</tt> instruction plus two.&nbsp; The interceding
  signature byte is ignored by the 65C816 and can be anything&mdash;a <tt>NOP</tt> (<tt>$EA</tt>)
- is customary during debugging, unless the <tt>BRK</tt> handler refers to the 
+ is customary during debugging, unless the <tt>BRK</tt> handler refers to the
 signature.<br>
   <br>
-It is important to note that IRQs will be masked by executing <tt>BRK</tt>, 
-which means that if <tt>BRK</tt> is intercepted by a machine language monitor it 
-is essential that IRQs be re-enabled.&nbsp; Otherwise, all interrupt-driven 
-I/O operations will cease and the system will most likely be 
+It is important to note that IRQs will be masked by executing <tt>BRK</tt>,
+which means that if <tt>BRK</tt> is intercepted by a machine language monitor it
+is essential that IRQs be re-enabled.&nbsp; Otherwise, all interrupt-driven
+I/O operations will cease and the system will most likely be
 unresponsive.<br>
 </blockquote>
 <ul>
   <li><b><a name="toc:interrupt_cop"></a>Co-Processor</b></li>
 </ul>
-<blockquote>The <tt>COP</tt> instruction is unique to the 65C816 and is described in the 
-data sheet as "...support[ing] co-processor configurations, i.e., 
-floating point processors."&nbsp; Despite that statement, <tt>COP</tt> is a just 
-another software interrupt, and it is up to the imagination of the 
+<blockquote>The <tt>COP</tt> instruction is unique to the 65C816 and is described in the
+data sheet as "...support[ing] co-processor configurations, i.e.,
+floating point processors."&nbsp; Despite that statement, <tt>COP</tt> is a just
+another software interrupt, and it is up to the imagination of the
 system designer (you) to decide how to use it.&nbsp;
-As no floating point hardware that is bus-compatible with the 65C816 is known to exist at 
-this time, <tt>COP</tt> may be (mis)used in a number of ways, one being as a 
+As no floating point hardware that is bus-compatible with the 65C816 is known to exist at
+this time, <tt>COP</tt> may be (mis)used in a number of ways, one being as a
 operating system service call instruction&mdash;more on that to follow.
 <br>
 <br>
@@ -752,37 +752,37 @@ Upon executing <tt>COP</tt> the following actions occur:
     <li>The <tt>I</tt> bit in <tt>SR</tt> is set.</li>
     <li>The <tt>D</tt> bit in <tt>SR</tt> is cleared.</li>
     <li><tt>PB</tt> is loaded with <tt>$00</tt>.</li>
-    <li><tt>PC</tt> is loaded with the contents of the <tt>COP</tt> hardware vector at 
+    <li><tt>PC</tt> is loaded with the contents of the <tt>COP</tt> hardware vector at
       <tt>$00FFE4</tt> (LSB) and <tt>$00FFE5</tt> (MSB)</li>
     <li>Execution is transferred to the <tt>COP</tt> handler.</li>
   </ol>
-Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt> 
-and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon 
-executing an <tt>RTI</tt> instruction, the above sequence will be 
-logically 
-reversed to return the 65C816 to the state it was in at the time of the 
+Note that the 65C816 does not automatically save <tt>.A</tt>, <tt>.B</tt>, <tt>.X</tt>, <tt>.Y</tt>, <tt>DB</tt>
+and <tt>DP</tt>, nor does it change any bits in <tt>SR</tt> except <tt>D</tt> and <tt>I</tt>.&nbsp; Upon
+executing an <tt>RTI</tt> instruction, the above sequence will be
+logically
+reversed to return the 65C816 to the state it was in at the time of the
 interrupt, and unless the address that was pushed to the stack in steps 1
- and 2 is altered within the interrupt service routine, the 65C816 will 
-execute the next instruction in the interrupted program.&nbsp; As <tt>PC</tt> is 
-twice incremented before being pushed to the stack, the "next 
-instruction" will be at the address of the <tt>COP</tt> instruction plus two.&nbsp; 
-The interceding signature byte, which is required by the WDC assembly 
-language syntax for <tt>COP</tt>, is ignored by the 65C816 and can be anything.&nbsp; 
-However, WDC recommends that user signature bytes be confined to the 
-range <tt>$00</tt>-<tt>$7F</tt>, as bytes <tt>$80</tt>-<tt>$FF</tt> are listed as "reserved" in the data 
+ and 2 is altered within the interrupt service routine, the 65C816 will
+execute the next instruction in the interrupted program.&nbsp; As <tt>PC</tt> is
+twice incremented before being pushed to the stack, the "next
+instruction" will be at the address of the <tt>COP</tt> instruction plus two.&nbsp;
+The interceding signature byte, which is required by the WDC assembly
+language syntax for <tt>COP</tt>, is ignored by the 65C816 and can be anything.&nbsp;
+However, WDC recommends that user signature bytes be confined to the
+range <tt>$00</tt>-<tt>$7F</tt>, as bytes <tt>$80</tt>-<tt>$FF</tt> are listed as "reserved" in the data
 sheet.<br>
   <br>
 As with the <tt>BRK</tt> instruction, IRQs will be masked by executing <tt>COP</tt>.<br>
 </blockquote>
 <h3><b><a name="toc:interrupt_vectoring"></a>Interrupt Vectoring</b></h3>
-As previously noted, this article only superficially treats hardware.&nbsp; 
+As previously noted, this article only superficially treats hardware.&nbsp;
 That said, brief mention will be made of the 65C816's <tt>VPB</tt> (vector pull) output signal.&nbsp;
 <tt>VPB</tt> is normally held at logic one by the 65C816.&nbsp;
 However, during cycles seven and eight of the microprocessor's interrupt response sequence
-<tt>VPB</tt> will go to logic zero to indicate that the 65C816 is loading <tt>PC</tt> with the appropriate 
-interrupt vector, the LSB during cycle seven and the MSB during cycle eight.&nbsp; 
-System logic can monitor <tt>VPB</tt> and when it goes to logic zero, modify the 
-interrupt vector "on the fly" to reduce software-induced latency, as well as change the execution 
+<tt>VPB</tt> will go to logic zero to indicate that the 65C816 is loading <tt>PC</tt> with the appropriate
+interrupt vector, the LSB during cycle seven and the MSB during cycle eight.&nbsp;
+System logic can monitor <tt>VPB</tt> and when it goes to logic zero, modify the
+interrupt vector "on the fly" to reduce software-induced latency, as well as change the execution
 environment to suit operating system requirements.
 <br>
 <br>
@@ -790,10 +790,10 @@ environment to suit operating system requirements.
 <br>
 <br>
 <h2><a name="toc:software_engineering"></a>SOFTWARE ENGINEERING</h2>
-A well-designed interrupt service routine represents a significant 
+A well-designed interrupt service routine represents a significant
 challenge for many programmers&mdash;as well as an occasionally rude lesson on
- the value of disciplined coding habits.&nbsp; In addition to meeting the 
-obvious requirement of being able to correctly service and clear interrupts, an 
+ the value of disciplined coding habits.&nbsp; In addition to meeting the
+obvious requirement of being able to correctly service and clear interrupts, an
 interrupt service routine should be:<br>
 <ul>
   <li><a href="#toc:transparent"><b>Transparent</b></a><br>
@@ -806,290 +806,290 @@ interrupt service routine should be:<br>
     </b>
   </li>
 </ul>
-Other characteristics may well be required, but the above three are the 
+Other characteristics may well be required, but the above three are the
 most important in most systems.&nbsp; Let's take a closer look at this.
 <h3><a name="toc:transparent"></a>Transparency</h3>
-An interrupt service routine is said to be "transparent" if it does not 
-affect the environment of the interrupted foreground task in any way.&nbsp; 
-In order for the foreground task to be able to be restarted without 
-error following an interrupt, the interrupt service routine must 
-preserve the state of the microprocessor at the time of the interrupt 
-and must restore that state when interrupt processing has been 
-completed.&nbsp; Also, transparency requires that the interrupt service 
-routine use no memory other than the hardware stack, except in 
-well-defined cases that are acceptable to interrupted foreground tasks.&nbsp; 
- Otherwise, memory locations being used in the foreground may randomly 
+An interrupt service routine is said to be "transparent" if it does not
+affect the environment of the interrupted foreground task in any way.&nbsp;
+In order for the foreground task to be able to be restarted without
+error following an interrupt, the interrupt service routine must
+preserve the state of the microprocessor at the time of the interrupt
+and must restore that state when interrupt processing has been
+completed.&nbsp; Also, transparency requires that the interrupt service
+routine use no memory other than the hardware stack, except in
+well-defined cases that are acceptable to interrupted foreground tasks.&nbsp;
+ Otherwise, memory locations being used in the foreground may randomly
 change for no apparent reason, creating a potential debugging nightmare.
 <br>
 <br>
-Getting back to preservation of the microprocessor's state, the 
-interrupt service routine must make sure that whatever values were in 
-the registers at the time of the interrupt are there when execution of 
-the foreground task resumes.&nbsp; Some of this preservation process is 
-automatically handled by the 65C816 when it acknowledges an interrupt, 
-as it will push <tt>PB</tt>, <tt>PC</tt>, and <tt>SR</tt> to the stack prior to executing the 
+Getting back to preservation of the microprocessor's state, the
+interrupt service routine must make sure that whatever values were in
+the registers at the time of the interrupt are there when execution of
+the foreground task resumes.&nbsp; Some of this preservation process is
+automatically handled by the 65C816 when it acknowledges an interrupt,
+as it will push <tt>PB</tt>, <tt>PC</tt>, and <tt>SR</tt> to the stack prior to executing the
 interrupt service routine.&nbsp;
-However, as already noted, the 65C816 doesn't preserve any of its other 
-registers, which means the interrupt service routine must see to that 
-chore.&nbsp; Which registers must be preserved and restored will be 
+However, as already noted, the 65C816 doesn't preserve any of its other
+registers, which means the interrupt service routine must see to that
+chore.&nbsp; Which registers must be preserved and restored will be
 implementation-dependent.
 <br>
 <br>
-As a fairly rigid rule, any register that 
-will be "touched" (changed) within an interrupt service routine must be 
-preserved to assure transparency in all cases.&nbsp; Preservation is 
-accomplished by pushing the registers to the stack before being touched 
-and pulling them from the stack when the interrupt service routine has 
-completed its work.&nbsp; <b><i>Note that it is not necessary to preserve a 
-register that the interrupt service routine does not touch</i></b>.&nbsp; For 
-example, if your interrupt service routine only uses <tt>.X</tt> and <tt>.Y</tt>, there's 
-no good reason to preserve the accumulator&mdash;doing so would simply waste 
-valuable clock cycles and stack space.&nbsp; If you can guarantee that your 
-interrupt service routine will not touch any of the registers, a 
-possibility in some tightly-written embedded applications, do not waste 
+As a fairly rigid rule, any register that
+will be "touched" (changed) within an interrupt service routine must be
+preserved to assure transparency in all cases.&nbsp; Preservation is
+accomplished by pushing the registers to the stack before being touched
+and pulling them from the stack when the interrupt service routine has
+completed its work.&nbsp; <b><i>Note that it is not necessary to preserve a
+register that the interrupt service routine does not touch</i></b>.&nbsp; For
+example, if your interrupt service routine only uses <tt>.X</tt> and <tt>.Y</tt>, there's
+no good reason to preserve the accumulator&mdash;doing so would simply waste
+valuable clock cycles and stack space.&nbsp; If you can guarantee that your
+interrupt service routine will not touch any of the registers, a
+possibility in some tightly-written embedded applications, do not waste
 time preserving them.
 <br>
 <br>
-The 65C816 slightly complicates register preservation because the 
+The 65C816 slightly complicates register preservation because the
 accumulator and index registers may be set to either eight or 16 bits at the
  time of the interrupt.&nbsp; Therefore, the interrupt service routine has to
- be careful to not make any assumptions in that regard, lest data be 
+ be careful to not make any assumptions in that regard, lest data be
 lost.&nbsp; This is especially true when the accumulator is considered, as it
- is really two registers designated <tt>.A</tt> and <tt>.B</tt>.&nbsp; Pushing the accumulator 
-when it has been set to eight bits (<tt>m=1</tt> in <tt>SR</tt>) will not preserve <tt>.B</tt>, 
-which could result in a loss of transparency should the interrupt 
-service routine touch <tt>.B</tt>.&nbsp; Therefore, it is essential that the 
-accumulator be set to 16 bits before preservation and restoration if the 
-interrupt service routine will be using <tt>.B</tt>.&nbsp; Also, beware of 
-changes to <tt>.B</tt> via the <tt>TDC</tt>, <tt>TSC</tt> and <tt>XBA</tt> instructions.&nbsp; <tt>TDC</tt> and <tt>TSC</tt> are 
+ is really two registers designated <tt>.A</tt> and <tt>.B</tt>.&nbsp; Pushing the accumulator
+when it has been set to eight bits (<tt>m=1</tt> in <tt>SR</tt>) will not preserve <tt>.B</tt>,
+which could result in a loss of transparency should the interrupt
+service routine touch <tt>.B</tt>.&nbsp; Therefore, it is essential that the
+accumulator be set to 16 bits before preservation and restoration if the
+interrupt service routine will be using <tt>.B</tt>.&nbsp; Also, beware of
+changes to <tt>.B</tt> via the <tt>TDC</tt>, <tt>TSC</tt> and <tt>XBA</tt> instructions.&nbsp; <tt>TDC</tt> and <tt>TSC</tt> are
 particularly sneaky, in that they result in a 16 bit transfer that overwrites <tt>.B</tt>, regardless of the status of the <tt>m</tt> bit in <tt>SR</tt>.
 <br>
 <br>
-A non-obvious problem that confronts the 65C816 assembly language programmer is the 
-fact that there is no way to conveniently determine the register widths 
+A non-obvious problem that confronts the 65C816 assembly language programmer is the
+fact that there is no way to conveniently determine the register widths
 in the interrupt service routine except by examining the <tt>m</tt> and <tt>x</tt> bits in
  <tt>SR</tt>.&nbsp; However, doing so requires that <tt>SR</tt> be pushed to the stack and then
- retrieved in the (eight bit) accumulator for analysis, causing the 
-value in <tt>.A</tt> to be lost before it is preserved.&nbsp; This problem is best 
-circumvented by assuming that the registers are set to 16 bits at the 
-time of the interrupt, which simply means that the <tt>m</tt> and <tt>x</tt> bits in <tt>SR</tt> 
-should be cleared before pushing the registers, and 
+ retrieved in the (eight bit) accumulator for analysis, causing the
+value in <tt>.A</tt> to be lost before it is preserved.&nbsp; This problem is best
+circumvented by assuming that the registers are set to 16 bits at the
+time of the interrupt, which simply means that the <tt>m</tt> and <tt>x</tt> bits in <tt>SR</tt>
+should be cleared before pushing the registers, and
 again cleared before pulling them at the end of the interrupt service routine.&nbsp;
-  Doing so adds extra instructions and some clock cycles to the 
-interrupt service routine, but does guarantee full register 
+  Doing so adds extra instructions and some clock cycles to the
+interrupt service routine, but does guarantee full register
 preservation.
 <br>
 <br>
-For most applications, the following code will completely preserve the 
+For most applications, the following code will completely preserve the
 65C816's state at the beginning of an interrupt service routine:
-<blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save DB</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save DP</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep 
-#%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep
+#%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit
 registers</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save .C</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save .X</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save .Y</tt>
 </blockquote>
 If the interrupt service routine has a stack separate from other stacks,
-preservation of <tt>SP</tt> must occur in memory after the above pushes have 
+preservation of <tt>SP</tt> must occur in memory after the above pushes have
 been completed.&nbsp;
 The following code, added to the above sequence, would handle this requirement:
-<blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tsc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;copy SP to .C &amp;...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta 
-sp_fgnd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta
+sp_fgnd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ;save somewhere in safe RAM</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 sp_isr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;get ISR's stack pointer &amp;...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tcs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;set new stack location</tt>
 </blockquote>
 There are several items to consider:
 <ul>
-  <li>As previously noted, <b><i>you should preserve only the registers that 
+  <li>As previously noted, <b><i>you should preserve only the registers that
 your interrupt service routine will be touching</i></b>.<br>
     <br>
   </li>
-  <li>In a system with more than 64 kilobytes of RAM that is running 
-multiple processes, it is quite possible that the interrupt service 
-routine may need to load a different bank into <tt>DB</tt> in order to access a different process' 
-data, hence the preservation of the data bank with the <tt>PHB</tt> instruction.&nbsp; Otherwise, <tt>PHB</tt> can be omitted if a 
-change to <tt>DB</tt> isn't necessary during interrupt processing, or if the 
+  <li>In a system with more than 64 kilobytes of RAM that is running
+multiple processes, it is quite possible that the interrupt service
+routine may need to load a different bank into <tt>DB</tt> in order to access a different process'
+data, hence the preservation of the data bank with the <tt>PHB</tt> instruction.&nbsp; Otherwise, <tt>PHB</tt> can be omitted if a
+change to <tt>DB</tt> isn't necessary during interrupt processing, or if the
 system has no more than 64 kilobytes of RAM.<br>
     <br>
   </li>
-  <li>Preservation of the direct page pointer (the <tt>PHD</tt> instruction) is 
-necessary if the interrupt service routine has been assigned its own 
-direct page.&nbsp; However, use of direct page in this fashion, while 
+  <li>Preservation of the direct page pointer (the <tt>PHD</tt> instruction) is
+necessary if the interrupt service routine has been assigned its own
+direct page.&nbsp; However, use of direct page in this fashion, while
 preserving transparency, may prevent your code from <a href="#toc:reentrant"><b>being reentrant</b></a>.<br>
     <br>
   </li>
-  <li>A 65C816-powered system without benefit of special hardware logic 
+  <li>A 65C816-powered system without benefit of special hardware logic
 will direct all stack accesses to RAM bank <tt>$00</tt>, regardless of the amount
- of RAM actually present.&nbsp; It may be advantageous in some cases to 
-change the stack pointer after register preservation has been 
-accomplished to prevent interrupt service routine stack accesses from 
+ of RAM actually present.&nbsp; It may be advantageous in some cases to
+change the stack pointer after register preservation has been
+accomplished to prevent interrupt service routine stack accesses from
 inadvertently affecting the foreground task(s) stack(s).&nbsp; However, doing
- so may compromise transparency and most likely will prevent 
+ so may compromise transparency and most likely will prevent
     <a href="#toc:reentrant"><b>reentrancy</b></a>&mdash;use caution.<br>
     <br>
   </li>
-  <li>If you do assign a separate stack area to the 
-interrupt service routine <b><i>you must preserve the old stack pointer in 
-RAM, not on the stack</i></b>.&nbsp; The following code will work but will also 
+  <li>If you do assign a separate stack area to the
+interrupt service routine <b><i>you must preserve the old stack pointer in
+RAM, not on the stack</i></b>.&nbsp; The following code will work but will also
 create an intractable problem:
 <br>
 <br>
     <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit accumulator</tt><tt><br>
-    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tsc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;copy SP to .C &amp;...</tt><tt><br>
-    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save on stack</tt><tt><br>
-    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 sp_isr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;get ISR's stack pointer &amp;...</tt><tt><br>
-    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tcs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;set new stack location</tt>
 <br>
 <br>
-As the <tt>TCS</tt> instruction will set a new stack pointer, how would you 
-reverse the <tt>PHA</tt> instruction that pushed the foreground task's stack 
+As the <tt>TCS</tt> instruction will set a new stack pointer, how would you
+reverse the <tt>PHA</tt> instruction that pushed the foreground task's stack
 pointer to the foreground task's stack?</li>
 </ul>
-At the completion of the interrupt service routine, the above steps 
+At the completion of the interrupt service routine, the above steps
 would be reversed as follows:
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep #%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit registers<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 sp_fgnd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;get
  foreground task's SP &amp;...<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tcs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;set it<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ply&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .Y<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .X<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pla&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .C<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pld&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore DP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore DB<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 rti&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;resume foreground task</tt>
 </blockquote>
 Again, omit any steps that involve registers that weren't touched by the interrupt service routine.&nbsp;
 Note that upon executing <tt>RTI</tt>, the 65C816 will automatically restore the correct register sizes,
-since pulling <tt>SR</tt> restores the state of the <tt>m</tt> and <tt>x</tt> bits to what existed at the time of 
+since pulling <tt>SR</tt> restores the state of the <tt>m</tt> and <tt>x</tt> bits to what existed at the time of
 the interrupt.
 <br>
 <br>
-For programming convenience, you may wish to write a single interrupt 
-service routine exit point, which would encompass the above 
+For programming convenience, you may wish to write a single interrupt
+service routine exit point, which would encompass the above
 instructions, except for the stack pointer restoration:
 <blockquote><tt>;crti: COMMON INTERRUPT RETURN<br>
 ;<br>
 crti&nbsp;&nbsp;&nbsp;&nbsp; rep #%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit registers<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ply&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .Y<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .X<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pla&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore .C<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pld&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore DP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore DB<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 rti&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;resume foreground task</tt>
 </blockquote>
-As the IRQ handler typically sees much more activity than the other 
+As the IRQ handler typically sees much more activity than the other
 interrupt service routines in most systems, <tt>CRTI</tt> (<b>C</b>ommon <b>R</b>e<b>T</b>urn from <b>
-I</b>nterrupt) should be in-line with the IRQ handler to reduce execution 
-time&mdash;that is, the IRQ handler should be able to "fall through" to <tt>CRTI</tt> 
-to avoid the time penalty of a branch or jump instruction.&nbsp; Other 
-interrupt service routines should use <tt>BRA</tt>, <tt>BRL</tt> or <tt>JMP</tt> to get to <tt>CRTI</tt>, 
+I</b>nterrupt) should be in-line with the IRQ handler to reduce execution
+time&mdash;that is, the IRQ handler should be able to "fall through" to <tt>CRTI</tt>
+to avoid the time penalty of a branch or jump instruction.&nbsp; Other
+interrupt service routines should use <tt>BRA</tt>, <tt>BRL</tt> or <tt>JMP</tt> to get to <tt>CRTI</tt>,
 with <tt>BRA</tt> being preferred.&nbsp; Avoid use of <tt>BRL</tt> in interrupt service routines unless you are writing relocatable code.&nbsp; <tt>BRL</tt> uses four &Oslash;2 cycles, whereas <tt>BRA</tt> and <tt>JMP</tt> use three.
 <h3><a name="toc:reentrant"></a>Reentrancy</h3>
-An interrupt service routine is said to be "reentrant" if it can be 
-interrupted and made to process a new interrupt without disturbing any 
-work that was in progress on behalf of the most recent interrupt.&nbsp; 
-Depending on how interrupt processing has been arranged, such "nested 
+An interrupt service routine is said to be "reentrant" if it can be
+interrupted and made to process a new interrupt without disturbing any
+work that was in progress on behalf of the most recent interrupt.&nbsp;
+Depending on how interrupt processing has been arranged, such "nested
 interrupts" may occur even in small systems.<br>
 <br>
-For example, consider a system in which a 65C51 UART is communicating 
+For example, consider a system in which a 65C51 UART is communicating
 with a modem, while a 65C22 VIA (<b>V</b>ersatile <b>I</b>nterface <b>A</b>dapter)
  is responsible for generating a jiffy IRQ
  to maintain system timekeeping.&nbsp; Let's suppose the VIA generates a
-timer underflow IRQ.&nbsp; As soon as the VIA's interrupt status 
+timer underflow IRQ.&nbsp; As soon as the VIA's interrupt status
 register has
- been examined in the interrupt service routine and the timer IRQ has 
-been cleared, let's also suppose IRQs are re-enabled and immediately 
-thereafter, the UART interrupts because it has received a byte from the 
-modem.&nbsp; If the interrupt service routine is fully reentrant, the 
-UART 
-interrupt will be serviced without delay and then the 65C816 will pick 
-up where it left off while servicing the VIA interrupt (incidentally, 
+ been examined in the interrupt service routine and the timer IRQ has
+been cleared, let's also suppose IRQs are re-enabled and immediately
+thereafter, the UART interrupts because it has received a byte from the
+modem.&nbsp; If the interrupt service routine is fully reentrant, the
+UART
+interrupt will be serviced without delay and then the 65C816 will pick
+up where it left off while servicing the VIA interrupt (incidentally,
 this scenario implies that the UART has a higher interrupt priority than
- the VIA, which given the limitations of the 65C51, represents a sound 
-software engineering decision).&nbsp; The amount of this sort of 
-interrupt 
-nesting that is possible is primarily limited by stack space, which is 
+ the VIA, which given the limitations of the 65C51, represents a sound
+software engineering decision).&nbsp; The amount of this sort of
+interrupt
+nesting that is possible is primarily limited by stack space, which is
 far less a concern with the 65C816 than with its eight bit cousins.<br>
 <br>
-Reentrancy can only be achieved by fully satisfying the goal of 
-transparency, especially the requirement that no memory except the 
-hardware stack be used for storing temporary data.&nbsp; The 65C816's stack 
-pointer relative addressing instructions, such as <tt>LDA (&lt;offset&gt;</tt><tt>,S),Y</tt>, perform both direct and indirect loads and stores on the stack, with 
+Reentrancy can only be achieved by fully satisfying the goal of
+transparency, especially the requirement that no memory except the
+hardware stack be used for storing temporary data.&nbsp; The 65C816's stack
+pointer relative addressing instructions, such as <tt>LDA (&lt;offset&gt;</tt><tt>,S),Y</tt>, perform both direct and indirect loads and stores on the stack, with
 indirection facilitating the use of the stack as a fugacious
-direct page.&nbsp; Stack addressing in the context of interrupt processing 
+direct page.&nbsp; Stack addressing in the context of interrupt processing
 will be extensively covered in the <a href="#toc:advanced_swi"><b>advanced software interrupt programming</b></a> section.
 <br>
 <h3><a name="toc:succinct"></a>Succinctness</h3>
-Interrupt service routines need to execute as quickly as possible, as 
+Interrupt service routines need to execute as quickly as possible, as
 the time required to process interrupts is time that is not available to
- run foreground tasks.&nbsp; During the design of an interrupt service 
-routine, consideration must be given to how often the routine will be 
-executed in a given period of time.&nbsp; For example, in most systems, the 
-NMI handler may not see much use, but the IRQ handler might be executed 
-thousands or even tens of thousands of times per second.&nbsp; Clearly, any 
-effort expended on improving the execution speed of the NMI handler 
+ run foreground tasks.&nbsp; During the design of an interrupt service
+routine, consideration must be given to how often the routine will be
+executed in a given period of time.&nbsp; For example, in most systems, the
+NMI handler may not see much use, but the IRQ handler might be executed
+thousands or even tens of thousands of times per second.&nbsp; Clearly, any
+effort expended on improving the execution speed of the NMI handler
 would be better applied to the IRQ handler's code.<br>
   <br>
 Unfortunately, the goal of succinctness can be elusive&mdash;there is usually
  a tradeoff between code size and speed.  However, with the 65C816 there
  are often ways to improve speed and reduce code size at the same time:
 <ul>
-  <li><b>If you need to increment or decrement a value, avoid loading that 
+  <li><b>If you need to increment or decrement a value, avoid loading that
 value into a register</b>:<br>
     <br>
 Most experienced assembly language programmers already know this tip
@@ -1104,25 +1104,25 @@ Most experienced assembly language programmers already know this tip
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inx</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stx counter</tt><br>
   </blockquote>
-<blockquote>unless, of course, you need the new value in <tt>COUNTER</tt> loaded into <tt>.X</tt> 
+<blockquote>unless, of course, you need the new value in <tt>COUNTER</tt> loaded into <tt>.X</tt>
 for later operations.<br>
-  <blockquote><b>Caution</b>: Using any read-modify-write (R-M-W) instruction, such as 
+  <blockquote><b>Caution</b>: Using any read-modify-write (R-M-W) instruction, such as
       <tt>ASL</tt> or <tt>INC</tt>, on I/O device registers may cause unexpected behavior.<br>
   </blockquote>
   </blockquote>
 <ul>
-  <li><b>Use <tt>BIT</tt> to test a hardware register if the actual register value 
+  <li><b>Use <tt>BIT</tt> to test a hardware register if the actual register value
 isn't needed</b>:</li>
 </ul>
-<blockquote>Many 6502 family hardware devices, such as the 65C22, indicate that 
-they are interrupting by setting bit 7 in a flag register&mdash;bit 7 is 
-logically wired to the device's <span style="text-decoration: overline;"><tt>IRQ</tt></span> output.&nbsp; Owing to how the flag bits 
+<blockquote>Many 6502 family hardware devices, such as the 65C22, indicate that
+they are interrupting by setting bit 7 in a flag register&mdash;bit 7 is
+logically wired to the device's <span style="text-decoration: overline;"><tt>IRQ</tt></span> output.&nbsp; Owing to how the flag bits
 are arranged in the register, it may be possible to determine the reason
- why the device is interrupting solely by the effect of a <tt>BIT</tt> 
+ why the device is interrupting solely by the effect of a <tt>BIT</tt>
 instruction, eliminating the need to load the register into .A and apply
  Boolean operations.<br>
-  
-  <blockquote><b>Caution</b>: The register contents may be cleared by the <tt>BIT</tt> operation, 
+
+  <blockquote><b>Caution</b>: The register contents may be cleared by the <tt>BIT</tt> operation,
 clearing the interrupting condition as well.<br>
   </blockquote>
   </blockquote>
@@ -1130,7 +1130,7 @@ clearing the interrupting condition as well.<br>
   <li><b>Arrange code so a branch is not taken in the most common case</b>:</li>
 </ul>
 <blockquote>If a branch doesn't have to be taken then only two clock cycles will
- be consumed to execute the branch instruction.&nbsp; An additional clock 
+ be consumed to execute the branch instruction.&nbsp; An additional clock
 cycle will be consumed if the branch has to be taken.<br>
   </blockquote>
 <ul>
@@ -1147,36 +1147,36 @@ cycle will be consumed if the branch has to be taken.<br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inc counter+1</tt><br>
   <tt>next&nbsp;&nbsp;&nbsp;&nbsp; </tt>...program continues...<br>
   </blockquote>
-<blockquote>The first example increments all 16 bits at <tt>COUNTER</tt> and 
-    <tt>COUNTER+1</tt> in a single instruction, using fewer bytes of code and fewer 
-total clock cycles than the second example.&nbsp; The eight bit equivalent 
-uses nearly twice as much time just to increment the 16 bit <tt>COUNTER</tt> and 
-adding insult to injury, suffers an additional performance penalty due 
+<blockquote>The first example increments all 16 bits at <tt>COUNTER</tt> and
+    <tt>COUNTER+1</tt> in a single instruction, using fewer bytes of code and fewer
+total clock cycles than the second example.&nbsp; The eight bit equivalent
+uses nearly twice as much time just to increment the 16 bit <tt>COUNTER</tt> and
+adding insult to injury, suffers an additional performance penalty due
 to the branch instruction, since the branch will be taken during 255 consecutive
  passes through the code.<br>
   </blockquote>
 <ul>
   <li><b>Don't use 16 bit operations unless necessary</b>:</li>
 </ul>
-<blockquote>Yes, this advice seems to contradict the previous bit of wisdom.&nbsp; 
-However, if a sequence of operations can be performed with eight bit 
-memory accesses, there's nothing to be gained by employing 
+<blockquote>Yes, this advice seems to contradict the previous bit of wisdom.&nbsp;
+However, if a sequence of operations can be performed with eight bit
+memory accesses, there's nothing to be gained by employing
 16 bit loads and stores.&nbsp;
-All 16 bit operations on memory incur a one clock 
+All 16 bit operations on memory incur a one clock
 cycle penalty due to the extra access required to load or store the MSB.&nbsp;
-  Also, any 16 bit immediate mode instruction will obviously require a 
-16 bit operand&mdash;even if the operand's MSB is <tt>$00</tt>, increasing the size of 
+  Also, any 16 bit immediate mode instruction will obviously require a
+16 bit operand&mdash;even if the operand's MSB is <tt>$00</tt>, increasing the size of
 the instruction, as well as the time required to decode and execute it.<br>
   </blockquote>
 <ul>
   <li><b>Avoid multiple successive 24 bit loads and stores</b>:</li>
 </ul>
-<blockquote>Any 24 bit access, such as <tt>LDA $AB1234,X</tt>, will incur a one clock cycle 
-penalty as compared to the same instruction using a 16 bit access, such 
-as <tt>LDA $1234,X</tt>.&nbsp; If it is necessary to perform multiple successive 
-"long" operations, a performance gain can usually be realized by 
-temporarily setting <tt>DB</tt> to the target bank, using 16 bit accesses on the 
-target locations and then restoring <tt>DB</tt>.&nbsp; For 
+<blockquote>Any 24 bit access, such as <tt>LDA $AB1234,X</tt>, will incur a one clock cycle
+penalty as compared to the same instruction using a 16 bit access, such
+as <tt>LDA $1234,X</tt>.&nbsp; If it is necessary to perform multiple successive
+"long" operations, a performance gain can usually be realized by
+temporarily setting <tt>DB</tt> to the target bank, using 16 bit accesses on the
+target locations and then restoring <tt>DB</tt>.&nbsp; For
 example, consider code that increments five bytes in bank <tt>$AB</tt>.&nbsp;
 The first routine uses 24 bit loads and stores:<br>
   </blockquote>
@@ -1186,249 +1186,249 @@ The first routine uses 24 bit loads and stores:<br>
  ;modifying 5 locations</tt><br>
   <tt>;</tt><br>
   <tt>loop&nbsp;&nbsp;&nbsp;&nbsp; lda $ab1234,x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;load</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inc 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inc
 a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;increment</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta $ab1234,x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;store</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dex</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpl 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpl
 loop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;next</tt><br>
   <tt>;</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </tt>...program continues...<br>
   </blockquote>
 <blockquote>Performance suffers where performance matters the most: in the read-modify-write
- loop.&nbsp; Two 24 bit accesses plus the <tt>INC A</tt> instruction are 
-required to make up for the lack of an equivalent 24 bit 
-read-modify-write operation&mdash;unfortunately, <tt>INC $AB1234,X</tt> isn't in the 
+ loop.&nbsp; Two 24 bit accesses plus the <tt>INC A</tt> instruction are
+required to make up for the lack of an equivalent 24 bit
+read-modify-write operation&mdash;unfortunately, <tt>INC $AB1234,X</tt> isn't in the
 65C816's instruction set.<br>
   </blockquote>
-<blockquote>Now consider the following code, which temporarily changes <tt>DB</tt> to 
+<blockquote>Now consider the following code, which temporarily changes <tt>DB</tt> to
 accomplish the same task:<br>
   </blockquote>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save current data bank</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sep #%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;8 bit registers</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 #$ab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;target bank</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;push it to the stack &amp; pull it...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;into DB, making it the default bank</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ldx 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ldx
 #4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;modifying 5 locations</tt><br>
   <tt>;</tt><br>
   <tt>loop&nbsp;&nbsp;&nbsp;&nbsp; inc $1234,x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;effectively INC $AB1234,X</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dex</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpl 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpl
 loop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;next</tt><br>
   <tt>;</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restore previous bank</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </tt>...program continues...
   </blockquote>
 <blockquote>Although the above version looks larger and slower than the previous
- version, it is slightly smaller and substantially faster in the loop 
-because a single R-M-W instruction with 16 bit addressing accomplishes 
-what three separate instructions accomplish with 24 bit addressing in 
-the first version.&nbsp; Consider that the extra clock cycle penalty of a 24 bit 
+ version, it is slightly smaller and substantially faster in the loop
+because a single R-M-W instruction with 16 bit addressing accomplishes
+what three separate instructions accomplish with 24 bit addressing in
+the first version.&nbsp; Consider that the extra clock cycle penalty of a 24 bit
 access is avoided twice per loop iteration.&nbsp; Even though some additional
- instructions are needed to change and restore <tt>DB</tt>, overall execution 
+ instructions are needed to change and restore <tt>DB</tt>, overall execution
 time is significantly shorter.<br>
 </blockquote>
 <blockquote></blockquote>
 <ul>
-  <li><b>Don't use the <tt>BRL</tt> instruction unless you are writing relocatable 
+  <li><b>Don't use the <tt>BRL</tt> instruction unless you are writing relocatable
 code</b>:</li>
 </ul>
-<blockquote>As mentioned earlier, <tt>BRA</tt> and <tt>JMP</tt> take three clock cycles to complete, whereas <tt>BRL</tt> 
-consumes four cycles.&nbsp; <tt>BRL</tt> confers no advantages in a system where the interrupt service routines are loaded to fixed addresses.&nbsp; While <tt>BRA</tt> is no faster than <tt>JMP</tt> it does require 
+<blockquote>As mentioned earlier, <tt>BRA</tt> and <tt>JMP</tt> take three clock cycles to complete, whereas <tt>BRL</tt>
+consumes four cycles.&nbsp; <tt>BRL</tt> confers no advantages in a system where the interrupt service routines are loaded to fixed addresses.&nbsp; While <tt>BRA</tt> is no faster than <tt>JMP</tt> it does require
 one less byte of code, which may be important if available code space is
  real tight.
   </blockquote>
 <ul>
   <li><b>Use linear code</b>:</li>
 </ul>
-<blockquote>The use of subroutines in an interrupt service routine can 
-substantially hurt performance, as each <tt>JSR &ndash; RTS</tt> pair will consume 12 clock cycles, or 14 cycles if using <tt>JSL &ndash; RTL</tt>.&nbsp; If your interrupt 
-handler includes three calls to the same subroutine and is processing a 
-100 Hz jiffy interrupt, 3600 clock cycles will be consumed per second 
-just in executing <tt>JSR</tt> and <tt>RTS</tt> instructions.&nbsp; A lot of foreground 
-processing can be completed in 3600 cycles!&nbsp; Only use subroutines if 
+<blockquote>The use of subroutines in an interrupt service routine can
+substantially hurt performance, as each <tt>JSR &ndash; RTS</tt> pair will consume 12 clock cycles, or 14 cycles if using <tt>JSL &ndash; RTL</tt>.&nbsp; If your interrupt
+handler includes three calls to the same subroutine and is processing a
+100 Hz jiffy interrupt, 3600 clock cycles will be consumed per second
+just in executing <tt>JSR</tt> and <tt>RTS</tt> instructions.&nbsp; A lot of foreground
+processing can be completed in 3600 cycles!&nbsp; Only use subroutines if
 you have to squeeze every last byte out of the available address space.<br>
 </blockquote>
 <blockquote></blockquote>
 <ul>
   <li><b>Avoid multiple device register accesses</b>:</li>
 </ul>
-<blockquote>Operating the 65C816 at &Oslash;2 rates over 8 MHz 
+<blockquote>Operating the 65C816 at &Oslash;2 rates over 8 MHz
 may necessitate the use of hardware <a target="_blank" href="http://en.wikipedia.org/wiki/Wait_state"><b>wait-states</b></a> when I/O devices must
  be accessed.&nbsp; A wait-state halts the microprocessor for one or more &Oslash;2 cycles, during which time it will be doing absolutely nothing.&nbsp; If
- your interrupt service routine accesses the same I/O device register 
-multiple times and access to that device requires a wait-state, the 
-microprocessor will be doing absolutely nothing multiple times.&nbsp; If 
+ your interrupt service routine accesses the same I/O device register
+multiple times and access to that device requires a wait-state, the
+microprocessor will be doing absolutely nothing multiple times.&nbsp; If
 possible, access a device register only once and if the register content is
  needed later on, push it to the stack.<br>
   </blockquote>
 <h3><b><a name="toc:spurious_interrupts"></a></b>Spurious Interrupts</h3>
 <h3></h3>
-A spurious interrupt, also referred to as a phantom or ghost interrupt, 
-is a hardware interrupt that does not have any apparent cause.&nbsp; The 
-microprocessor responds to what appears to be a logic zero state at one 
-of its interrupt inputs, but during the execution of the interrupt 
-service routine none of the devices connected to that input indicate 
-that they were interrupting.&nbsp; Depending on how the interrupt service 
-routine has been written, nothing untoward will happen, or the 
-microprocessor may do something completely bizarre trying to process an 
+A spurious interrupt, also referred to as a phantom or ghost interrupt,
+is a hardware interrupt that does not have any apparent cause.&nbsp; The
+microprocessor responds to what appears to be a logic zero state at one
+of its interrupt inputs, but during the execution of the interrupt
+service routine none of the devices connected to that input indicate
+that they were interrupting.&nbsp; Depending on how the interrupt service
+routine has been written, nothing untoward will happen, or the
+microprocessor may do something completely bizarre trying to process an
 interrupt that never existed.<br>
   <br>
-Spurious interrupts are occasionally 
-caused by a number of factors related to chip timing (or more rarely, chip 
-errata), but are most often due to interrupt circuit electrical 
-characteristics.&nbsp; As earlier stated, this article isn't about hardware 
-design.&nbsp; However, knowing something about the way in which wired-OR 
+Spurious interrupts are occasionally
+caused by a number of factors related to chip timing (or more rarely, chip
+errata), but are most often due to interrupt circuit electrical
+characteristics.&nbsp; As earlier stated, this article isn't about hardware
+design.&nbsp; However, knowing something about the way in which wired-OR
 interrupt circuits behave can assist in avoiding spurious interrupts.<br>
   <br>
-A wired-OR interrupt circuit connects the <a target="_blank" href="http://en.wikipedia.org/wiki/Open_collector"><b>open collector</b></a> interrupt 
-outputs of multiple chips to an interrupt input on the microprocessor.&nbsp; 
-"Open collector" means that unless a chip is actively interrupting, its 
-interrupt output appears to be an open circuit, causing it to have no 
-measurable effect on the system.&nbsp; This arrangement allows multiple 
-interrupting devices to control a common interrupt input, reducing the 
-parts count in the circuit.&nbsp; Any or all of the chips can simultaneously 
+A wired-OR interrupt circuit connects the <a target="_blank" href="http://en.wikipedia.org/wiki/Open_collector"><b>open collector</b></a> interrupt
+outputs of multiple chips to an interrupt input on the microprocessor.&nbsp;
+"Open collector" means that unless a chip is actively interrupting, its
+interrupt output appears to be an open circuit, causing it to have no
+measurable effect on the system.&nbsp; This arrangement allows multiple
+interrupting devices to control a common interrupt input, reducing the
+parts count in the circuit.&nbsp; Any or all of the chips can simultaneously
 interrupt the microprocessor with no mutual interference.<br>
   <br>
-As earlier explained, the microprocessor expects each of its interrupt 
-inputs to be at a logic one voltage level when no interrupt is pending.&nbsp; 
- As an open-collector device cannot actively drive a circuit to logic 
-one, a <a target="_blank" href="http://en.wikipedia.org/wiki/Pull-up_resistor"><b>pull-up resistor</b></a> that connects the interrupt circuit to the 
-computer's voltage source (Vcc) is used to maintain a logic one state 
-when no interrupt is pending.&nbsp; When a chip does interrupt, it will pull 
-the circuit down to logic zero, with the pull-up resistor limiting the 
-current flow to a safe level.&nbsp; The microprocessor will recognize this 
+As earlier explained, the microprocessor expects each of its interrupt
+inputs to be at a logic one voltage level when no interrupt is pending.&nbsp;
+ As an open-collector device cannot actively drive a circuit to logic
+one, a <a target="_blank" href="http://en.wikipedia.org/wiki/Pull-up_resistor"><b>pull-up resistor</b></a> that connects the interrupt circuit to the
+computer's voltage source (Vcc) is used to maintain a logic one state
+when no interrupt is pending.&nbsp; When a chip does interrupt, it will pull
+the circuit down to logic zero, with the pull-up resistor limiting the
+current flow to a safe level.&nbsp; The microprocessor will recognize this
 state as an interrupt pending.<br>
   <br>
-In theory, the transition from logic zero back to logic one that occurs 
-when an wired-OR interrupt source is cleared is instantaneous.&nbsp; In 
-practice, a phenomenon referred to as <a target="_blank" href="http://en.wikipedia.org/wiki/Parasitic_capacitance"><b>parasitic or stray capacitance</b></a> 
-will cause some delay before logic one is attained.&nbsp; Parasitic 
-capacitance has to be charged up to Vcc through the pull-up resistor, 
-which takes a measurable amount of time, this time being defined as the 
-circuit's <a target="_blank" href="http://en.wikipedia.org/wiki/RC_time_constant"><b>R-C time-constant</b></a> (R-C means "resistance-capacitance").&nbsp; The 
-R-C time-constant sets a hard limit on how fast the circuit can change 
-state from logic zero to logic one, which is what sets the stage for a 
+In theory, the transition from logic zero back to logic one that occurs
+when an wired-OR interrupt source is cleared is instantaneous.&nbsp; In
+practice, a phenomenon referred to as <a target="_blank" href="http://en.wikipedia.org/wiki/Parasitic_capacitance"><b>parasitic or stray capacitance</b></a>
+will cause some delay before logic one is attained.&nbsp; Parasitic
+capacitance has to be charged up to Vcc through the pull-up resistor,
+which takes a measurable amount of time, this time being defined as the
+circuit's <a target="_blank" href="http://en.wikipedia.org/wiki/RC_time_constant"><b>R-C time-constant</b></a> (R-C means "resistance-capacitance").&nbsp; The
+R-C time-constant sets a hard limit on how fast the circuit can change
+state from logic zero to logic one, which is what sets the stage for a
 spurious interrupt.<br>
   <br>
-Although a careful circuit design that uses short and direct 
-connections, as well as an appropriate value for the pull-up resistor, 
-can minimize the R-C time-constant, it can never be reduced to zero.&nbsp; 
-Therefore, your interrupt service routine must be written with the 
-understanding that when an interrupt source is cleared there will be a 
-delay before the microprocessor will actually "see" the transition from 
-logic zero to logic one at its interrupt input.&nbsp; If logic one has not 
-been attained by the time the interrupt service routine has completed 
-its work and returned control to the interrupted foreground task, the 
-microprocessor will start another interrupt sequence, even though no 
+Although a careful circuit design that uses short and direct
+connections, as well as an appropriate value for the pull-up resistor,
+can minimize the R-C time-constant, it can never be reduced to zero.&nbsp;
+Therefore, your interrupt service routine must be written with the
+understanding that when an interrupt source is cleared there will be a
+delay before the microprocessor will actually "see" the transition from
+logic zero to logic one at its interrupt input.&nbsp; If logic one has not
+been attained by the time the interrupt service routine has completed
+its work and returned control to the interrupted foreground task, the
+microprocessor will start another interrupt sequence, even though no
 device is interrupting&mdash;a spurious interrupt.<br>
   <br>
-In general, your interrupt service routine should poll and clear all 
-interrupt sources as soon as possible after preliminary steps (for 
+In general, your interrupt service routine should poll and clear all
+interrupt sources as soon as possible after preliminary steps (for
 example, saving the 65C816's state) have been completed.&nbsp; The goal is to
- give the interrupt circuit as much time as possible to make the 
-transition back to logic one before the interrupt service routine 
-finishes.&nbsp; The longer your interrupt service routine waits before 
-clearing interrupt sources, the greater the likelihood of a spurious 
+ give the interrupt circuit as much time as possible to make the
+transition back to logic one before the interrupt service routine
+finishes.&nbsp; The longer your interrupt service routine waits before
+clearing interrupt sources, the greater the likelihood of a spurious
 interrupt.<br>
   <br>
-In many chip designs, an interrupt status register has to be read to 
+In many chip designs, an interrupt status register has to be read to
 determine if the device is interrupting and if so, which event(s) caused
- the interrupt.&nbsp; Oftentimes, reading the interrupt status register will 
-automatically clear the interrupt&mdash;which implies that the register value 
+ the interrupt.&nbsp; Oftentimes, reading the interrupt status register will
+automatically clear the interrupt&mdash;which implies that the register value
 may have to be preserved for later processing if the device has multiple
- interrupt events (push it to the stack if necessary).&nbsp; In other cases, 
+ interrupt events (push it to the stack if necessary).&nbsp; In other cases,
 explicit action will be required to clear an interrupt, such as writing a
- mask value into a flag register.&nbsp; In either case, failing to take 
-proper action can result in a device endlessly interrupting the 
-microprocessor, which may eventually cause system fatality due to the 
-rapid consumption of stack space.&nbsp; Be sure to carefully read the data 
-sheet for each device in your system that is able to trigger an 
-interrupt and understand exactly what must be done to clear the 
+ mask value into a flag register.&nbsp; In either case, failing to take
+proper action can result in a device endlessly interrupting the
+microprocessor, which may eventually cause system fatality due to the
+rapid consumption of stack space.&nbsp; Be sure to carefully read the data
+sheet for each device in your system that is able to trigger an
+interrupt and understand exactly what must be done to clear the
 interrupt's cause.
 
 <h3><a name="toc:edge_level"></a>Edge- vs. Level-Sensitive Interrupts</h3>
-As earlier stated, some of the microprocessor's interrupt inputs 
+As earlier stated, some of the microprocessor's interrupt inputs
 are level-sensitive and others are edge-sensitive.&nbsp; It's important to be
- aware of these distinctions in your interrupt service routine, as 
-seemingly random problems may otherwise occur, occasionally giving the 
+ aware of these distinctions in your interrupt service routine, as
+seemingly random problems may otherwise occur, occasionally giving the
 impression that the system has crashed.<br>
 <br>
-In most 6502-family designs, multiple interrupt 
-sources are connected to <tt>IRQB</tt>, which is a level-sensitive input.&nbsp; Any 
-one or all devices attached to <tt>IRQB</tt> can interrupt and assuming proper 
-interrupt service routine design, the microprocessor will service all 
+In most 6502-family designs, multiple interrupt
+sources are connected to <tt>IRQB</tt>, which is a level-sensitive input.&nbsp; Any
+one or all devices attached to <tt>IRQB</tt> can interrupt and assuming proper
+interrupt service routine design, the microprocessor will service all
 such devices, even if one interrupts while the microprocessor is already
- executing the interrupt service routine code in response to a previous 
+ executing the interrupt service routine code in response to a previous
 interrupt.<br>
   <br>
 The situation is different when multiple interrupt sources are connected
- to <tt>NMIB</tt>, which is an edge-sensitive input.&nbsp; As you may recall, the 
-microprocessor responds to an edge-sensitive input only when a 
-transition from high to low occurs.&nbsp; Therefore, once any device has 
+ to <tt>NMIB</tt>, which is an edge-sensitive input.&nbsp; As you may recall, the
+microprocessor responds to an edge-sensitive input only when a
+transition from high to low occurs.&nbsp; Therefore, once any device has
 asserted <tt>NMIB</tt> the microprocessor will not recognize that another NMI has
  occurred until <tt>NMIB</tt> has been deasserted and then asserted once more.<br>
   <br>
-For example, if two devices are connected to <tt>NMIB</tt>, one interrupts and 
-gets serviced and while the NMI handler is executing, the second device 
-interrupts, the microprocessor will have no way of knowing that the 
-second device is requesting service.  When the NMI handler executes <tt>RTI</tt> 
-and returns to the foreground task, the unserviced device will be 
-ignored, as <tt>NMIB</tt> will remain low.&nbsp; If servicing that second device is 
-critical to maintaining system activity (consider a jiffy timer that 
-schedules tasks) and the microprocessor ignores it, the system may 
-eventually <a target="_blank" href="http://en.wikipedia.org/wiki/Deadlock"><b>deadlock</b></a>.  While it is possible to accommodate such a scenario with a carefully crafted NMI 
-handler (it would have to poll devices 
-several times before exiting to make sure that all have been serviced), a better arrangement is to connect only one device to <tt>NMIB</tt> and completely 
+For example, if two devices are connected to <tt>NMIB</tt>, one interrupts and
+gets serviced and while the NMI handler is executing, the second device
+interrupts, the microprocessor will have no way of knowing that the
+second device is requesting service.  When the NMI handler executes <tt>RTI</tt>
+and returns to the foreground task, the unserviced device will be
+ignored, as <tt>NMIB</tt> will remain low.&nbsp; If servicing that second device is
+critical to maintaining system activity (consider a jiffy timer that
+schedules tasks) and the microprocessor ignores it, the system may
+eventually <a target="_blank" href="http://en.wikipedia.org/wiki/Deadlock"><b>deadlock</b></a>.  While it is possible to accommodate such a scenario with a carefully crafted NMI
+handler (it would have to poll devices
+several times before exiting to make sure that all have been serviced), a better arrangement is to connect only one device to <tt>NMIB</tt> and completely
 avoid the problem.
 
 <h3><a name="toc:high_speed_interrupt"></a>High Speed Interrupt Response</h3>
-The 65C816 responds to hardware interrupts with alacrity.&nbsp; In fact, the 
-65C816's hardware interrupt latency is much shorter than comparable 
-designs, and can be reduced even more by using the somewhat-arcane <tt>WAI</tt> 
+The 65C816 responds to hardware interrupts with alacrity.&nbsp; In fact, the
+65C816's hardware interrupt latency is much shorter than comparable
+designs, and can be reduced even more by using the somewhat-arcane <tt>WAI</tt>
 (<b>WAI</b>t for interrupt) instruction.&nbsp; Let's review something that was earlier presented about hardware interrupts:<br>
 <blockquote><small>
 <table bgcolor="#ccffff" border="0" cellpadding="2" cellspacing="0" width="75%">
   <tbody>
     <tr>
-      <td align="justify" valign="middle"><small>Normally, the 65C816 doesn't "look" at its interrupt inputs until 
-the currently executing instruction has been completed.&nbsp; When response 
-to an interrupt does occur, the 65C816 has to save its state on the 
+      <td align="justify" valign="middle"><small>Normally, the 65C816 doesn't "look" at its interrupt inputs until
+the currently executing instruction has been completed.&nbsp; When response
+to an interrupt does occur, the 65C816 has to save its state on the
 stack before loading the interrupt vector and proceeding.&nbsp; If the 65C816
- is operating in native mode, eight &Oslash;2 clock cycles will be consumed in 
-responding to the interrupt and saving state.&nbsp; If the interrupt happens 
-to occur just as the current instruction's opcode is being fetched, as 
-many as eight additional &Oslash;2 cycles may elapse before interrupt 
+ is operating in native mode, eight &Oslash;2 clock cycles will be consumed in
+responding to the interrupt and saving state.&nbsp; If the interrupt happens
+to occur just as the current instruction's opcode is being fetched, as
+many as eight additional &Oslash;2 cycles may elapse before interrupt
 recognition.&nbsp; Therefore, an interrupt latency of as many as 16 &Oslash;2 cycles
- is possible, depending on the instruction being executed and when 
+ is possible, depending on the instruction being executed and when
 during the instruction sequence the interrupt input is asserted.</small></td>
     </tr>
   </tbody>
 </table>
 </small></blockquote>
-In a general purpose computer running interactive software, hardware 
+In a general purpose computer running interactive software, hardware
 interrupt latency is important but is usually not a major issue, and is not
- alterable by ordinary means.&nbsp; However, in real-time applications, 
-processing deadlines may make multiple cycle latency unacceptable.&nbsp; 
-Furthermore, <a href="http://en.wikipedia.org/wiki/Jitter" target="_blank"><b>jitter</b></a> that is a byproduct of variations in 
-latency that occur from one interrupt to the next may adversely affect 
+ alterable by ordinary means.&nbsp; However, in real-time applications,
+processing deadlines may make multiple cycle latency unacceptable.&nbsp;
+Furthermore, <a href="http://en.wikipedia.org/wiki/Jitter" target="_blank"><b>jitter</b></a> that is a byproduct of variations in
+latency that occur from one interrupt to the next may adversely affect
 the performance of a system in which a high volume of interrupts must be
- serviced within strict time limits.&nbsp; This is where the <tt>WAI</tt> instruction 
+ serviced within strict time limits.&nbsp; This is where the <tt>WAI</tt> instruction
 gets interesting.<br>
   <br>
 Consider the following code:<br>
@@ -1436,53 +1436,53 @@ Consider the following code:<br>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 sei&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;IRQs off</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 wai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;wait for interrupt</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 via001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;start of interrupt handler</tt><br>
   </blockquote>
-The above sequence disables IRQs with <tt>SEI</tt> and then stalls the 
+The above sequence disables IRQs with <tt>SEI</tt> and then stalls the
 microprocessor with <tt>WAI</tt>.&nbsp; <tt>WAI</tt> actually stops the 65C816's internal clock
- in the &Oslash;2 high state, putting the microprocessor into a sort of 
-catatonia, reducing its power consumption to micro-amperes and halting 
-all processing (hardware note: executing <tt>WAI</tt> also causes the 
-65C816's bi-directional <tt>RDY</tt> pin to go low&mdash;knowing that is a clue to what is 
+ in the &Oslash;2 high state, putting the microprocessor into a sort of
+catatonia, reducing its power consumption to micro-amperes and halting
+all processing (hardware note: executing <tt>WAI</tt> also causes the
+65C816's bi-directional <tt>RDY</tt> pin to go low&mdash;knowing that is a clue to what is
 going on inside while the 65C816 is <tt>WAI</tt>ting).&nbsp;
 The system will appear to have gone completely dead.<br>
   <br>
 However, as soon as any hardware interrupt other than a
  reset occurs the microprocessor will restart and exactly one &Oslash;2 cycle after the
- interrupt was received, the <tt>LDA&nbsp;VIA001</tt> instruction will be executed.&nbsp; 
-In other words, interrupt latency in this scenario will always equal 
-exactly one &Oslash;2 cycle&mdash;70 nanoseconds at the 65C816's maximum 
+ interrupt was received, the <tt>LDA&nbsp;VIA001</tt> instruction will be executed.&nbsp;
+In other words, interrupt latency in this scenario will always equal
+exactly one &Oslash;2 cycle&mdash;70 nanoseconds at the 65C816's maximum
 officially-rated &Oslash;2 frequency of 14 MHz.&nbsp;
-Unlike the usual 
-behavior when a hardware interrupt input is asserted, there is no delay 
-while the current instruction finishes execution (there is no "current 
-instruction" while <tt>WAI</tt>ting) and the 65C816 performs no stack operations 
+Unlike the usual
+behavior when a hardware interrupt input is asserted, there is no delay
+while the current instruction finishes execution (there is no "current
+instruction" while <tt>WAI</tt>ting) and the 65C816 performs no stack operations
 upon awakening.<br>
   <br>
-This method of handling interrupts obviously isn't practical in a 
+This method of handling interrupts obviously isn't practical in a
 general purpose computer that has to process foreground tasks along with
- interrupts&mdash;all foreground processing will cease upon execution of <tt>WAI</tt>.&nbsp; 
- It is, however, a technique that is eminently suited to any system where all processing is 
-interrupt-driven, such as might be the case in a high speed data 
-acquisition unit.&nbsp; This programming technique is also useful in 
-specialized types of hardware, such as <a target="_blank" href="http://en.wikipedia.org/wiki/Implantable_cardioverter-defibrillator"><b>implanted heart defibrillators</b></a>, 
-in which long periods may elapse without activity and minimal power 
-consumption is desired, but prompt response is required in the event of 
+ interrupts&mdash;all foreground processing will cease upon execution of <tt>WAI</tt>.&nbsp;
+ It is, however, a technique that is eminently suited to any system where all processing is
+interrupt-driven, such as might be the case in a high speed data
+acquisition unit.&nbsp; This programming technique is also useful in
+specialized types of hardware, such as <a target="_blank" href="http://en.wikipedia.org/wiki/Implantable_cardioverter-defibrillator"><b>implanted heart defibrillators</b></a>,
+in which long periods may elapse without activity and minimal power
+consumption is desired, but prompt response is required in the event of
 a "situation."<br>
   <br>
-Note that the <tt>STP</tt> (<b>ST</b>o<b>P</b>) instruction could be used in place of <tt>WAI</tt>, as 
-  <tt>STP</tt>'s internal effect on the microprocessor is essentially the same.&nbsp; 
-However, the only interrupt input to which the microprocessor will 
-respond following execution of <tt>STP</tt> is <tt>RESB</tt>, which means that 
-single-cycle response isn't possible&mdash;three &Oslash;2 cycles will elapse 
+Note that the <tt>STP</tt> (<b>ST</b>o<b>P</b>) instruction could be used in place of <tt>WAI</tt>, as
+  <tt>STP</tt>'s internal effect on the microprocessor is essentially the same.&nbsp;
+However, the only interrupt input to which the microprocessor will
+respond following execution of <tt>STP</tt> is <tt>RESB</tt>, which means that
+single-cycle response isn't possible&mdash;three &Oslash;2 cycles will elapse
 following the assertion and subsequent release of <tt>RESB</tt> before the 65C816
- starts the actual reset sequence.&nbsp; Naturally, a reset will cause the 
-65C816 to switch back to emulation mode and execute the code pointed to 
+ starts the actual reset sequence.&nbsp; Naturally, a reset will cause the
+65C816 to switch back to emulation mode and execute the code pointed to
 by the reset vector.<br>
   <br>
 <a href="#toc:toc"><b>Table of Contents</b></a>
@@ -1490,34 +1490,34 @@ by the reset vector.<br>
 <br>
 <h2><a name="toc:advanced_swi"></a>ADVANCED SOFTWARE INTERRUPT PROGRAMMING</h2>
 <h2></h2>
-One of the exciting possibilities with the 65C816 is that of being able 
-to implement an execution environment that prevents user programs from 
-affecting each other or an <a target="_blank" href="http://en.wikipedia.org/wiki/Kernel_%28computing%29"><b>operating system kernel</b></a>.&nbsp; When the 65C816's 
+One of the exciting possibilities with the 65C816 is that of being able
+to implement an execution environment that prevents user programs from
+affecting each other or an <a target="_blank" href="http://en.wikipedia.org/wiki/Kernel_%28computing%29"><b>operating system kernel</b></a>.&nbsp; When the 65C816's
 interrupt capabilities are combined with stack
-pointer relative addressing and suitable hardware logic, the 
-development of a protected environment not unlike that of a commercial 
-multiuser system can become a reality.&nbsp; While this section does not 
-delve into operating system design or complex hardware logic (thick 
-tomes regarding both subjects have already been written), it does 
-discuss the basics of using a <a target="_blank" href="http://en.wikipedia.org/wiki/Kernel_trap"><b>kernel trap</b></a> to implement an operating system <a target="_blank" href="http://en.wikipedia.org/wiki/Application_programming_interface"><b><i>application programming interface</i></b></a> or <b><i>API</i></b> on a 
+pointer relative addressing and suitable hardware logic, the
+development of a protected environment not unlike that of a commercial
+multiuser system can become a reality.&nbsp; While this section does not
+delve into operating system design or complex hardware logic (thick
+tomes regarding both subjects have already been written), it does
+discuss the basics of using a <a target="_blank" href="http://en.wikipedia.org/wiki/Kernel_trap"><b>kernel trap</b></a> to implement an operating system <a target="_blank" href="http://en.wikipedia.org/wiki/Application_programming_interface"><b><i>application programming interface</i></b></a> or <b><i>API</i></b> on a
 65C816 system.
 <br>
 <br>
 This section gets into more esoteric concepts than previously presented,
- so please be sure you thoroughly understand what has already been 
+ so please be sure you thoroughly understand what has already been
 discussed before proceeding.
 <h3><a name="toc:api_theory"></a>API Calling Theory</h3>
-Found at the core of almost all computer operating systems is the 
+Found at the core of almost all computer operating systems is the
 kernel, which is at the most basic level, a body of software responsible
- for mediating access to the computer's hardware.&nbsp; The 
-kernel may also be responsible for scheduling processes, maintaining 
-timekeeping, gathering statistics on system usage, and other activities.&nbsp; 
-Some kernel functions are strictly for internal use, for example, 
-servicing jiffy IRQs, while others are intended to be utilized by user 
-programs to do such things as read and write files or get data from a 
-keyboard.&nbsp; The formalized means by which a user program is given access 
-to such kernel functions is the system's API.&nbsp; The code that 
-transfers execution from a user program to a kernel function is often 
+ for mediating access to the computer's hardware.&nbsp; The
+kernel may also be responsible for scheduling processes, maintaining
+timekeeping, gathering statistics on system usage, and other activities.&nbsp;
+Some kernel functions are strictly for internal use, for example,
+servicing jiffy IRQs, while others are intended to be utilized by user
+programs to do such things as read and write files or get data from a
+keyboard.&nbsp; The formalized means by which a user program is given access
+to such kernel functions is the system's API.&nbsp; The code that
+transfers execution from a user program to a kernel function is often
 referred to as an <b><i>API call</i></b>.
 <br>
 <br>
@@ -1526,79 +1526,79 @@ The program only needs to know how to call a kernel API that will handle the des
 In this way, the user program's design can concentrate on accomplishing the task it was intended to accomplish and avoid having to include the complex instructions needed to deal with the arcaneness of, say, interacting with a disk drive controller or driving a video display.
 <br>
 <br>
-Over the years, various methods that implement API calls have been 
+Over the years, various methods that implement API calls have been
 devised, the two most common being that of treating a kernel function as
  a conventional subroutine or treating a kernel function as a
 specialized form of an interrupt service routine.
 <br>
 <br>
-In the former case, a <a href="http://en.wikipedia.org/wiki/Branch_table" target="_blank"><b>static jump table</b></a> provides access to the internal 
+In the former case, a <a href="http://en.wikipedia.org/wiki/Branch_table" target="_blank"><b>static jump table</b></a> provides access to the internal
 kernel functions.&nbsp; Perhaps the best known example of a kernel jump table
- is the one present in the Commodore 64's "kernal" ROM, with which any 
+ is the one present in the Commodore 64's "kernal" ROM, with which any
 Commodore eight bit assembly language programmer will be familiar.&nbsp; User
- programs access kernel functions by treating them as subroutines and 
-pass parameters via the microprocessor registers.&nbsp; Each kernel function 
-has a unique entry point in the jump table, which as the "static" 
-adjective implies, appears at a fixed address, with entries in an 
+ programs access kernel functions by treating them as subroutines and
+pass parameters via the microprocessor registers.&nbsp; Each kernel function
+has a unique entry point in the jump table, which as the "static"
+adjective implies, appears at a fixed address, with entries in an
 immutable order.&nbsp; The result is that assembly language programs that use
- only the jump table to access the kernel are portable to any eight bit 
+ only the jump table to access the kernel are portable to any eight bit
 Commodore computer in which the required kernel functions are present.<br>
 <br>
-In the interrupt service routine method, APIs are called via a kernel 
-trap, which is a machine-dependent code sequence that transfers 
-execution from the user program to the kernel.&nbsp; Each API call is 
-assigned an immutable index number that tells the kernel what code must 
-be executed to complete the desired function.&nbsp; Along with the API index 
-number, any parameters to be passed to the kernel are loaded into the 
-microprocessor's registers and/or pushed to the hardware stack before 
+In the interrupt service routine method, APIs are called via a kernel
+trap, which is a machine-dependent code sequence that transfers
+execution from the user program to the kernel.&nbsp; Each API call is
+assigned an immutable index number that tells the kernel what code must
+be executed to complete the desired function.&nbsp; Along with the API index
+number, any parameters to be passed to the kernel are loaded into the
+microprocessor's registers and/or pushed to the hardware stack before
 the call.&nbsp; Any parameters returned by the API are likewise loaded in the
- registers and/or placed on the stack.&nbsp; Implied is that the 
-microprocessor has a large number of general purpose registers, has 
-instructions to address the stack by means other than just pushes and 
+ registers and/or placed on the stack.&nbsp; Implied is that the
+microprocessor has a large number of general purpose registers, has
+instructions to address the stack by means other than just pushes and
 pulls, or both capabilities.<br>
 <br>
-Naturally, both API calling methods have their strong and weak points.&nbsp; 
-Use of a jump table makes for simple user application programming and a 
-generally less complicated kernel.&nbsp; Applications merely <tt>JSR</tt> to access 
+Naturally, both API calling methods have their strong and weak points.&nbsp;
+Use of a jump table makes for simple user application programming and a
+generally less complicated kernel.&nbsp; Applications merely <tt>JSR</tt> to access
 the API and the kernel exits with <tt>RTS</tt>.&nbsp; The required kernel code can be very
  small and fast-executing, which was an important consideration in early
- home computers.&nbsp; However, once a system has been developed with a 
-specific jump table layout, the design is essentially cast in concrete, 
+ home computers.&nbsp; However, once a system has been developed with a
+specific jump table layout, the design is essentially cast in concrete,
 even if future hardware and/or operating system revisions would be better
 served with a relocated kernel and/or rearranged jump table.&nbsp;
-The fact that 
-applications must know where in memory the kernel is loaded and must be 
-able to access that memory makes the kernel non-portable and if running 
-in RAM instead of ROM, vulnerable to corrupting wild writes caused by 
+The fact that
+applications must know where in memory the kernel is loaded and must be
+able to access that memory makes the kernel non-portable and if running
+in RAM instead of ROM, vulnerable to corrupting wild writes caused by
 program errors and/or malicious coding.<br>
 <br>
-Calling APIs via a kernel trap offers the advantages of portability and 
-isolation.&nbsp; User programs don't need to know specific addresses to 
+Calling APIs via a kernel trap offers the advantages of portability and
+isolation.&nbsp; User programs don't need to know specific addresses to
 access the kernel API&mdash;applications only need to know API index numbers.&nbsp;
- If a new kernel is released with a new API-accessible function, the 
-lowest unused API index number is assigned to the new function, which 
-will not affect any applications that were written prior to the kernel 
-update.&nbsp; As a user-accessible jump table is not used for calling APIs, 
+ If a new kernel is released with a new API-accessible function, the
+lowest unused API index number is assigned to the new function, which
+will not affect any applications that were written prior to the kernel
+update.&nbsp; As a user-accessible jump table is not used for calling APIs,
 the kernel can be loaded anywhere in memory that is convenient.<br>
 <br>
-Isolation offers the kernel some protection from misbehaving user 
-applications, reducing the likelihood of random instructions or wild 
-address pointers accidentally accessing and/or overwriting kernel space 
-and causing system fatality.&nbsp; In most systems, a kernel trap causes a 
-hardware context switch that may be used to modify the memory map, alter memory 
+Isolation offers the kernel some protection from misbehaving user
+applications, reducing the likelihood of random instructions or wild
+address pointers accidentally accessing and/or overwriting kernel space
+and causing system fatality.&nbsp; In most systems, a kernel trap causes a
+hardware context switch that may be used to modify the memory map, alter memory
 protection rules, and/or change instruction execution privileges, all of
- which can be used to tightly control what user programs can and cannot 
+ which can be used to tightly control what user programs can and cannot
 do.<br>
 <br>
-The principal downsides to a kernel trap API calling method are greater 
-code complexity, heavy stack usage and slower execution.&nbsp; As will be 
-seen, a kernel trap API ultimately involves a software interrupt to 
+The principal downsides to a kernel trap API calling method are greater
+code complexity, heavy stack usage and slower execution.&nbsp; As will be
+seen, a kernel trap API ultimately involves a software interrupt to
 switch execution from user mode to kernel mode.&nbsp; Therefore, code in both
  the API "front end" and "back end" is essentially a specialized form of
- an interrupt service routine, which adds complexity to the kernel.&nbsp; 
-Also, since the API entry point is the same for all APIs, dispatch code is 
-required to select the specific function that must be executed for a 
-particular API, as well as determine how many parameters are expected by the API.&nbsp; 
+ an interrupt service routine, which adds complexity to the kernel.&nbsp;
+Also, since the API entry point is the same for all APIs, dispatch code is
+required to select the specific function that must be executed for a
+particular API, as well as determine how many parameters are expected by the API.&nbsp;
 That an API call culminates in an interrupt means that slower execution will occur due to hardware and software-induced latency.
 <br>
 <br>
@@ -1606,90 +1606,90 @@ Downsides notwithstanding, the flexibility and extensibility of a kernel
  trap API are features that are hard to ignore.&nbsp; Virtually all modern operating
  systems use this method to offer services to user programs.
 <h3><a name="Kernel_Trap_API_Mechanics"></a><a name="toc:kertrap_mechanics"></a>Kernel Trap API Mechanics</h3>
-Most API calls require that at least one parameter be passed to 
-the 
+Most API calls require that at least one parameter be passed to
+the
 kernel.&nbsp; The number and types of parameters that must be passed to
-an API will necessarily be dependent on what information is needed to 
+an API will necessarily be dependent on what information is needed to
 implement the desired function.&nbsp; Use of the stack for parameter
- passing is common, primarily because the number of available general 
-purpose registers may not be sufficient to handle all parameters in all 
-cases.&nbsp; Therefore, prior to making an API call that requires 
-parameters 
+ passing is common, primarily because the number of available general
+purpose registers may not be sufficient to handle all parameters in all
+cases.&nbsp; Therefore, prior to making an API call that requires
+parameters
 the calling function may have to generate a <a target="_blank" href="http://en.wikipedia.org/wiki/Stack_frame#Structure"><b>stack frame</b></a>.<br>
   <br>
-The term <b><i>stack frame</i></b> refers to a group of related parameters that are 
-pushed to the stack in a defined order prior to the execution of a 
+The term <b><i>stack frame</i></b> refers to a group of related parameters that are
+pushed to the stack in a defined order prior to the execution of a
 function.&nbsp; As the sequence of pushes and the sizes of the parameters are
  defined by the function being called, individual parameters are readily
- "cherry-picked" from the stack as needed to carry out the desired 
-operation.&nbsp; The function may also modify one or more of the parameters 
-to return data back to the calling function.&nbsp; The calling function 
+ "cherry-picked" from the stack as needed to carry out the desired
+operation.&nbsp; The function may also modify one or more of the parameters
+to return data back to the calling function.&nbsp; The calling function
 could, in turn, modify the stack frame that was generated by its caller,
- and so forth, thus passing results back "up the line."&nbsp; Understanding 
-the concept of a stack frame is essential and will be expanded upon as 
+ and so forth, thus passing results back "up the line."&nbsp; Understanding
+the concept of a stack frame is essential and will be expanded upon as
 discussion proceeds.<br>
   <br>
 Turning to the mechanics of making a kernel trap API call, examining the
- assembly language code generated and linked by a language compiler sheds some 
+ assembly language code generated and linked by a language compiler sheds some
 light on how a stack frame and a kernel trap are used to invoke a kernel
- function.&nbsp; The way in which it is done with a Motorola 68000 
-microprocessor is a good example to follow in this regard, as that 
+ function.&nbsp; The way in which it is done with a Motorola 68000
+microprocessor is a good example to follow in this regard, as that
 processor has some lineage to its eight bit counterpart (the MC6800) and
- thus indirectly to the 6502 family.&nbsp; As some of the first systems to make 
-widespread use of the MC68000 ran the UNIX operating environment, a 
-quick look at how a UNIX kernel API call would be coded in MC68000 
+ thus indirectly to the 6502 family.&nbsp; As some of the first systems to make
+widespread use of the MC68000 ran the UNIX operating environment, a
+quick look at how a UNIX kernel API call would be coded in MC68000
 assembly language can be instructive.<br>
   <br>
-In the UNIX environment, where ANSI C is the predominant development 
-language, the compiler outputs an intermediate assembly language 
-program, and a linker generates the executable binary file containing 
+In the UNIX environment, where ANSI C is the predominant development
+language, the compiler outputs an intermediate assembly language
+program, and a linker generates the executable binary file containing
 the appropriate machine instructions that will perform the desired task.
-&nbsp; In sections of the binary where an API call is to be made, 
-system-specific code in a <a target="_blank" href="http://en.wikipedia.org/wiki/Standard_library"><b>standard library</b></a> will be linked into and become 
-part of the finished program.&nbsp; Generally speaking, standard library 
+&nbsp; In sections of the binary where an API call is to be made,
+system-specific code in a <a target="_blank" href="http://en.wikipedia.org/wiki/Standard_library"><b>standard library</b></a> will be linked into and become
+part of the finished program.&nbsp; Generally speaking, standard library
 functions are assembly language subroutines that contain the
 instructions required to cause the kernel trap to occur.<br>
   <br>
-Here's an 
+Here's an
 example of how this would work on an MC68000-powered UNIX system, using a
- brief C program that creates and opens a file named <tt>/usr/bdd/newfile</tt> 
+ brief C program that creates and opens a file named <tt>/usr/bdd/newfile</tt>
 with <tt>rw-rw-r--</tt> permissions:
 <blockquote><tt>/* create &amp; open a new file in ANSI C */</tt><br>
   <br>
   <tt>char fname[] = "/usr/bdd/newfile"; /* pathname */</tt><br>
   <br>
   <tt>int main() {</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp; int 
+  <tt>&nbsp;&nbsp;&nbsp; int
 fd;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  /* file descriptor */</tt><br>
   <tt>&nbsp;&nbsp;&nbsp; fd = creat(fname,0664);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* create &amp; open file */</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;
 return(fd);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  /* return file descriptor to caller */</tt><br>
   <tt>}</tt>
   </blockquote>
-<tt>creat()</tt> is a function in the standard C library that is a machine 
-language interface to a UNIX kernel API, also named <tt>creat</tt>, that creates 
-and opens a new file.&nbsp; The <tt>creat</tt> kernel API call requires that two 
-parameters be passed to it: a pointer to the file's pathname, which is the variable <tt>fname</tt> in 
-the C source code, and a file permissions mode value, which is the literal <tt>0664</tt> 
-octal number.&nbsp; The <tt>creat()</tt> library code passes 
+<tt>creat()</tt> is a function in the standard C library that is a machine
+language interface to a UNIX kernel API, also named <tt>creat</tt>, that creates
+and opens a new file.&nbsp; The <tt>creat</tt> kernel API call requires that two
+parameters be passed to it: a pointer to the file's pathname, which is the variable <tt>fname</tt> in
+the C source code, and a file permissions mode value, which is the literal <tt>0664</tt>
+octal number.&nbsp; The <tt>creat()</tt> library code passes
 these values and an API index number to the kernel on behalf of
- the user program.&nbsp; If the <tt>creat</tt> API call is successful, a small 
-positive integer value called a <a target="_blank" href="http://en.wikipedia.org/wiki/File_descriptor"><b>file descriptor</b></a> will be 
-returned in the variable <tt>fd</tt>.&nbsp; Alternatively, <tt>fd</tt> will return <tt>-1</tt> if <tt>creat</tt> 
-fails for any reason.&nbsp; A separate variable called <tt>errno</tt> would be 
-conditioned to describe the nature of the failure (error-handling code 
+ the user program.&nbsp; If the <tt>creat</tt> API call is successful, a small
+positive integer value called a <a target="_blank" href="http://en.wikipedia.org/wiki/File_descriptor"><b>file descriptor</b></a> will be
+returned in the variable <tt>fd</tt>.&nbsp; Alternatively, <tt>fd</tt> will return <tt>-1</tt> if <tt>creat</tt>
+fails for any reason.&nbsp; A separate variable called <tt>errno</tt> would be
+conditioned to describe the nature of the failure (error-handling code
 will be omitted for clarity).<br>
   <br>
-Here's the MC68000 assembly language that the C compiler might generate 
+Here's the MC68000 assembly language that the C compiler might generate
 for the above program on a UNIX machine running the System V kernel:<br>
 
 <blockquote><tt>* machine code generated in main()...</tt><br>
   <tt>*</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; move #$01b4,(sp)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * push mode to stack</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; move #$41d7,-(sp)&nbsp;&nbsp;&nbsp;&nbsp; * push pathname pointer to stack</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jsr 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jsr
 creat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * call creat API library code</tt><br>
   <tt>*</tt><br>
@@ -1697,116 +1697,116 @@ creat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <tt>* creat() kernel API call library machine code...</tt><br>
   <tt>*</tt><br>
   <tt>creat&nbsp;&nbsp;&nbsp;&nbsp;moveq #$08,d0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* load register D0 with creat API index ($08)</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trap 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trap
 #$00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * invoke kernel API</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs
 _error_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * if
  error, branch w/error code in D0</tt><br>
   <tt>*</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 rts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * file created &amp; opened, file descriptor in D0</tt><br>
   <tt>*</tt><br>
   <tt>_error_&nbsp; </tt>...handle error processing...<br>
 </blockquote>
-As in 6502 assembly language, <tt>$</tt> indicates a hexadecimal value and <tt>#</tt> 
+As in 6502 assembly language, <tt>$</tt> indicates a hexadecimal value and <tt>#</tt>
 means the operand is the data (immediate mode addressing).&nbsp; Comments are
  started with <tt>*</tt>.<br>
   <br>
-The switch from user mode to kernel mode occurs in the <tt>creat()</tt> library subroutine, where 
-register <tt>D0</tt>, one of the MC68000's general purpose registers, is loaded 
-with the eight bit API index number for the <tt>creat</tt> API call.&nbsp; Next, a 
+The switch from user mode to kernel mode occurs in the <tt>creat()</tt> library subroutine, where
+register <tt>D0</tt>, one of the MC68000's general purpose registers, is loaded
+with the eight bit API index number for the <tt>creat</tt> API call.&nbsp; Next, a
   <tt>TRAP</tt> instruction causes execution to be transferred to the kernel.<br>
   <br>
-However, before the library subroutine is called, <tt>main()</tt> generates a 
-stack frame with two parameters: the pathname pointer, <tt>$41D7</tt> (the 
-pointer is a made-up value), and the new file's permissions mode value <tt>$01B4</tt>, equal to 
-the octal constant <tt>0664</tt> in the C source code.&nbsp; In both instructions, <tt>SP</tt> refers to 
-the user stack pointer.&nbsp; Within the <tt>creat</tt> part of the kernel, code will 
-read the user stack parameters and act upon them in various ways, the 
-details of which the user program need not know.&nbsp; Immediately prior to 
-exit, the kernel will load the file descriptor into register <tt>D0</tt> if the call was 
+However, before the library subroutine is called, <tt>main()</tt> generates a
+stack frame with two parameters: the pathname pointer, <tt>$41D7</tt> (the
+pointer is a made-up value), and the new file's permissions mode value <tt>$01B4</tt>, equal to
+the octal constant <tt>0664</tt> in the C source code.&nbsp; In both instructions, <tt>SP</tt> refers to
+the user stack pointer.&nbsp; Within the <tt>creat</tt> part of the kernel, code will
+read the user stack parameters and act upon them in various ways, the
+details of which the user program need not know.&nbsp; Immediately prior to
+exit, the kernel will load the file descriptor into register <tt>D0</tt> if the call was
 successful, that is, if the file was created and opened, and clear the carry
- bit in the MC68000's condition code register (<tt>CCR</tt>) to indicate that the file was created and opened.&nbsp; If carry were set in the <tt>CCR</tt> it would mean that <tt>D0</tt> contains an error code instead of a file 
-descriptor.&nbsp; As an aside, in the UNIX environment it is the caller, 
+ bit in the MC68000's condition code register (<tt>CCR</tt>) to indicate that the file was created and opened.&nbsp; If carry were set in the <tt>CCR</tt> it would mean that <tt>D0</tt> contains an error code instead of a file
+descriptor.&nbsp; As an aside, in the UNIX environment it is the caller,
   <tt>main()</tt> in this case, that has to clean up the stack following a function or API call.
 <br>
 <br>
 In the MC68000, executing <tt>TRAP</tt> causes a software interrupt and a
- hardware context change from user mode to supervisor (kernel) mode, 
-the latter action having important implications in a multitasking environment like 
-UNIX.&nbsp; The context change aspect of <tt>TRAP</tt> will be ignored 
-here, as the 
+ hardware context change from user mode to supervisor (kernel) mode,
+the latter action having important implications in a multitasking environment like
+UNIX.&nbsp; The context change aspect of <tt>TRAP</tt> will be ignored
+here, as the
 65C816 hardware has no such behavior.&nbsp; However, it is worth noting
- that 
-in other respects, the MC68000's software interrupt behavior is very 
-similar to that of the 65C816.&nbsp; In both microprocessors, an 
-internal interrupt-like sequence will occur.&nbsp; Also, the MC68000 
-will jump 
-through a defined vector when <tt>TRAP</tt> is executed, just as the 65C816 will 
+ that
+in other respects, the MC68000's software interrupt behavior is very
+similar to that of the 65C816.&nbsp; In both microprocessors, an
+internal interrupt-like sequence will occur.&nbsp; Also, the MC68000
+will jump
+through a defined vector when <tt>TRAP</tt> is executed, just as the 65C816 will
 jump through a defined vector when it executes <tt>BRK</tt> or <tt>COP</tt>. <br>
 <h3><a name="toc:6502_kertrap"></a>6502 Software Interrupt API</h3>
-Implementing a kernel trap API on 6502 or 65C02 hardware will unavoidably 
-involve the use of the <tt>BRK</tt> instruction, as it is the lone software 
-interrupt in the instruction set.&nbsp; Due to the use of <tt>BRK</tt>, as well as 
-general microprocessor limitations, three significant programming 
+Implementing a kernel trap API on 6502 or 65C02 hardware will unavoidably
+involve the use of the <tt>BRK</tt> instruction, as it is the lone software
+interrupt in the instruction set.&nbsp; Due to the use of <tt>BRK</tt>, as well as
+general microprocessor limitations, three significant programming
 problems must be considered:
 <ol>
   <li>The same hardware vector (<tt>$FFFE</tt>-<tt>$FFFF</tt>) is used by <tt>BRK</tt> and <tt>IRQ</tt>, which
- means one interrupt type must be distinguished from the other in 
-software.&nbsp; This unavoidable step increases execution time and usually 
+ means one interrupt type must be distinguished from the other in
+software.&nbsp; This unavoidable step increases execution time and usually
 "clobbers" two registers (<tt>.A</tt> and <tt>.X</tt>).<br>
       <br>
     </li>
-  <li>The 6502's registers can only handle eight bit values, which 
-substantially complicates the passing of more than one 16 bit value to 
+  <li>The 6502's registers can only handle eight bit values, which
+substantially complicates the passing of more than one 16 bit value to
 the API, a common procedure required with many I/O operations.<br>
       <br>
     </li>
-  <li>There are no 6502 instructions that facilitate the use of the stack 
-for parameter passing or temporary indexed storage.&nbsp; As stack frame elements 
-cannot be directly addressed by using the stack pointer as the relative 
-index, considerable code may be required to implement indexed storage 
+  <li>There are no 6502 instructions that facilitate the use of the stack
+for parameter passing or temporary indexed storage.&nbsp; As stack frame elements
+cannot be directly addressed by using the stack pointer as the relative
+index, considerable code may be required to implement indexed storage
 and retrieval.</li>
 </ol>
-The 65C816's enhanced stack addressing capabilities, 16 bit registers 
-and separately vectored software interrupts when operating in native 
-mode completely circumvent all of the above problems.&nbsp; Consequently, 
-implementing a kernel trap API with the 65C816 is possible with 
+The 65C816's enhanced stack addressing capabilities, 16 bit registers
+and separately vectored software interrupts when operating in native
+mode completely circumvent all of the above problems.&nbsp; Consequently,
+implementing a kernel trap API with the 65C816 is possible with
 relatively succinct code.<br>
   <br>
-Unlike the MC68000 and other microprocessors that usually support preemptive multitasking 
-environments, the 65C816 has no wired-in means of differentiating 
-between "user mode" and "kernel mode" when interrupted and thus in 
-itself cannot support any kind of protected environment.&nbsp; However, the 
-65C816 does provide an output signal (<tt>VPB</tt>) that could be harnessed 
+Unlike the MC68000 and other microprocessors that usually support preemptive multitasking
+environments, the 65C816 has no wired-in means of differentiating
+between "user mode" and "kernel mode" when interrupted and thus in
+itself cannot support any kind of protected environment.&nbsp; However, the
+65C816 does provide an output signal (<tt>VPB</tt>) that could be harnessed
 in conjunction with complex logic to simulate user and kernel modes.&nbsp;
-How to go about doing so is well outside the scope of this article, but 
+How to go about doing so is well outside the scope of this article, but
 should be food for future thought.<br>
 <h3><a name="toc:65c816_kertrap_api"></a>65C816 Kernel Trap API Call Model</h3>
-Although the MC68000 is a more sophisticated 
-microprocessor than the 65C816 and has a more complex behavior when 
-executing a software interrupt instruction, an analog to the earlier 
-UNIX API call procedure can be modeled in 65C816 assembly language 
-without much difficulty.&nbsp; In fact, the principles are virtually identical; only 
-the methodology and machine instructions differ.&nbsp; In all of the 
-following code, it will be assumed that the 65C816's stack pointer has been 
-initialized to <b><tt>$CFFF</tt></b> prior to any calls being made.&nbsp; If an instruction 
-affects the stack pointer the new <tt>SP</tt> value following the execution of 
+Although the MC68000 is a more sophisticated
+microprocessor than the 65C816 and has a more complex behavior when
+executing a software interrupt instruction, an analog to the earlier
+UNIX API call procedure can be modeled in 65C816 assembly language
+without much difficulty.&nbsp; In fact, the principles are virtually identical; only
+the methodology and machine instructions differ.&nbsp; In all of the
+following code, it will be assumed that the 65C816's stack pointer has been
+initialized to <b><tt>$CFFF</tt></b> prior to any calls being made.&nbsp; If an instruction
+affects the stack pointer the new <tt>SP</tt> value following the execution of
 that instruction will be noted in <b><font color="#cc0000">boldface red</font></b>.<br>
   <br>
 Here is the 65C816 analog of the above API code:<br>
 
 <blockquote><tt>;machine code generated in main()...</tt><br>
   <tt>;</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pea 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pea
 #$01b4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;push file mode to stack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#cc0000">$CFFD</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pea 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pea
 #$41d7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;push pathname pointer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#cc0000">$CFFB</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jsr 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jsr
 creat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;call creat() library function <b><font color="#cc0000">$CFF9</font></b></tt><br>
   <tt>;</tt><br>
@@ -1814,59 +1814,59 @@ creat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <tt>;creat() kernel API call library machine code (SP = $CFF9)...</tt><br>
   <tt>;</tt><br>
   <tt>creat&nbsp;&nbsp;&nbsp; sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 #$08&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;create() API index</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cop 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cop
 $00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;transfer execution to kernel&nbsp; <b><font color="#cc0000">$CFF5</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs 
-_error_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs
+_error_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ;kernel API returned an error</tt><br>
   <tt>;</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 rts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ;file created &amp; 
+ ;file created &amp;
 opened&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#cc0000">$CFFF</font></b></tt><br>
   <tt>;</tt><br>
   <tt>_error_&nbsp; </tt>...error processing...<br>
   </blockquote>
-The <tt>PEA</tt> instruction, which incidentally also exists in similar form in the MC68000, 
-pushes its 16 bit operand to the stack.&nbsp; Despite the mnemonic's 
+The <tt>PEA</tt> instruction, which incidentally also exists in similar form in the MC68000,
+pushes its 16 bit operand to the stack.&nbsp; Despite the mnemonic's
 purported meaning, the operand can be anything that is known at assembly
  time, or could be altered at run time via self-modifying code.&nbsp; In this
- example, both the pathname pointer (address) and file mode have been statically 
-assembled into the program and pushed, mode first and then the pathname 
-address, the same order as shown in the MC68000 API call.&nbsp; The same 
-procedure could be achieved by loading a 16 bit register and pushing 
-it&mdash;the choice is implementation-dependent.&nbsp; Ultimately, all that has to 
-be accomplished is placing parameters of the correct size on the stack 
+ example, both the pathname pointer (address) and file mode have been statically
+assembled into the program and pushed, mode first and then the pathname
+address, the same order as shown in the MC68000 API call.&nbsp; The same
+procedure could be achieved by loading a 16 bit register and pushing
+it&mdash;the choice is implementation-dependent.&nbsp; Ultimately, all that has to
+be accomplished is placing parameters of the correct size on the stack
 in the correct order.<br>
   <br>
-The 65C816's <tt>COP</tt> instruction stands in for the MC68000's <tt>TRAP</tt> 
-instruction, with the eight bit API index number loaded into <tt>.A</tt>.&nbsp; The 
+The 65C816's <tt>COP</tt> instruction stands in for the MC68000's <tt>TRAP</tt>
+instruction, with the eight bit API index number loaded into <tt>.A</tt>.&nbsp; The
 rationale behind using <tt>COP</tt> instead of <tt>BRK</tt> is that the latter instruction
- is traditionally associated with setting debugging breakpoints in 
-programs, and in our opinion, its use should be limited to that purpose.&nbsp; 
-On the other hand, <tt>COP</tt> is intended to be used to change operating 
-context in some undetermined way (recall that the instruction means 
-  <tt><b>COP</b></tt>rocessor), so its use as a kernel trap instruction is more 
-appropriate.&nbsp; Also, although our focus is on native mode operation, the 
-65C816 has a unique vector for <tt>COP</tt> even when operating in emulation 
+ is traditionally associated with setting debugging breakpoints in
+programs, and in our opinion, its use should be limited to that purpose.&nbsp;
+On the other hand, <tt>COP</tt> is intended to be used to change operating
+context in some undetermined way (recall that the instruction means
+  <tt><b>COP</b></tt>rocessor), so its use as a kernel trap instruction is more
+appropriate.&nbsp; Also, although our focus is on native mode operation, the
+65C816 has a unique vector for <tt>COP</tt> even when operating in emulation
 mode.<br>
   <br>
 While it is possible to use <tt>COP</tt>'s signature byte as the API index, doing so isn't a straightforward process, and in our opinion, there is no good reason for the effort.&nbsp;
 Utilizing the stack for parameter passing leaves the registers unencumbered, therefore loading the API index into <tt>.A</tt> is quick and efficient.&nbsp;
 If the signature were to be used as the API index, additional code would have to compute its location in RAM and fetch it.&nbsp;
 More significantly, complications would arise unless the bank in <tt>DB</tt> was the bank in which the user program that called the API is running.&nbsp; Bits 16-23 of
- the 24 bit address that will be propagated to the hardware when the 
+ the 24 bit address that will be propagated to the hardware when the
 65C816 loads the signature will be determined by what is in <tt>DB</tt>, not what
- was in <tt>PB</tt> before <tt>COP</tt> was executed.&nbsp; Hence the 65C816 could conceivably 
+ was in <tt>PB</tt> before <tt>COP</tt> was executed.&nbsp; Hence the 65C816 could conceivably
 load a garbage byte, not the signature.&nbsp; Circumventing this possibility would require that the value of <tt>PB</tt> that was pushed
  when <tt>COP</tt> was executed be copied from the stack and temporarily loaded into <tt>DB</tt>
- to assure that the correct bank is being accessed.&nbsp; Following the 
+ to assure that the correct bank is being accessed.&nbsp; Following the
 signature byte retrieval, <tt>DB</tt> would have to be restored so that parameter
- fetching would be from the correct location.&nbsp; That is a 
+ fetching would be from the correct location.&nbsp; That is a
 lot of hoop-jumping just to get one byte from RAM.<br>
   <br>
 When the above code has executed the resulting "stack picture" following
@@ -1937,8 +1937,8 @@ When the above code has executed the resulting "stack picture" following
 </blockquote>
 Data entries marked with <tt>??</tt> or <tt>????</tt> will vary during program execution.<br>
   <br>
-The stack picture is something that we will refer to a number of times, 
-as it gives insight on how to write kernel trap API front and back end 
+The stack picture is something that we will refer to a number of times,
+as it gives insight on how to write kernel trap API front and back end
 code.&nbsp; First, the front end that will be invoked when <tt>COP</tt> is executed:<br>
 
 <blockquote><tt>;KERNEL API FRONT END &mdash; EXECUTED IN RESPONSE TO A COP INSTRUCTION</tt><br>
@@ -1948,46 +1948,46 @@ code.&nbsp; First, the front end that will be invoked when <tt>COP</tt> is execu
   <tt>;&nbsp;&nbsp; &nbsp;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</tt><br>
   <tt>;</tt><br>
   <tt>icop&nbsp;&nbsp;&nbsp;&nbsp; rep #%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit registers</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save .A for return access&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#cc0000">$CFF3</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ;preserve .X 
+ ;preserve .X
 &amp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <b><font color="#cc0000">$CFF1</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 phy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ;.Y if 
+ ;.Y if
 necessary&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <b><font color="#cc0000">$CFEF</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 cli&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;restart IRQs</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and
 #$00FF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;mask garbage in .B (16 bit mask)</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq
 icop01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;API index cannot be zero</tt><sup>&#8224;</sup><br>
   <tt>;</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dec 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dec
 a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;zero-align API index</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp 
-#maxapi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp
+#maxapi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ;index in range (16 bit comparison)?</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcs
 icop01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;no, error</tt><sup>&#8224;</sup><br>
   <tt>;</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; asl 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; asl
 a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;double API index for...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;API dispatch table offset</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta
 apioff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;save offset &amp;...</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jmp (apidptab,x)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;run appropriate code</tt><br>
@@ -2003,9 +2003,9 @@ apioff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <tr>
         <td align="center" valign="top"><small><sup>&#8224;</sup></small></td>
         <td align="justify" valign="top"><small>Although system-dependent, a typical UNIX kernel reaction to an
- invalid API index is a core dump, followed by forcible process 
-termination.&nbsp; The only likely cause of an invalid index is a 
-bug in the standard library code that was linked into the executable 
+ invalid API index is a core dump, followed by forcible process
+termination.&nbsp; The only likely cause of an invalid index is a
+bug in the standard library code that was linked into the executable
 binary.</small></td>
       </tr>
     </tbody>
@@ -2096,35 +2096,35 @@ After pushing the registers, the stack picture will be as follows:
 Note the following:
 
 <ul>
-  <li><tt>.C</tt> is pushed so a return value can be passed back to 
-the calling function by overwriting the stack copy.&nbsp; The nature of the 
+  <li><tt>.C</tt> is pushed so a return value can be passed back to
+the calling function by overwriting the stack copy.&nbsp; The nature of the
 return value, which may be data or an error code, would be determined by
  the particular API that was invoked.<br>
       <br>
     </li>
   <li>Similarly, <tt>.X</tt> and <tt>.Y</tt> are pushed so they may be preserved or modified
- for return to the calling function.&nbsp; The need to do so would be 
+ for return to the calling function.&nbsp; The need to do so would be
 implementation-dependent.<br>
       <br>
     </li>
-  <li>Recall that IRQs are disabled when the 65C816 executes a software 
-interrupt instruction.&nbsp; Hence interrupts must be re-enabled as soon as 
+  <li>Recall that IRQs are disabled when the 65C816 executes a software
+interrupt instruction.&nbsp; Hence interrupts must be re-enabled as soon as
 practical so the system doesn't inadvertently go into deadlock.<br>
       <br>
     </li>
-  <li>After the API front end has pushed the registers, the above stack 
-picture can be defined as three frames, the user stack frame, which 
-starts at <tt>SP+$0D</tt>, the library stack frame, which starts at <tt>SP+$0B</tt> and 
+  <li>After the API front end has pushed the registers, the above stack
+picture can be defined as three frames, the user stack frame, which
+starts at <tt>SP+$0D</tt>, the library stack frame, which starts at <tt>SP+$0B</tt> and
 the register stack frame, which starts at <tt>SP+$01</tt>.&nbsp;
-The user stack frame 
+The user stack frame
 contains four bytes in total, the library stack frame contains two bytes
- and the register stack frame contains ten bytes.&nbsp; For programming 
-convenience, each stack frame can be symbolically represented as 
+ and the register stack frame contains ten bytes.&nbsp; For programming
+convenience, each stack frame can be symbolically represented as
 follows:</li>
 </ul>
 <blockquote><tt>;&nbsp;&nbsp;&nbsp; register stack frame...</tt><br>
   <tt>;</tt><br>
-  <tt>reg_y&nbsp;&nbsp;&nbsp; 
+  <tt>reg_y&nbsp;&nbsp;&nbsp;
 =1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;16 bit .Y</tt><br>
   <tt>reg_x&nbsp;&nbsp;&nbsp; =reg_y+2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit .X</tt><br>
@@ -2146,38 +2146,38 @@ follows:</li>
   <tt>fmode&nbsp;&nbsp;&nbsp; =lib_rts+2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;file creation mode</tt><br>
   <tt>pnptr&nbsp;&nbsp;&nbsp; =fmode+2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;pathname pointer</tt><br>
   </blockquote>
-<blockquote>Note that the register and library stack frame definitions include 
-an assembly-time value (<tt>s_regsf</tt> and <tt>s_libsf</tt>, respectively) that defines 
-the size of each frame in bytes, which is practical because these sizes 
-are fixed.&nbsp; The size of the user stack frame will vary according to the 
+<blockquote>Note that the register and library stack frame definitions include
+an assembly-time value (<tt>s_regsf</tt> and <tt>s_libsf</tt>, respectively) that defines
+the size of each frame in bytes, which is practical because these sizes
+are fixed.&nbsp; The size of the user stack frame will vary according to the
 API being called.<br>
     <br>
 Creating definitions in this fashion makes it easier to symbolically
- reference any stack frame element without having to know the specific 
-offset, thus eliminating a potential source of program errors.&nbsp; Also, 
-these definitions simplify the process of realigning the stack when the 
+ reference any stack frame element without having to know the specific
+offset, thus eliminating a potential source of program errors.&nbsp; Also,
+these definitions simplify the process of realigning the stack when the
 API returns to the caller, as will soon become evident.<br>
 </blockquote>
 <ul>
-  <li>Prior to use, the API index number is masked to prevent the content 
-of <tt>.B</tt> from affecting the following instructions.&nbsp; After masking, the 
+  <li>Prior to use, the API index number is masked to prevent the content
+of <tt>.B</tt> from affecting the following instructions.&nbsp; After masking, the
 index is tested for range (API index <tt>$00</tt> is usually deemed to be illegal
- for a user API call) and if the range is acceptable, the index is 
-doubled to create the <tt>apidptab</tt> dispatch jump table offset.&nbsp; This API 
+ for a user API call) and if the range is acceptable, the index is
+doubled to create the <tt>apidptab</tt> dispatch jump table offset.&nbsp; This API
 dispatch method supports a maximum of 255 callable API functions&mdash;more could be supported by passing a 16 bit index.<br>
       <br>
     </li>
-  <li>Another look-up table, <tt>sparmtab</tt>, is consulted to find out how many 
-user stack frame bytes are expected by each API function.  The use of 
-this table is not demonstrated in the above code but will be 
+  <li>Another look-up table, <tt>sparmtab</tt>, is consulted to find out how many
+user stack frame bytes are expected by each API function.  The use of
+this table is not demonstrated in the above code but will be
 demonstrated in the next series of code fragments.</li>
 </ul>
 <h3><a name="toc:post_api"></a>Post-API Processing</h3>
-After the API code has completed its task and has placed return 
-values 
+After the API code has completed its task and has placed return
+values
 on the stack, processing can be switched back to user mode.&nbsp; Prior
- to 
-doing so, arrangements must be made to take care of stack 
+ to
+doing so, arrangements must be made to take care of stack
 housekeeping.&nbsp;
 Otherwise, the stack will be out of balance and when <tt>RTI</tt> executes to return control to the <tt>creat()</tt> library code, the 65C816 will pull an incorrect address from the stack, surely resulting in a major malfunction.
 <br>
@@ -2193,97 +2193,97 @@ Stack housekeeping consists of three steps:<br>
   <li>Disposing of the user stack frame; handled by the user function that called the API or handled within the API back end code.<br>
   </li>
 </ol>
-Stack cleanup is a relatively painless process with the 
+Stack cleanup is a relatively painless process with the
 65C816.&nbsp; In this subsection, we will demonstrate how to perform stack
-cleanup in the kernel API back end code, clearing the user stack frame 
-as well as the register stack frame.&nbsp; We are not advocating that 
+cleanup in the kernel API back end code, clearing the user stack frame
+as well as the register stack frame.&nbsp; We are not advocating that
 user stack frame disposal occur within the kernel&mdash;use what is best for your application.<br>
 <br>
-In general, the stack housekeeping process is one of shifting the register 
-and library stack frames up the stack by the total number of bytes in 
-the user stack frame, and then adjusting the stack pointer so it points 
-at the location immediately below the relocated register stack frame.&nbsp; 
-With that done, pulling the 16 bit registers will dispose of most of the register stack frame, hence incrementing the stack 
+In general, the stack housekeeping process is one of shifting the register
+and library stack frames up the stack by the total number of bytes in
+the user stack frame, and then adjusting the stack pointer so it points
+at the location immediately below the relocated register stack frame.&nbsp;
+With that done, pulling the 16 bit registers will dispose of most of the register stack frame, hence incrementing the stack
 pointer until it is pointing one byte below the stack copy of the status
- register.&nbsp; Upon execution of <tt>RTI</tt> at the end of the procedure the 65C816 
-will pull <tt>SR</tt>, <tt>PC</tt> and <tt>PB</tt> in that order, disposing of the remainder of the register stack frame, exiting the kernel and resuming 
-execution at the <tt>bcs _error_</tt> instruction in the <tt>creat()</tt> library code.&nbsp; 
-When the <tt>creat()</tt> library code finally executes <tt>RTS</tt> to return to the 
+ register.&nbsp; Upon execution of <tt>RTI</tt> at the end of the procedure the 65C816
+will pull <tt>SR</tt>, <tt>PC</tt> and <tt>PB</tt> in that order, disposing of the remainder of the register stack frame, exiting the kernel and resuming
+execution at the <tt>bcs _error_</tt> instruction in the <tt>creat()</tt> library code.&nbsp;
+When the <tt>creat()</tt> library code finally executes <tt>RTS</tt> to return to the
 calling function, <tt>SP</tt> will again be <tt>$CFFF</tt>, which is where it started before <tt>main()</tt> called <tt>creat()</tt>.<br>
   <br>
-The most convenient way to shift stack frames is by using one of the 
-65C816's block copy instructions.&nbsp; As the stack grows toward lower 
-addresses, the shift is upward in memory and some overlap is likely to 
-occur, which means use of the <tt>MVP</tt> instruction is the correct choice for this 
+The most convenient way to shift stack frames is by using one of the
+65C816's block copy instructions.&nbsp; As the stack grows toward lower
+addresses, the shift is upward in memory and some overlap is likely to
+occur, which means use of the <tt>MVP</tt> instruction is the correct choice for this
 procedure.&nbsp; In the following code, 16 bit operations are used throughout
- and a sneaky little trick will be used to set the stack pointer to the 
-correct location following the register and library stack frames shift.&nbsp; 
- To assist you in understanding what is going on, the code will be 
+ and a sneaky little trick will be used to set the stack pointer to the
+correct location following the register and library stack frames shift.&nbsp;
+ To assist you in understanding what is going on, the code will be
 interspersed with explanatory text:<br>
 
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  rep #%00110000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit
  registers</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; clc</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tsc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;get SP (currently $CFEF)</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adc 
-#s_regsf+s_libsf&nbsp; ;add bytes in register &amp; library stack 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adc
+#s_regsf+s_libsf&nbsp; ;add bytes in register &amp; library stack
 frames</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;now is "from" address for stack frame shift</tt><br>
   </blockquote>
-<blockquote>Following the above steps, <tt>.C</tt> contains <tt>$CFFB</tt>, since the register 
+<blockquote>Following the above steps, <tt>.C</tt> contains <tt>$CFFB</tt>, since the register
 stack frame occupies ten bytes and the library stack frame occupies two.&nbsp;
    <tt>$00CFFB</tt> is the absolute address where the library <tt>RTS</tt> address MSB was
- stored when it was pushed by the <tt>jsr creat</tt> instruction in <tt>main()</tt>.&nbsp; It 
-is necessary to compute this address because the <tt>MVP</tt> instruction works 
+ stored when it was pushed by the <tt>jsr creat</tt> instruction in <tt>main()</tt>.&nbsp; It
+is necessary to compute this address because the <tt>MVP</tt> instruction works
 "backwards" to lower memory.&nbsp; Therefore, <tt>MVP</tt> has to start at the highest
- address from which bytes are to be copied, which would be that of the 
-library <tt>RTS</tt> address MSB.&nbsp; As the <tt>MVP</tt> instruction treats the value in <tt>.X</tt> 
+ address from which bytes are to be copied, which would be that of the
+library <tt>RTS</tt> address MSB.&nbsp; As the <tt>MVP</tt> instruction treats the value in <tt>.X</tt>
 as the copy source address, <tt>.C</tt> is transferred to <tt>.X</tt>.<br>
   <br>
   Continuing:<br>
   </blockquote>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ldy 
+ ldy
 apioff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;API dispatch offset</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adc 
-sparmtab,y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;add bytes in user 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adc
+sparmtab,y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;add bytes in user
 stack frame</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;now is "to" address for stack frame shift</tt><br>
   </blockquote>
-<blockquote>Now, <tt>.C</tt> contains <tt>$CFFF</tt>, since the user stack frame occupied four 
-bytes, information that was gotten from the <tt>sparmtab</tt> parameter size 
-look-up table.&nbsp; <tt>$00CFFF</tt> will be the absolute address of the library <tt>RTS</tt> 
-address MSB after the register and library stack frames have been 
+<blockquote>Now, <tt>.C</tt> contains <tt>$CFFF</tt>, since the user stack frame occupied four
+bytes, information that was gotten from the <tt>sparmtab</tt> parameter size
+look-up table.&nbsp; <tt>$00CFFF</tt> will be the absolute address of the library <tt>RTS</tt>
+address MSB after the register and library stack frames have been
 shifted, and is currently the address that is occupied by the MSB of the
- file creation mode parameter that was pushed by the calling function.&nbsp; 
-As the <tt>MVP</tt> instruction treats the value in <tt>.Y</tt> as the copy destination 
-address, <tt>.C</tt> is transferred to <tt>.Y</tt>.&nbsp; Again, keep in mind that <tt>MVP</tt> copies 
+ file creation mode parameter that was pushed by the calling function.&nbsp;
+As the <tt>MVP</tt> instruction treats the value in <tt>.Y</tt> as the copy destination
+address, <tt>.C</tt> is transferred to <tt>.Y</tt>.&nbsp; Again, keep in mind that <tt>MVP</tt> copies
 in reverse.<br>
   <br>
   Continuing:<br>
   </blockquote>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda #s_regsf+s_libsf-1</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mvp 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mvp
 0,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;shift stack frames</tt><br>
   </blockquote>
-<blockquote><tt>MVP</tt> uses <tt>.C</tt> as a down-counter to keep track of the number of bytes 
-copied.&nbsp; Copying stops when <tt>.C</tt> has been decremented below zero.&nbsp; 
-Therefore, the count that must loaded into <tt>.C</tt> is the size of the 
+<blockquote><tt>MVP</tt> uses <tt>.C</tt> as a down-counter to keep track of the number of bytes
+copied.&nbsp; Copying stops when <tt>.C</tt> has been decremented below zero.&nbsp;
+Therefore, the count that must loaded into <tt>.C</tt> is the size of the
 register stack frame plus the size of the library stack frame <b><i>minus one</i></b>.&nbsp;
-  Also, copying must occur in bank <tt>$00</tt> because that is where all stack 
-references are directed.&nbsp; Hence zero is hard-coded for the two <tt>MVP</tt> 
+  Also, copying must occur in bank <tt>$00</tt> because that is where all stack
+references are directed.&nbsp; Hence zero is hard-coded for the two <tt>MVP</tt>
 operands.<br>
   <br>
   When MVP has finished, the registers will be as follows:<br>
-  
+
   <blockquote>
       <table bgcolor="#ccffff" border="3" cellpadding="2" cellspacing="0">
         <tbody>
@@ -2300,7 +2300,7 @@ operands.<br>
       </table>
     </blockquote>
   and the stack picture will now be:<br>
-  
+
   <blockquote>
     <table bgcolor="#ccffff" border="3" cellpadding="5" cellspacing="2">
       <tbody>
@@ -2350,76 +2350,76 @@ operands.<br>
       </tbody>
     </table>
   </blockquote>
-  You may well be wondering how the stack index for <tt>.Y</tt> ended up being 
-    <tt>$05</tt>&mdash;it previously was <tt>$01</tt>.&nbsp; The register and library stack frames were 
+  You may well be wondering how the stack index for <tt>.Y</tt> ended up being
+    <tt>$05</tt>&mdash;it previously was <tt>$01</tt>.&nbsp; The register and library stack frames were
 shifted upward by the size of the user stack frame, which was <tt>$04</tt> bytes.&nbsp;
-  However, <tt>SP</tt> was not disturbed by any preceding instructions and thus 
+  However, <tt>SP</tt> was not disturbed by any preceding instructions and thus
 is still <tt>$CFEF</tt>.&nbsp; Therefore, <tt>$01+$04=$05</tt> and <tt>$CFF4-$05=$CFEF</tt>.<br>
   <br>
   With the stack frame shifting out of the way, all that's left in the
  housekeeping process is to adjust <tt>SP</tt>.&nbsp; Recall above where we said "...a
  sneaky little trick is used..."?&nbsp; Take a good look at the ending values
- in the registers after <tt>MVP</tt> finished, think about what was going on 
-inside the microprocessor as it was copying (read page 40 of the data 
+ in the registers after <tt>MVP</tt> finished, think about what was going on
+inside the microprocessor as it was copying (read page 40 of the data
 sheet if you're not familiar with how <tt>MVP</tt> works) and then see if you can
- figure out why the next two instructions correctly set <tt>SP</tt> (no fair 
+ figure out why the next two instructions correctly set <tt>SP</tt> (no fair
 peeking at the following explanation):
   </blockquote>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tya&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;adjust...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 tcs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ;stack 
+ ;stack
 pointer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <b><font color="#cc0000">$CFF3</font></b></tt><br>
   </blockquote>
-<blockquote>It may not be immediately obvious why this even works.&nbsp; After all, 
-no one ever uses <tt>.Y</tt> to set a stack pointer, right?&nbsp; Well, here is an 
+<blockquote>It may not be immediately obvious why this even works.&nbsp; After all,
+no one ever uses <tt>.Y</tt> to set a stack pointer, right?&nbsp; Well, here is an
 exception!<br>
 </blockquote>
 <blockquote>Consider that as <tt>MVP</tt> executes the microprocessor repeatedly copies a
- byte and then decrements all three registers.&nbsp; Hence when <tt>MVP</tt> has 
-finished, <tt>.C</tt> will be $FFFF, <tt>.X</tt> will be pointing to a location one byte 
-below the address where the 65C816 got the final byte and <tt>.Y</tt> will be 
-pointing to a location one byte below the address where the 65C816 put 
-that final byte.&nbsp; As the register and library stack frames have been 
-relocated higher on the stack by the number of bytes in the user stack frame, the final address in <tt>.Y</tt> is now the first 
-unused location on the stack, <b><i>which is by definition the address to 
-which the stack pointer points</i></b>.&nbsp; So, adjusting the stack pointer merely 
+ byte and then decrements all three registers.&nbsp; Hence when <tt>MVP</tt> has
+finished, <tt>.C</tt> will be $FFFF, <tt>.X</tt> will be pointing to a location one byte
+below the address where the 65C816 got the final byte and <tt>.Y</tt> will be
+pointing to a location one byte below the address where the 65C816 put
+that final byte.&nbsp; As the register and library stack frames have been
+relocated higher on the stack by the number of bytes in the user stack frame, the final address in <tt>.Y</tt> is now the first
+unused location on the stack, <b><i>which is by definition the address to
+which the stack pointer points</i></b>.&nbsp; So, adjusting the stack pointer merely
 involves copying whatever is in <tt>.Y</tt> to <tt>SP</tt>!<br>
     <br>
-The final steps are to restore the registers and then exit to the 
+The final steps are to restore the registers and then exit to the
     <tt>creat()</tt> library code:<br>
   </blockquote>
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ply&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- ;restore 
+ ;restore
 registers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <b><font color="#cc0000">$CFF5</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 plx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 
 
 
  <b><font color="#cc0000">$CFF6</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 pla&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 
 
 
  <b><font color="#cc0000">$CFF9</font></b></tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 rti&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;exit to creat() library code&nbsp; <b><font color="#cc0000">$CFFD</font></b></tt><br>
   </blockquote>
-As <tt>RTI</tt> causes the microprocessor to pull <tt>SR</tt> from the stack, any changes 
+As <tt>RTI</tt> causes the microprocessor to pull <tt>SR</tt> from the stack, any changes
 that were made to the stack copy of <tt>SR</tt>, such as setting the carry bit to
- flag an error, will immediately take effect and the <tt>creat()</tt> library 
-code can act upon them.&nbsp; Similarly, if the stack copies of any of the 
-registers were altered, those changes will be propagated back to the 
+ flag an error, will immediately take effect and the <tt>creat()</tt> library
+code can act upon them.&nbsp; Similarly, if the stack copies of any of the
+registers were altered, those changes will be propagated back to the
   <tt>creat()</tt> library code as well.
 <h3><a name="toc:access_sf_elements"></a>Accessing Stack Frame Elements</h3>
 Nothing in this subsection has anything to do with interrupt processing <i>per se</i>.&nbsp;
@@ -2427,12 +2427,12 @@ However, everything that has preceded has made frequent reference to the stack.&
 So in the spirit of expanding your knowledge about the 65C816, consider this to be a bonus section.
 <br>
 <br>
-As the API handler code executes it will need to be able to access both 
-the register and user stack frame elements, the former to write values 
-that will be returned to the caller, and the latter to read the 
+As the API handler code executes it will need to be able to access both
+the register and user stack frame elements, the former to write values
+that will be returned to the caller, and the latter to read the
 parameters that were pushed by the user application.&nbsp; The 65C816's stack
- addressing instructions greatly simplify the process, as they index 
-relative to the current stack pointer, eliminating the need for tedious 
+ addressing instructions greatly simplify the process, as they index
+relative to the current stack pointer, eliminating the need for tedious
 address calculations.<br>
   <br>
 First, a recapitulation of the stack frame definitions:
@@ -2460,119 +2460,119 @@ First, a recapitulation of the stack frame definitions:
 <tt>fmode&nbsp;&nbsp;&nbsp; =lib_rts+2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;file creation mode</tt><br>
 <tt>pnptr&nbsp;&nbsp;&nbsp; =fmode+2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;pathname pointer</tt><br>
 </blockquote>
-Using the above definitions, here are some examples of how to read and 
+Using the above definitions, here are some examples of how to read and
 write stack frame elements.<br>
   <br>
 First, read the file creation mode from the user stack frame:<br>
 
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;16 bit accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 fmode,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;get
  mode</tt><br>
   </blockquote>
-Note the use of the <tt>fmode</tt> stack frame definition and <tt>,S</tt> (stack pointer 
-relative) addressing.&nbsp; Assuming that <tt>SP</tt> hasn't changed since the API 
+Note the use of the <tt>fmode</tt> stack frame definition and <tt>,S</tt> (stack pointer
+relative) addressing.&nbsp; Assuming that <tt>SP</tt> hasn't changed since the API
 entry point, the <tt>fmode,S</tt> operand is interpreted by the microprocessor to
- mean <tt>$CFEF+$0F</tt> or <tt>$CFFE</tt>, since <tt>fmode=$0F</tt> and <tt>SP=$CFEF</tt>.&nbsp; Therefore, the 
+ mean <tt>$CFEF+$0F</tt> or <tt>$CFFE</tt>, since <tt>fmode=$0F</tt> and <tt>SP=$CFEF</tt>.&nbsp; Therefore, the
 instruction is effectively <tt>LDA $CFFE</tt>.<br>
   <br>
 Next, copy the pathname to a buffer.  The pathname is a character string
  of arbitrary length that has been terminated by a null byte (<tt>$00</tt>):<br>
 
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit 
+ sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit
 accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep 
-#%00010001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rep
+#%00010001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit
 index &amp; clear carry</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ldy 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ldy
 #0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;pathname index (16 bit load)</tt><br>
   <tt>;</tt><br>
   <tt>.0000010 lda (pnptr,s),y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;get pathname byte-by-byte &amp;...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta
 buffer,y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;store in
  work buffer</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq .0000020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;done</tt><br>
   <tt>;</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iny</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cpy 
-#PATH_MAX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;check 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cpy
+#PATH_MAX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;check
 pathname length</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bcc .0000010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;okay so far</tt><br>
   <tt>; </tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
-#ETOOLONG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;pathname too 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
+#ETOOLONG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;pathname too
 long: error</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bra 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bra
 error&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;goto error handler</tt><br>
   <tt>;</tt><br>
   <tt>.0000020 </tt>...program continues...<br>
   </blockquote>
-Here, use is made of stack pointer relative indirect addressing to copy 
-the pathname from user space to the work buffer.&nbsp; Again, the <tt>pnptr,S</tt> 
-operand is translated by the microprocessor at run-time to <tt>$CFEF+$0D</tt>, 
-effectively making the instruction <tt>LDA ($CFFC),Y</tt>, although such an 
+Here, use is made of stack pointer relative indirect addressing to copy
+the pathname from user space to the work buffer.&nbsp; Again, the <tt>pnptr,S</tt>
+operand is translated by the microprocessor at run-time to <tt>$CFEF+$0D</tt>,
+effectively making the instruction <tt>LDA ($CFFC),Y</tt>, although such an
 addressing mode doesn't exist in reality.&nbsp; Note that a check is made for
- an excessively long pathname, the maximum permissible length being 
-defined by <tt>PATH_MAX</tt>.&nbsp; Labels such as <tt>.0000010</tt> and <tt>.0000020</tt> are local 
+ an excessively long pathname, the maximum permissible length being
+defined by <tt>PATH_MAX</tt>.&nbsp; Labels such as <tt>.0000010</tt> and <tt>.0000020</tt> are local
 labels&mdash;use whatever syntax is implemented in your assembler.<br>
   <br>
-Return the open file descriptor to the calling function via the eight 
-bit accumulator by overwriting the appropriate register stack frame 
+Return the open file descriptor to the calling function via the eight
+bit accumulator by overwriting the appropriate register stack frame
 element:<br>
 
 <blockquote>
 <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit 
+ sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit
 accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 #0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;clear...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 xba&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  ;.B</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
 filedes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;get
  file descriptor, ...</tt><br>
 <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- rep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit 
+ rep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 16 bit
 accumulator &amp;...</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta 
-reg_a,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta
+reg_a,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ;overwrite .C's stack copy</tt><br>
 </blockquote>
-When the accumulator is pulled it will contain the value that was in 
+When the accumulator is pulled it will contain the value that was in
   <tt>filedes</tt>.<br>
   <br>
 Flag an error by setting the carry bit in <tt>SR</tt>:<br>
 
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit 
+ sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit
 accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
-reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;stack 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
+reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;stack
 copy of SR</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ora 
-#%00000001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;set carry bit 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ora
+#%00000001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;set carry bit
 &amp;...</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;rewrite</tt><br>
   </blockquote>
 Flag a successful operation by clearing the carry bit in <tt>SR</tt>:<br>
 
 <blockquote><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit 
+ sep #%00100000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;select 8 bit
 accumulator</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda 
-reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;stack 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lda
+reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;stack
 copy of SR</tt><br>
-  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and 
-#%11111110&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;clear carry bit 
+  <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and
+#%11111110&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;clear carry bit
 &amp;...</tt><br>
   <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sta reg_sr,s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;rewrite</tt><br>
   </blockquote>
-The above code snippets should give you a basis on which to expand your 
+The above code snippets should give you a basis on which to expand your
 programming activities.
 <br>
 <br>
@@ -2581,10 +2581,10 @@ programming activities.
 <br>
 <h2>CONCLUSION</h2>
 It is hoped this article has been of value to you as you explore the capabilities of the 65C816 microprocessor.&nbsp;
-While every effort has been made to assure accuracy, errors may have crept in during the editing process.&nbsp; 
+While every effort has been made to assure accuracy, errors may have crept in during the editing process.&nbsp;
 Suing us over any such errors will be a complete waste of your time, so don't bother trying.&nbsp;
 Also, if you encounter any instances of dubious grammar or sloppy spelling, we profusely apologize and ask that you consider that we are computer geeks, not English professors.&nbsp;
-Please contact <a href="http://bcstechnology.net" target="_blank"><font color="#0000ff" face="Challenge Extra Bold">BCS Technology 
+Please contact <a href="http://bcstechnology.net" target="_blank"><font color="#0000ff" face="Challenge Extra Bold">BCS Technology
 Limited</font></a> to report any errors and/or omissions, or to suggest edits.
 <br>
 <br>
