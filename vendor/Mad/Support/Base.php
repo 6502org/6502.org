@@ -19,6 +19,9 @@ class Mad_Support_Base
      */
     public static function initialize()
     {
+        // All classes are autoloaded
+        spl_autoload_register("Mad_Support_Base::autoload", true, true);
+
         Mad_Model_Stream::install();
         Mad_View_Stream::install();
         Mad_Support_PhpErrorHandler::install();
@@ -61,7 +64,7 @@ class Mad_Support_Base
 				if ($f->isFile() && substr($f->getFilename(), -4) == '.php') {
 					// compute possible model pathname of $class
 					$pathname = $f->getPathname();
-					$thisClass = str_replace(DIRECTORY_SEPARATOR, '_', 
+					$thisClass = str_replace(DIRECTORY_SEPARATOR, '_',
 					    substr($pathname, $pathLen, -4));
 					$classes[$thisClass] = true;
 				}
@@ -70,10 +73,10 @@ class Mad_Support_Base
 
         return isset($classes[$class]);
     }
-    
+
     /**
      * Validate list of keys in the hash
-     * 
+     *
      * @param   array   $hash
      * @param   array   $validKeys
      * @throws  InvalidArgumentException
@@ -85,7 +88,7 @@ class Mad_Support_Base
             $msg = 'Expected array, got ' . gettype($hash);
             throw new InvalidArgumentException($msg);
         }
-        
+
         // normalize validation keys so that we can use both key/associative arrays
         foreach ($validKeys as $key=>$val) {
             is_int($key) ? $valids[$val] = null : $valids[$key] = $val;
@@ -108,7 +111,7 @@ class Mad_Support_Base
         }
         return $hash;
     }
-    
+
     public static function chop($str)
     {
         if (strlen($str)) {
@@ -116,19 +119,19 @@ class Mad_Support_Base
                 $str = substr($str, 0, strlen($str)-2);
             } else {
                 $str = substr($str, 0, strlen($str)-1);
-            } 
+            }
         }
         return $str;
     }
-    
+
     public static function chopToNull($str)
     {
         $str = self::chop($str);
-        
+
         if (! strlen($str)) {
             $str = null;
         }
         return $str;
     }
-    
+
 }
