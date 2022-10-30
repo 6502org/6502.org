@@ -5,9 +5,12 @@ class DocumentsController extends ApplicationController
     public function index() {
         $config = Horde_Yaml::loadFile(MAD_ROOT.'/config/database.yml');
         $spec = $config[MAD_ENV];
-        $this->pdo = new PDO("mysql:host=${spec['host']};dbname=${spec['database']}",
-                             $spec['username'],
-                             $spec['password']);
+        if ($spec['adapter'] == 'sqlite') {
+            $this->pdo = new PDO("sqlite:${spec['database']}", null, null);
+        } else { // mysql
+            $this->pdo = new PDO("mysql:host=${spec['host']};dbname=${spec['database']}",
+                                 $spec['username'], $spec['password']);
+        }
 
         $keyList = explode('/', trim($this->params['path'], '/'));
         foreach($keyList as $k => $v) {
