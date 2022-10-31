@@ -1,11 +1,19 @@
 <?php
 
-// check php version compatibility
-$version_parts = explode(".", PHP_VERSION);
-$major_version = $version_parts[0];
-if ($major_version > 7) {
+// check compatibility
+if (version_compare(PHP_VERSION, "5.4.0", "<")) {
+    die("PHP 5.4 or higher is required.  Your version: " . PHP_VERSION);
+}
+if (version_compare(PHP_VERSION, "8.0.0", ">")) {
     die("PHP 7.4 or lower is required.  Your version: " . PHP_VERSION);
 }
+if (! ini_get("short_open_tag")) {
+    die("short_open_tag = on must be set in php.ini");
+}
+if (! extension_loaded("pdo_sqlite")) {
+    die("pdo_sqlite must be installed");
+}
+
 
 // env
 define('MAD_ROOT', dirname(dirname(__FILE__)));
