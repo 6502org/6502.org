@@ -1,4 +1,12 @@
 <?php
+
+// check php version compatibility
+$version_parts = explode(".", PHP_VERSION);
+$major_version = $version_parts[0];
+if ($major_version > 7) {
+    die("PHP 7.4 or lower is required.  Your version: " . PHP_VERSION);
+}
+
 // env
 define('MAD_ROOT', dirname(dirname(__FILE__)));
 if (! defined('MAD_ENV')) {
