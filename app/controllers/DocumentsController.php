@@ -118,85 +118,11 @@ class DocumentsController extends ApplicationController
         $stmt->execute(array('id' => $this->myFolder['id']));
         $this->myFolder['docs'] = $stmt->fetchAll();
 
-        $this->_updateFileSizes();
-        $this->_updatePageCounts();
-
         // Create URL for each doc
         foreach ($this->myFolder['docs'] as &$doc) {
             $doc['url'] = $url . $doc['filename'];
         }
 
-    }
-
-    // Update size of any file whose filesize is 0
-    protected function _updateFileSizes()
-    {
-        foreach ($this->myFolder['docs'] as &$doc) {
-            if ($doc['filesize'] != 0) { continue; }
-
-            $filename = $this->_getLocalFilename($doc, $this->myFolder);
-            if (! file_exists($filename)) { continue; }
-
-            $doc['filesize'] = filesize($filename);
-
-            $sql = 'UPDATE document_files
-                    SET filesize = :filesize
-                    WHERE id = :id';
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('filesize' => $doc['filesize'],
-                                 'id'       => $doc['id']));
-        }
-    }
-
-    // Update PDF page counts of any file whose count is 0
-    protected function _updatePageCounts()
-    {
-        foreach ($this->myFolder['docs'] as &$doc) {
-            if ($doc['pages'] != 0) { continue; }
-
-            // get pdf page count, or 0 if error
-            $filename = $this->_getLocalFilename($doc, $this->myFolder);
-            $pages = $this->_getPdfPageCount($filename);
-            if ($pages == 0) { continue; }
-
-            // update row with page count
-            $doc['pages'] = $pages;
-            $sql = 'UPDATE document_files
-                    SET pages = :pages
-                    WHERE id = :id';
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('pages' => $doc['pages'],
-                                 'id'    => $doc['id']));
-        }
-    }
-
-    // Get page count of a PDF file, or 0 if any error
-    protected function _getPdfPageCount($filename)
-    {
-        if (! file_exists($filename)) { return 0; }
-
-        // ensure file is pdf
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext != "pdf") { return 0; }
-
-        // run pdfinfo on file
-        $escaped = escapeshellarg($filename);
-        exec("pdfinfo $escaped", $lines, $retval);
-        if ($retval != 0) { return 0; }
-
-        // parse pdfinfo output into key/value pairs
-        $properties = array();
-        foreach ($lines as $line) {
-            $exploded = explode(":", $line, 2);
-            if (count($exploded) != 2) { return 0; }
-            $key = trim($exploded[0]);
-            $value = trim($exploded[1]);
-            if (strlen($key) && strlen($value)) { $properties[$key] = $value; }
-        }
-
-        // get page count from pdf info
-        if (! array_key_exists("Pages", $properties)) { return 0; }
-        return (int)$properties["Pages"];
     }
 
     // Get the full path to the document on disk
