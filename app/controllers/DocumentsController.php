@@ -51,8 +51,8 @@ class DocumentsController extends ApplicationController
                 $folder['url'] = $url;
                 array_push($this->folders, $folder);
             } else {
-                /* If the key does not exist, it might also be a filename.  If it is,
-                   update the download counter and redirect.  */
+                /* If the key does not exist, it might also be a filename.  
+                   If it is, redirect.  */
                 if (count($this->folders) > 0) {
                     $sql = 'SELECT *
                             FROM document_files
@@ -68,12 +68,7 @@ class DocumentsController extends ApplicationController
                         $this->redirectTo($url);
                         return;
                     } else {
-                        // If the filename was found, update the download counter and redirect to download.
-                        $sql = 'UPDATE document_files
-                                SET downloads = downloads + 1
-                                WHERE id = :id';
-                        $stmt = $this->pdo->prepare($sql);
-                        $stmt->execute(array('id' => $doc['id']));
+                        // If the filename was found, redirect to download.
 
                         // TODO: send the document file
                         /*
@@ -88,6 +83,7 @@ class DocumentsController extends ApplicationController
                         $this->sendFile($filename, $options);
                         return;
                         */
+
                         $url = "http://archive.6502.org/" .
                                $this->folders[count($this->folders)-1]['path'] .
                                $doc['filename'];
