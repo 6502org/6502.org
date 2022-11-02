@@ -13,13 +13,13 @@ if (php_sapi_name() != 'cli-server') {
 	die("This script runs under the built-in PHP webserver.\n");
 }
 
+$request_path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
 $here = dirname(realpath(__FILE__));
+$filename = $here . "/public/" . $request_path;
 
-$uri = trim($_SERVER["REQUEST_URI"], "/");
-$filename = $here . "/public/" . $uri;
-
-if (file_exists($filename) && !is_file($filename)) {
-	require_once $here . '/public/index.php';
+if ((!file_exists($filename)) || (!is_file($filename))) {
+    require_once $here . '/public/index.php';
 } else {
     return false; // served by built-in webserver
 }
