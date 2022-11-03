@@ -1,6 +1,5 @@
 .DS_Store
 *.pyc
-/config/database.yml
 /db/*.sql
 /log/*
 /public/*.php
