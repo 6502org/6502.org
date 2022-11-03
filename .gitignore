@@ -1,11 +1,11 @@
 .DS_Store
-.redcar
 *.pyc
 /config/database.yml
 /db/*.sql
 /log/*
 /public/*.php
 !/public/index.php
+/public/documents
 /public/javascripts/cache
 /public/stylesheets/cache
 /public/users
