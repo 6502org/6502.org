@@ -102,7 +102,7 @@ class DocumentsController extends ApplicationController
         $this->myFolder = $this->folders[count($this->folders)-1];
         $sql="SELECT * FROM document_folders
               WHERE parent_folder_id = :id
-              ORDER BY sort_title ASC, title ASC";
+              ORDER BY LOWER(COALESCE(sort_title, title)) ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $this->myFolder['id']));
         $this->myFolders = $stmt->fetchAll();
@@ -113,7 +113,7 @@ class DocumentsController extends ApplicationController
 
         $sql="SELECT * FROM document_files
               WHERE folder_id = :id
-              ORDER BY sort_title ASC, title ASC";
+              ORDER BY LOWER(COALESCE(sort_title, title)) ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id' => $this->myFolder['id']));
         $this->myFolder['docs'] = $stmt->fetchAll();
