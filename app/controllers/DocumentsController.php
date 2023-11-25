@@ -84,9 +84,13 @@ class DocumentsController extends ApplicationController
                         return;
                         */
 
-                        $url = "http://archive.6502.org/" .
-                               $this->folders[count($this->folders)-1]['path'] .
-                               $doc['filename'];
+                        if (DOCUMENTS_USE_MIRROR_URL && !empty($doc['mirror_url'])) {
+                            $url = $doc['mirror_url'];
+                        } else {
+                            $url = "http://archive.6502.org/" .
+                                   $this->folders[count($this->folders)-1]['path'] .
+                                   $doc['filename'];
+                        }
                         $this->redirectTo($url);
                         return;
                     }
