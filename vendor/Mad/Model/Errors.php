@@ -206,6 +206,7 @@ class Mad_Model_Errors extends Mad_Support_ArrayObject implements Iterator
      * 
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $count = 0;
@@ -233,6 +234,7 @@ class Mad_Model_Errors extends Mad_Support_ArrayObject implements Iterator
      * 
      * @return  Error
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         $i = 0;
@@ -258,6 +260,7 @@ class Mad_Model_Errors extends Mad_Support_ArrayObject implements Iterator
      *
      * @return  int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         $i = 0;
@@ -282,6 +285,7 @@ class Mad_Model_Errors extends Mad_Support_ArrayObject implements Iterator
      *
      * @return  Error
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $result = $this->current();
@@ -301,6 +305,7 @@ class Mad_Model_Errors extends Mad_Support_ArrayObject implements Iterator
      * </code>
      *
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_position = 0;

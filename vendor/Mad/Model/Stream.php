@@ -15,6 +15,12 @@
 class Mad_Model_Stream
 {
     /**
+     * The current context, set by PHP when the stream is opened.
+     * @var resource
+     */
+    public $context;
+
+    /**
      * Current stream position.
      * @var int
      */

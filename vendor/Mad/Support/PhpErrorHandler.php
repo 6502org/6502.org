@@ -45,7 +45,7 @@ class Mad_Support_PhpErrorHandler
             // silence operator ("@") was used
 	        return;
 	    }
-	    
+
 	    throw new Mad_Support_PhpError($errstr, $errno, $errfile, $errline);
 	}
 

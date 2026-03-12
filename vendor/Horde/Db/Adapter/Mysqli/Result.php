@@ -96,6 +96,7 @@ class Horde_Db_Adapter_Mysqli_Result implements Iterator
     /**
      * Implementation of the rewind() method for iterator.
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         if ($this->_result) {
@@ -114,6 +115,7 @@ class Horde_Db_Adapter_Mysqli_Result implements Iterator
      *
      * @return mixed The current row, or null if no rows.
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         if (is_null($this->_result)) {
@@ -127,6 +129,7 @@ class Horde_Db_Adapter_Mysqli_Result implements Iterator
      *
      * @return mixed The current row number (starts at 0), or NULL if no rows
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         if (is_null($this->_result)) {
@@ -141,6 +144,7 @@ class Horde_Db_Adapter_Mysqli_Result implements Iterator
      * @return array|null The next row in the resultset or null if there are no
      * more results.
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if (is_null($this->_result)) {

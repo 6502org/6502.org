@@ -156,8 +156,8 @@ class Horde_Routes_Utils
                     $url .= '?';
                     $query_args = array();
                     foreach ($kargs as $key => $val) {
-                        $query_args[] = urlencode(utf8_decode($key)) . '=' .
-                            urlencode(utf8_decode($val));
+                        $query_args[] = urlencode(self::_encodeUrl($key)) . '=' .
+                            urlencode(self::_encodeUrl($val));
                     }
                     $url .= implode('&', $query_args);
                 }
@@ -398,8 +398,25 @@ class Horde_Routes_Utils
         if ($encoding === null) {
             return str_replace('%2F', '/', urlencode($url));
         } else {
-            return str_replace('%2F', '/', urlencode(utf8_decode($url)));
+            return str_replace('%2F', '/', urlencode(self::_encodeUrl($url)));
         }
+    }
+
+    /**
+     * Convert a UTF-8 string to ISO-8859-1 for URL encoding.
+     * On PHP < 8.2, this uses utf8_decode(). On PHP 8.2+, where
+     * utf8_decode() was deprecated, the string is passed through
+     * unchanged (urlencode handles UTF-8 directly).
+     *
+     * @param  string  $str  String to convert
+     * @return string        Converted string
+     */
+    private static function _encodeUrl($str)
+    {
+        if (PHP_VERSION_ID < 80200) {
+            return utf8_decode($str);
+        }
+        return $str;
     }
 
     /**

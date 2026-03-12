@@ -20,6 +20,7 @@
  * @copyright  (c) 2007-2008 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
+#[\AllowDynamicProperties]
 class Mad_View_Base
 {
     public static $defaultFormBuilder = 'Mad_View_Helper_Form_Builder';

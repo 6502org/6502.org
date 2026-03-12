@@ -14,6 +14,7 @@
  * @copyright  (c) 2007-2008 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
+#[\AllowDynamicProperties]
 abstract class Mad_Controller_Base
 {
     /**
@@ -69,6 +70,12 @@ abstract class Mad_Controller_Base
      * @var Mad_Controller_Proxy_Session
      */
     protected $session;
+
+    /**
+     * Proxy accessor to cookie data in the request and response objects.
+     * @var Mad_Controller_Proxy_Cookie
+     */
+    protected $cookie;
 
     /**
      * @var Mad_Controller_UrlWriter

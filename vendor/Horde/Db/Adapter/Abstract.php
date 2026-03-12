@@ -482,7 +482,7 @@ abstract class Horde_Db_Adapter_Abstract
     public function sanitizeLimit($limit)
     {
         if (strpos($limit, ',') !== false) {
-            return implode(',', array_map(create_function('$i', 'return (int)$i;'), explode(',', $limit)));
+            return implode(',', array_map(function($i) { return (int)$i; }, explode(',', $limit)));
         } else return (int)$limit;
     }
 

@@ -16,6 +16,9 @@
  */ 
 class Mad_Controller_Proxy_Cookie implements ArrayAccess
 {
+    protected $_request;
+    protected $_response;
+
     public function __construct($request, $response)
     {
         $this->_request = $request;
@@ -28,37 +31,41 @@ class Mad_Controller_Proxy_Cookie implements ArrayAccess
     }
 
     /** @todo hack */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return ($this->_request->getCookie($offset) !== null);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->_request->getCookie($offset);
     }
-    
+
     /**
      * @todo need to revisit this.  the request object has no method
-     * to change the value of a cookie.  that makes sense but if a 
-     * cookie is changed, its value is updated in the response but 
+     * to change the value of a cookie.  that makes sense but if a
+     * cookie is changed, its value is updated in the response but
      * not the request.  this means that reading it again later
      * in the action will return the wrong result.
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         // $this->_request->setCookie($offset, $value);
         $this->_response->setCookie($offset, $value);
         return $value;
     }
-    
+
     /**
      * @todo need to revisit this.  the request object has no method
-     * to change the value of a cookie.  that makes sense but if a 
-     * cookie is changed, its value is updated in the response but 
+     * to change the value of a cookie.  that makes sense but if a
+     * cookie is changed, its value is updated in the response but
      * not the request.  this means that reading it again later
      * in the action will return the wrong result.
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         // $this->_request->setCookie($offset, null);

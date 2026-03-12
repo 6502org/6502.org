@@ -10,7 +10,7 @@ class DocumentsController extends ApplicationController
             if ($dbfile[0] != '/') { $dbfile = MAD_ROOT . '/' . $dbfile; }
             $this->pdo = new PDO("sqlite:$dbfile", null, null);
         } else { // mysql
-            $this->pdo = new PDO("mysql:host=${spec['host']};dbname=${spec['database']}",
+            $this->pdo = new PDO("mysql:host={$spec['host']};dbname={$spec['database']}",
                                  $spec['username'], $spec['password']);
         }
 

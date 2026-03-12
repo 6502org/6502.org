@@ -57,7 +57,7 @@ class Mad_Script_Generator extends Mad_Script_Base
         $this->_tpl->addPath('vendor/Mad/Script/templates');
 
         $filename = array_shift($args);
-        $action   = !empty($args) ? array_shift($args) : null;
+        $action   = !empty($args) ? array_shift($args) : '';
         $this->_args = $args;
 
         // generate model stubs

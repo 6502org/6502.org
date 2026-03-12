@@ -16,6 +16,9 @@
  */ 
 class Mad_Controller_Proxy_Flash implements ArrayAccess
 {
+    protected $_request;
+    protected $_response;
+
     public function __construct($request, $response)
     {
         $this->_request = $request;
@@ -33,23 +36,27 @@ class Mad_Controller_Proxy_Flash implements ArrayAccess
     }
 
     /** @todo hack */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return ($this->_request->getFlash($offset) !== null);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->_request->getFlash($offset);
     }
-    
+
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->_request->setFlash($offset, $value);
         $this->_response->setFlash($offset, $value);
         return $value;
     }
-    
+
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->_request->setFlash($offset, null);

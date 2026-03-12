@@ -177,6 +177,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      * @param   int     $offset
      * @return  object  {@link {@Horde_Db_Adapter_Abstract_ColumnDefinition}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
@@ -196,6 +197,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      * @param   int     $offset
      * @param   mixed   $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         foreach ($this->_columns as $key=>$column) {

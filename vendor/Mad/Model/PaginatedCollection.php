@@ -89,6 +89,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
      * Count elements in the array. This has to force load all the object into memory
      * to get the count.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->_collection);
@@ -102,6 +103,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
     /**
      * Get the current object from the collection
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         if ($this->_collection instanceof Mad_Model_Collection) {
@@ -114,6 +116,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
     /**
      * Get the current position in the Collection
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         if ($this->_collection instanceof Mad_Model_Collection) {
@@ -126,6 +129,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
     /**
      * Get the next element on the Collection
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if ($this->_collection instanceof Mad_Model_Collection) {
@@ -138,6 +142,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
     /**
      * Rewind collection to first element
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         if ($this->_collection instanceof Mad_Model_Collection) {
@@ -170,6 +175,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
      *
      * @return  object  {@link ArrayIterator}
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this;
@@ -185,6 +191,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
      * @param   int     $offset
      * @return  boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->_collection[$offset]);
@@ -195,6 +202,7 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
      * 
      * @param   int     $offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -204,17 +212,19 @@ class Mad_Model_PaginatedCollection extends Mad_Support_ArrayObject implements I
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      * @param   mixed   $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value) {}
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset) {}
 
 

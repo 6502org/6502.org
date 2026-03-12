@@ -24,6 +24,12 @@
 class Mad_View_Stream
 {
     /**
+     * The current context, set by PHP when the stream is opened.
+     * @var resource
+     */
+    public $context;
+
+    /**
      * Force rewriting short tags?  Primarily for testing.
      * @var boolean
      */

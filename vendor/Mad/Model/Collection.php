@@ -125,6 +125,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * </code>
      * @return  int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->_collection);
@@ -147,6 +148,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * </code>
      * @return  Mad_Model_Base
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->offsetGet($this->_position);
@@ -165,6 +167,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      *
      * @return  int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_position;
@@ -183,6 +186,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      *
      * @return  Mad_Model_Base
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_position++;
@@ -201,6 +205,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * </code>
      *
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_position = 0;
@@ -236,6 +241,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      *
      * @return  object  {@link ArrayIterator}
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this;
@@ -252,6 +258,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * @param   int     $offset
      * @return  boolean
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->_collection[$offset]);
@@ -271,6 +278,7 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * @param   int     $offset
      * @return  Mad_Model_Base
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -280,23 +288,25 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      * @param   mixed   $value
      */
-    public function offsetSet($offset, $value) 
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
     {
         // Can only add Models to the collection
         if ($value instanceof Mad_Model_Base) {
             $this->_collection[] = $value;
-        }        
+        }
     }
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset) {}
 
     /**

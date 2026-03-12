@@ -27,6 +27,7 @@ class Mad_Support_ArrayObject extends ArrayObject
      * @param  string  $offset  Offset to retrieve
      * @return mixed            Value at offset, or NULL
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset) {
         return $this->offsetExists($offset) ? parent::offsetGet($offset) : null;
     }
