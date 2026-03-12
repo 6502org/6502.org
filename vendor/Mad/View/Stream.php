@@ -48,12 +48,6 @@ class Mad_View_Stream
     private $data;
 
     /**
-     * Has the data to stream been processed?
-     * @var boolean
-     */
-    private $processed = false;
-
-    /**
      * Stream stats.
      * @var array
      */
@@ -80,8 +74,6 @@ class Mad_View_Stream
         // get the view script source
         $path = str_replace('madview://', '', $path);
         $this->data = file_get_contents($path);
-        $this->processed = false;
-
         /**
          * If reading the file failed, update our local stat store
          * to reflect the real stat of the file, then return on failure
@@ -97,15 +89,29 @@ class Mad_View_Stream
          * has been successfully read, avoid this and just fake the stat
          * so include() is happy.
          */
+        $this->_process();
+
         $this->stat = array('mode' => 0100777, 'size' => strlen($this->data));
         return true;
     }
 
     /**
-     * Process the $this->data before returning it.
+     * Process $this->data after opening.
      */
     private function _process()
     {
+        /**
+         * If short open tags is off, convert <? ?> to long-form <?php ?>
+         * and <?= ?> to long-form <?php echo ?>.
+         */
+        if ($this->forceShortTagRewrite || (! ini_get('short_open_tag'))) {
+            $find    = array('/\<\? (.*?)(\?\>){1}?/s',
+                             '/\<\?\= (.*?)(\?\>){1}?/s');
+            $replace = array('<?php $1?>',
+                             '<?php echo $1?>');
+            $this->data = preg_replace($find, $replace, $this->data);
+        }
+
         // Convert @$this->varName to htmlentities($this->varName, ENT_QUOTES, 'utf-8')
         if (strpos($this->data, '@') !== false) {
             $find    = '/@\$([a-z0-9_\[\]\->\']*)/i';
@@ -113,7 +119,6 @@ class Mad_View_Stream
             $this->data = preg_replace($find, $replace, $this->data);
         }
 
-        $this->processed = true;
     }
 
     /**
@@ -121,8 +126,6 @@ class Mad_View_Stream
      */
     public function stream_read($count)
     {
-        if (! $this->processed) { $this->_process(); }
-
         $ret = substr($this->data, $this->pos, $count);
         $this->pos += strlen($ret);
         return $ret;
@@ -157,8 +160,6 @@ class Mad_View_Stream
      */
     public function stream_seek($offset, $whence)
     {
-        if (! $this->processed) { $this->_process(); }
-
         switch ($whence) {
             case SEEK_SET:
                 if ($offset < strlen($this->data) && $offset >= 0) {

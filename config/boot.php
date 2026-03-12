@@ -4,9 +4,6 @@
 if (version_compare(PHP_VERSION, "5.4.0", "<")) {
     die("PHP 5.4 or higher is required.  Your version: " . PHP_VERSION);
 }
-if (! ini_get("short_open_tag")) {
-    die("short_open_tag = on must be set in php.ini");
-}
 if (! extension_loaded("pdo_sqlite")) {
     die("pdo_sqlite must be installed");
 }

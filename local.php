@@ -1,6 +1,6 @@
 <?php
 
-/* php -d short_open_tag=on -S localhost:8000 -t public local.php 
+/* php -S localhost:8000 -t public local.php
  *
  * https://www.php.net/manual/en/features.commandline.webserver.php
  *

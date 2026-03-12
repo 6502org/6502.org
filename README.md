@@ -2,7 +2,7 @@
 
 This is the source code for the main part of the [6502.org](http://6502.org/) website, which is everything except the forum, users' pages, and the PDF files in the documents archive.
 
-The website requires a Unix-like machine (e.g. Linux, macOS) and PHP version 5.4 through 8.4.  The PHP option `short_open_tag` must be enabled and the `pdo_sqlite` extension must be installed.
+The website requires a Unix-like machine (e.g. Linux, macOS) and PHP version 5.4 through 8.4 with the `pdo_sqlite` extension installed.
 
 On Ubuntu Desktop 24.04 LTS, these commands will install the requirements:
 
@@ -28,7 +28,7 @@ Resolving deltas: 100% (3459/3459), done.
 
 $ cd 6502.org 
 
-$ php8.4 -d short_open_tag=on -S localhost:8000 -t public/ local.php
+$ php8.4 -S localhost:8000 -t public/ local.php
 [Wed Mar 11 22:32:03 2026] PHP 8.4.11 Development Server (http://localhost:8000) started
 ```
 
