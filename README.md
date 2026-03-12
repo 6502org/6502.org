@@ -17,14 +17,14 @@ $ sudo apt install git php8.4-cli php8.4-sqlite3
 You can then clone this Git repository and run the website locally using PHP's built-in webserver:
 
 ```text
-$ git clone https://github.com/6502org/6502.org.git 
+$ git clone --depth 1 https://github.com/6502org/6502.org.git
 Cloning into '6502.org'...
-remote: Enumerating objects: 5079, done.
-remote: Counting objects: 100% (326/326), done.
-remote: Compressing objects: 100% (163/163), done.
-remote: Total 5079 (delta 191), reused 267 (delta 161), pack-reused 4753
-Receiving objects: 100% (5079/5079), 225.12 MiB | 10.33 MiB/s, done.
-Resolving deltas: 100% (3459/3459), done.
+remote: Enumerating objects: 640, done.
+remote: Counting objects: 100% (640/640), done.
+remote: Compressing objects: 100% (569/569), done.
+remote: Total 640 (delta 51), reused 493 (delta 44), pack-reused 0 (from 0)
+Receiving objects: 100% (640/640), 124.21 MiB | 1.53 MiB/s, done.
+Resolving deltas: 100% (51/51), done.
 
 $ cd 6502.org 
 
