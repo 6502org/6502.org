@@ -342,7 +342,7 @@ a[name]:not([href]):active {
 
 .home-sidebar {
   flex-shrink: 0;
-  width: 280px;
+  width: 290px;
   padding: 0 20px 24px 0;
   margin-top: 24px;
 }
@@ -364,7 +364,7 @@ a[name]:not([href]):active {
 
 .two-col-sidebar {
   flex-shrink: 0;
-  width: 280px;
+  width: 290px;
   padding: 0 20px 20px 0;
   margin-top: 20px;
 }
