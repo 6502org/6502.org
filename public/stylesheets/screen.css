@@ -68,6 +68,90 @@ td {
   text-align: left;
 }
 
+/* === Named anchors (no href) should not look like links === */
+a[name]:not([href]),
+a[name]:not([href]):hover,
+a[name]:not([href]):active {
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+}
+
+.content-page a[name]:not([href]),
+.content-page a[name]:not([href]):hover {
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+}
+
+/* === Breadcrumbs === */
+.breadcrumbs {
+  padding-bottom: 10px;
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+/* === Documents Archive === */
+.doc-folder {
+  padding: 0 0 10px 15px;
+  font-weight: bold;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 4px;
+}
+
+.doc-folder-desc {
+  width: 100%;
+  padding: 6px 0 2px 20px;
+  font-weight: normal;
+}
+
+.doc-list {
+  padding: 5px 0 0 15px;
+}
+
+.doc-item {
+  padding-bottom: 15px;
+}
+
+.doc-item-detail {
+  padding-left: 20px;
+}
+
+/* === Error Pages === */
+.error-page {
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.error-code {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--blue-700);
+  margin: 0;
+}
+
+.error-message {
+  font-size: 18px;
+  color: var(--gray-700);
+  margin-top: 8px;
+}
+
+.error-contact {
+  margin-top: 16px;
+}
+
+.error-home {
+  margin-top: 24px;
+}
+
+.error-home a {
+  text-decoration: none;
+  font-weight: 500;
+}
+
 /* === Code styling === */
 .code {
   font-family: var(--font-mono);
@@ -173,6 +257,11 @@ td {
   background-color: var(--blue-50);
   color: var(--blue-600);
   text-decoration: none;
+}
+
+.nav-links a.nav-active {
+  background-color: var(--blue-50);
+  color: var(--blue-600);
 }
 
 .nav-toggle {
@@ -314,6 +403,17 @@ td {
 .sidebar-box .box a:visited { font-size: 14px; color: var(--blue-700); }
 .sidebar-box .box a:hover   { text-decoration: underline; color: var(--blue-500); }
 
+.sidebar-list {
+  list-style: disc;
+  list-style-position: inside;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.sidebar-list li {
+  padding-bottom: 2px;
+}
+
 /* === Section Headings === */
 .section-heading {
   font-size: 16px;
@@ -357,6 +457,10 @@ td {
   height: 160px;
   object-fit: cover;
   object-position: top;
+}
+
+.featured-card img.featured-card-center {
+  object-position: center;
   display: block;
 }
 
@@ -404,6 +508,10 @@ a.featured-card:hover {
 
 .sidebar-callout p {
   margin: 0;
+}
+
+.sidebar-callout p + p {
+  margin-top: 10px;
 }
 
 .sidebar-callout a {
@@ -497,10 +605,22 @@ a.featured-card:hover {
 }
 
 /* === Section Headers (folder icons on content pages) === */
-.content-page img[src*="folder_open"],
-.home-main img[src*="folder_open"] {
-  vertical-align: middle;
-  margin-right: 4px;
+.section-header {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* === Author bylines === */
+.author {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+/* === Description lists (no bullets) === */
+.desc {
+  list-style-type: none;
 }
 
 /* === Author bylines (inline font-size:10px spans on many pages) === */

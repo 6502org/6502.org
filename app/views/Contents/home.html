@@ -6,7 +6,11 @@
     <h2 class="section-heading">Welcome</h2>
 
     <p>
-      6502.org is a resource for people interested in building hardware or writing software for the 6502 microprocessor and its relatives. For over 25 years, we have strived to be the largest and most complete source of 6502-related information in the world.
+      6502.org is a resource for people building hardware or writing
+      software for the 6502 microprocessor and its many relatives, such
+      as 65C02, 65C816, and Mitsubishi 740 series. For over
+      <?= $this->milestoneYears() ?> years, we have strived to be the largest and best
+      source of 6502-related information in the world.
     </p>
 
     <h2 class="section-heading">Features</h2>
@@ -20,7 +24,7 @@
         </div>
       </a>
       <a href="/documents/" class="featured-card">
-        <img src="/images/feature_documents.jpg" alt="6500 clock timing diagrams from the MOS datasheet" style="object-position: center;">
+        <img class="featured-card-center" src="/images/feature_documents.jpg" alt="6500 clock timing diagrams from the MOS datasheet">
         <div class="featured-card-body">
           <strong>Documents Archive</strong>
           <span>Datasheets, application notes, manuals, and more</span>
@@ -111,42 +115,46 @@
   <aside class="home-sidebar">
     <div class="sidebar-box">
       <div class="boxtitle">Navigation</div>
-      <div class="box">
-        &bull;&nbsp;<a href="news/">News and Site Updates</a><br>
-        &bull;&nbsp;<a href="homebuilt/">Homebuilt Projects</a><br>
-        &bull;&nbsp;<a href="source/">Source Code Library</a><br>
-        &bull;&nbsp;<a href="mini-projects/">Hardware Mini-Projects</a><br>
-        &bull;&nbsp;<a href="documents/">Documents Archive</a><br>
-        &bull;&nbsp;<a href="documents/publications">Newsletters and Magazines</a><br>
-        &bull;&nbsp;<a href="tutorials/">Tutorials and Primers</a><br>
-        &bull;&nbsp;<a href="books/">Book List</a><br>
-        &bull;&nbsp;<a href="commercial/">Commercial Support</a><br>
-        &bull;&nbsp;<a href="crossdev/">Development Tools</a><br>
-        &bull;&nbsp;<a href="groups/">Discussion Groups</a><br>
-        &bull;&nbsp;<a href="/trainers/">Microcomputers &amp; Trainers</a><br>
-      </div>
+      <ul class="box sidebar-list">
+        <li><a href="news/">News and Site Updates</a></li>
+        <li><a href="homebuilt/">Homebuilt Projects</a></li>
+        <li><a href="source/">Source Code Library</a></li>
+        <li><a href="mini-projects/">Hardware Mini-Projects</a></li>
+        <li><a href="documents/">Documents Archive</a></li>
+        <li><a href="documents/publications">Newsletters and Magazines</a></li>
+        <li><a href="tutorials/">Tutorials and Primers</a></li>
+        <li><a href="books/">Book List</a></li>
+        <li><a href="commercial/">Commercial Support</a></li>
+        <li><a href="crossdev/">Development Tools</a></li>
+        <li><a href="groups/">Discussion Groups</a></li>
+        <li><a href="/trainers/">Microcomputers &amp; Trainers</a></li>
+      </ul>
     </div>
 
     <div class="sidebar-box">
       <div class="boxtitle">Hosted Sites</div>
-      <div class="box">
-        &bull;&nbsp;<a href="/users/andre/">Andr&eacute; Fachat's 8-bit Pages</a><br>
-        &bull;&nbsp;<a href="/users/obelisk/">Andrew Jacobs' Obelisk Website</a><br>
-        &bull;&nbsp;<a href="/users/dallas/">Dallas Shell's SYM-1 Pages</a><br>
-        &bull;&nbsp;<a href="/users/dieter/">Dieter M&uuml;ller's TTL CPU Pages</a><br>
-        &bull;&nbsp;<a href="/users/garth/">Garth Wilson's Projects</a><br>
-        &bull;&nbsp;<a href="/users/mycorner/">Lee Davison's My Corner Website</a><br>
-        &bull;&nbsp;<a href="/users/andre/petindex/index.html">Commodore PET Index</a><br>
-        &bull;&nbsp;<a href="http://cbm.6502.org/">Commodore Documents</a><br>
-      </div>
+      <ul class="box sidebar-list">
+        <li><a href="/users/andre/">Andr&eacute; Fachat's 8-bit Pages</a></li>
+        <li><a href="/users/obelisk/">Andrew Jacobs' Obelisk Website</a></li>
+        <li><a href="/users/dallas/">Dallas Shell's SYM-1 Pages</a></li>
+        <li><a href="/users/dieter/">Dieter M&uuml;ller's TTL CPU Pages</a></li>
+        <li><a href="/users/garth/">Garth Wilson's Projects</a></li>
+        <li><a href="/users/mycorner/">Lee Davison's My Corner Website</a></li>
+        <li><a href="/users/andre/petindex/index.html">Commodore PET Index</a></li>
+        <li><a href="http://cbm.6502.org/">Commodore Documents</a></li>
+      </ul>
     </div>
 
     <div class="sidebar-callout">
       <strong>Contribute</strong>
       <p>
-        This site has been built on visitor contributions.
-        <?= $this->mailTo(CONTACT_EMAIL, 'Contact us', ['subject' => '6502.org Submission', 'encode' => 'javascript']) ?>
-        if you have something to share, whether in electronic form or otherwise.
+        If you have something to share,
+        even if it's in paper form,
+        <?= $this->mailTo(CONTACT_EMAIL, 'contact us', ['subject' => '6502.org Submission', 'encode' => 'javascript']) ?>.
+      </p>
+      <p>
+        6502.org is developed as an open project
+        <a href="https://github.com/6502org">on GitHub</a>.
       </p>
     </div>
   </aside>

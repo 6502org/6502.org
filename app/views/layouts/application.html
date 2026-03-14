@@ -4,8 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>6502.org<? if ($this->title): ?>: <?= $this->title ?><? endif ?></title>
-  <? if ($this->description): ?><meta name="description" content="<?= $this->description ?>"><? endif ?>
+  <? if ($this->description): ?><meta name="description" content="<?= $this->description ?>">
+<? endif ?>
   <?= $this->stylesheetLinkTag('all') ?>
+
+  <?= $this->render(['partial' => 'shared/schema']) ?>
 </head>
 
 <body>
@@ -25,10 +28,11 @@
 
   <footer class="site-footer">
     <div>
-      6502.org is an ongoing project by <a href="http://www.mikenaberezny.com" title="Mike Naberezny">Mike Naberezny</a> and contributors.
+      6502.org is an ongoing project by <a href="https://mikenaberezny.com" title="Mike Naberezny">Mike Naberezny</a> and contributors.
     </div>
     <div>
-      Visit the <a href="/news/">News</a> section for recent updates.
+      <a href="/news/">News</a> &middot;
+      <a href="https://github.com/6502org">GitHub</a>
     </div>
   </footer>
 

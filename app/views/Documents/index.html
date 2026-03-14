@@ -7,28 +7,28 @@
     <?= $this->breadcrumbs() ?>
 
     <? foreach ($this->myFolders as $folder): ?>
-      <div style="padding: 0 0 10px 15px; font-weight: bold;">
-        <img src="/images/files/folder_closed.gif" style="vertical-align: middle;" alt="**">&nbsp;
+      <div class="doc-folder">
+        <img src="/images/files/folder_closed.gif" alt="**">&nbsp;
 
         <a href="<?= $folder['url'] ?>"><?= $this->h($folder['title']) ?></a>
 
         <? if (! empty($folder['description'])): ?>
-          <div style="padding: 6px 0 2px 20px; font-weight: normal;">
+          <div class="doc-folder-desc">
             <?= $this->h($folder['description']) ?>
           </div>
         <? endif ?>
       </div>
     <? endforeach ?>
 
-    <div style="padding: 5px 0 0 15px;">
+    <div class="doc-list">
       <? foreach ($this->myFolder['docs'] as $doc): ?>
         <? if ($doc['visible']): ?>
-          <div style="padding-bottom: 15px;">
+          <div class="doc-item">
             <div>
               <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
               &nbsp;&nbsp;<?= $this->h($doc['title']) ?>
             </div>
-            <div style="padding-left: 20px;">
+            <div class="doc-item-detail">
               &nbsp;&nbsp;<a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
               <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
             </div>
@@ -43,11 +43,11 @@
     <? if (count($this->myFolders) > 0): ?>
     <div class="sidebar-box">
       <div class="boxtitle"><?= $this->h($this->truncate($this->myFolder['title'], 30)) ?></div>
-      <div class="box">
+      <ul class="box sidebar-list">
         <? foreach ($this->myFolders as $folder): ?>
-        &bull;&nbsp;<a href="<?= $folder['url'] ?>"><?= $this->h($this->truncate($folder['title'], 30)) ?></a><br>
+        <li><a href="<?= $folder['url'] ?>"><?= $this->h($this->truncate($folder['title'], 30)) ?></a></li>
         <? endforeach ?>
-      </div>
+      </ul>
     </div>
     <? endif ?>
 

@@ -1,18 +1,18 @@
-<div class="content-page" style="text-align: center; padding-top: 60px; padding-bottom: 60px;">
+<div class="content-page error-page">
 
-  <p style="font-size: 48px; font-weight: 700; color: #2c5f8a; margin: 0;">404</p>
+  <p class="error-code">404</p>
 
-  <p style="font-size: 18px; color: #4a4a5a; margin-top: 8px;">
+  <p class="error-message">
     The resource that you have requested could not be found.
   </p>
 
-  <p style="margin-top: 16px;">
+  <p class="error-contact">
     Please try your request again later. If the problem persists, contact
     <?= $this->mailTo(CONTACT_EMAIL, null, ['subject' => '6502.org Error', 'encode' => 'javascript']) ?>.
   </p>
 
-  <p style="margin-top: 24px;">
-    <a href="/" style="text-decoration: none; font-weight: 500;">&larr; Return to the home page</a>
+  <p class="error-home">
+    <a href="/">&larr; Return to the home page</a>
   </p>
 
 </div>

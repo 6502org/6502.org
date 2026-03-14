@@ -15,8 +15,8 @@ class DocumentsHelper extends ApplicationHelper
             }
         }
 
-        return $this->contentTag('div', implode(' &gt; ', $crumbs),
-                                 array('style' => 'padding-bottom: 10px;'));
+        return $this->contentTag('div', implode(' / ', $crumbs),
+                                 array('class' => 'breadcrumbs'));
     }
 
     public function fileFormatIcon($docItem)
