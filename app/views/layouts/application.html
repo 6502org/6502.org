@@ -1,38 +1,36 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>6502.org<? if ($this->title): ?>: <?= $this->title ?><? endif ?></title>
   <? if ($this->description): ?><meta name="description" content="<?= $this->description ?>"><? endif ?>
   <?= $this->stylesheetLinkTag('all') ?>
 </head>
 
 <body>
-  <table cellpadding="0" cellspacing="0">
-  	<tr>
-  		<td class="banner">
-  		  <?= $this->linkTo($this->imageTag('6502org_logo.gif', ['border' => 0]),
-  		          ['controller' => 'contents', 'action' => 'home'], ['style' => 'color: #336699']) ?>
-  		</td>
-  		<td class="banner" width="100%">
-  		  <?= $this->imageTag('spacer.gif') ?>
-  		</td>
-  	</tr>
-  </table>
+  <header class="site-header">
+    <?= $this->linkTo(
+          '<img class="site-icon" src="/images/6502_icon.png" alt="" width="48" height="48">'
+          . '<span class="site-title-group"><span class="site-title">6502.org</span>'
+          . '<span class="site-subtitle">The 6502 Microprocessor Resource</span></span>',
+          ['controller' => 'contents', 'action' => 'home']) ?>
+  </header>
 
   <?= $this->render(['partial' => 'shared/topnav']) ?>
 
-  <?= $this->contentForLayout ?>
+  <main>
+    <?= $this->contentForLayout ?>
+  </main>
 
-  <table cellpadding="0" cellspacing="0">
-  	<tr><td><img src="/images/spacer.gif" height="5" alt=" "></td></tr>
-  	<tr><td class="footer">
-  		6502.org is an ongoing project by <a href="http://www.mikenaberezny.com" title="Mike Naberezny" style="text-decoration: underline;">Mike Naberezny</a> and contributors.<br>
-&nbsp;
-  	</td><td class="footer" style="text-align: right;">
-  		Visit the <a href="/news/" style="text-decoration: underline;">News</a> section for recent updates.
-  	</td></tr>
-  </table>
+  <footer class="site-footer">
+    <div>
+      6502.org is an ongoing project by <a href="http://www.mikenaberezny.com" title="Mike Naberezny">Mike Naberezny</a> and contributors.
+    </div>
+    <div>
+      Visit the <a href="/news/">News</a> section for recent updates.
+    </div>
+  </footer>
 
 </body>
 </html>

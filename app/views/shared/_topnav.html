@@ -1,36 +1,19 @@
-<table cellspacing="0" cellpadding="0" style="padding-top: 2px;">
-	<tr>
-  	<td width="100%" class="header" style="font-weight: bold;" nowrap>
+<nav class="site-nav">
+  <span class="nav-title">
     <? if ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'home'): ?>
-    Welcome to 6502.org!
+    &nbsp;
     <? else: ?>
-  	<?= $this->title ?>
+    <?= $this->title ?>
     <? endif ?>
-  	</td>
+  </span>
 
-  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
-  	<td class="header" nowrap>
-  	  <?= $this->linkTo('Projects', ['controller' => 'contents', 'action' => 'homebuilt']) ?>
-    </td>
+  <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
 
-  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
-  	<td class="header" nowrap>
-  	  <?= $this->linkTo('Code', ['controller' => 'contents', 'action' => 'repository']) ?>
-  	</td>
-
-  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
-  	<td class="header" nowrap>
-  	  <?= $this->linkTo('Documents', ['controller' => 'documents', 'action' => 'index']) ?>
-    </td>
-
-  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
-  	<td class="header" nowrap>
-  	  <?= $this->linkTo('Tools', ['controller' => 'tools', 'action' => 'index']) ?>
-  	</td>
-
-  	<td class="header"><img src="/images/spacer.gif" height="14" width="10" alt=" "></td>
-  	<td class="header" nowrap>
-  	  <?= $this->linkTo('Forum', 'http://forum.6502.org') ?>
-  	</td>
-	</tr>
-</table>
+  <div class="nav-links">
+    <?= $this->linkTo('Projects', ['controller' => 'contents', 'action' => 'homebuilt']) ?>
+    <?= $this->linkTo('Code', ['controller' => 'contents', 'action' => 'repository']) ?>
+    <?= $this->linkTo('Documents', ['controller' => 'documents', 'action' => 'index']) ?>
+    <?= $this->linkTo('Tools', ['controller' => 'tools', 'action' => 'index']) ?>
+    <?= $this->linkTo('Forum', 'http://forum.6502.org') ?>
+  </div>
+</nav>

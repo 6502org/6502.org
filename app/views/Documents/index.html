@@ -1,78 +1,63 @@
 <? $this->title = 'Documents Archive' ?>
 <? $this->description = 'A collection of useful documents pertaining to the 6502 microprocessor.' ?>
 
-<table border = "0" cellpadding = "0" cellspacing = "0" width = "100%">
-	<tr>
-		<td width="100%" class="bodyblack" style="padding: 10px 10px 0px 10px;">
+<div class="two-col-layout">
+  <div class="two-col-main">
 
     <?= $this->breadcrumbs() ?>
 
     <? foreach ($this->myFolders as $folder): ?>
-			<div style="padding: 0px 0px 10px 15px; font-weight: bold;">
-				<IMG SRC="/images/files/folder_closed.gif" align=left alt="**">&nbsp;
+      <div style="padding: 0 0 10px 15px; font-weight: bold;">
+        <img src="/images/files/folder_closed.gif" style="vertical-align: middle;" alt="**">&nbsp;
 
-				  <a href="<?= $folder['url'] ?>"><?= $this->h($folder['title']) ?></a>
+        <a href="<?= $folder['url'] ?>"><?= $this->h($folder['title']) ?></a>
 
-          <? if (! empty($folder['description'])): ?>
-  				    <div style="padding: 6px 0px 2px 20px; font-weight: normal;">
-  				      <?= $this->h($folder['description']) ?>
-  				    </div>
-  				<? endif ?>
-			</div>
-		<? endforeach ?>
+        <? if (! empty($folder['description'])): ?>
+          <div style="padding: 6px 0 2px 20px; font-weight: normal;">
+            <?= $this->h($folder['description']) ?>
+          </div>
+        <? endif ?>
+      </div>
+    <? endforeach ?>
 
-		<div style="padding: 5px 0px 0px 15px;">
-			<table cellpadding="0" cellspacing="0">
-			<? foreach ($this->myFolder['docs'] as $doc): ?>
-				<? if ($doc['visible']): ?>
-				<tr>
-					<td>
-					  <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
-					</td>
-					<td nowrap>&nbsp;&nbsp;<?= $this->h($doc['title']) ?></td>
-					<td width="100%">&nbsp;</td>
-				</tr><tr>
-					<td>&nbsp;</td>
-					<td nowrap style="padding-bottom: 15px;">&nbsp;&nbsp;
-					  <a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
-				      <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
-					</td>
-				</tr>
-				<? endif ?>
-			<? endforeach ?>
-			</table>
-		</div>
+    <div style="padding: 5px 0 0 15px;">
+      <? foreach ($this->myFolder['docs'] as $doc): ?>
+        <? if ($doc['visible']): ?>
+          <div style="padding-bottom: 15px;">
+            <div>
+              <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
+              &nbsp;&nbsp;<?= $this->h($doc['title']) ?>
+            </div>
+            <div style="padding-left: 20px;">
+              &nbsp;&nbsp;<a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
+              <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
+            </div>
+          </div>
+        <? endif ?>
+      <? endforeach ?>
+    </div>
 
-	</td>
+  </div>
 
-	<td style="padding: 0px 10px 250px 0px;">
-		<div style="width: 200px;">
-		<? if (count($this->myFolders) > 0): ?>
-		<table cellpadding="0" cellspacing="0">
-			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
-			<tr><td class="boxtitle"><?= $this->h($this->truncate($this->myFolder['title'], 30)) ?> </td></tr>
-			<tr><td class="box">
+  <aside class="two-col-sidebar">
+    <? if (count($this->myFolders) > 0): ?>
+    <div class="sidebar-box">
+      <div class="boxtitle"><?= $this->h($this->truncate($this->myFolder['title'], 30)) ?></div>
+      <div class="box">
+        <? foreach ($this->myFolders as $folder): ?>
+        &bull;&nbsp;<a href="<?= $folder['url'] ?>"><?= $this->h($this->truncate($folder['title'], 30)) ?></a><br>
+        <? endforeach ?>
+      </div>
+    </div>
+    <? endif ?>
 
-      		<? foreach ($this->myFolders as $folder): ?>
-				&bull;&nbsp;<a href="<?= $folder['url'] ?>"><?= $this->h($this->truncate($folder['title'], 30)) ?></a><br>
-      		<? endforeach ?>
-			</td></tr>
-		</table>
-    	<? endif ?>
-
-		<table cellpadding="0" cellspacing="0">
-			<tr><td height="15" width="200" nowrap>&nbsp;</td></tr>
-			<tr><td class="boxtitle">Submit New Documents</td></tr>
-			<tr><td class="box">
-				If you have a new or updated document that should be included in
-				our archives, please contact us via
-        <?= $this->mailTo(CONTACT_EMAIL, 'email', ['subject' => '6502.org Documents Archive', 'encode' => 'javascript', 'style' => 'text-decoration: underline']) ?>.
-			</td></tr>
-		</table>
-		</div>
-	</td>
-
-
-	</tr>
-
-</table>
+    <div class="sidebar-callout">
+      <strong>Contribute</strong>
+      <p>
+        Have a document that should be included?
+        <?= $this->mailTo(CONTACT_EMAIL, 'Contact us', ['subject' => '6502.org Documents Archive', 'encode' => 'javascript']) ?>
+        to submit it.
+      </p>
+    </div>
+  </aside>
+</div>
