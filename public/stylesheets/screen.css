@@ -152,6 +152,16 @@ a[name]:not([href]):active {
   font-weight: 500;
 }
 
+/* === External link indicator === */
+.content-page a[href^="http"]:not([href*="6502.org"])::after {
+  content: "\2009\2197";
+  font-size: 0.75em;
+  vertical-align: super;
+  opacity: 0.5;
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* === Code styling === */
 .code {
   font-family: var(--font-mono);
