@@ -4,7 +4,7 @@
 /log/*
 /public/*.php
 !/public/index.php
-/public/documents
+/public/documents/*
 /public/javascripts/cache
 /public/stylesheets/cache
 /public/users
