@@ -133,6 +133,18 @@ if (count($needed) === 0) {
     exit(0);
 }
 
+// Check disk space
+$neededBytes = 0;
+foreach ($needed as $file) {
+    $neededBytes += (int)$file['filesize'];
+}
+$freeBytes = disk_free_space($destDir);
+if ($freeBytes !== false && $freeBytes < $neededBytes) {
+    fprintf(STDERR, "Error: not enough disk space. Need %s but only %s available.\n",
+            formatBytes($neededBytes), formatBytes($freeBytes));
+    exit(1);
+}
+
 // Phase 2: Download needed files
 $downloaded = 0;
 $failures = array();
