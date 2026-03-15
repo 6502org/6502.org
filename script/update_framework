@@ -1,0 +1,163 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Update the framework from GitHub.
+ *
+ * Downloads the latest framework from the 6502org/framework repository
+ * and replaces the local vendor/ directory with the updated one.  The
+ * framework is rarely updated so a git submodule is not worth it.
+ *
+ * Usage: php script/update_framework
+ */
+
+if (!defined('MAD_ENV')) define('MAD_ENV', 'development');
+require_once dirname(dirname(__FILE__)).'/config/environment.php';
+
+function create_temp_dir()
+{
+    $dir = tempnam(MAD_ROOT . '/tmp', 'update_framework_');
+    unlink($dir);
+    mkdir($dir);
+    return $dir;
+}
+
+function download($url, $tmpDir)
+{
+    echo "Downloading framework from GitHub...\n";
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $data = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+
+    if ($data === false || $httpCode !== 200) {
+        throw new RuntimeException("Download failed (HTTP $httpCode): $error");
+    }
+
+    $zipFile = $tmpDir . '/framework.zip';
+    file_put_contents($zipFile, $data);
+    return $zipFile;
+}
+
+function extract_vendor($zipFile, $tmpDir)
+{
+    echo "Extracting...\n";
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipFile) !== true) {
+        throw new RuntimeException("Could not open zip file");
+    }
+    $zip->extractTo($tmpDir);
+    $zip->close();
+
+    $vendorDir = $tmpDir . '/framework-main/vendor';
+    if (!is_dir($vendorDir)) {
+        throw new RuntimeException("vendor/ not found in downloaded framework");
+    }
+
+    return $vendorDir;
+}
+
+function install($sourceVendor, $destVendor)
+{
+    echo "Updating vendor/...\n";
+
+    foreach (scandir($sourceVendor) as $entry) {
+        if ($entry === '.' || $entry === '..') { continue; }
+        $src = $sourceVendor . '/' . $entry;
+        if (!is_dir($src)) { continue; }
+
+        $dest = $destVendor . '/' . $entry;
+        if (is_dir($dest)) {
+            remove_directory($dest);
+        }
+        copy_directory($src, $dest);
+    }
+}
+
+/**
+ * Copy a file without preserving permissions. PHP's copy() preserves
+ * the source file's permissions, which brings in whatever permission
+ * bits the zip archive had. Using file_get/put_contents creates a
+ * new file with the default umask instead.
+ */
+function copy_file($src, $dest)
+{
+    file_put_contents($dest, file_get_contents($src));
+}
+
+function copy_directory($src, $dest)
+{
+    mkdir($dest);
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($src, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+    foreach ($iterator as $item) {
+        $target = $dest . '/' . $iterator->getSubPathname();
+        if ($item->isDir()) {
+            mkdir($target);
+        } else {
+            copy_file($item->getPathname(), $target);
+        }
+    }
+}
+
+function remove_directory($dir)
+{
+    $realDir = realpath($dir);
+    $realRoot = realpath(MAD_ROOT);
+
+    if ($realDir === false || $realRoot === false) {
+        throw new RuntimeException("Cannot resolve path: $dir");
+    }
+    if (strpos($realDir, $realRoot . '/') !== 0) {
+        throw new RuntimeException("Refusing to delete outside MAD_ROOT: $dir");
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($realDir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($iterator as $item) {
+        if ($item->isDir()) {
+            rmdir($item->getPathname());
+        } else {
+            unlink($item->getPathname());
+        }
+    }
+    rmdir($realDir);
+}
+
+function cleanup($dir)
+{
+    if (is_dir($dir)) {
+        remove_directory($dir);
+    }
+}
+
+function main()
+{
+    $url = 'https://github.com/6502org/framework/archive/refs/heads/main.zip';
+    $tmpDir = create_temp_dir();
+
+    try {
+        $zipFile = download($url, $tmpDir);
+        $vendorDir = extract_vendor($zipFile, $tmpDir);
+        install($vendorDir, MAD_ROOT . '/vendor');
+        echo "Success.\n";
+    } finally {
+        cleanup($tmpDir);
+    }
+
+    exit(0);
+}
+
+main();
