@@ -1,0 +1,330 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Download all of the documents from the mirrors.
+ *
+ * Usage: php script/download_documents [options]
+ *
+ * Options:
+ *   --output=DIR       Destination directory (default: public/documents/)
+ *   --delay=SECONDS    Delay between downloads (default: 5)
+ *   --retry-delay=SECONDS  Delay before retrying a failed download (default: 30)
+ *   --help             Show this help message
+ *
+ * Downloads all document files from their mirror URLs into the
+ * given directory, recreating the folder structure. Files are
+ * verified by SHA1 hash. Existing files with matching hashes
+ * are skipped.
+ *
+ * Exit status: 0 if all files downloaded successfully, 1 if not.
+ */
+
+$options = getopt('', array('output:', 'delay:', 'retry-delay:', 'retries:', 'filter:', 'help'));
+
+if (isset($options['help'])) {
+    fprintf(STDOUT, "Usage: php %s [options]\n\n", $argv[0]);
+    fprintf(STDOUT, "Options:\n");
+    fprintf(STDOUT, "  --output=DIR            Destination directory (default: public/documents/)\n");
+    fprintf(STDOUT, "  --delay=SECONDS         Delay between downloads (default: 5)\n");
+    fprintf(STDOUT, "  --retries=N             Max retries per file (default: 5)\n");
+    fprintf(STDOUT, "  --retry-delay=SECONDS   Delay before retry (default: 30)\n");
+    fprintf(STDOUT, "  --filter=STRING         Only download files whose path contains STRING\n");
+    fprintf(STDOUT, "  --help                  Show this help message\n");
+    exit(0);
+}
+
+if (!defined('MAD_ENV')) define('MAD_ENV', 'production');
+require_once dirname(dirname(__FILE__)).'/config/environment.php';
+
+$destDir = isset($options['output']) ? rtrim($options['output'], '/') : MAD_ROOT . '/public/documents';
+$downloadDelay = isset($options['delay']) ? (int)$options['delay'] : 5;
+$maxRetries = isset($options['retries']) ? (int)$options['retries'] : 5;
+$retryDelay = isset($options['retry-delay']) ? (int)$options['retry-delay'] : 30;
+$filter = isset($options['filter']) ? $options['filter'] : null;
+
+if (!is_dir($destDir)) {
+    if (!mkdir($destDir, 0755, true)) {
+        fprintf(STDERR, "Error: could not create '%s'\n", $destDir);
+        exit(1);
+    }
+}
+
+function formatBytes($bytes) {
+    if ($bytes >= 1073741824) {
+        return sprintf('%.1f GB', $bytes / 1073741824);
+    } elseif ($bytes >= 1048576) {
+        return sprintf('%.1f MB', $bytes / 1048576);
+    } elseif ($bytes >= 1024) {
+        return sprintf('%.0f KB', $bytes / 1024);
+    }
+    return sprintf('%d B', $bytes);
+}
+
+$dbFile = __DIR__ . '/../db/database.sqlite3';
+if (!file_exists($dbFile)) {
+    fprintf(STDERR, "Error: database not found at %s\n", $dbFile);
+    exit(1);
+}
+
+$pdo = new PDO("sqlite:$dbFile");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Get all files with their folder paths
+$sql = "SELECT df.filename, df.sha1, df.mirror_url, df.filesize, fo.path
+        FROM document_files df
+        JOIN document_folders fo ON df.folder_id = fo.id
+        WHERE df.mirror_url IS NOT NULL AND df.mirror_url != ''
+        ORDER BY fo.path, df.filename";
+$stmt = $pdo->query($sql);
+$files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($filter !== null) {
+    $files = array_values(array_filter($files, function ($file) use ($filter) {
+        $path = $file['path'] . $file['filename'];
+        return stripos($path, $filter) !== false;
+    }));
+}
+
+$totalFiles = count($files);
+$totalSize = 0;
+foreach ($files as $file) {
+    $totalSize += (int)$file['filesize'];
+}
+
+fprintf(STDOUT, "Destination: %s\n", $destDir);
+fprintf(STDOUT, "Found %d files (%s total)\n\n", $totalFiles, formatBytes($totalSize));
+
+// Phase 1: Check existing files
+fprintf(STDOUT, "Checking existing files...\n");
+$needed = array();
+$skipped = 0;
+
+foreach ($files as $index => $file) {
+    $relativePath = $file['path'] . $file['filename'];
+    $fullPath = $destDir . '/' . $relativePath;
+
+    $prefix = sprintf("  [%d/%d] ", $index + 1, $totalFiles);
+    $maxName = 80 - strlen($prefix);
+    $name = strlen($relativePath) > $maxName
+        ? '...' . substr($relativePath, -(($maxName) - 3))
+        : $relativePath;
+    fprintf(STDOUT, "\r%-80s", $prefix . $name);
+
+    if (file_exists($fullPath)) {
+        $existingHash = sha1_file($fullPath);
+        if ($existingHash === $file['sha1']) {
+            $skipped++;
+            continue;
+        }
+        $file['_reason'] = 'corrupt';
+    } else {
+        $file['_reason'] = 'missing';
+    }
+    $file['_relative_path'] = $relativePath;
+    $file['_full_path'] = $fullPath;
+    $needed[] = $file;
+}
+
+fprintf(STDOUT, "\r  %d OK, %d to download                                                      \n\n",
+        $skipped, count($needed));
+
+if (count($needed) === 0) {
+    fprintf(STDOUT, "Everything is up to date.\n");
+    exit(0);
+}
+
+// Phase 2: Download needed files
+$downloaded = 0;
+$failures = array();
+$consecutiveFailures = 0;
+$totalNeeded = count($needed);
+
+foreach ($needed as $index => $file) {
+    $relativePath = $file['_relative_path'];
+    $fullPath = $file['_full_path'];
+    $dirPath = dirname($fullPath);
+    $num = $index + 1;
+
+    // Build list of mirror URLs to try (cycles through on retries)
+    $urls = array();
+    if (!empty($file['mirror_url'])) {
+        $urls[] = $file['mirror_url'];
+    }
+    // Future: add more mirror URLs here as they become available
+
+    if (empty($urls)) {
+        fprintf(STDERR, "[%d/%d] No mirror URL for %s\n", $num, $totalNeeded, $relativePath);
+        $failures[] = $relativePath;
+        continue;
+    }
+
+    if ($file['_reason'] === 'corrupt') {
+        fprintf(STDOUT, "[%d/%d] Re-downloading (corrupt) %s\n",
+                $num, $totalNeeded, $relativePath);
+    } else {
+        fprintf(STDOUT, "[%d/%d] Downloading %s\n",
+                $num, $totalNeeded, $relativePath);
+    }
+
+    // Create directory if needed
+    if (!is_dir($dirPath)) {
+        if (!mkdir($dirPath, 0755, true)) {
+            fprintf(STDERR, "  Error: could not create directory %s\n", $dirPath);
+            $failures[] = $relativePath;
+            $consecutiveFailures++;
+            if ($consecutiveFailures >= 2) {
+                fprintf(STDERR, "\nTwo consecutive failures. Stopping.\n");
+                break;
+            }
+            continue;
+        }
+    }
+
+    // Download to a temporary file
+    $tmpFile = tempnam(MAD_ROOT . '/tmp', 'download_' . getmypid() . '_');
+    rename($tmpFile, $tmpFile . '.bin');
+    $tmpFile = $tmpFile . '.bin';
+    $success = false;
+
+    for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+        $url = $urls[($attempt - 1) % count($urls)];
+
+        if ($attempt > 1) {
+            for ($w = $retryDelay; $w > 0; $w--) {
+                fprintf(STDOUT, "\r  Retry %d/%d in %ds...  ", $attempt, $maxRetries, $w);
+                sleep(1);
+            }
+            fprintf(STDOUT, "\r  Retry %d/%d...            \n", $attempt, $maxRetries);
+        }
+
+        fprintf(STDOUT, "  %s\n", $url);
+
+        // Download the file using php-curl with progress
+        $fp = fopen($tmpFile, 'wb');
+        if ($fp === false) {
+            fprintf(STDERR, "  Error: could not open temp file for writing\n");
+            break;
+        }
+
+        $expectedSize = (int)$file['filesize'];
+        fprintf(STDOUT, "  Connecting...\r");
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch, CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+        curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 1024);
+        curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 30);
+        curl_setopt($ch, CURLOPT_USERAGENT,
+            'Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0');
+        curl_setopt($ch, CURLOPT_NOPROGRESS, false);
+        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION,
+            function ($ch, $dlTotal, $dlNow, $ulTotal, $ulNow) use ($expectedSize) {
+                if ($dlNow > 0) {
+                    $total = $dlTotal > 0 ? $dlTotal : $expectedSize;
+                    if ($total > 0) {
+                        $pct = min(100, (int)($dlNow * 100 / $total));
+                        fprintf(STDOUT, "\r  %s / %s (%d%%)",
+                            formatBytes($dlNow), formatBytes($total), $pct);
+                    } else {
+                        fprintf(STDOUT, "\r  %s", formatBytes($dlNow));
+                    }
+                }
+                return 0;
+            }
+        );
+
+        $result = curl_exec($ch);
+        $error = curl_error($ch);
+        $errno = curl_errno($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        fclose($fp);
+
+        fprintf(STDOUT, "\n");
+
+        if ($result === false) {
+            fprintf(STDERR, "  Failed: %s (curl error %d, HTTP %d)\n",
+                    $error, $errno, $httpCode);
+            if (file_exists($tmpFile)) {
+                unlink($tmpFile);
+            }
+            continue;
+        }
+
+        if (!file_exists($tmpFile) || filesize($tmpFile) === 0) {
+            fprintf(STDERR, "  Failed: 0 bytes received\n");
+            if (file_exists($tmpFile)) {
+                unlink($tmpFile);
+            }
+            continue;
+        }
+
+        // Verify SHA1 of downloaded file
+        $downloadedHash = sha1_file($tmpFile);
+        if ($downloadedHash !== $file['sha1']) {
+            fprintf(STDERR, "  SHA1 mismatch: expected %s, got %s\n",
+                    $file['sha1'], $downloadedHash);
+            unlink($tmpFile);
+            continue;
+        }
+
+        // Move to final location
+        if (!rename($tmpFile, $fullPath)) {
+            fprintf(STDERR, "  Error: could not move file to %s\n", $fullPath);
+            unlink($tmpFile);
+            continue;
+        }
+
+        $success = true;
+        break;
+    }
+
+    // Clean up temp file if still around
+    if (file_exists($tmpFile)) {
+        unlink($tmpFile);
+    }
+
+    if ($success) {
+        $downloaded++;
+        $consecutiveFailures = 0;
+        // Delay between downloads to be polite to archive.org
+        if ($downloadDelay > 0 && $index < $totalNeeded - 1) {
+            for ($w = $downloadDelay; $w > 0; $w--) {
+                fprintf(STDOUT, "\r  Waiting %ds...  ", $w);
+                sleep(1);
+            }
+            fprintf(STDOUT, "\r                  \r");
+        }
+    } else {
+        fprintf(STDERR, "  Gave up after %d attempts\n", $maxRetries);
+        $failures[] = $relativePath;
+        $consecutiveFailures++;
+
+        if ($consecutiveFailures >= 2) {
+            fprintf(STDERR, "\nTwo consecutive failures. archive.org may be down. Stopping.\n");
+            break;
+        }
+    }
+}
+
+// Summary
+fprintf(STDOUT, "\n");
+fprintf(STDOUT, "Total:      %d\n", $totalFiles);
+fprintf(STDOUT, "Skipped:    %d (already exist with correct SHA1)\n", $skipped);
+fprintf(STDOUT, "Downloaded: %d\n", $downloaded);
+fprintf(STDOUT, "Failed:     %d\n", count($failures));
+
+if (count($failures) > 0) {
+    fprintf(STDOUT, "\nFailed files:\n");
+    foreach ($failures as $f) {
+        fprintf(STDOUT, "  %s\n", $f);
+    }
+    exit(1);
+}
+
+exit(0);
