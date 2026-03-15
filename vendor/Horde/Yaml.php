@@ -9,9 +9,9 @@
  * @author   Chris Wanstrath <chris@ozmm.org>
  * @author   Chuck Hagenbuch <chuck@horde.org>
  * @author   Mike Naberezny <mike@maintainable.com>
- * @license  http://www.horde.org/licenses/bsd BSD
+ * @license  http://opensource.org/licenses/bsd-license.php BSD
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 
 /**
@@ -23,7 +23,7 @@
  * that will be used for parsing.
  *
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 class Horde_Yaml
 {
@@ -69,12 +69,13 @@ class Horde_Yaml
 
         if (is_callable(self::$loadfunc)) {
             return call_user_func(self::$loadfunc, $yaml);
+            return is_array($array) ? $array : array();
         }
 
         if (strpos($yaml, "\r") !== false) {
             $yaml = str_replace(array("\r\n", "\r"), array("\n", "\n"), $yaml);
         }
-        $lines = explode("\n", rtrim($yaml, "\n"));
+        $lines = explode("\n", $yaml);
         $loader = new Horde_Yaml_Loader;
 
         foreach ($lines as $line) {
@@ -118,7 +119,7 @@ class Horde_Yaml
      */
     public static function loadStream($stream)
     {
-        if (!is_resource($stream) || get_resource_type($stream) != 'stream') {
+        if (! is_resource($stream) || get_resource_type($stream) != 'stream') {
             throw new InvalidArgumentException('Stream must be a stream resource');
         }
 
@@ -135,15 +136,14 @@ class Horde_Yaml
     }
 
     /**
-     * Dumps a PHP array to YAML.
+     * Dump a PHP array to YAML.
      *
-     * The dump method, when supplied with an array, will do its best to
-     * convert the array into friendly YAML.
+     * The dump method, when supplied with an array, will do its best
+     * to convert the array into friendly YAML.
      *
-     * @param  array|Traversable $array  PHP array or Traversable object.
-     * @param  array $options            Options to pass to dumper.
-     *
-     * @return string  YAML representation of $value.
+     * @param  array|Traversable  $array     PHP array or traversable object
+     * @param  integer            $options   Options to pass to dumper
+     * @return string                        YAML representation of $value
      */
     public static function dump($value, $options = array())
     {

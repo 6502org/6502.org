@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_View_Helper_Model extends Mad_View_Helper_Base
@@ -54,7 +54,7 @@ class Mad_View_Helper_Model extends Mad_View_Helper_Base
         foreach(array('id', 'class') as $key) {
             if (array_key_exists($key, $options)) {
                 $value = $options[$key];
-                if (strlen($value)) {
+                if (strlen((string)$value)) {
                     $htmlOptions[$key] = $value;
                 }
             } else {

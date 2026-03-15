@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Controller
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Controller
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */ 
 class Mad_Controller_Proxy_Cookie implements ArrayAccess
@@ -45,8 +45,8 @@ class Mad_Controller_Proxy_Cookie implements ArrayAccess
 
     /**
      * @todo need to revisit this.  the request object has no method
-     * to change the value of a cookie.  that makes sense but if a
-     * cookie is changed, its value is updated in the response but
+     * to change the value of a cookie.  that makes sense but if a 
+     * cookie is changed, its value is updated in the response but 
      * not the request.  this means that reading it again later
      * in the action will return the wrong result.
      */
@@ -60,8 +60,8 @@ class Mad_Controller_Proxy_Cookie implements ArrayAccess
 
     /**
      * @todo need to revisit this.  the request object has no method
-     * to change the value of a cookie.  that makes sense but if a
-     * cookie is changed, its value is updated in the response but
+     * to change the value of a cookie.  that makes sense but if a 
+     * cookie is changed, its value is updated in the response but 
      * not the request.  this means that reading it again later
      * in the action will return the wrong result.
      */

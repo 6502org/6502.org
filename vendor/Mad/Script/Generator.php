@@ -4,7 +4,7 @@
  *
  * @category   Mad
  * @package    Mad_Script
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -13,14 +13,14 @@
  *
  * @category   Mad
  * @package    Mad_Script
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Script_Generator extends Mad_Script_Base
 {
     /**
-     * Template to parse skeleton code
-     * @var obejct  {@link TemplatePhplib}
+     * Template
+     * @var Mad_View_Base
      */
     protected $_tpl;
 
@@ -57,7 +57,7 @@ class Mad_Script_Generator extends Mad_Script_Base
         $this->_tpl->addPath('vendor/Mad/Script/templates');
 
         $filename = array_shift($args);
-        $action   = !empty($args) ? array_shift($args) : '';
+        $action   = !empty($args) ? array_shift($args) : null;
         $this->_args = $args;
 
         // generate model stubs
@@ -179,18 +179,17 @@ class Mad_Script_Generator extends Mad_Script_Base
         if (!$name) {
             $this->_exit("You did not specify the name of the Controller to generate");
         }
-        // strip off controller if it's there
+        // strip off controller if it's there and camelize
         $name = str_replace('Controller', '', $name);
-
+        $class = Mad_Support_Inflector::camelize($name);
 
         // CREATE DIRECTORIES
-        $this->_createDir(MAD_ROOT.'/app/views/'.Mad_Support_Inflector::camelize($name).'/');
+        $this->_createDir(MAD_ROOT.'/app/views/'.$class.'/');
 
         // CREATE DIRECTORIES
         $this->_createDir(MAD_ROOT.'/test/functional/');
 
         // CREATE FILES
-        $class = Mad_Support_Inflector::camelize($name);
         $contrName  = $class.'Controller';
         $helperName = $class.'Helper';
 
@@ -199,8 +198,8 @@ class Mad_Script_Generator extends Mad_Script_Base
         $this->_tpl->className  = $contrName;
         $this->_tpl->helperName = $helperName;
 
-
         // create Controller stub
+        $this->_tpl->views = $this->_args;
         $content = $this->_tpl->render('controller.php');
         $this->_createFile(MAD_ROOT."/app/controllers/{$contrName}.php", $content);
 
@@ -210,9 +209,17 @@ class Mad_Script_Generator extends Mad_Script_Base
 
         // create Functional Test stub
         $this->_tpl->classFile = "controllers/{$contrName}.php";
-        $this->_tpl->package = 'Controllers';
+        $this->_tpl->package   = 'Controllers';
         $content = $this->_tpl->render('functional_test.php');
         $this->_createFile(MAD_ROOT."/test/functional/{$contrName}Test.php", $content);
+        
+        // create view stubs
+        foreach ($this->_args as $view) {
+          $this->_tpl->class = $class;
+          $this->_tpl->view  = $view;
+          $content = $this->_tpl->render('view.php');
+          $this->_createFile(MAD_ROOT."/app/views/{$class}/{$view}.html", $content);
+        }
     }
 
     /**
@@ -332,14 +339,14 @@ class Mad_Script_Generator extends Mad_Script_Base
         $msg =
           "\tUsage:                                                                     \n".
           "\t 1. Generate controller class                                              \n".
-          "\t    generate controller #ControllerName                                    \n".
+          "\t    generate controller #ControllerName #Views                             \n".
           "\t      eg:                                                                  \n".
-          "\t       ./script/generate controller Browse                                 \n".
+          "\t       ./script/generate controller Posts index show edit delete           \n".
           "\t                                                                           \n".
           "\t 2. Generate model class                                                   \n".
           "\t     generate model #ModelName                                             \n".
           "\t       eg:                                                                 \n".
-          "\t       ./script/generate model Binder briefcases                           \n".
+          "\t       ./script/generate model Post                                        \n".
           "\t                                                                           \n".
           "\t 3. This help.                                                             \n".
           "\t     ./script/generate                                                     \n".

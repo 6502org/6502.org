@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -22,9 +22,10 @@
  *
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
+#[\AllowDynamicProperties]
 class Mad_Test_Fixture_Base
 {
     /**
@@ -173,7 +174,7 @@ class Mad_Test_Fixture_Base
             if ($this->_options['teardown']) {
                 $sql = $this->_options['teardown'];
             } else {
-                $sql = "TRUNCATE TABLE ".$this->_options['table'];
+                $sql = "DELETE FROM ".$this->_options['table'];
             }
             $this->_executeSql($sql);
         }

@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_ArrayConversion
@@ -57,7 +57,8 @@ class Mad_Support_ArrayConversion
     public function toXml($array, $options = array()) 
     {
         // associative
-        if (!empty($array) && !$array instanceof Mad_Model_Collection && !is_int(key($array))) {
+        $arr = is_array($array) ? $array : (array)$array;
+        if (!empty($array) && !$array instanceof Mad_Model_Collection && !is_int(array_key_first($arr))) {
             return $this->hashToXml($array, $options);
 
         // numeric
@@ -168,6 +169,9 @@ class Mad_Support_ArrayConversion
      */
     public function arrayToXml($array, $options = array())
     {
+        if (is_object($array) && $array instanceof \Traversable) {
+            $array = iterator_to_array($array);
+        }
         $firstElt  = current($array);
         $firstType = is_object($firstElt) ? get_class($firstElt) : gettype($firstElt);
         $sameTypes = true;
@@ -177,11 +181,12 @@ class Mad_Support_ArrayConversion
             if (!is_array($element) && !is_callable(array($element, 'toXml'))) {
                 throw new Mad_Support_Exception("Not all elements respond to toXml");
             }
-            if (get_class($element) != $firstType) { $sameTypes = false; }
+            $elementType = is_object($element) ? get_class($element) : gettype($element);
+            if ($elementType != $firstType) { $sameTypes = false; }
         }
 
         if (!isset($options['root'])) {
-            if ($sameTypes && count($array) > 0) {
+            if ($sameTypes && count($array) > 0 && is_object($firstElt)) {
                 $options['root'] = Mad_Support_Inflector::pluralize($firstType);
             } else {
                 $options['root'] = 'records';
@@ -367,7 +372,7 @@ class Mad_Support_ArrayConversion
         } elseif ($boolean == 'false') {
             return false;
         } else {
-            return (boolean)$boolean;
+            return (bool)$boolean;
         }
     }
 

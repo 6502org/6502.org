@@ -5,7 +5,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -13,7 +13,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_View_Helper_Capture_ContentFor extends Mad_View_Helper_Capture_Base
@@ -24,6 +24,7 @@ class Mad_View_Helper_Capture_ContentFor extends Mad_View_Helper_Capture_Base
      * @var string
      */
     private $_name;
+    private $_view;
 
     /**
      * Start capturing content that will be stored as

@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Migration
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Migration
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Model_Migration_Base
@@ -52,11 +52,11 @@ class Mad_Model_Migration_Base
         $this->say("$method(".join(", ", $a).")");
 
         // benchmark method call
-        $t = new Mad_Support_Timer;
-        $t->start();
+        $t = new Horde_Support_Timer();
+        $t->push();
             $connection = Mad_Model_Base::connection();
             $result = call_user_func_array(array($connection, $method), $args);
-        $time = $t->finish();
+        $time = $t->pop();
 
         // print stats
         $this->say(sprintf("%.4fs", $time), 'subitem');
@@ -91,10 +91,10 @@ class Mad_Model_Migration_Base
         if ($direction == 'down') { $this->announce("reverting"); }
 
         $result = null;
-        $t = new Mad_Support_Timer;
-        $t->start();
+        $t = new Horde_Support_Timer;
+        $t->push();
             $result = $this->$direction();
-        $time = $t->finish();
+        $time = $t->pop();
 
         if ($direction == 'up')   { 
             $this->announce("migrated (".sprintf("%.4fs", $time).")"); 

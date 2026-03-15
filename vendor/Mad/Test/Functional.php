@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 abstract class Mad_Test_Functional extends Mad_Test_Unit
@@ -45,10 +45,20 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
     protected $post    = array();
     protected $files   = array();
 
-    public function setUp()
+    public function setUp(): void
     {
+        // The route mapper is a singleton that must be reset or
+        // environ state (e.g. HTTPS) will leak between tests.
+        Mad_Controller_Dispatcher::getInstance()->reload();
+
         $this->request  = new Mad_Controller_Request_Mock();
         $this->response = new Mad_Controller_Response_Mock();
+    }
+
+    public function tearDown(): void
+    {
+        Mad_Controller_Dispatcher::getInstance()->reload();
+        parent::tearDown();
     }
     
     /*##########################################################################
@@ -229,7 +239,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
     protected function getCookie($name)
     {
         $cookie = $this->response->getCookie($name);
-        return $cookie['value'];
+        return $cookie !== null ? $cookie['value'] : null;
     }
 
     /**
@@ -303,7 +313,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   array   $params
      * @param   string  $msg
      */
-    public function assertRouting($params, $msg=null)
+    public function assertRouting($params, $msg='')
     {
         $attrParams = $this->request->getPathParams();
 
@@ -330,7 +340,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string       $value
      * @param   string       $msg
      */
-    public function assertAssigns($name, $value=null, $msg=null)
+    public function assertAssigns($name, $value=null, $msg='')
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -355,7 +365,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string       $value
      * @param   string       $msg
      */
-    public function assertAssignsCookie($name, $value=null, $msg=null)
+    public function assertAssignsCookie($name, $value=null, $msg='')
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -380,7 +390,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string       $value
      * @param   string       $msg
      */
-    public function assertAssignsSession($name, $value=null, $msg=null)
+    public function assertAssignsSession($name, $value=null, $msg='')
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -405,7 +415,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string       $value
      * @param   string       $msg
      */
-    public function assertAssignsFlash($name, $value=null, $msg=null)
+    public function assertAssignsFlash($name, $value=null, $msg='')
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -427,7 +437,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      *
      * @param   string  $msg
      */
-    public function assertNoRouting($msg=null)
+    public function assertNoRouting($msg='')
     {
         $this->assertFalse($this->_recognized, $msg);
     }
@@ -449,7 +459,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string  $controllerName
      * @param   string  $msg
      */
-    public function assertAction($actionName, $controllerName=null, $msg=null)
+    public function assertAction($actionName, $controllerName=null, $msg='')
     {
         $attrParams = $this->request->getPathParams();
 
@@ -475,7 +485,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string  $templateName
      * @param   string  $msg
      */
-    public function assertTemplate($templateName, $msg=null)
+    public function assertTemplate($templateName, $msg='')
     {
         $templates = $this->controller->getTemplates();
         $msg = isset($msg) ? $msg : "$templateName is not in the list of templates used to render ".
@@ -499,7 +509,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   mixed   $response
      * @param   string  $msg
      */
-    public function assertResponse($status, $msg=null)
+    public function assertResponse($status, $msg='')
     {
         $statusCode  = $this->response->getStatusCode();
         $statusLevel = substr($statusCode, 0, 1);
@@ -553,7 +563,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   mixed   $response
      * @param   string  $msg
      */
-    public function assertRedirectedTo($urlOrOptions, $msg=null)
+    public function assertRedirectedTo($urlOrOptions, $msg='')
     {
         $expected = $this->_urlWriter->urlFor($urlOrOptions);
         $actual   = $this->response->getRedirectUrl();
@@ -577,7 +587,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string  $string
      * @param   string  $msg
      */
-    public function assertResponseContains($string, $msg=null)
+    public function assertResponseContains($string, $msg='')
     {
         $responseBody = $this->response->getBody();
         if (preg_match('#^/.*/.?$#', $string)) {
@@ -603,7 +613,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   string  $string
      * @param   string  $msg
      */
-    public function assertResponseDoesNotContain($string, $msg=null)
+    public function assertResponseDoesNotContain($string, $msg='')
     {
         $responseBody = $this->response->getBody();
         if (preg_match('#^/.*/.?$#', $string)) {
@@ -626,7 +636,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      *
      * @param   string  $msg
      */
-    public function assertValid($msg=null)
+    public function assertValid($msg='')
     {
         $responseBody = $this->response->getBody();
         $dom = new DomDocument();
@@ -639,7 +649,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
     /**
      * Test two XML strings for equivalency (e.g., identical up to reordering of attributes).
      */
-    public function assertDomEquals($expected, $actual, $message = null)
+    public function assertDomEquals($expected, $actual, $message = '')
     {
         $expectedDom = new DOMDocument();
         $expectedDom->loadXML($expected);
@@ -713,29 +723,91 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   boolean $isHtml
      * @throws  Mad_Test_Exception
      */
-    public function assertSelect($selector, $content=true, $exists=true, $msg=null, $isHtml=true)
+    public function assertSelect($selector, $content=true, $exists=true, $msg='', $isHtml=true)
     {
-        if (! method_exists($this, 'assertSelectEquals')) {
-            throw new Mad_Test_Exception('PHPUnit selector assertion support required');
-        }
-
         // only parse response into dom once for better performance
         if ($this->_responseDom === null) {
             $body = $this->response->getBody();
-            $this->_responseDom = PHPUnit_Util_XML::load($body, $isHtml);
+            $this->_responseDom = Mad_Test_DomAssertion::load($body, $isHtml);
         }
 
         if (is_string($content)) {
-            if (preg_match('!^/.*/.?$!', $content)) {            
-                $this->assertSelectRegexp($selector, $content, $exists, 
-                                          $this->_responseDom, $msg, $isHtml);
+            // regexp content match
+            if (preg_match('!^/.*/.?$!', $content)) {
+                $this->_assertSelectEquals(
+                    $selector, "regexp:$content", $exists,
+                    $this->_responseDom, $msg, $isHtml
+                );
+            // exact content match
             } else {
-                $this->assertSelectEquals($selector, $content, $exists, 
-                                          $this->_responseDom, $msg, $isHtml);
+                $this->_assertSelectEquals(
+                    $selector, $content, $exists,
+                    $this->_responseDom, $msg, $isHtml
+                );
             }
         } else {
-            $this->assertSelectCount($selector, $content, 
-                                     $this->_responseDom, $msg, $isHtml);
+            // boolean or numeric count match
+            $this->_assertSelectEquals(
+                $selector, true, $content,
+                $this->_responseDom, $msg, $isHtml
+            );
+        }
+    }
+
+    /**
+     * Assert the count or existence of elements matching a CSS selector.
+     *
+     * @param  string          $selector
+     * @param  mixed           $content
+     * @param  int|bool|array  $count
+     * @param  DOMDocument     $actual
+     * @param  string          $msg
+     * @param  bool            $isHtml
+     */
+    private function _assertSelectEquals($selector, $content, $count, $actual, $msg, $isHtml)
+    {
+        $tags = Mad_Test_DomAssertion::cssSelect(
+            $selector, $content, $actual, $isHtml
+        );
+
+        // assert specific number of elements
+        if (is_numeric($count)) {
+            $counted = $tags ? count($tags) : 0;
+            $this->assertEquals($count, $counted, $msg);
+
+        // assert any elements exist if true, none if false
+        } elseif (is_bool($count)) {
+            $any = is_array($tags) && count($tags) > 0 && $tags[0] instanceof DOMNode;
+
+            if ($count) {
+                $this->assertTrue($any, $msg);
+            } else {
+                $this->assertFalse($any, $msg);
+            }
+
+        // check for range number of elements
+        } elseif (is_array($count) &&
+                  (isset($count['>']) || isset($count['<']) ||
+                   isset($count['>=']) || isset($count['<=']))) {
+            $counted = $tags ? count($tags) : 0;
+
+            if (isset($count['>'])) {
+                $this->assertTrue($counted > $count['>'], $msg);
+            }
+            if (isset($count['>='])) {
+                $this->assertTrue($counted >= $count['>='], $msg);
+            }
+            if (isset($count['<'])) {
+                $this->assertTrue($counted < $count['<'], $msg);
+            }
+            if (isset($count['<='])) {
+                $this->assertTrue($counted <= $count['<='], $msg);
+            }
+
+        } else {
+            throw new Mad_Test_Exception(
+                'Invalid count argument for assertSelect'
+            );
         }
     }
 
@@ -759,7 +831,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   array   $options
      * @param   string  $msg
      */
-    public function assertFileSent($options=array(), $msg=null)
+    public function assertFileSent($options=array(), $msg='')
     {
         $valid = array('filename', 'type', 'disposition');
         $options = Mad_Support_Base::assertValidKeys($options, $valid);

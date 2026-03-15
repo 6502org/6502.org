@@ -30,6 +30,32 @@ class Horde_Db_Adapter_Sqlite_Column extends Horde_Db_Adapter_Abstract_Column
 
 
     /*##########################################################################
+    # Default Value Handling
+    ##########################################################################*/
+
+    /**
+     * SQLite PRAGMA table_info returns default values in SQL-quoted form
+     * (e.g., '' for empty string, 'hello' for the string hello, NULL for null).
+     * Strip the surrounding quotes before type-casting.
+     */
+    public function extractDefault($default)
+    {
+        if ($default === null || $default === 'NULL') {
+            return null;
+        }
+
+        // Strip surrounding single quotes (SQL literal format)
+        if (strlen($default) >= 2 && $default[0] === "'" && $default[strlen($default) - 1] === "'") {
+            $default = substr($default, 1, -1);
+            // Unescape doubled single quotes
+            $default = str_replace("''", "'", $default);
+        }
+
+        return parent::extractDefault($default);
+    }
+
+
+    /*##########################################################################
     # Type Juggling
     ##########################################################################*/
 

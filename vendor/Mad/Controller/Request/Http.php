@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Controller
  * @subpackage Request
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -16,7 +16,7 @@
  * @category   Mad
  * @package    Mad_Controller
  * @subpackage Request
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Controller_Request_Http
@@ -96,9 +96,11 @@ class Mad_Controller_Request_Http
 
             // use FileUpload object to store files
             $this->_setFilesSuperglobals();
-
-            // disable all superglobal data to force us to use correct way
-            $_GET = $_POST = $_FILES = $_COOKIE = $_REQUEST = $_SERVER = array();
+                
+            // clear superglobals forces developers to use the request object
+            if (empty($options['preserveSuperglobals'])) {
+                $_GET = $_POST = $_FILES = $_COOKIE = $_REQUEST = $_SERVER = array();
+            }
 
             $this->_domain   = $this->getServer('SERVER_NAME');
             $this->_uri      = trim($this->getServer('REQUEST_URI'), '/');

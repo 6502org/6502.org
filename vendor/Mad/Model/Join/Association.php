@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Join
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Join
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Model_Join_Association extends Mad_Model_Join_Base
@@ -20,6 +20,7 @@ class Mad_Model_Join_Association extends Mad_Model_Join_Base
     protected $_parent               = null;
     protected $_aliasedTableName     = null;
     protected $_aliasPrefix          = null;
+    protected $_aliasedPrefix        = null;
     protected $_aliasedJoinTableName = null;
     protected $_parentTableName      = null;
 

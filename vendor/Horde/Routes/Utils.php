@@ -7,7 +7,7 @@
  * largely on ideas from Ruby on Rails (http://www.rubyonrails.org).
  *
  * @author  Maintainable Software, LLC. (http://www.maintainable.com)
- * @author  Mike Naberezny (mike@maintainable.com)
+ * @author  Mike Naberezny <mike@maintainable.com>
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * @package Horde_Routes
  */
@@ -23,20 +23,20 @@ class Horde_Routes_Utils
      * @var Horde_Routes_Mapper
      */
     public $mapper;
-    
+
     /**
      * Match data from last match; implements for urlFor() route memory
      * @var array
-     */    
+     */
     public $mapperDict = array();
-    
+
     /**
      * Callback function used for redirectTo()
      * @var callback
      */
     public $redirect;
 
-    
+
     /**
      * Constructor
      *
@@ -48,7 +48,7 @@ class Horde_Routes_Utils
         $this->mapper   = $mapper;
         $this->redirect = $redirect;
     }
-    
+
     /**
      * Generates a URL.
      *
@@ -124,6 +124,7 @@ class Horde_Routes_Utils
         }
 
         $route = null;
+        $routeArgs = array();
         $static = false;
         $encoding = $this->mapper->encoding;
         $environ = $this->mapper->environ;
@@ -131,7 +132,9 @@ class Horde_Routes_Utils
 
         if (isset($routeName)) {
 
-            if (isset($this->mapper->routeNames[$routeName])) {
+            if (isset($kargs['format']) && isset($this->mapper->routeNames['formatted_' . $routeName])) {
+                $route = $this->mapper->routeNames['formatted_' . $routeName];
+            } elseif (isset($this->mapper->routeNames[$routeName])) {
                 $route = $this->mapper->routeNames[$routeName];
             }
 
@@ -166,6 +169,7 @@ class Horde_Routes_Utils
 
         if (! $static) {
             if ($route) {
+                $routeArgs = array($route);
                 $newargs = $route->defaults;
                 foreach ($kargs as $key => $value) {
                     $newargs[$key] = $value;
@@ -190,7 +194,7 @@ class Horde_Routes_Utils
             $protocol = (isset($newargs['_protocol'])) ? $newargs['_protocol'] : $protocol;
             unset($newargs['_protocol']);
 
-            $url = $this->mapper->generate($newargs);
+            $url = $this->mapper->generate($routeArgs, $newargs);
         }
 
         if (!empty($anchor)) {
@@ -281,20 +285,22 @@ class Horde_Routes_Utils
 
         foreach (new RecursiveIteratorIterator(
                  new RecursiveDirectoryIterator($dirname)) as $entry) {
-                     
+
             if ($entry->isFile()) {
-                 // match .php files that don't start with an underscore
-                 if (preg_match('/^[^_]{1,1}.*\.php$/', basename($entry->getFilename())) != 0) {
+                // match .php files that don't start with an underscore
+                if (preg_match('/^[^_]{1,1}.*\.php$/', basename($entry->getFilename())) != 0) {
                     // strip off base path: dirname/admin/users.php -> admin/users.php
                     $controller = preg_replace("/^$baseregexp(.*)\.php/", '\\1', $entry->getPathname());
-                    
+
                     // add to controller list
                     $controllers[] = $prefix . $controller;
                 }
             }
         }
 
-        usort($controllers, 'Horde_Routes_Utils::longestFirst');
+        $callback = array('Horde_Routes_Utils', 'longestFirst');
+        usort($controllers, $callback);
+
         return $controllers;
     }
 
@@ -403,23 +409,6 @@ class Horde_Routes_Utils
     }
 
     /**
-     * Convert a UTF-8 string to ISO-8859-1 for URL encoding.
-     * On PHP < 8.2, this uses utf8_decode(). On PHP 8.2+, where
-     * utf8_decode() was deprecated, the string is passed through
-     * unchanged (urlencode handles UTF-8 directly).
-     *
-     * @param  string  $str  String to convert
-     * @return string        Converted string
-     */
-    private static function _encodeUrl($str)
-    {
-        if (PHP_VERSION_ID < 80200) {
-            return utf8_decode($str);
-        }
-        return $str;
-    }
-
-    /**
      * Callback used by usort() in controllerScan() to sort controller
      * names by the longest first.
      *
@@ -427,7 +416,8 @@ class Horde_Routes_Utils
      * @param   string  $lst  Last string to compare
      * @return  integer       Difference of string length (first - last)
      */
-    public static function longestFirst($fst, $lst) {
+    public static function longestFirst($fst, $lst)
+    {
         return strlen($lst) - strlen($fst);
     }
 
@@ -441,5 +431,21 @@ class Horde_Routes_Utils
             }
         }
         return $a1;
+    }
+
+    /**
+     * Encode a URL string for use with urlencode().
+     * On PHP < 8.2, uses utf8_decode(). On PHP 8.2+, passes through
+     * unchanged since urlencode() handles UTF-8 directly.
+     *
+     * @param  string  $url
+     * @return string
+     */
+    private static function _encodeUrl($url)
+    {
+        if (PHP_VERSION_ID < 80200) {
+            return utf8_decode($url);
+        }
+        return $url;
     }
 }

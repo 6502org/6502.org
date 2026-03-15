@@ -9,16 +9,16 @@
  * @author   Chris Wanstrath <chris@ozmm.org>
  * @author   Chuck Hagenbuch <chuck@horde.org>
  * @author   Mike Naberezny <mike@maintainable.com>
- * @license  http://www.horde.org/licenses/bsd BSD
+ * @license  http://opensource.org/licenses/bsd-license.php BSD
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 
 /**
  * A node, used for parsing YAML.
  *
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 class Horde_Yaml_Node
 {

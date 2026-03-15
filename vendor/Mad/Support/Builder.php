@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,12 +11,13 @@
  *
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_Builder
 {
     protected $_xml = null;
+    protected $_options = array();
 
     /**
      * @param   array   $options
@@ -81,7 +82,7 @@ class Mad_Support_Builder
         foreach ($attributes as $attrKey => $attrValue) {
             $this->_xml->writeAttribute($attrKey, $attrValue);
         }
-        $this->_xml->text($value);
+        $this->_xml->text((string)$value);
         return $this;
     }
     

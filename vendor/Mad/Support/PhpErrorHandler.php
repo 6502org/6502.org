@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -15,7 +15,7 @@
  *
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_PhpErrorHandler
@@ -41,8 +41,10 @@ class Mad_Support_PhpErrorHandler
 	 */
 	public static function handle($errno, $errstr, $errfile, $errline)
 	{
-	    if (ini_get('error_reporting') == 0) {
-            // silence operator ("@") was used
+	    // Check if error was suppressed with the @ operator.
+	    // In PHP 8.0+, @ no longer sets error_reporting to 0;
+	    // instead it sets a bitmask that excludes the current error level.
+	    if (!(error_reporting() & $errno)) {
 	        return;
 	    }
 

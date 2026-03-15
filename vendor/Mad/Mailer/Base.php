@@ -2,14 +2,14 @@
 /**
  * @category   Mad
  * @package    Mad_Mailer
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
 /**
  * @category   Mad
  * @package    Mad_Mailer
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Mailer_Base
@@ -33,6 +33,12 @@ class Mad_Mailer_Base
      * The list of attachment names
      */
     private $_attachments = array();
+
+    /**
+     * MIME boundary string for multipart messages
+     * @var string
+     */
+    private $_mimeBoundary = null;
 
     /**
      * Comma separated recipient string

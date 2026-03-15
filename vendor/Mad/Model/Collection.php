@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Model
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -16,10 +16,10 @@
  *
  * @category   Mad
  * @package    Mad_Model
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
-class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
+class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
 {
     /**
      * The {@link Mad_Model_Base} class used to instantiate new objects
@@ -92,16 +92,17 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
         return $this->_collection;
     }
 
-    /** 
-     * Proxy to parent Mad_Support_ArrayObject#toXml, except that 
-     * we know the explicit model type. 
+    /**                
+     * Serialize the collection to XML.
      */
     public function toXml($options = array()) 
     {
         if (!isset($options['root'])) {
             $options['root'] = Mad_Support_Inflector::pluralize(get_class($this->_model));
         }
-        return parent::toXml($options);
+
+        $conversion = new Mad_Support_ArrayConversion;
+        return $conversion->toXml($this, $options);
     }
 
     /*##########################################################################
@@ -216,35 +217,10 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
      * Check if the current element exists
      * @return  boolean
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->offsetExists($this->_position);
-    }
-
-
-    /*##########################################################################
-    # IteratorAggregate Interface
-    ##########################################################################*/
-
-    /**
-     * Return the iterator of this array. This allows for a foreach construct to be used.
-     *
-     * <code>
-     *  <?php
-     *  ...
-     *  foreach ($folders as $folder) {
-     *      print $folder->document_count;
-     *  }
-     *  ...
-     *  ?>
-     * </code>
-     *
-     * @return  object  {@link ArrayIterator}
-     */
-    #[\ReturnTypeWillChange]
-    public function getIterator()
-    {
-        return $this;
     }
 
 
@@ -288,22 +264,22 @@ class Mad_Model_Collection extends Mad_Support_ArrayObject implements Iterator
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     *
+     * 
      * @param   int     $offset
      * @param   mixed   $value
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) 
     {
         // Can only add Models to the collection
         if ($value instanceof Mad_Model_Base) {
             $this->_collection[] = $value;
-        }
+        }        
     }
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     *
+     * 
      * @param   int     $offset
      */
     #[\ReturnTypeWillChange]

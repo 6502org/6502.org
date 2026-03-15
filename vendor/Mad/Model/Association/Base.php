@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Association
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -62,7 +62,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Association
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 abstract class Mad_Model_Association_Base
@@ -72,6 +72,7 @@ abstract class Mad_Model_Association_Base
      * @var string
      */
     protected $_assocName = null;
+    protected $_joinTable;
 
     /**
      * The method used to create the association.
@@ -186,7 +187,7 @@ abstract class Mad_Model_Association_Base
      * @param   string  $assocName
      * @param   array   $options
      */
-    abstract protected function __construct($assocName, $options, $model);
+    abstract protected function __construct($assocName, $options, Mad_Model_Base $model);
 
     /**
      * Stringified version
@@ -492,10 +493,8 @@ abstract class Mad_Model_Association_Base
                 $this->_fkName = $this->_options['foreignKey'];
 
             } elseif ($macro == 'belongsTo') {
-                $table = $this->getAssocModel()->tableName();
-                $singularTable = Mad_Support_Inflector::singularize($table);
-                $this->_fkName = "{$singularTable}_id";
-
+                $associationName = Mad_Support_Inflector::underscore($this->getAssocName());
+                $this->_fkName = "{$associationName}_id";
             } else {
                 $table = $this->getModel()->tableName();
                 $singularTable = Mad_Support_Inflector::singularize($table);

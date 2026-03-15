@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Validation
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -21,7 +21,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Validation
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Model_Validation_Uniqueness extends Mad_Model_Validation_Base
@@ -68,8 +68,10 @@ class Mad_Model_Validation_Uniqueness extends Mad_Model_Validation_Base
 
         // scoped
         if ($scope = $this->_options['scope']) {
-            $conditions .= " AND $scope = :scopeVal";
-            $bindVars[':scopeVal'] = $this->_model->readAttribute($scope);
+            foreach ((array)$scope as $scopeName) {
+                $conditions .= " AND $scopeName = :$scopeName ";
+                $bindVars[":$scopeName"] = $this->_model->readAttribute($scopeName);
+            }
         }
 
         $model = $this->_model->find('first', array('conditions' => $conditions), $bindVars);

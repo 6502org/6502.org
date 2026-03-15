@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_FileUtils
@@ -36,9 +36,10 @@ class Mad_Support_FileUtils
 
         // directory copy. Ignore .svn dirs
         foreach (new RecursiveIteratorIterator(
-                 new RecursiveDirectoryIterator($source)) as $file) {
+                 new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS)) as $file) {
+            if ($file->isDir()) { continue; }
             $filepath = str_replace($source, "", $file);
-            if (strstr($filepath, '.svn')) { continue; } 
+            if (strstr($filepath, '.svn')) { continue; }
 
             if (!file_exists(dirname("$dest/$filepath"))) {
                 mkdir(dirname("$dest/$filepath"), 0755, true);

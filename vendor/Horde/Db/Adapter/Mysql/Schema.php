@@ -72,7 +72,7 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
     public function nativeDatabaseTypes()
     {
         return array(
-            'primaryKey' => 'int(11) DEFAULT NULL auto_increment PRIMARY KEY',
+            'primaryKey' => 'int(11) NOT NULL auto_increment PRIMARY KEY',
             'string'     => array('name' => 'varchar',  'limit' => 255),
             'text'       => array('name' => 'text',     'limit' => null),
             'integer'    => array('name' => 'int',      'limit' => 11),
@@ -194,7 +194,8 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
     public function columns($tableName, $name=null)
     {
         // check cache
-        $rows = @unserialize($this->_cache->get("tables/$tableName"));
+        $cached = $this->_cache->get("tables/$tableName");
+        $rows = ($cached !== null) ? @unserialize($cached) : false;
 
         // query to build rows
         if (!$rows) {

@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Model
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -18,14 +18,9 @@
  *  php ./script/generate.php model {ModelName} {table_name}
  * </code>
  *
- * Each model class has a Mad_Model_DO class that maps it's attributes to the database.
- * This is stored under the /app/mappings directory:
- *  model: /app/models/Folder.php
- *  data object: /app/mappings/FolderDO.php.
- *
  * @category   Mad
  * @package    Mad_Model
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 abstract class Mad_Model_Base extends Mad_Support_Object
@@ -356,14 +351,16 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         // association methods
         $this->_initAssociations();
         if (isset($this->_associationMethods[$name])) {
-            return count($this->_get($name)) > 0;
+            $value = $this->_get($name);
+            if (is_array($value) || $value instanceof \Countable) {
+                return count($value) > 0;
+            }
+            return $value !== null;
 
-        // active-record attribue
+        // active-record attribute
         } else {
             return isset($this->_attributes[$name]);
         }
-
-        return isset($this->_attributes[$name]);
     }
 
     /**
@@ -496,11 +493,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         // $spec is empty: $spec defaults to MAD_ENV string like "development"
         // keep going to read YAML for this environment string
         if (empty($spec)) {
-            if ( !defined('MAD_ENV') || !MAD_ENV ) {
-                throw new Mad_Model_Exception('Adapter Not Specified');
-            }
             $spec = MAD_ENV;
-        } 
+        }
 
         // $spec is string: read YAML config for environment named by string
         // keep going to process the resulting array
@@ -509,9 +503,15 @@ abstract class Mad_Model_Base extends Mad_Support_Object
             $spec = $config[$spec];
         }
 
-        // $spec is an associative array            
+        // $spec is an associative array
         if (is_array($spec)) {
-          
+
+            // resolve relative database paths against MAD_ROOT (SQLite only)
+            if (isset($spec['adapter']) && $spec['adapter'] == 'pdo_sqlite' &&
+                isset($spec['database']) && $spec['database'][0] != '/' && $spec['database'][0] != ':') {
+                $spec['database'] = MAD_ROOT . '/' . $spec['database'];
+            }
+
             // validation of array is handled by horde_db
             self::$_connectionSpec = $spec;
 
@@ -942,7 +942,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     {
         $tblAlias = isset($tblAlias) ? "$tblAlias." : null;
         foreach ($this->_attributes as $name => $value) {
-            $cols[] = $tblAlias.strtolower($name);
+            $cols[] = $tblAlias.($name);
         }
         return isset($cols) ? $cols : array();
     }
@@ -1091,12 +1091,34 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   array   $bindVars
      * @throws  Mad_Model_Exception_RecordNotFound
      */
-    public static function find($type, $options=null, $bindVars=null)
+    /**
+     * @return  string
+     */
+    public static function className()
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        return static::class;
+    }
+
+    public static function find($type, $options=array(), $bindVars=null)
+    {
+        $m = new static;
         return $m->_find($type, $options, $bindVars);
+    }
+
+
+    /**
+     * A convenience wrapper for find('first'). You can pass in all the
+     *  same arguments to this method as you can to find('first').
+     *
+     * @see Mad_Model_Base::find()
+     *
+     * @param   array $options
+     * @param   array $bindVars
+     */
+    public static function first($options=array(), $bindVars=null)
+    {
+        $m = new static;
+        return $m->_find('first', $options, $bindVars);
     }
 
     /**
@@ -1105,11 +1127,9 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *  $binderCnt = Binder::count(array('name' => 'Stubbed Images'));
      * </code>
      */
-    public static function count($options=null, $bindVars=null) 
+    public static function count($options=array(), $bindVars=null) 
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_count($options, $bindVars);
     }
 
@@ -1142,11 +1162,9 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   string  $sql
      * @param   array   $bindVars
      */
-    protected static function findBySql($type, $sql, $bindVars=null)
+    public static function findBySql($type, $sql, $bindVars=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_findBySql($type, $sql, $bindVars);
     }
 
@@ -1167,11 +1185,9 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   string  $sql
      * @param   array   $bindVars
      */
-    protected static function countBySql($sql, $bindVars=null)
+    public static function countBySql($sql, $bindVars=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_countBySql($sql, $bindVars);
     }
 
@@ -1182,11 +1198,9 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   array   $bindVars
      * @return  Mad_Model_Collection
      */
-    protected static function paginate($options=null, $bindVars=null)
+    public static function paginate($options=array(), $bindVars=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_paginate($options, $bindVars);
     }
 
@@ -1202,9 +1216,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function exists($id)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_exists($id);
     }
 
@@ -1227,9 +1239,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function create($attributes)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_create($attributes);
     }
 
@@ -1252,9 +1262,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function update($id, $attributes=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_update($id, $attributes);
     }
 
@@ -1276,9 +1284,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function delete($id)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_delete($id);
     }
 
@@ -1297,9 +1303,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function updateAll($set, $conditions=null, $bindVars=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_updateAll($set, $conditions, $bindVars);
     }
 
@@ -1315,9 +1319,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public static function deleteAll($conditions=null, $bindVars=null)
     {
-        // hack to get name of this class (because of static)
-        $bt = debug_backtrace();
-        $m = new $bt[1]['class'];
+        $m = new static;
         return $m->_deleteAll($conditions, $bindVars);
     }
 
@@ -1348,6 +1350,12 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public function save()
     {
+        // zero is not a valid primary key
+        $pk = $this->primaryKey();
+        if ($pk && ($this->_attributes[$pk] === 0 || $this->_attributes[$pk] === '0')) {
+            throw new Mad_Model_Exception("Primary key cannot be zero");
+        }
+
         // All saves are atomic - only start transaction if one hasn't been
         $started = $this->connection->transactionStarted();
         if (!$started) { $this->connection->beginDbTransaction(); }
@@ -1479,11 +1487,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public function sanitizeSql($sql, $bindVars)
     {
-        preg_match_all("/(:\w+)/", $sql, $matches);
+        preg_match_all("/(:\w+)/", (string)$sql, $matches);
         if (!isset($matches[1])) return;
 
         foreach ($matches[1] as $replacement) {
-            if (!isset($bindVars[$replacement])) {
+            if (!array_key_exists($replacement, $bindVars)) {
                 $msg = "missing value for $replacement in $sql";
                 throw new Mad_Model_Exception($msg);
             }
@@ -2354,77 +2362,6 @@ abstract class Mad_Model_Base extends Mad_Support_Object
             $this->id, $this->columnForAttribute($this->primaryKey())
         );
     }
-
-    /**
-     * @param   object  $quoter
-     * @param   array   $hash
-     * @return  array
-     */
-    protected function _quotedCommaPairList(Mad_Model_ConnectionAdapter_Abstract $quoter, $hash)
-    {
-        return $this->_commaPairList($this->_quoteColumns($quoter, $hash));
-    }
-
-    /**
-     * Returns a comma-separated pair list, like "key1 = val1, key2 = val2".
-     * @todo finish
-     * @return  string
-     */
-    protected function _commaPairList($hash) 
-    {
-        $pairs = array();
-        foreach ($hash as $key => $value) {
-            $pairs[] = "#{pair.first} = #{pair.last}";
-        }
-        return join($pairs, ', ');
-    }
-
-    /**
-     * @param   array   $attributes
-     */
-    protected function _quotedColumnNames()
-    {
-        $attributes = $this->_attributesWithQuotes();
-        $quotedCols = array();
-        foreach (array_keys($attributes) as $columnName) {
-            $quotedCols[] = $this->connection->quoteColumnName($columnName);
-        }
-        return $quotedCols;
-    }
-
-    /**
-     * @param   object  $quoter
-     * @param   array   $hash
-     * @return  array
-     */
-    protected function _quoteColumns(Mad_Model_ConnectionAdapter_Abstract $quoter, $hash)
-    {
-        $quoted = array();
-        foreach ($hash as $name => $value) {
-            $quoted[$quoter->quoteColumnName($name)] = $value;
-        }
-        return $quoted;
-    }
-
-    
-    /**
-     * Returns copy of the attributes hash where all the values have been 
-     * safely quoted for use in a SQL statement.
-     * 
-     * @param   string  $includePrimaryKey
-     * @return  array
-     */
-    protected function _attributesWithQuotes($includePrimaryKey=true)
-    {
-        $quoted = array();
-        foreach ($attributes as $name => $value) {
-            if ($column = $this->columnForAttribute($name)) {
-                if (!$includePrimaryKey && $column->isPrimary()) { continue; }
-                $quoted[$name] = $this->_quoteValue($value, $column);
-            }
-        }
-        return $quoted;
-    }
     
     /**
      * Quote strings appropriately for SQL statements.
@@ -3093,8 +3030,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     {
         $this->_recordTimestamps();
 
-        foreach ($this->_attributes as $name => $value) {
-            $column = strtolower($name);
+        foreach ($this->_attributes as $column => $value) {
 
             if ($column != $this->primaryKey()) {
                 $sets[] = $this->connection->quoteColumnName($column)." = ".

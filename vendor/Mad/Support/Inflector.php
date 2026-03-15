@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_Inflector
@@ -191,7 +191,7 @@ class Mad_Support_Inflector
      */
     public static function titleize($word)
     {
-        throw new Exception('not implemented yet');
+        return ucwords(self::humanize(self::underscore($word)));
     }
 
 
@@ -319,7 +319,8 @@ class Mad_Support_Inflector
      */
     public static function foreignKey($className, $separateClassNameAndIdWithUnderscore=true)
     {
-        throw new Exception('not implemented yet');
+        return self::underscore(self::demodulize($className)) .
+               ($separateClassNameAndIdWithUnderscore ? '_id' : 'id');
     }
 
     /**
@@ -334,7 +335,19 @@ class Mad_Support_Inflector
      */
     public static function ordinalize($number)
     {
-        throw new Exception('not implemented yet');
+        $number = (int)$number;
+        $abs = abs($number);
+
+        if (in_array($abs % 100, array(11, 12, 13))) {
+            return $number . 'th';
+        }
+
+        switch ($abs % 10) {
+            case 1:  return $number . 'st';
+            case 2:  return $number . 'nd';
+            case 3:  return $number . 'rd';
+            default: return $number . 'th';
+        }
     }
 
 

@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,10 +11,11 @@
  *
  * @category   Mad
  * @package    Mad_Test
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
-abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
+#[\AllowDynamicProperties]
+abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
 {
     /**
      * PHPUnit configuration: Disable the backup and
@@ -33,7 +34,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      * Database connection spec
      * @var string
      */
-    protected $_spec = 'test';
+    protected $_spec;
 
     /**
      * The fixture loaded for this test
@@ -136,17 +137,18 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      */
     public function fixtures($args)
     {
+        $this->_connect();
         $ymlFiles = func_get_args();
         $last = end($ymlFiles);
         $options = is_array($last) ? array_pop($ymlFiles) : array();
 
         // don't load fixtures for these methods
         if (isset($options['except'])) {
-            if (in_array($this->getName(), $options['except'])) return;
+            if (in_array($this->name(), $options['except'])) return;
         }
         // only load fixtures for these methods
         if (isset($options['only'])) {
-            if (!in_array($this->getName(), $options['only'])) return;
+            if (!in_array($this->name(), $options['only'])) return;
         }
 
         // Add fixtures to the existing fixtures when called more than once
@@ -215,7 +217,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      * @param   string  $substr
      * @param   string  $msg
      */ 
-    protected function assertLogged($substr, $msg=null)
+    protected function assertLogged($substr, $msg='')
     {
         if (!$this->mock) {
             throw new Exception("You must use the mock log to match logging events");
@@ -233,7 +235,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      * @param   string  $substr
      * @param   string  $msg
      */ 
-    protected function assertNotLogged($substr, $msg=null)
+    protected function assertNotLogged($substr, $msg='')
     {
         $matched = false;
         if (!$this->mock) {
@@ -262,7 +264,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      * @param   integer $difference
      * @param   string  $msg
      */
-    protected function assertDifference($expression, $difference = 1, $msg = null)
+    protected function assertDifference($expression, $difference = 1, $msg = '')
     {
         return new Mad_Test_DifferenceAssertion($expression, $difference, $msg);
     }
@@ -282,7 +284,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
      * @param   string  $expression
      * @param   string  $msg
      */
-    protected function assertNoDifference($expression, $msg = null)
+    protected function assertNoDifference($expression, $msg = '')
     {
         return new Mad_Test_DifferenceAssertion($expression, 0, $msg);
     }
@@ -291,24 +293,20 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
     # Override parent methods
     ##########################################################################*/
 
-    /**
-     * Make sure we always disconnect after tests
-     */
-    public function runBare()
+    protected function setUp(): void
     {
-        // log test timing
-        $test = get_class($this).'::'.$this->getName();
-        $t = new Mad_Support_Timer;
-        $t->start();
-        $this->_logInfo($test, 'START ');
-
         $this->_connect();
-        parent::runBare();
-        $this->_disconnect();
+    }
 
-        // log test timing
-        $elapsed = $t->finish();
-        $this->_logInfo($test, 'FINISH', $elapsed);
+    protected function tearDown(): void
+    {
+        // run fixture teardown sql, but keep the connection alive
+        // for the next test (reconnecting is expensive)
+        if ($this->_fixtures) {
+            $this->_fixtures->teardown();
+        }
+        $this->_fixtures = null;
+        parent::tearDown();
     }
 
 
@@ -324,6 +322,9 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
     protected function _connect()
     {
         if (!Mad_Model_Base::isConnected()) {
+            if ($this->_spec === null) {
+                $this->_spec = MAD_ENV;
+            }
             Mad_Model_Base::setLogger(); // default logger
             Mad_Model_Base::establishConnection($this->_spec);
         }
@@ -357,7 +358,7 @@ abstract class Mad_Test_Unit extends PHPUnit_Framework_TestCase
     {
         $logger = Mad_Test_Unit::logger();
         if (! is_null($logger)) {
-            $runtime = (is_null($runtime) ? '' : " ($runtime ms)");
+            $runtime = (is_null($runtime) ? '' : sprintf(" (%.4fs)", $runtime));
             $logger->debug("***************** $phase $test $runtime");
         }
     }

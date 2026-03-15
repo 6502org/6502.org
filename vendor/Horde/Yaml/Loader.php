@@ -1,26 +1,24 @@
 <?php
 /**
- * This package is heavily inspired by the Spyc PHP YAML implementation
- * (http://spyc.sourceforge.net/), and portions are copyright 2005-2006 Chris
- * Wanstrath.
+ * Horde YAML package
+ *
+ * This package is heavily inspired by the Spyc PHP YAML
+ * implementation (http://spyc.sourceforge.net/), and portions are
+ * copyright 2005-2006 Chris Wanstrath.
  *
  * @author   Chris Wanstrath <chris@ozmm.org>
  * @author   Chuck Hagenbuch <chuck@horde.org>
  * @author   Mike Naberezny <mike@maintainable.com>
- * @license  http://www.horde.org/licenses/bsd BSD
+ * @license  http://opensource.org/licenses/bsd-license.php BSD
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 
 /**
  * Parse YAML strings into PHP data structures
  *
- * @author   Chris Wanstrath <chris@ozmm.org>
- * @author   Chuck Hagenbuch <chuck@horde.org>
- * @author   Mike Naberezny <mike@maintainable.com>
- * @license  http://www.horde.org/licenses/bsd BSD
  * @category Horde
- * @package  Yaml
+ * @package  Horde_Yaml
  */
 class Horde_Yaml_Loader
 {
@@ -43,21 +41,13 @@ class Horde_Yaml_Loader
     protected $_allParent = array();
 
     /**
-     * References
-     * @var array
-     */
-    protected $_ref = array();
-
-    /**
      * Last indent level
      * @var integer
      */
+    protected $_ref = array();
+
     protected $_lastIndent = 0;
 
-    /**
-     * Nodes by indention level.
-     * @var array
-     */
     protected $_indentSort = array();
 
     /**
@@ -68,23 +58,11 @@ class Horde_Yaml_Loader
 
     /**
      * Is the parser inside a block?
-     *
-     * Contains the block character (| or >) if inside a block.
-     *
-     * @var boolean|string
+     * @var boolean
      */
     protected $_inBlock = false;
 
-    /**
-     * The chomp mode (strip: '-', keep: '+', clip: '')
-     * @var string
-     */
-    protected $_chomp = '';
-
-    /**
-     * @var string
-     */
-    protected $_lineEnd = '';
+    protected $_blockEnd = '';
 
     /**
      * @var boolean
@@ -108,25 +86,18 @@ class Horde_Yaml_Loader
      */
     public function __construct()
     {
-        $base = new Horde_Yaml_Node($this->_nodeId);
+        $base = new Horde_Yaml_Node($this->_nodeId++);
         $base->indent = 0;
         $this->_lastNode = $base->id;
     }
 
     /**
-     * Returns the PHP built from all YAML parsed so far.
+     * Return the PHP built from all YAML parsed so far.
      *
-     * @return array  PHP version of parsed YAML.
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
+     * @return array PHP version of parsed YAML
      */
     public function toArray()
     {
-        // Chomp the final line break(s) if necessary;
-        if ($this->_inBlock) {
-            $this->_chomp();
-        }
-
         // Here we travel through node-space and pick out references
         // (& and *).
         $this->_linkReferences();
@@ -136,12 +107,10 @@ class Horde_Yaml_Loader
     }
 
     /**
-     * Parses a line of a YAML file.
+     * Parse a line of a YAML file.
      *
-     * @param string $line The line of YAML to parse.
-     *
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
+     * @param  string           $line  The line of YAML to parse.
+     * @return Horde_Yaml_Node         YAML Node
      */
     public function parse($line)
     {
@@ -160,162 +129,119 @@ class Horde_Yaml_Loader
 
         if (!$this->_inBlock && empty($trimmed)) {
             return;
-        }
-        if ($this->_inBlock && empty($trimmed)) {
+        } elseif ($this->_inBlock && empty($trimmed)) {
             $last =& $this->_allNodes[$this->_lastNode];
-            $key = key($last->data);
-            if ($this->_chomp != '+') {
-                $last->data[$key] = rtrim($last->data[$key]);
-            }
-            if ($this->_chomp != '-') {
-                $last->data[$key] .= "\n";
-            }
-            return;
-        }
-        if (!$this->_inBlock &&
-            (substr($trimmed, 0, 1) == '#' ||
-             substr($trimmed, 0, 3) == '---')) {
-            return;
-        }
+            $last->data[key($last->data)] .= "\n";
+        } elseif ($trimmed[0] != '#' && substr($trimmed, 0, 3) != '---') {
+            // Create a new node and get its indent
+            $node = new Horde_Yaml_Node($this->_nodeId++);
+            $node->indent = $this->_getIndent($line);
 
-        // Create a new node and get its indent
-        $node = new Horde_Yaml_Node($this->_nodeId++);
-        $node->indent = $this->_getIndent($line);
-
-        // Check where the node lies in the hierarchy
-        if ($this->_lastIndent == $node->indent) {
-            // If we're in a block, add the text to the parent's data
-            if ($this->_inBlock) {
-                $parent =& $this->_allNodes[$this->_lastNode];
-                $parent->data[key($parent->data)] .= preg_replace(
-                        '/^ {' . $this->_lastIndent . '}/',
-                        '',
-                        $line
-                    ) . $this->_lineEnd;
-            } else {
-                // The current node's parent is the same as the previous
-                // node's
-                if (isset($this->_allNodes[$this->_lastNode])) {
-                    $node->parent = $this->_allNodes[$this->_lastNode]->parent;
+            // Check where the node lies in the hierarchy
+            if ($this->_lastIndent == $node->indent) {
+                // If we're in a block, add the text to the parent's data
+                if ($this->_inBlock) {
+                    $parent =& $this->_allNodes[$this->_lastNode];
+                    $parent->data[key($parent->data)] .= trim($line) . $this->_blockEnd;
+                } else {
+                    // The current node's parent is the same as the previous node's
+                    if (isset($this->_allNodes[$this->_lastNode])) {
+                        $node->parent = $this->_allNodes[$this->_lastNode]->parent;
+                    }
                 }
-            }
-        } elseif ($this->_lastIndent < $node->indent) {
-            if ($this->_inBlock) {
-                $parent =& $this->_allNodes[$this->_lastNode];
-                $parent->data[key($parent->data)] .= preg_replace(
-                        '/^ {' . $this->_lastIndent . '}/',
-                        '',
-                        $line
-                    ) . $this->_lineEnd;
-            } else {
-                // The current node's parent is the previous node
-                $node->parent = $this->_lastNode;
+            } elseif ($this->_lastIndent < $node->indent) {
+                if ($this->_inBlock) {
+                    $parent =& $this->_allNodes[$this->_lastNode];
+                    $parent->data[key($parent->data)] .= trim($line) . $this->_blockEnd;
+                } elseif (!$this->_inBlock) {
+                    // The current node's parent is the previous node
+                    $node->parent = $this->_lastNode;
 
-                // If the value of the last node's data was > or | we need
-                // to start blocking i.e. taking in all lines as a text
-                // value until we drop our indent.
-                $parent =& $this->_allNodes[$node->parent];
-                $parent->children = true;
-                if (is_array($parent->data)) {
-                    $key = key($parent->data);
-                    if (isset($parent->data[$key])) {
-                        $chk = $parent->data[$key];
-                        if (!is_array($chk) &&
-                            preg_match('/^(>|\|)([-+\d]*)/', $chk, $match)) {
-                            if ($match[1] == '>') {
-                                $this->_lineEnd = ' ';
-                            } else {
-                                $this->_lineEnd = "\n";
-                            }
-                            $this->_chomp = '';
-                            if ($match[2]) {
-                                if (strpos($match[2], '-') !== false) {
-                                    $this->_chomp = '-';
-                                } elseif (strpos($match[2], '+') !== false) {
-                                    $this->_chomp = '+';
-                                }
-                                $match[2] = str_replace(
-                                    array('-', '+'), '', $match[2]
-                                );
-                            }
-                            if ($match[2]) {
-                                $this->_lastIndent = $match[2];
-                            } else {
+                    // If the value of the last node's data was > or |
+                    // we need to start blocking i.e. taking in all
+                    // lines as a text value until we drop our indent.
+                    $parent =& $this->_allNodes[$node->parent];
+                    $this->_allNodes[$node->parent]->children = true;
+                    if (is_array($parent->data)) {
+                        if (isset($parent->data[key($parent->data)])) {
+                            $chk = $parent->data[key($parent->data)];
+                            if ($chk === '>') {
+                                $this->_inBlock = true;
+                                $this->_blockEnd = '';
+                                $parent->data[key($parent->data)] =
+                                    str_replace('>', '', $parent->data[key($parent->data)]);
+                                $parent->data[key($parent->data)] .= trim($line) . ' ';
+                                $this->_allNodes[$node->parent]->children = false;
+                                $this->_lastIndent = $node->indent;
+                            } elseif ($chk === '|') {
+                                $this->_inBlock = true;
+                                $this->_blockEnd = "\n";
+                                $parent->data[key($parent->data)] =
+                                    str_replace('|', '', $parent->data[key($parent->data)]);
+                                $parent->data[key($parent->data)] .= trim($line) . "\n";
+                                $this->_allNodes[$node->parent]->children = false;
                                 $this->_lastIndent = $node->indent;
                             }
-                            $this->_inBlock = $match[1];
-                            $parent->data[$key] = str_replace(
-                                $match[0], '', $parent->data[$key]
-                            );
-                            $parent->data[$key] .= preg_replace(
-                                '/^ {' . $this->_lastIndent . '}/',
-                                '',
-                                $line
-                            ) . $this->_lineEnd;
-                            $parent->children = false;
                         }
                     }
                 }
-            }
-        } elseif ($this->_lastIndent > $node->indent) {
-            // Any block we had going is dead now
-            if ($this->_inBlock) {
-                $this->_inBlock = false;
-                $this->_chomp();
-            }
+            } elseif ($this->_lastIndent > $node->indent) {
+                // Any block we had going is dead now
+                if ($this->_inBlock) {
+                    $this->_inBlock = false;
+                    if ($this->_blockEnd == "\n") {
+                        $last =& $this->_allNodes[$this->_lastNode];
+                        $last->data[key($last->data)] =
+                            trim($last->data[key($last->data)]);
+                    }
+                }
 
-            // We don't know the parent of the node so we have to
-            // find it
-            foreach (array_reverse(array_keys($this->_indentSort[$node->indent])) as $key) {
-                $n = $this->_indentSort[$node->indent][$key];
-                if ($n->indent == $node->indent) {
-                    $node->parent = $n->parent;
-                    break;
+                // We don't know the parent of the node so we have to
+                // find it
+                foreach ($this->_indentSort[$node->indent] as $n) {
+                    if ($n->indent == $node->indent) {
+                        $node->parent = $n->parent;
+                    }
                 }
             }
-        }
 
-        if (!$this->_inBlock) {
-            // Set these properties with information from our
-            // current node
-            $this->_lastIndent = $node->indent;
+            if (!$this->_inBlock) {
+                // Set these properties with information from our
+                // current node
+                $this->_lastIndent = $node->indent;
 
-            // Set the last node
-            $this->_lastNode = $node->id;
+                // Set the last node
+                $this->_lastNode = $node->id;
 
-            // Parse the YAML line and return its data
-            $node->data = $this->_parseLine($line);
+                // Parse the YAML line and return its data
+                $node->data = $this->_parseLine($line);
 
-            // Add the node to the master list
-            $this->_allNodes[$node->id] = $node;
+                // Add the node to the master list
+                $this->_allNodes[$node->id] = $node;
 
-            // Add a reference to the parent list
-            $this->_allParent[intval($node->parent)][] = $node->id;
+                // Add a reference to the parent list
+                $this->_allParent[intval($node->parent)][] = $node->id;
 
-            // Add a reference to the node in an indent array
-            $this->_indentSort[$node->indent][] =& $this->_allNodes[$node->id];
+                // Add a reference to the node in an indent array
+                $this->_indentSort[$node->indent][] =& $this->_allNodes[$node->id];
 
-            // Add a reference to the node in a References array
-            // if this node has a YAML reference in it.
-            $is_array = is_array($node->data);
-            $key = key($node->data);
-            $isset = isset($node->data[$key]);
-            if ($isset) {
-                $nodeval = $node->data[$key];
-                if ($is_array) {
-                    if (is_string($nodeval) && strlen($nodeval) &&
-                        ($nodeval[0] == '&' || $nodeval[0] == '*') &&
-                        isset($nodeval[1]) && $nodeval[1] != ' ') {
-                        $this->_haveRefs[] =& $this->_allNodes[$node->id];
-                    } elseif (is_array($nodeval)) {
-                        // Incomplete reference making code. Needs to be
-                        // cleaned up.
-                        foreach ($node->data[$key] as $d) {
-                            if (is_string($d) && strlen($d) &&
-                                ($d[0] == '&' || $d[0] == '*') &&
-                                isset ($d[1]) && $d[1] != ' ') {
-                                $this->_haveRefs[] =& $this->_allNodes[$node->id];
-                            }
+                // Add a reference to the node in a References array
+                // if this node has a YAML reference in it.
+                $is_array = is_array($node->data);
+                $key = key($node->data);
+                $isset = isset($node->data[$key]);
+                if ($isset) {
+                    $nodeval = $node->data[$key];
+                }
+                if (($is_array && $isset && is_string($nodeval))
+                    && (strlen($nodeval) > 1 && ($nodeval[0] == '&' || $nodeval[0] == '*') && $nodeval[1] != ' ')) {
+                    $this->_haveRefs[] =& $this->_allNodes[$node->id];
+                } elseif ($is_array && $isset && is_array($nodeval)) {
+                    // Incomplete reference making code. Needs to be
+                    // cleaned up.
+                    foreach ($node->data[$key] as $d) {
+                        if (!is_array($d) && strlen($d) && (($d[0] == '&' || $d[0] == '*') && $d[1] != ' ')) {
+                            $this->_haveRefs[] =& $this->_allNodes[$node->id];
                         }
                     }
                 }
@@ -324,54 +250,36 @@ class Horde_Yaml_Loader
     }
 
     /**
-     * Chomps trailing white space if necessary.
-     */
-    protected function _chomp()
-    {
-        $last =& $this->_allNodes[$this->_lastNode];
-        $key = key($last->data);
-        if (!$this->_chomp) {
-            $last->data[$key] = rtrim($last->data[$key]) . "\n";
-        }
-        if ($this->_chomp == '-') {
-            $last->data[$key] = rtrim($last->data[$key]);
-        }
-    }
-
-    /**
-     * Finds and returns the indentation of a YAML line.
+     * Finds and returns the indentation of a YAML line
      *
-     * @param string $line  A line from the YAML file.
-     *
-     * @return integer  Indentation level.
+     * @param  string  $line  A line from the YAML file
+     * @return int            Indentation level
      */
     protected function _getIndent($line)
     {
         if (preg_match('/^\s+/', $line, $match)) {
             return strlen($match[0]);
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     /**
-     * Parses YAML code and returns an array for a node.
+     * Parses YAML code and returns an array for a node
      *
-     * @param string $line A line from the YAML file.
-     *
+     * @param  string  $line  A line from the YAML file
      * @return array
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
      */
     protected function _parseLine($line)
     {
         $array = array();
 
         $line = trim($line);
-        if (preg_match('/^- (.*):$/', $line)) {
+        if (preg_match('/^-(.*):$/', $line)) {
             // It's a mapped sequence
             $key = trim(substr(substr($line, 1), 0, -1));
             $array[$key] = '';
-        } elseif (substr($line, 0, 2) == '- ') {
+        } elseif ($line[0] == '-' && substr($line, 0, 3) != '---') {
             // It's a list item but not a new stream
             if (strlen($line) > 1) {
                 // Set the type of the value. Int, string, etc
@@ -407,11 +315,8 @@ class Horde_Yaml_Loader
     /**
      * Finds the type of the passed value, returns the value as the new type.
      *
-     * @param string $value
-     *
+     * @param  string   $value
      * @return mixed
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
      */
     protected function _toType($value)
     {
@@ -444,8 +349,7 @@ class Horde_Yaml_Loader
         } elseif (preg_match('/^\\{(\s*)\\}$/', $value)) {
             // empty inline mapping
             $value = array();
-        } elseif (strpos($value, ': ') !== false &&
-                  !preg_match('/^{(.+)/', $value)) {
+        } elseif (strpos($value, ': ') !== false && !preg_match('/^{(.+)/', $value)) {
             // inline mapping
             $array = explode(': ', $value);
             $key = trim($array[0]);
@@ -495,12 +399,9 @@ class Horde_Yaml_Loader
     }
 
     /**
-     * Handles PHP serialized data.
+     * Handle PHP serialized data.
      *
      * @param string &$data Data to check for serialized PHP types.
-     *
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
      */
     protected function _unserialize(&$data)
     {
@@ -530,7 +431,7 @@ class Horde_Yaml_Loader
                 throw new Horde_Yaml_Exception("$class does not implement Serializable");
             }
 
-            $class_data = trim(substr($data, $first_space + 1));
+            $class_data = substr($data, $first_space + 1);
             $serialized = 'C:' . strlen($class) . ':"' . $class . '":' . strlen($class_data) . ':{' . $class_data . '}';
             $data = unserialize($serialized);
             break;
@@ -542,22 +443,22 @@ class Horde_Yaml_Loader
 
             if (is_null($class)) {
                 $data = $array_data['a'];
-                break;
-            }
-            if (!class_exists($class)) {
-                throw new Horde_Yaml_Exception("$class is not defined");
-            }
+            } else {
+                if (!class_exists($class)) {
+                    throw new Horde_Yaml_Exception("$class is not defined");
+                }
 
-            $array = new $class;
-            if (!$array instanceof ArrayAccess) {
-                throw new Horde_Yaml_Exception("$class does not implement ArrayAccess");
-            }
+                $array = new $class;
+                if (!$array instanceof ArrayAccess) {
+                    throw new Horde_Yaml_Exception("$class does not implement ArrayAccess");
+                }
 
-            foreach ($array_data['a'] as $key => $val) {
-                $array[$key] = $val;
-            }
+                foreach ($array_data['a'] as $key => $val) {
+                    $array[$key] = $val;
+                }
 
-            $data = $array;
+                $data = $array;
+            }
             break;
         }
     }
@@ -570,8 +471,7 @@ class Horde_Yaml_Loader
      *        pure mappings and mappings with sequences inside
      *        can't go very deep.  This needs to be fixed.
      *
-     * @param string $inline  Inline data.
-     *
+     * @param  string  $inline  Inline data
      * @return array
      */
     protected function _inlineEscape($inline)
@@ -637,11 +537,9 @@ class Horde_Yaml_Loader
     }
 
     /**
-     * Builds the PHP array from all the YAML nodes we've gathered.
+     * Builds the PHP array from all the YAML nodes we've gathered
      *
      * @return array
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
      */
     protected function _buildArray()
     {
@@ -654,8 +552,7 @@ class Horde_Yaml_Loader
             if (empty($n->parent)) {
                 $this->_nodeArrayizeData($n);
 
-                // Check for references and copy the needed data to complete
-                // them.
+                // Check for references and copy the needed data to complete them.
                 $this->_makeReferences($n);
 
                 // Merge our data with the big array we're building
@@ -667,38 +564,40 @@ class Horde_Yaml_Loader
     }
 
     /**
-     * Traverses node-space and sets references (& and *) accordingly.
+     * Traverses node-space and sets references (& and *) accordingly
+     *
+     * @return bool
      */
     protected function _linkReferences()
     {
-        if (!is_array($this->_haveRefs)) {
-            return;
-        }
-
-        foreach ($this->_haveRefs as $node) {
-            if (!empty($node->data)) {
-                $key = key($node->data);
-                // If it's an array, don't check.
-                if (is_array($node->data[$key])) {
-                    foreach ($node->data[$key] as $k => $v) {
-                        $this->_linkRef($node, $key, $k, $v);
+        if (is_array($this->_haveRefs)) {
+            foreach ($this->_haveRefs as $node) {
+                if (!empty($node->data)) {
+                    $key = key($node->data);
+                    // If it's an array, don't check.
+                    if (is_array($node->data[$key])) {
+                        foreach ($node->data[$key] as $k => $v) {
+                            $this->_linkRef($node, $key, $k, $v);
+                        }
+                    } else {
+                        $this->_linkRef($node, $key);
                     }
-                } else {
-                    $this->_linkRef($node, $key);
                 }
             }
         }
+
+        return true;
     }
 
     /**
-     * Helper for _linkReferences().
+     * Helper for _linkReferences()
      *
-     * @param Horde_Yaml_Node $n Node.
-     * @param string $key        Key.
-     * @param string $k          Key.
-     * @param mixed $v           Value.
+     * @param  Horde_Yaml_Node  $n   Node
+     * @param  string           $k   Key
+     * @param  mixed            $v   Value
+     * @return void
      */
-    protected function _linkRef($n, $key, $k = null, $v = null)
+    function _linkRef(&$n, $key, $k = null, $v = null)
     {
         if (empty($k) && empty($v)) {
             // Look for &refs
@@ -731,11 +630,8 @@ class Horde_Yaml_Loader
     /**
      * Finds the children of a node and aids in the building of the PHP array
      *
-     * @param  int $nid The id of the node whose children we're gathering
-     *
+     * @param  int    $nid   The id of the node whose children we're gathering
      * @return array
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
      */
     protected function _gatherChildren($nid)
     {
@@ -762,10 +658,8 @@ class Horde_Yaml_Loader
     /**
      * Turns a node's data and its children's data into a PHP array
      *
-     * @param Horde_Yaml_Node $node The node which you want to arrayize.
-     *
-     * @throws Horde_Yaml_Exception
-     * @throws ReflectionException
+     * @param  array    $node  The node which you want to arrayize
+     * @return boolean
      */
     protected function _nodeArrayizeData(&$node)
     {
@@ -774,15 +668,13 @@ class Horde_Yaml_Loader
                 // This node has children, so we need to find them
                 $children = $this->_gatherChildren($node->id);
 
-                // We've gathered all our children's data and are ready to use
-                // it
+                // We've gathered all our children's data and are ready to use it
                 $key = key($node->data);
                 $key = empty($key) ? 0 : $key;
                 // If it's an array, add to it of course
                 if (isset($node->data[$key])) {
                     if (is_array($node->data[$key])) {
-                        $node->data[$key] =
-                            $this->_array_kmerge($node->data[$key], $children);
+                        $node->data[$key] = $this->_array_kmerge($node->data[$key], $children);
                     } else {
                         $node->data[$key] = $children;
                     }
@@ -801,10 +693,8 @@ class Horde_Yaml_Loader
                 $key = key($node->data);
                 $key = empty($key) ? 0 : $key;
 
-                if (!isset($node->data[$key]) ||
-                    is_array($node->data[$key]) ||
-                    is_object($node->data[$key])) {
-                    return;
+                if (!isset($node->data[$key]) || is_array($node->data[$key]) || is_object($node->data[$key])) {
+                    return true;
                 }
 
                 self::_unserialize($node->data[$key]);
@@ -812,40 +702,43 @@ class Horde_Yaml_Loader
                 self::_unserialize($node->data);
             }
         }
+
+        // We edited $node by reference, so just return true
+        return true;
     }
 
     /**
      * Traverses node-space and copies references to / from this object.
      *
-     * @param Horde_Yaml_Node $z  A node whose references we wish to make real.
+     * @param  Horde_Yaml_Node  $z  A node whose references we wish to make real
+     * @return bool
      */
     protected function _makeReferences(&$z)
     {
+        // It is a reference
         if (isset($z->ref)) {
-            // It is a reference
             $key = key($z->data);
             // Copy the data to this object for easy retrieval later
-            $this->_ref[$z->ref] =& $z->data[$key];
-        } elseif (isset($z->refKey)) {
+            $this->ref[$z->ref] =& $z->data[$key];
             // It has a reference
-            if (isset($this->_ref[$z->refKey])) {
+        } elseif (isset($z->refKey)) {
+            if (isset($this->ref[$z->refKey])) {
                 $key = key($z->data);
-                // Copy the data from this object to make the node a real
-                // reference
-                $z->data[$key] =& $this->_ref[$z->refKey];
+                // Copy the data from this object to make the node a real reference
+                $z->data[$key] =& $this->ref[$z->refKey];
             }
         }
+
+        return true;
     }
 
     /**
-     * Merges two arrays, maintaining numeric keys.
+     * Merges two arrays, maintaining numeric keys. If two numeric
+     * keys clash, the second one will be appended to the resulting
+     * array. If string keys clash, the last one wins.
      *
-     * If two numeric keys clash, the second one will be appended to the
-     * resulting array. If string keys clash, the last one wins.
-     *
-     * @param array $arr1
-     * @param array $arr2
-     *
+     * @param  array  $arr1
+     * @param  array  $arr2
      * @return array
      */
     protected function _array_kmerge($arr1, $arr2)
@@ -860,4 +753,5 @@ class Horde_Yaml_Loader
 
         return $arr1;
     }
+
 }

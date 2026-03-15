@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Task
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -12,7 +12,7 @@
  *
  * @category   Mad
  * @package    Mad_Task
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 abstract class Mad_Task_Set
@@ -56,6 +56,7 @@ abstract class Mad_Task_Set
         $reflector = new ReflectionClass($this);
         foreach ($reflector->getMethods() as $method) {
             if (in_array($method->name, $builtins)) { continue; }
+            if (! $method->isPublic()) { continue; }
 
             $desc = $method->getDocComment();
             if ($desc !== false) {

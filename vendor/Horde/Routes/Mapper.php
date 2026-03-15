@@ -7,7 +7,7 @@
  * largely on ideas from Ruby on Rails (http://www.rubyonrails.org).
  *
  * @author  Maintainable Software, LLC. (http://www.maintainable.com)
- * @author  Mike Naberezny (mike@maintainable.com)
+ * @author  Mike Naberezny <mike@maintainable.com>
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * @package Horde_Routes
  */
@@ -140,6 +140,18 @@ class Horde_Routes_Mapper
     public $utils;
 
     /**
+     * Cache
+     * @var Horde_Cache_Base
+     */
+    public $cache;
+
+    /**
+     * Cache lifetime for the same value of $this->matchList
+     * @var integer
+     */
+    public $cacheLifetime = 86400;
+
+    /**
      * Have regular expressions been created for all connected routes?
      * @var boolean
      */
@@ -195,7 +207,9 @@ class Horde_Routes_Mapper
      */
     public function __construct($kargs = array())
     {
-        $defaultKargs = array('controllerScan' => 'Horde_Routes_Utils::controllerScan',
+        $callback = array('Horde_Routes_Utils', 'controllerScan');
+
+        $defaultKargs = array('controllerScan' => $callback,
                               'directory'      => null,
                               'alwaysScan'     => false,
                               'explicit'       => false);
@@ -300,16 +314,38 @@ class Horde_Routes_Mapper
     }
 
     /**
+     * Set an optional Horde_Cache_Base object for the created rules.
+     *
+     * @param Horde_Cache_Base $cache Cache object
+     */
+    public function setCache(Horde_Cache_Base $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
      * Create the generation hashes (arrays) for route lookups
      *
      * @return void
      */
     protected function _createGens()
     {
+        // Checked for a cached generator dictionary for $this->matchList
+        if ($this->cache) {
+            $cacheKey = 'horde.routes.' . sha1(serialize($this->matchList));
+            $cachedDict = $cache->get($cacheKey, $this->cacheLifetime);
+            if ($gendict = @unserialize($cachedDict)) {
+                $this->_gendict = $gendict;
+                $this->_createdGens = true;
+                return;
+            }
+        }
+
         // Use keys temporarily to assemble the list to avoid excessive
-        // list iteration testing with foreach
-        $controllerList = array();
-        $actionList = array();
+        // list iteration testing with foreach.  We include the '*' in the
+        // case that a generate contains a controller/action that has no
+        // hardcodes.
+        $actionList = $controllerList = array('*' => true);
 
         // Assemble all the hardcoded/defaulted actions/controllers used
         foreach ($this->matchList as $route) {
@@ -317,21 +353,15 @@ class Horde_Routes_Mapper
                 continue;
             }
             if (isset($route->defaults['controller'])) {
-                $controllerList[] = $route->defaults['controller'];
+                $controllerList[$route->defaults['controller']] = true;
             }
             if (isset($route->defaults['action'])) {
-                $actionList[] = $route->defaults['action'];
+                $actionList[$route->defaults['action']] = true;
             }
         }
 
-        // Setup the lists of all controllers/actions we'll add each route
-        // to.  We include the '*' in the case that a generate contains a
-        // controller/action that has no hardcodes.
-        $controllerList[] = "*";
-        $actionList[] = "*";
-
-        $actionList = array_unique($actionList);
-        $controllerList = array_unique($controllerList);
+        $actionList = array_keys($actionList);
+        $controllerList = array_keys($controllerList);
 
         // Go through our list again, assemble the controllers/actions we'll
         // add each route to. If its hardcoded, we only add it to that dict key.
@@ -370,6 +400,12 @@ class Horde_Routes_Mapper
         if (!isset($gendict['*'])) {
             $gendict['*'] = array();
         }
+
+        // Write to the cache
+        if ($this->cache) {
+            $this->cache->set($cacheKey, serialize($gendict), $this->cacheLifetime);
+        }
+
         $this->_gendict = $gendict;
         $this->_createdGens = true;
     }
@@ -433,8 +469,7 @@ class Horde_Routes_Mapper
                 if (empty($url)) {
                     $url = '/';
                 }
-            }
-            else {
+            } else {
                 return array(null, null, $matchLog);
             }
         }
@@ -517,11 +552,20 @@ class Horde_Routes_Mapper
      * Usage:
      *   $m->generate(array('controller' => 'content', 'action' => 'view', 'id' => 10));
      *
-     * @param   array        $kargs  Keyword arguments (key/value pairs)
-     * @return  null|string          URL text or null
+     * @param   array        $routeArgs  Optional explicit route list
+     * @param   array        $kargs      Keyword arguments (key/value pairs)
+     * @return  null|string              URL text or null
      */
-    public function generate($kargs = array())
+    public function generate($first = null, $second = null)
     {
+        if ($second) {
+            $routeArgs = $first;
+            $kargs = is_null($second) ? array() : $second;
+        } else {
+            $routeArgs = array();
+            $kargs = is_null($first) ? array() : $first;
+        }
+
         // Generate ourself if we haven't already
         if (!$this->_createdGens) {
             $this->_createGens();
@@ -561,13 +605,15 @@ class Horde_Routes_Mapper
             }
         }
 
-        $actionList = isset($this->_gendict[$controller]) ? $this->_gendict[$controller] : $this->_gendict['*'];
-
-        list($keyList, $sortCache) =
-            (isset($actionList[$action])) ? $actionList[$action] : ((isset($actionList['*'])) ? $actionList['*'] : array(null, null));
-
-        if ($keyList === null) {
-            return null;
+        if ($routeArgs) {
+            $keyList = $routeArgs;
+        } else {
+            $actionList = isset($this->_gendict[$controller]) ? $this->_gendict[$controller] : $this->_gendict['*'];
+            list($keyList, $sortCache) =
+                (isset($actionList[$action])) ? $actionList[$action] : ((isset($actionList['*'])) ? $actionList['*'] : array(null, null));
+            if ($keyList === null) {
+                return null;
+            }
         }
 
         $keys = array_keys($kargs);
@@ -774,7 +820,7 @@ class Horde_Routes_Mapper
      *       # '/regions/51/locations'
      *
      * Note: Since Horde Routes 0.2.0 and Python Routes 1.8, this method is
-     * not compatible with earlier versions inasmuch as the semicolon is no 
+     * not compatible with earlier versions inasmuch as the semicolon is no
      * longer used to delimit custom actions.  This was a change in Rails
      * itself (http://dev.rubyonrails.org/changeset/6485) and adopting it
      * here allows us to keep parity with Rails and ActiveResource.

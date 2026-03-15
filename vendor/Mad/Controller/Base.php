@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Controller
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Controller
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 #[\AllowDynamicProperties]
@@ -70,12 +70,6 @@ abstract class Mad_Controller_Base
      * @var Mad_Controller_Proxy_Session
      */
     protected $session;
-
-    /**
-     * Proxy accessor to cookie data in the request and response objects.
-     * @var Mad_Controller_Proxy_Cookie
-     */
-    protected $cookie;
 
     /**
      * @var Mad_Controller_UrlWriter
@@ -210,7 +204,7 @@ abstract class Mad_Controller_Base
      * @param   Mad_Controller_Response_Http  $response
      * @return  Mad_Controller_Response_Http
      */
-    public function process(Mad_Controller_Request_Http $request, Mad_Controller_Response_Http $response)
+    public function process($request, $response)
     {
         $this->_request   = $request;
         $this->_response  = $response;
@@ -892,6 +886,16 @@ abstract class Mad_Controller_Base
     }
 
     /**
+     * Get the name of the layout in use, or False if the layout is disabled.
+     *
+     * @return  string|false
+     */
+    protected function getLayout()
+    {                                 
+        return $this->_useLayout ? $this->_layoutName : false;
+    }
+
+    /**
      * Add helper(s) for use in this controller
      * 
      * When the argument is a string, the method will provide the "Helper" 
@@ -1212,7 +1216,7 @@ abstract class Mad_Controller_Base
      */
     private function _initViewHelpers()
     {
-        $controllerHelper = $this->_shortName.'Helper';
+        $controllerHelper = Mad_Support_Inflector::classify($this->_shortName.'Helper');
         $this->_view->addHelper(new $controllerHelper($this->_view));
     }
 

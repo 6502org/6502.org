@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  * @category   Mad
  * @package    Mad_View
  * @subpackage Helper
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_View_Helper_FormOptions extends Mad_View_Helper_Base
@@ -35,15 +35,6 @@ class Mad_View_Helper_FormOptions extends Mad_View_Helper_Base
         $tag = new $this->_instanceTag($objectName, $method, $this->_view, $object);
         return $tag->toCollectionSelectTag($collection, $valueMethod, $textMethod,
                                            $options, $htmlOptions);
-    }
-
-    public function countrySelect($objectName, $method, $priorityCountries = null,
-                                  $options = array(), $htmlOptions = array())
-    {
-        $object = isset($options['object']) ? $options['object'] : null;
-        unset($options['object']);
-        $tag = new $this->_instanceTag($objectName, $method, $this->_view, $object);
-        return $tag->toCountrySelectTag($priorityCountries, $options, $htmlOptions);        
     }
     
     public function timeZoneSelect($objecttName, $method, $priorityZones = null,

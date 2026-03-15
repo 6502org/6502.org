@@ -264,7 +264,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
         $columns = array();
         foreach ($rows as $row) {
             $columns[] = new Horde_Db_Adapter_Postgresql_Column(
-                $row[0], $row[2], $row[1], !(boolean)$row[3]);
+                $row[0], $row[2], $row[1], !(bool)$row[3]);
         }
         return $columns;
     }

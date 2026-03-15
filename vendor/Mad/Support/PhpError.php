@@ -2,7 +2,7 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_PhpError extends Mad_Support_Exception
@@ -25,24 +25,16 @@ class Mad_Support_PhpError extends Mad_Support_Exception
     public function getTitle()
     {
         switch ($this->code) {
-            case E_WARNING:         $title = 'Warning';          break;
-            case E_NOTICE:          $title = 'Notice';           break;
-            case E_CORE_WARNING:    $title = 'Core Warning';     break;
-            case E_COMPILE_WARNING: $title = 'Compile Warning';  break;
-            case E_USER_ERROR:      $title = 'User Error';       break;
-            case E_USER_WARNING:    $title = 'User Warning';     break;
-            case E_USER_NOTICE:     $title = 'User Notice';      break;
-            case E_STRICT:          $title = 'Strict Notice';    break;
-            default:
-                if (defined('E_RECOVERABLE_ERROR') && 
-                                $this->code == E_RECOVERABLE_ERROR) {
-                    $title = 'Recoverable Error';
-                } else if (defined('E_DEPRECATED') &&
-                                $this->code == E_DEPRECATED) {
-                    $title = 'Deprecated Notice';
-                } else {
-                    $title = 'Unknown Error';
-                }
+            case E_WARNING:           $title = 'Warning';          break;
+            case E_NOTICE:            $title = 'Notice';           break;
+            case E_CORE_WARNING:      $title = 'Core Warning';     break;
+            case E_COMPILE_WARNING:   $title = 'Compile Warning';  break;
+            case E_USER_ERROR:        $title = 'User Error';       break;
+            case E_USER_WARNING:      $title = 'User Warning';     break;
+            case E_USER_NOTICE:       $title = 'User Notice';      break;
+            case E_RECOVERABLE_ERROR: $title = 'Recoverable Error'; break;
+            case E_DEPRECATED:        $title = 'Deprecated Notice'; break;
+            default:                  $title = 'Unknown Error';
         }
     
         return "PHP $title";

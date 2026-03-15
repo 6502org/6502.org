@@ -3,7 +3,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Association
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
@@ -13,7 +13,7 @@
  * @category   Mad
  * @package    Mad_Model
  * @subpackage Association
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Collection
@@ -107,7 +107,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
             $exists = $this->_conn->selectValue($sql);
             if ($exists) continue;
 
-            $sql = "INSERT IGNORE INTO $joinTable ( ".
+            $sql = "INSERT INTO $joinTable ( ".
                    "  $fkName, $assocFkName ".
                    ") VALUES ( ".
                    "  ".$this->_conn->quote($fkValue).

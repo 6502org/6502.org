@@ -2,14 +2,14 @@
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 
 /**
  * @category   Mad
  * @package    Mad_Support
- * @copyright  (c) 2007-2008 Maintainable Software, LLC
+ * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 class Mad_Support_Base
@@ -19,16 +19,14 @@ class Mad_Support_Base
      */
     public static function initialize()
     {
-        // All classes are autoloaded
-        spl_autoload_register("Mad_Support_Base::autoload", true, true);
-
-        Mad_Model_Stream::install();
+        spl_autoload_register(array('Mad_Support_Base', 'autoload'));
         Mad_View_Stream::install();
         Mad_Support_PhpErrorHandler::install();
     }
 
     /**
-     * Encapsulates functionality needed for __autoload()
+     * Encapsulates functionality needed for autoloading
+     * @see spl_autoload_register
      *
      * @params  string  $class  Class name
      */
@@ -36,11 +34,17 @@ class Mad_Support_Base
     {
         $filepath = str_replace('_', '/', $class).".php";
 
-        // filter models through Mad_Model_Stream
+        // load models from app/models
         if (self::modelExists($class)) {
-            $filepath = "madmodel://".MAD_ROOT."/app/models/$filepath";
+            require_once MAD_ROOT."/app/models/$filepath";
+            return;
         }
-        require_once $filepath;
+
+        // only require if the file can be found in the include path
+        $found = stream_resolve_include_path($filepath);
+        if ($found !== false) {
+            require_once $found;
+        }
     }
 
     /**
@@ -64,7 +68,7 @@ class Mad_Support_Base
 				if ($f->isFile() && substr($f->getFilename(), -4) == '.php') {
 					// compute possible model pathname of $class
 					$pathname = $f->getPathname();
-					$thisClass = str_replace(DIRECTORY_SEPARATOR, '_',
+					$thisClass = str_replace(DIRECTORY_SEPARATOR, '_', 
 					    substr($pathname, $pathLen, -4));
 					$classes[$thisClass] = true;
 				}
@@ -73,10 +77,10 @@ class Mad_Support_Base
 
         return isset($classes[$class]);
     }
-
+    
     /**
      * Validate list of keys in the hash
-     *
+     * 
      * @param   array   $hash
      * @param   array   $validKeys
      * @throws  InvalidArgumentException
@@ -88,7 +92,7 @@ class Mad_Support_Base
             $msg = 'Expected array, got ' . gettype($hash);
             throw new InvalidArgumentException($msg);
         }
-
+        
         // normalize validation keys so that we can use both key/associative arrays
         foreach ($validKeys as $key=>$val) {
             is_int($key) ? $valids[$val] = null : $valids[$key] = $val;
@@ -111,7 +115,7 @@ class Mad_Support_Base
         }
         return $hash;
     }
-
+    
     public static function chop($str)
     {
         if (strlen($str)) {
@@ -119,19 +123,19 @@ class Mad_Support_Base
                 $str = substr($str, 0, strlen($str)-2);
             } else {
                 $str = substr($str, 0, strlen($str)-1);
-            }
+            } 
         }
         return $str;
     }
-
+    
     public static function chopToNull($str)
     {
         $str = self::chop($str);
-
+        
         if (! strlen($str)) {
             $str = null;
         }
         return $str;
     }
-
+    
 }
