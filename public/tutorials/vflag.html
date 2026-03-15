@@ -362,9 +362,9 @@ and the I/O addresses are between the end of RAM and the start of ROM.  So
 I/O is simply read from and written to as though it were memory.
 <p>
 There are applications where the software must wait until a hardware event
-has occured.  One method for doing this is called polling, which means that
+has occurred.  One method for doing this is called polling, which means that
 the software keeps checking for the hardware event, continuing only after
-that event has occured.  This typically looks something like this:
+that event has occurred.  This typically looks something like this:
 <pre>
   LOOP BIT FLAG ; test the hardware flag
        BMI LOOP ; loop until the hardware flag goes low
