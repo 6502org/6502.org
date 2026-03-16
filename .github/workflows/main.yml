@@ -1,0 +1,18 @@
+name: Run all tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-sqlite3
+          wget -q https://phar.phpunit.de/phpunit-11.phar -O phpunit
+          chmod +x phpunit
+          sudo mv phpunit /usr/local/bin/phpunit
+      - name: Run tests
+        run: php ./script/task test
