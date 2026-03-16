@@ -4,8 +4,7 @@
  * Update the framework from GitHub.
  *
  * Downloads the latest framework from the 6502org/framework repository
- * and replaces the local vendor/ directory with the updated one.  The
- * framework is rarely updated so a git submodule is not worth it.
+ * and replaces the local vendor/ directory with the updated one.
  *
  * Usage: php script/update_framework
  */

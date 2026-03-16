@@ -2,19 +2,15 @@
 
 This is the source code for the main part of the [6502.org](http://6502.org/) website, which is everything except the forum, users' pages, and the PDF files in the documents archive.
 
-## Requirements
-
-The website requires a Unix-like machine (e.g. Linux, macOS) and PHP version 5.4 through 8.4 with the `curl` and `pdo_sqlite` extensions installed.
+The website requires a Unix-like machine (e.g. Linux, macOS) and PHP version 5.4 through 8.4 with the `curl`, `pdo_sqlite`, and `zip` extensions installed.  To run the test suite, `phpunit` is also required.
 
 On Ubuntu 24.04 LTS, these commands will install the requirements:
 
 ```
 $ sudo apt update
 
-$ sudo apt install git php-cli php-curl php-sqlite3
+$ sudo apt install git php-cli php-curl php-sqlite3 php-zip phpunit
 ```
-
-## Development
 
 Clone this Git repository and run the website locally using PHP's built-in webserver:
 
@@ -43,7 +39,6 @@ It will be a fully functional 6502.org, missing only the hosted sub-sites and th
 The files in the [Documents Archive](http://6502.org/documents), such as the datasheet PDFs, are not included in this repository. When running the website locally, documents will be served from a public mirror if they do not exist on disk.
 
 A script is provided to automatically download the documents from the public mirrors to the local disk.  With no arguments, the script will download the entire archive:
-
 
 ```
 $ php script/download_documents
