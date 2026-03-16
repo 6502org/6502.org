@@ -9,7 +9,7 @@ On Ubuntu 24.04 LTS, these commands will install the requirements:
 ```
 $ sudo apt update
 
-$ sudo apt install git php-cli php-curl php-sqlite3 php-zip phpunit
+$ sudo apt install git php-cli php-curl php-sqlite3 php-zip phpunit sqlite3
 ```
 
 Clone this Git repository and run the website locally using PHP's built-in webserver:
@@ -51,7 +51,7 @@ Checking existing files...
 [1/658] Downloading appnotes/6502_assembler_in_basic.pdf
 ```
 
-A file will only be downloaded if it is missing or if its SHA1 hash does match the expected one.  If a mirror is down or the script is interrupted, the script can be run again and it will only try to download the remaining files.
+A file will only be downloaded if it is missing or corrupt.  If a mirror is down or the script is interrupted, the script can be run again and it will only try to download the remaining files.
 
 Use ``--help`` for a list of options.  The ``--filter`` option in particular is useful if you only want a subset of the documents to be downloaded.  For example, if you only want to download the datasheets:
 

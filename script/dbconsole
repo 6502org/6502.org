@@ -7,41 +7,56 @@
 define('MAD_ENV', isset($_SERVER['MAD_ENV']) ? $_SERVER['MAD_ENV'] : 'development');
 require_once dirname(dirname(__FILE__)).'/config/environment.php';
 
-// sets $config
-$config = Horde_Yaml::loadFile(MAD_ROOT.'/config/database.yml');
-$spec = $config[MAD_ENV];
-
-function findCmd($command) 
+function find_command($command)
 {
     $dirsOnPath = explode(PATH_SEPARATOR, getenv("PATH"));
 
     foreach ($dirsOnPath as $dir) {
-        $cmd = $dir.DIRECTORY_SEPARATOR.$command;
+        $cmd = $dir . DIRECTORY_SEPARATOR . $command;
         if (is_executable($cmd)) { return $cmd; }
-    }    
-    die("Couldn't find database client: $command. $check your \$PATH and try again.");
+    }
+    die("Couldn't find database client: $command\n");
 }
 
-if (strstr($spec["adapter"], "mysql")) {
+function mysql_console($spec)
+{
     $args = array(
         'host'      => '--host',
         'port'      => '--port',
         'socket'    => '--socket',
         'username'  => '--user',
         'encoding'  => '--default-character-set',
-        'password'  => '--password',  
+        'password'  => '--password',
     );
 
     $opts = array();
     foreach ($args as $opt => $arg) {
-        if (isset($spec[$opt])) {
+        if (isset($spec[$opt]) && $spec[$opt] !== '') {
             $opts[] = "$arg=".$spec[$opt];
         }
     }
     $opts[] = $spec["database"];
 
-    pcntl_exec(findCmd("mysql"), $opts);
+    pcntl_exec(find_command("mysql"), $opts);
+}
 
+function sqlite_console($spec)
+{
+    $db = $spec["database"];
+    if ($db[0] != '/' && $db[0] != ':') {
+        $db = MAD_ROOT . '/' . $db;
+    }
+
+    pcntl_exec(find_command("sqlite3"), array($db));
+}
+
+$config = Horde_Yaml::loadFile(MAD_ROOT.'/config/database.yml');
+$spec = $config[MAD_ENV];
+$adapter = str_replace('pdo_', '', $spec['adapter']);
+$func = $adapter . '_console';
+
+if (function_exists($func)) {
+    $func($spec);
 } else {
-    die("Unknown command-line client for ".$spec['database']);
+    die("Unknown database adapter: ".$spec['adapter']."\n");
 }
