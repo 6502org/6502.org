@@ -1,0 +1,61 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Parse CLI options and start the built-in development server.
+ */
+function server($argv)
+{
+    $host = 'localhost';
+    $port = 3000;
+
+    $args = array_slice($argv, 1);
+    for ($i = 0; $i < count($args); $i++) {
+        $arg = $args[$i];
+        if ($arg == '--help') {
+            echo "Usage: ./script/server [options]\n";
+            echo "  -h HOST, --host=HOST  Bind to HOST (default: localhost)\n";
+            echo "  -p PORT, --port=PORT  Bind to PORT (default: 3000)\n";
+            exit(0);
+        } elseif ($arg == '-p' && isset($args[$i + 1])) {
+            $port = (int)$args[++$i];
+        } elseif (preg_match('/^--port=(\d+)$/', $arg, $m)) {
+            $port = (int)$m[1];
+        } elseif ($arg == '-h' && isset($args[$i + 1])) {
+            $host = $args[++$i];
+        } elseif (preg_match('/^--host=(.+)$/', $arg, $m)) {
+            $host = $m[1];
+        } else {
+            echo "Unknown option: $arg\n";
+            echo "Try ./script/server --help\n";
+            exit(1);
+        }
+    }
+
+    $docroot = dirname(__DIR__) . '/public';
+
+    pcntl_exec(PHP_BINARY, array('-S', "$host:$port", '-t', $docroot, __FILE__));
+}
+
+/**
+ * Router required by PHP's built-in webserver. Serves static files
+ * directly or routes everything else through the front controller.
+ */
+function router()
+{
+    $docroot = $_SERVER['DOCUMENT_ROOT'];
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $file = $docroot . $path;
+
+    if (file_exists($file) && is_file($file)) {
+        return false;
+    }
+
+    require_once $docroot . '/index.php';
+}
+
+if (php_sapi_name() == 'cli-server') {
+    return router();
+} else {
+    server($argv);
+}

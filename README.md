@@ -26,13 +26,13 @@ Resolving deltas: 100% (51/51), done.
 
 $ cd 6502.org 
 
-$ php -S localhost:8000 -t public/ local.php
-[Wed Mar 11 22:32:03 2026] PHP 8.3.6 Development Server (http://localhost:8000) started
+$ php ./script/server
+[Wed Mar 11 22:32:03 2026] PHP 8.3.6 Development Server (http://localhost:3000) started
 ```
 
-Open a browser to http://localhost:8000/ to view it.  
+Open a browser to http://localhost:3000/ to view it.  It will be a fully functional 6502.org, missing only the hosted sub-sites and the forum.
 
-It will be a fully functional 6502.org, missing only the hosted sub-sites and the forum.
+(To use a port other than the default `3000`, see ``php ./script/server --help``.)
 
 ## Documents
 

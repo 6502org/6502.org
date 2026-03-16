@@ -13,7 +13,16 @@ foreach ($argv as $key => $value) {
 /**
  * Set environment
  */
-if (!defined('MAD_ENV')) define('MAD_ENV', isset($_SERVER['MAD_ENV']) ? $_SERVER['MAD_ENV'] : 'development');
+if (!defined('MAD_ENV')) {
+    if (isset($_SERVER['MAD_ENV'])) {
+        $env = $_SERVER['MAD_ENV'];
+    } elseif (isset($argv[1]) && strncmp($argv[1], 'test', 4) === 0) {
+        $env = 'test';
+    } else {
+        $env = 'development';
+    }
+    define('MAD_ENV', $env);
+}
 require_once dirname(dirname(__FILE__)).'/config/environment.php';
 
 new Mad_Script_TaskRunner($argv);

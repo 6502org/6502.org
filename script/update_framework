@@ -4,7 +4,7 @@
  * Update the framework from GitHub.
  *
  * Downloads the latest framework from the 6502org/framework repository
- * and replaces the local vendor/ directory with the updated one.
+ * and updates vendor/ and script/ from it.
  *
  * Usage: php script/update_framework
  */
@@ -22,7 +22,7 @@ function create_temp_dir()
 
 function download($url, $tmpDir)
 {
-    echo "Downloading framework from GitHub...\n";
+    echo "Downloading $url...\n";
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -45,7 +45,7 @@ function download($url, $tmpDir)
     return $zipFile;
 }
 
-function extract_vendor($zipFile, $tmpDir)
+function extract_zip($zipFile, $tmpDir)
 {
     echo "Extracting...\n";
 
@@ -56,24 +56,47 @@ function extract_vendor($zipFile, $tmpDir)
     $zip->extractTo($tmpDir);
     $zip->close();
 
-    $vendorDir = $tmpDir . '/framework-main/vendor';
-    if (!is_dir($vendorDir)) {
-        throw new RuntimeException("vendor/ not found in downloaded framework");
+    $frameworkDir = $tmpDir . '/framework-main';
+    if (!is_dir($frameworkDir)) {
+        throw new RuntimeException("framework-main/ not found in downloaded zip");
     }
 
-    return $vendorDir;
+    return $frameworkDir;
 }
 
-function install($sourceVendor, $destVendor)
+function install_scripts($srcRoot, $destRoot)
+{
+    echo "Updating script/...\n";
+
+    $srcDir = $srcRoot . '/script';
+    $destDir = $destRoot . '/script';
+
+    if (!is_dir($srcDir)) { return; }
+
+    foreach (glob($srcDir . '/*') as $src) {
+        if (!is_file($src)) { continue; }
+        $dest = $destDir . '/' . basename($src);
+        copy_file($src, $dest);
+
+        // add execute bit for whoever has read (e.g. 0644 -> 0755)
+        $perms = fileperms($dest);
+        chmod($dest, $perms | (($perms & 0444) >> 2));
+    }
+}
+
+function install_vendor($srcRoot, $destRoot)
 {
     echo "Updating vendor/...\n";
 
-    foreach (scandir($sourceVendor) as $entry) {
+    $srcDir = $srcRoot . '/vendor';
+    $destDir = $destRoot . '/vendor';
+
+    foreach (scandir($srcDir) as $entry) {
         if ($entry === '.' || $entry === '..') { continue; }
-        $src = $sourceVendor . '/' . $entry;
+        $src = $srcDir . '/' . $entry;
         if (!is_dir($src)) { continue; }
 
-        $dest = $destVendor . '/' . $entry;
+        $dest = $destDir . '/' . $entry;
         if (is_dir($dest)) {
             remove_directory($dest);
         }
@@ -135,13 +158,6 @@ function remove_directory($dir)
     rmdir($realDir);
 }
 
-function cleanup($dir)
-{
-    if (is_dir($dir)) {
-        remove_directory($dir);
-    }
-}
-
 function main()
 {
     $url = 'https://github.com/6502org/framework/archive/refs/heads/main.zip';
@@ -149,11 +165,16 @@ function main()
 
     try {
         $zipFile = download($url, $tmpDir);
-        $vendorDir = extract_vendor($zipFile, $tmpDir);
-        install($vendorDir, MAD_ROOT . '/vendor');
+        $frameworkDir = extract_zip($zipFile, $tmpDir);
+
+        install_vendor($frameworkDir, MAD_ROOT);
+        install_scripts($frameworkDir, MAD_ROOT);
+
         echo "Success.\n";
     } finally {
-        cleanup($tmpDir);
+        if (is_dir($tmpDir)) {
+            remove_directory($tmpDir);
+        }
     }
 
     exit(0);
