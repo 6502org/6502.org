@@ -1,484 +1,498 @@
 <? $this->title = 'Source Code Library' ?>
 <? $this->description = 'A collection of useful programs for the 6502 microprocessor.' ?>
 
-<div class="content-page">
-      <p>
-    		Here you will find a collection of useful programs and routines (mostly
-        written in assembly language) that can be adapted to any 6502-based
-        computer. Please send your contributions to us via
-        <?= $this->mailTo(CONTACT_EMAIL, 'email', ['subject' => '6502.org Source Code', 'encode' => 'javascript']) ?>
-        in any format.
-      </p>
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
+  <p>
+    Here you will find a collection of useful programs and routines (mostly
+    written in assembly language) that can be adapted to any 6502-based
+    computer.
+  </p>
 
-      <p>
-        Steven Judd runs an excellent site called <a href="http://www.ffd2.com/fridge">The Fridge</a>
-        which contains 6502 assembly language routines for the Commodore 64
-        and other computers.
-      </p>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="games"><b>Games</b></a>
 
-      <p>
-        Scott Alfter hosts the entire archive of <a href="http://alfter.us/aal.php">Apple Assembly Line</a>,
-        an old Apple II publication with a lot of good general 6502 content.
-      </p>
+  <ul>
+    <li>
+      <a href="/source/games/uchess/uchess.htm">MicroChess</a>&nbsp;
+      <span class="author">by Peter Jennings, modified by Daryl Rictor</span>
+      <p class="item-desc">MicroChess is a very famous game written by Peter Jennings in 1976. It
+      was originally written for the MOS Technology KIM-1 but is easily
+      ported and was used on other systems like the Rockwell AIM-65. Daryl
+      Rictor has updated the program for use on projects with a 6551-based
+      serial port. Both the original and the enhanced version are provided.</p>
+    </li>
+  </ul>
 
-      <p>
-        Frantic runs the <a href="http://codebase64.org/">Codebase 64</a> wiki which contains both general
-        6502 code examples and material specific to the C64 and other Commodore machines.
-      </p>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="floatingpoint"><b>Floating Point Math</b></a>
 
-  		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="games"><b>Games</b></a>
-  		<ul><li>
-    		<p><a href="/source/games/uchess/uchess.htm">MicroChess</a>&nbsp;
-    		<span class="author">by Peter Jennings, modified by Daryl Rictor</span>
-    		<ul class="desc"><li>
-    		  MicroChess is a very famous game written by Peter Jennings in 1976. It
-          was originally written for the MOS Technology KIM-1 but is easily
-          ported and was used on other systems like the Rockwell AIM-65. Daryl
-          Rictor has updated the program for use on projects with a 6551-based
-          serial port. Both the original and the enhanced version are provided.
-		</ul>
-  		</ul>
+  <ul>
+    <li>
+      <a href="/source/floats/wozfp1.txt">Floating Point Routines for the 6502</a>&nbsp;
+      <span class="author">by Roy Rankin and Steve Wozniak</span>
+      <p class="item-desc">Originally published in the August 1976 issue of Dr. Dobb's Journal, these
+      floating point routines allow 6502 users to perform most of the more
+      popular and desired floating point and transcendental functions, namely:
+      Natural Log, Common Log, Addition, Subtraction, Multiplication, Division,
+      and conversions between floating and fixed point numbers.</p>
+    </li>
 
-  		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="floatingpoint"><b>Floating Point Math</b></a>
-    		<ul>
-  		  <li><p><a href="/source/floats/wozfp1.txt">Floating Point Routines for the 6502</a>
-  		  <span class="author">by Roy Rankin and Steve Wozniak</span>
-    		<ul class="desc"><li>
-      		Originally published in the August 1976 issue of Dr. Dobb's Journal, these
-          floating point routines allow 6502 users to perform most of the more
-          popular and desired floating point and transcendental functions, namely:
-          Natural Log, Common Log, Addition, Subtraction, Multiplication, Division,
-          and conversions between floating and fixed point numbers.
-    		</ul>
+    <li>
+      <a href="/source/floats/wozfp2.txt">Errata for Rankin's 6502 Floating Point Routines</a>&nbsp;
+      <span class="author">by Roy Rankin</span>
+      <p class="item-desc">In the November/December issue of Dr. Dobb's Journal Roy Rankin published
+      three error corrections to the Floating Point Routines presented above.</p>
+    </li>
 
-    		<li><p><a href="/source/floats/wozfp2.txt">Errata for Rankin's 6502 Floating Point Routines</a>
-    		<span class="author">by Roy Rankin</span>
-    		<ul class="desc"><li>
-      		In the November/December issue of Dr. Dobb's Journal Roy Rankin published
-      		three error corrections to the Floating Point Routines presented above.
-    		</ul>
+    <li>
+      <a href="/source/floats/wozfp3.txt">Floating Point Implementation in the Apple II</a>&nbsp;
+      <span class="author">by Steve Wozniak</span>
+      <p class="item-desc">An almost identical set of the above routines appeared in the original
+      manual for the Apple II (the Red Book, January 1978).  Documentation for
+      these routines appeared in another book, the Wozpak II, in November 1979.</p>
+    </li>
 
-    		<li><p><a href="/source/floats/wozfp3.txt">Floating Point Implementation in the Apple II</a>
-    		<span class="author">by Steve Wozniak</span>
-    		<ul class="desc"><li>
-      		An almost identical set of the above routines appeared in the original
-      		manual for the Apple II (the Red Book, January 1978).  Documentation for
-      		these routines appeared in another book, the Wozpak II, in November 1979.
-    		</ul>
+    <li>
+      <a href="https://web.archive.org/web/20170923012704/http://65xx.unet.bz:80/fpu.txt">IEEE 754 quadruple precision floating point for 65C816</a>&nbsp;
+      <span class="author">by Marco Granati</span>
+      <p class="item-desc">The main goal is build a "virtual numeric co-processor" with some internal pseudo-registers
+      stack-oriented, interfaced by 'cop' instruction. About 16k binary, 10k lines of source.
+      See <a href="http://forum.6502.org/viewtopic.php?t=4133">announcement</a>.</p>
+    </li>
 
-    		<li><p><a href="https://web.archive.org/web/20170923012704/http://65xx.unet.bz:80/fpu.txt">
-			IEEE 754 quadruple precision floating point for 65C816</a>
-    		<span class="author">by Marco Granati</span>
-    		<ul class="desc"><li>
-      		The main goal is build a "virtual numeric co-processor" with some internal pseudo-registers
-		stack-oriented, interfaced by 'cop' instruction. About 16k binary, 10k lines of source.
-		See <a href="http://forum.6502.org/viewtopic.php?t=4133">announcement</a>.
-    		</ul>
+    <li>
+      <a href="http://www.crbond.com/6502.html">Calc65 floating-point arithmetic and transcendental function package</a>&nbsp;
+      <span class="author">by Charles R Bond</span>
+      <p class="item-desc">"The math routines use Cordic algorithms and similar strategies involving
+      pseudo-multiplication and pseudo-division. The square root routine employs
+      non-restoring pseudo-division. The BCD number format occupies 8 bytes:
+      note that there are 12 mantissa digits and 3 exponent digits."</p>
+    </li>
+  </ul>
 
-    		<li><p><a href="http://www.crbond.com/6502.html">Calc65
-                   floating-point arithmetic and transcendental function package</a>
-    		<span class="author">by Charles R Bond</span>
-    		<ul class="desc"><li>
-      		"The math routines use Cordic algorithms and similar strategies involving
-      		pseudo-multiplication and pseudo-division. The square root routine employs
-      		non-restoring pseudo-division. The BCD number format occupies 8 bytes:
-      		note that there are 12 mantissa digits and 3 exponent digits."
-    		</ul>
-  		</ul>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="general"><b>General Purpose</b></a>
 
-  		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="general"><b>General Purpose</b></a>
-    		<ul>
-    		<li><p><a href="/source/general/clockfreq.htm">Calculation of Clock Frequency</a>
-    		<span class="author">by Leo Nechaev</span>
-    		<ul class="desc"><li>
-      		This program calculates the clock frequency of the 6502-based system it is
-      		running on and reports it back via RS-232 through a 6551 ACIA.
-    		</ul>
+  <ul>
+    <li>
+      <a href="/source/general/clockfreq.htm">Calculation of Clock Frequency</a>&nbsp;
+      <span class="author">by Leo Nechaev</span>
+      <p class="item-desc">This program calculates the clock frequency of the 6502-based system it is
+      running on and reports it back via RS-232 through a 6551 ACIA.</p>
+    </li>
 
-    		<li><p><a href="/source/general/clearmem.htm">Clearing a Section of Memory</a>
-    		<span class="author">from 6502 Software Gourmet Guide &amp; Cookbook, Simplified by Mickael Pointier</span>
-    		<ul class="desc"><li>
-      		Clear up to 256 bytes anywhere in memory using this routine.
-    		</ul>
+    <li>
+      <a href="/source/general/clearmem.htm">Clearing a Section of Memory</a>&nbsp;
+      <span class="author">from 6502 Software Gourmet Guide &amp; Cookbook, Simplified by Mickael Pointier</span>
+      <p class="item-desc">Clear up to 256 bytes anywhere in memory using this routine.</p>
+    </li>
 
-    		<li><p><a href="/source/misc/dow.htm">Day of the Week</a>
-    		<span class="author">by Paul Guertin</span>
-    		<ul class="desc"><li>
-      		Computes the day of the week from (almost) any given date within the
-          years 1900 and 2155.
-    		</ul>
+    <li>
+      <a href="/source/misc/dow.htm">Day of the Week</a>&nbsp;
+      <span class="author">by Paul Guertin</span>
+      <p class="item-desc">Computes the day of the week from (almost) any given date within the
+      years 1900 and 2155.</p>
+    </li>
 
-    		<li><p><a href="/source/misc/enhanced-dow.html">Enhanced Day of the Week</a>
-    		<span class="author">by W.J. Brier</span>
-    		<ul class="desc"><li>
-      		This is an alternative to Paul Guertin's program.  It is longer but has the
-      		advantage of supporting a wider range of dates.
-    		</ul>
+    <li>
+      <a href="/source/misc/enhanced-dow.html">Enhanced Day of the Week</a>&nbsp;
+      <span class="author">by W.J. Brier</span>
+      <p class="item-desc">This is an alternative to Paul Guertin's program.  It is longer but has the
+      advantage of supporting a wider range of dates.</p>
+    </li>
 
-    		<li><p><a href="/source/general/memory_move.html">Practical Memory Move Routines</a>
-    		<span class="author">by Bruce Clark</span>
-    		<ul class="desc"><li>
-    		  Here are some reasonably fast general-purpose routines for moving
-          blocks of memory. You simply specify the address to move from, the
-          address to move to, and the size of the block.
-    		</ul>
+    <li>
+      <a href="/source/general/memory_move.html">Practical Memory Move Routines</a>&nbsp;
+      <span class="author">by Bruce Clark</span>
+      <p class="item-desc">Here are some reasonably fast general-purpose routines for moving
+      blocks of memory. You simply specify the address to move from, the
+      address to move to, and the size of the block.</p>
+    </li>
 
-    		<li><p><a href="/source/general/address_test.html">Address Line Test</a>
-    		<span class="author">by Tony Gonzalez</span>
-    		<ul class="desc"><li>
-      		The typical RAM test consists of reading and writing $AA and $55 to each
-          memory location. This works well for finding bad RAM locations. However,
-          it does not specifically find bad address lines. This simple method does
-          just that.
-    		</ul>
+    <li>
+      <a href="/source/general/address_test.html">Address Line Test</a>&nbsp;
+      <span class="author">by Tony Gonzalez</span>
+      <p class="item-desc">The typical RAM test consists of reading and writing $AA and $55 to each
+      memory location. This works well for finding bad RAM locations. However,
+      it does not specifically find bad address lines. This simple method does
+      just that.</p>
+    </li>
 
-		<li><p><a href="/source/general/SWN.html">Efficient Nybble Swap</a>
-    		<span class="author">by Garth Wilson</span>
-    		<ul class="desc"><li>
-		Efficient nybble swap on 6502, taking only 8 bytes and 12 clock cycles, and no
-		variables, no stack usage, no look-up table, no X or Y usage.  It uses only the
-		accumulator and status register.
-		</ul>
-		</ul>
+    <li>
+      <a href="/source/general/SWN.html">Efficient Nybble Swap</a>&nbsp;
+      <span class="author">by Garth Wilson</span>
+      <p class="item-desc">Efficient nybble swap on 6502, taking only 8 bytes and 12 clock cycles, and no
+      variables, no stack usage, no look-up table, no X or Y usage.  It uses only the
+      accumulator and status register.</p>
+    </li>
+  </ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="integermath"><b>Integer Math</b></a>
-    		<ul>
-  		<li><p><a href="/source/integers/32muldiv.htm">Large Multiply & Divide</a>
-  		<span class="author">from 6502 Software Design, Expanded by Greg</span>
-    		<ul class="desc"><li>
-    		Two routines for multiplying and dividing larger integers. The first is
-        a 32-bit multiply routine which computes a 64-bit product and the second
-        is a 64-bit divide routine which gives a 32-bit quotient.
-  		</ul>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="integermath"><b>Integer Math</b></a>
 
-  		<li><p><a href="/source/integers/fastx10.htm">Fast Multiply by 10</a>
-  		<span class="author">by Leo Nechaev</span>
-    		<ul class="desc"><li>
-    		Multiplying a number by ten is fast and easy with this routine.
-  		</ul>
+  <ul>
+    <li>
+      <a href="/source/integers/32muldiv.htm">Large Multiply &amp; Divide</a>&nbsp;
+      <span class="author">from 6502 Software Design, Expanded by Greg</span>
+      <p class="item-desc">Two routines for multiplying and dividing larger integers. The first is
+      a 32-bit multiply routine which computes a 64-bit product and the second
+      is a 64-bit divide routine which gives a 32-bit quotient.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/fastmult.htm">Fast, Table-Driven Multiplication</a>
-  		<span class="author">by Martin Arndt</span>
-    		<ul class="desc"><li>
-    		This routine uses tables of squares to quickly multiply two 8-bit
-        numbers. The algorithm is very useful when you want to multiply multiple
-        bytes by the same factor, and could easily be expanded for 16-bit
-        numbers.
-  		</ul>
+    <li>
+      <a href="/source/integers/fastx10.htm">Fast Multiply by 10</a>&nbsp;
+      <span class="author">by Leo Nechaev</span>
+      <p class="item-desc">Multiplying a number by ten is fast and easy with this routine.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/ummodfix/ummodfix.htm">Division (32-bit)</a>
-  		<span class="author">by Garth Wilson</span>
-    		<ul class="desc"><li>
-    		Routines for unsigned division of a 32-bit dividend by a 16-bit divisor,
-    		resulting with a 16-bit quotient and a 16-bit remainder.  Presented for
-    		the 65C02 (with changes for use on 6502) and 65C816, with notes of
-    		interest to Forth users.
-  		</ul>
+    <li>
+      <a href="/source/integers/fastmult.htm">Fast, Table-Driven Multiplication</a>&nbsp;
+      <span class="author">by Martin Arndt</span>
+      <p class="item-desc">This routine uses tables of squares to quickly multiply two 8-bit
+      numbers. The algorithm is very useful when you want to multiply multiple
+      bytes by the same factor, and could easily be expanded for 16-bit
+      numbers.</p>
+    </li>
 
-  		<li><p><a href="http://wilsonminesco.com/16bitMathTables/index.html">Large Look-up Tables
-  		for 16-Bit Fixed-Point Math</a>
-  		<span class="author">by Garth Wilson</span>
-    		<ul class="desc"><li>
-          Uses large look-up tables for very fast 16-bit fixed-point math,                                    
-          including trig and log functions. Also includes an introduction to                                  
-          fixed-point/scaled-integer math.                                                                    
-  		  </ul>
+    <li>
+      <a href="/source/integers/ummodfix/ummodfix.htm">Division (32-bit)</a>&nbsp;
+      <span class="author">by Garth Wilson</span>
+      <p class="item-desc">Routines for unsigned division of a 32-bit dividend by a 16-bit divisor,
+      resulting with a 16-bit quotient and a 16-bit remainder.  Presented for
+      the 65C02 (with changes for use on 6502) and 65C816, with notes of
+      interest to Forth users.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/32bcdbin.htm">BCD to Binary Conversion (32-bit)</a>
-  		<span class="author">from 6502 Software Design, Expanded by Greg</span>
-    		<ul class="desc"><li>
-    		Two routines for converting between larger binary and BCD numbers. The
-        first routine converts a 32-bit packed BCD number to its binary
-        equivalent and the second performs the reverse operation.
-  		</ul>
+    <li>
+      <a href="http://wilsonminesco.com/16bitMathTables/index.html">Large Look-up Tables for 16-Bit Fixed-Point Math</a>&nbsp;
+      <span class="author">by Garth Wilson</span>
+      <p class="item-desc">Uses large look-up tables for very fast 16-bit fixed-point math,
+      including trig and log functions. Also includes an introduction to
+      fixed-point/scaled-integer math.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/hex2dec.htm">Hexadecimal to Decimal Conversion</a>
-  		<span class="author">by Garth Wilson</span>
-    		<ul class="desc"><li>
-    		Routines for converting 8- and 16-bit hexadecimal numbers to their
-        decimal (BCD) equivalents.
-  		</ul>
+    <li>
+      <a href="/source/integers/32bcdbin.htm">BCD to Binary Conversion (32-bit)</a>&nbsp;
+      <span class="author">from 6502 Software Design, Expanded by Greg</span>
+      <p class="item-desc">Two routines for converting between larger binary and BCD numbers. The
+      first routine converts a 32-bit packed BCD number to its binary
+      equivalent and the second performs the reverse operation.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/hex2dec-more.htm">More Hexadecimal to Decimal Conversion</a>
-  		<span class="author">by Andrew Jacobs</span>
-    		<ul class="desc"><li>
-  		  Alternate versions of Garth's conversion routines, slower but
-        eliminating the lookup tables.
-  		</ul>
+    <li>
+      <a href="/source/integers/hex2dec.htm">Hexadecimal to Decimal Conversion</a>&nbsp;
+      <span class="author">by Garth Wilson</span>
+      <p class="item-desc">Routines for converting 8- and 16-bit hexadecimal numbers to their
+      decimal (BCD) equivalents.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/crc.htm">CRC Calculations</a>
-  		<span class="author">by Paul Guertin</span>
-    		<ul class="desc"><li>
-    		Three routines for computing 32-, 16-, and 8-bit CRC (Cyclic Redundancy
-        Check) error detecting codes.
-  		</ul>
+    <li>
+      <a href="/source/integers/hex2dec-more.htm">More Hexadecimal to Decimal Conversion</a>&nbsp;
+      <span class="author">by Andrew Jacobs</span>
+      <p class="item-desc">Alternate versions of Garth's conversion routines, slower but
+      eliminating the lookup tables.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/crc-more.html">More CRC Calculations</a>
-  		<span class="author">by Greg Cook</span>
-    		<ul class="desc"><li>
-    		Alternate versions of Paul's CRC calculation routines that execute in
-        constant cycle time and eliminate the lookup tables.
-  		</ul>
+    <li>
+      <a href="/source/integers/crc.htm">CRC Calculations</a>&nbsp;
+      <span class="author">by Paul Guertin</span>
+      <p class="item-desc">Three routines for computing 32-, 16-, and 8-bit CRC (Cyclic Redundancy
+      Check) error detecting codes.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/perm.htm">Permutation Generator</a>
-  		<span class="author">by Paul Guertin</span>
-    		<ul class="desc"><li>
-    		Generating permutations is usually done with a recursive procedure, but
-    		here is a cute iterative routine that does it simply and efficiently.
-  		</ul>
+    <li>
+      <a href="/source/integers/crc-more.html">More CRC Calculations</a>&nbsp;
+      <span class="author">by Greg Cook</span>
+      <p class="item-desc">Alternate versions of Paul's CRC calculation routines that execute in
+      constant cycle time and eliminate the lookup tables.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/square.htm">Square Calculator</a>
-  		<span class="author">by Lee Davison</span>
-    		<ul class="desc"><li>
-    		Calculates the 16-bit unsigned integer square of a signed 16-bit integer.
-  		</ul>
+    <li>
+      <a href="/source/integers/perm.htm">Permutation Generator</a>&nbsp;
+      <span class="author">by Paul Guertin</span>
+      <p class="item-desc">Generating permutations is usually done with a recursive procedure, but
+      here is a cute iterative routine that does it simply and efficiently.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/root.htm">Root Calculator</a>
-  		<span class="author">by Lee Davison</span>
-    		<ul class="desc"><li>
-    		Calculates the 8-bit root and 9-bit remainder of a 16-bit unsigned
-    		integer.
-  		</ul>
+    <li>
+      <a href="/source/integers/square.htm">Square Calculator</a>&nbsp;
+      <span class="author">by Lee Davison</span>
+      <p class="item-desc">Calculates the 16-bit unsigned integer square of a signed 16-bit integer.</p>
+    </li>
 
-  		<li><p><a href="/source/integers/random/random.html">Linear Congruential Pseudo-Random Number Generator Routines</a>
-  		<span class="author">by Bruce Clark</span>
-    		<ul class="desc"><li>
-    		A set of routines for generating pseudo-random numbers, using a linear
-        congruential type generator.
-  		</ul>
-		</ul>
+    <li>
+      <a href="/source/integers/root.htm">Root Calculator</a>&nbsp;
+      <span class="author">by Lee Davison</span>
+      <p class="item-desc">Calculates the 8-bit root and 9-bit remainder of a 16-bit unsigned
+      integer.</p>
+    </li>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="io"><b>I/O Techniques</b></a>
-    		<ul>
-  		<li><p><a href="/source/io/buttons.htm">Counting Push-Button Switch Closures, With Debouncing</a>
-  		<span class="author">from 6502 Software Design</span>
-    		<ul class="desc"><li>
-    		Counts closures on a push-button switch until a second push-button is
-        pushed. Uses 6522 VIA Timer #1 to generate a 10-millisecond delay for
-        the debounce routine.
-  		</ul>
+    <li>
+      <a href="/source/integers/random/random.html">Linear Congruential Pseudo-Random Number Generator Routines</a>&nbsp;
+      <span class="author">by Bruce Clark</span>
+      <p class="item-desc">A set of routines for generating pseudo-random numbers, using a linear
+      congruential type generator.</p>
+    </li>
+  </ul>
 
-  		<li><p><a href="/source/io/6522timr.htm">One-Shot Timer Examples for the 6522</a>
-  		<span class="author">from 6502 Applications</span>
-    		<ul class="desc"><li>
-    		Two small programs demonstrate how to use Timer 1 and 2 in one-shot mode
-        and also a short explanation of how to generate a pulse.
-  		</ul>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="io"><b>I/O Techniques</b></a>
 
-  		<li><p><a href="/source/io/6522int.htm">Identifying 6522 Internal Interrupt Sources</a>
-  		<span class="author">from 6502 Applications</span>
-    		<ul class="desc"><li>
-    		A simple program to identify which of the seven possible sources caused
-        a 6522 interrupt.
-  		</ul>
+  <ul>
+    <li>
+      <a href="/source/io/buttons.htm">Counting Push-Button Switch Closures, With Debouncing</a>&nbsp;
+      <span class="author">from 6502 Software Design</span>
+      <p class="item-desc">Counts closures on a push-button switch until a second push-button is
+      pushed. Uses 6522 VIA Timer #1 to generate a 10-millisecond delay for
+      the debounce routine.</p>
+    </li>
 
-  		<li><p><a href="/source/io/buffer.htm">Interrupt-Serviced 256-Byte Data Buffer</a>
-  		<span class="author">by Lee Davison</span>
-    		<ul class="desc"><li>
-    		Demonstrates how to set up a data buffer suitable for many operations
-        such as sending data to a printer or serial device.
-  		</ul>
+    <li>
+      <a href="/source/io/6522timr.htm">One-Shot Timer Examples for the 6522</a>&nbsp;
+      <span class="author">from 6502 Applications</span>
+      <p class="item-desc">Two small programs demonstrate how to use Timer 1 and 2 in one-shot mode
+      and also a short explanation of how to generate a pulse.</p>
+    </li>
 
-  		<li><p><a href="/source/io/primm.htm">Print Immediate (PRIMM)</a>
-  		<span class="author">from Commodore 128 KERNAL ROM</span>
-    		<ul class="desc"><li>
-    		By cleverly manipulating the stack this useful routine allows you to
-        inline data to be printed with your assembly code, almost like a BASIC
-        PRINT statement.
-  		</ul>
+    <li>
+      <a href="/source/io/6522int.htm">Identifying 6522 Internal Interrupt Sources</a>&nbsp;
+      <span class="author">from 6502 Applications</span>
+      <p class="item-desc">A simple program to identify which of the seven possible sources caused
+      a 6522 interrupt.</p>
+    </li>
 
-  		<li><p><a href="/source/monitors/intelhex/intelhex.htm">Intel HEX File Downloader</a>
-  		<span class="author">by Ross Archer</span>
-    		<ul class="desc"><li>
-    		This program allows any 6502 system with a 6551-based serial port to
-        painlessly download programs from a host computer by sending them in the
-        Intel HEX file format.
-  		</ul>
+    <li>
+      <a href="/source/io/buffer.htm">Interrupt-Serviced 256-Byte Data Buffer</a>&nbsp;
+      <span class="author">by Lee Davison</span>
+      <p class="item-desc">Demonstrates how to set up a data buffer suitable for many operations
+      such as sending data to a printer or serial device.</p>
+    </li>
 
-  		<li><p><a href="/source/io/xmodem/xmodem.htm">X-Modem File Transfer Protocol</a>
-  		<span class="author">by Daryl Rictor</span>
-    		<ul class="desc"><li>
-    		This implementation of the X-Modem file transfer protocol will work on
-        any 6502-based computer with a 6551 serial port. Using X-Modem allows
-        PC's to easily exchange files with your project using a terminal program.
-  		</ul>
-		</ul>
+    <li>
+      <a href="/source/io/primm.htm">Print Immediate (PRIMM)</a>&nbsp;
+      <span class="author">from Commodore 128 KERNAL ROM</span>
+      <p class="item-desc">By cleverly manipulating the stack this useful routine allows you to
+      inline data to be printed with your assembly code, almost like a BASIC
+      PRINT statement.</p>
+    </li>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="monitors"><b>Monitors, Assemblers, and Interpreters</b></a>
-    		<ul>
-  		<li><p><a href="/source/monitors/2ksa.pdf">2KSA [2KSA.PDF: 4.34MB]</a>
-  		<span class="author">by Robert Ford Denison</span>
-    		<ul class="desc"><li>
-    		The 2K Symbolic Assembler is a two-pass assembler for 6502 systems which
-        assembles to less than two kilobytes. This PDF includes all 65 pages of
-        the original documentation which includes commented source code and hex
-        dumps for the program. It is a really nice assembler considering its size
-        and it so well documented that making changes to it are easy.
-  		</ul>
+    <li>
+      <a href="/source/monitors/intelhex/intelhex.htm">Intel HEX File Downloader</a>&nbsp;
+      <span class="author">by Ross Archer</span>
+      <p class="item-desc">This program allows any 6502 system with a 6551-based serial port to
+      painlessly download programs from a host computer by sending them in the
+      Intel HEX file format.</p>
+    </li>
 
-  		<li><p><a href="/source/forth65.zip">FIG FORTH 6502 [FORTH65.ZIP: 32KB]</a>
-  		<span class="author">from the FORTH Interest Group</span>
-    		<ul class="desc"><li>
-    		FORTH Interest Group (FIG) FORTH kernel for the 6502. It is written for
-        the Rockwell System-65 but is easily adaptable to your own systems. Note
-        that this has the "UM/MOD" division bug. An explanation of the bug and a
-        correction can be found in Garth Wilson's 32-bit Division entry, which
-        can also be found here in the Source Code Library.
-  		</ul>
+    <li>
+      <a href="/source/io/xmodem/xmodem.htm">X-Modem File Transfer Protocol</a>&nbsp;
+      <span class="author">by Daryl Rictor</span>
+      <p class="item-desc">This implementation of the X-Modem file transfer protocol will work on
+      any 6502-based computer with a 6551 serial port. Using X-Modem allows
+      PC's to easily exchange files with your project using a terminal program.</p>
+    </li>
+  </ul>
 
-  		<li><p><a href="http://wilsonminesco.com/Forth/32DOLOOP.FTH">32-bit DO LOOP & related words in 6502 ITC Forth [text source-code file]</a>
-  		<span class="author">by Garth Wilson</span>
-    		<ul class="desc"><li>
-    		All in 32-bit (including the increment value for 2+LOOP): 32-bit equivalents for
-    		DO, ?DO, LOOP, +LOOP, I, BOUNDS, LEAVE, ?LEAVE, UNLOOP, and the internals, plus
-    		explanation.&nbsp; These augment, not replace, the normal 16-bit ones, putting "2"
-    		in front of the names to tell the double-precision ones apart from the normal single-precision ones.
-  		</ul>
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="monitors"><b>Monitors, Assemblers, and Interpreters</b></a>
 
-  		<li><p><a href="/source/interpreters/sweet16.htm">Porting Sweet 16</a>
-  		<span class="author">by Carsten Strotmann</span>
-    		<ul class="desc"><li>
-  		Sweet 16 is a metaprocessor or "pseudo microprocessor" implemented in
+  <ul>
+    <li>
+      <a href="/source/monitors/2ksa.pdf">2KSA [2KSA.PDF: 4.34MB]</a>&nbsp;
+      <span class="author">by Robert Ford Denison</span>
+      <p class="item-desc">The 2K Symbolic Assembler is a two-pass assembler for 6502 systems which
+      assembles to less than two kilobytes. This PDF includes all 65 pages of
+      the original documentation which includes commented source code and hex
+      dumps for the program. It is a really nice assembler considering its size
+      and it so well documented that making changes to it are easy.</p>
+    </li>
+
+    <li>
+      <a href="/source/forth65.zip">FIG FORTH 6502 [FORTH65.ZIP: 32KB]</a>&nbsp;
+      <span class="author">from the FORTH Interest Group</span>
+      <p class="item-desc">FORTH Interest Group (FIG) FORTH kernel for the 6502. It is written for
+      the Rockwell System-65 but is easily adaptable to your own systems. Note
+      that this has the "UM/MOD" division bug. An explanation of the bug and a
+      correction can be found in Garth Wilson's 32-bit Division entry, which
+      can also be found here in the Source Code Library.</p>
+    </li>
+
+    <li>
+      <a href="http://wilsonminesco.com/Forth/32DOLOOP.FTH">32-bit DO LOOP &amp; related words in 6502 ITC Forth [text source-code file]</a>&nbsp;
+      <span class="author">by Garth Wilson</span>
+      <p class="item-desc">All in 32-bit (including the increment value for 2+LOOP): 32-bit equivalents for
+      DO, ?DO, LOOP, +LOOP, I, BOUNDS, LEAVE, ?LEAVE, UNLOOP, and the internals, plus
+      explanation.  These augment, not replace, the normal 16-bit ones, putting "2"
+      in front of the names to tell the double-precision ones apart from the normal single-precision ones.</p>
+    </li>
+
+    <li>
+      <a href="/source/interpreters/sweet16.htm">Porting Sweet 16</a>&nbsp;
+      <span class="author">by Carsten Strotmann</span>
+      <p class="item-desc">Sweet 16 is a metaprocessor or "pseudo microprocessor" implemented in
       6502 assembly language. Originally written by Steve Wozniak and used in
       the Apple II, Sweet 16 can also be ported to other 6502-based systems to
       provide useful 16-bit functionality. This article includes the source
       code for Sweet 16, along with a brief history, programming instructions,
-      and notes to help port it.
-		</ul>
+      and notes to help port it.</p>
+    </li>
 
-  		<li><p><a href="/source/interpreters/vtl02.htm">VTL02 (VTL-2 for the 6502)</a>
-  		<span class="author">by Mike Barry</span>
-    		<ul class="desc"><li>
-  		VTL-2 is a very tiny language (the interpreter is under 1k.)
+    <li>
+      <a href="/source/interpreters/vtl02.htm">VTL02 (VTL-2 for the 6502)</a>&nbsp;
+      <span class="author">by Mike Barry</span>
+      <p class="item-desc">VTL-2 is a very tiny language (the interpreter is under 1k.)
       Originally written in 1976 by Frank McCoy and Gary Shannon for the 8800 and 6800,
       a port is now available for the 6502. There's a
-      <a href="http://forum.6502.org/viewtopic.php?t=2612">discussion</a> on the forum with a series of updates.
-  		</ul>
+      <a href="http://forum.6502.org/viewtopic.php?t=2612">discussion</a> on the forum with a series of updates.</p>
+    </li>
 
-  		<li><p><a href="/source/interpreters/supermon816.zip">Supermon 816</a>
-  		<span class="author">by BigDumbDinosaur</span>
-    		<ul class="desc"><li>
-  		Supermon 816 is a full-featured machine-language monitor that is adaptable to most computers
-that are powered by the Western Design Center’s W65C816S 16-bit microprocessor if operating in native mode.
-  		</ul>
-		</ul>
-		</ul>
-
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="kernels"><b>Operating System Kernels</b></a>
-    		<ul>
-  		<li><p><a href="/source/kernels/minikernel.txt">Mini Multitasking Kernel</a>
-  		<span class="author">by Joachim Deboy</span>
-    		<ul class="desc"><li>
-  		This mini-kernel uses IRQ interrupts from a free running 6502 timer for
-  		task switching.  It supports four concurrent tasks, each receiving fixed
-  		time slices in a round-robin method.
-  		</ul>
-		</ul>
-
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="sorting"><b>Sorting Algorithms</b></a>
-    		<ul>
-  		<li><p><a href="/source/sorting/bubble8.htm">Bubble Sort (for 8-bit Elements)</a>
-  		<span class="author">from 6502 Software Design</span>
-    		<ul class="desc"><li>
-    		A short description of the bubble sort technique followed by a
-        subroutine that arranges the 8-bit elements of a list in ascending
-        order.
-  		</ul>
-
-  		<li><p><a href="/source/sorting/bubble16.htm">Bubble Sort (for 16-bit Elements)</a>
-  		<span class="author">from 6502 Software Design</span>
-    		<ul class="desc"><li>
-    		The sorting routine above expanded to sort a list containing 16-bit
-        elements.
-  		</ul>
-
-  		<li><p><a href="/source/sorting/combo.htm">Combination Sort</a>
-  		<span class="author">by Daryl Rictor</span>
-    		<ul class="desc"><li>
-    		The Combination Sort is a modified bubble sort (iterative) that takes
-        much less time to complete.
-  		</ul>
-
-  		<li><p><a href="/source/sorting/optimal.htm">Optimal
-  		Sort (for 8-bit elements)</a>&nbsp;<span class="author">by Mats Rosengren</span>
-    		<ul class="desc"><li>
-    		The Optimal Sort is another improvement on the bubble sort but uses a different
-    		approach than the Combination Sort.
-  		</ul>
-
-  		<li><p><a href="/source/sorting/optimal16.htm">Optimal Sort (for 16-bit elements)</a>
-  		<span class="author">by Mats Rosengren</span>
-    		<ul class="desc"><li>
-    		An expansion on the 8-bit Optimal Sort above, this version allows for
-        sorting of large numbers (over 255) of 16-bit elements.
-  		</ul>
-
-  		<li><p><a href="/source/sorting/radix.html">Radix 256 Counting Sort</a>
-  		<span class="author">by Dwight Elvey</span>
-    		<ul class="desc"><li>
-			A radix 256 counting sort to demonstrate that other sorts can be
-			significantly faster than QuickSort.  This implementation does a
-			signed 16-bit integer sort of 1K of data.
-		</ul>
-
-  		<li><p><a href="/source/sorting/shell.html">Shell Sort (for 16-bit elements)</a>
-  		<span class="author">by Fredrik Ramsberg</span>
-    		<ul class="desc"><li>
-    		The Shell Sort is a highly-efficient sorting algorithm. This
-        implementation can sort a large number (>32,000) of 16-bit elements.
-        Sorting a completely unsorted array of 10,000 elements takes just over
-        thirty seconds on a 1 Mhz machine.
-  		</ul>
-		</ul>
-
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="strings"><b>String Manipulations</b></a>
-    		<ul>
-  		<li><p><a href="/source/strings/patmatch.htm">Pattern Matcher</a>
-  		<span class="author">by Paul Guertin</span>
-    		<ul class="desc"><li>
-    		Matches a string against a pattern and returns with the carry bit set if
-        they match, or clear if they don't. Supports wildcard characters "?" and
-        "*".
-  		</ul>
-
-  		<li><p><a href="/source/strings/comparisons.html">Simple Comparisons</a>
-  		<span class="author">by Jonathyn Bet'nct</span>
-    		<ul class="desc"><li>
-    		Compare two strings in memory stored in Pascal string format (length
-        byte followed by string). Case-sensitive and -insensitive versions are
-        provided.
-  		</ul>
-
-  		<li><p><a href="/source/strings/ascii-to-32bit.html">Convert ASCII Number String to 32-bit Binary</a>
-  		<span class="author">by BigDumbDinosaur</span>
-    		<ul class="desc"><li>
-        This 6502 assembly language program converts a null-terminated ASCII number
-        string into a 32-bit unsigned binary value in little-endian format.  It can
-        accept a number in binary, octal, decimal or hexadecimal format.
-  		</ul>
-
-  		<li><p><a href="/source/strings/32bit-to-ascii.html">Convert 32-bit Binary to ASCII Number String</a>
-  		<span class="author">by BigDumbDinosaur</span>
-    		<ul class="desc"><li>
-  		  This program converts 32-bit binary back to an ASCII string.  It is a
-  		  companion to "Convert ASCII Number String to 32-bit Binary" above.
-  		</ul>
-
-      <li><p><a href="/source/strings/816stringlib.zip">W65C816 String Manipulation Library [816STRINGLIB.ZIP: 648KB]</a>
+    <li>
+      <a href="/source/interpreters/supermon816.zip">Supermon 816</a>&nbsp;
       <span class="author">by BigDumbDinosaur</span>
-      <ul class="desc"><li>
-        This W65C816S string manipulation library is a collection of assembly language subroutines
-        that perform common character string operations, such as copying and concatenating.
-      </ul>
-		</ul>
+      <p class="item-desc">Supermon 816 is a full-featured machine-language monitor that is adaptable to most computers
+      that are powered by the Western Design Center's W65C816S 16-bit microprocessor if operating in native mode.</p>
+    </li>
+  </ul>
 
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="kernels"><b>Operating System Kernels</b></a>
+
+  <ul>
+    <li>
+      <a href="/source/kernels/minikernel.txt">Mini Multitasking Kernel</a>&nbsp;
+      <span class="author">by Joachim Deboy</span>
+      <p class="item-desc">This mini-kernel uses IRQ interrupts from a free running 6502 timer for
+      task switching.  It supports four concurrent tasks, each receiving fixed
+      time slices in a round-robin method.</p>
+    </li>
+  </ul>
+
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="sorting"><b>Sorting Algorithms</b></a>
+
+  <ul>
+    <li>
+      <a href="/source/sorting/bubble8.htm">Bubble Sort (for 8-bit Elements)</a>&nbsp;
+      <span class="author">from 6502 Software Design</span>
+      <p class="item-desc">A short description of the bubble sort technique followed by a
+      subroutine that arranges the 8-bit elements of a list in ascending
+      order.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/bubble16.htm">Bubble Sort (for 16-bit Elements)</a>&nbsp;
+      <span class="author">from 6502 Software Design</span>
+      <p class="item-desc">The sorting routine above expanded to sort a list containing 16-bit
+      elements.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/combo.htm">Combination Sort</a>&nbsp;
+      <span class="author">by Daryl Rictor</span>
+      <p class="item-desc">The Combination Sort is a modified bubble sort (iterative) that takes
+      much less time to complete.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/optimal.htm">Optimal Sort (for 8-bit elements)</a>&nbsp;
+      <span class="author">by Mats Rosengren</span>
+      <p class="item-desc">The Optimal Sort is another improvement on the bubble sort but uses a different
+      approach than the Combination Sort.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/optimal16.htm">Optimal Sort (for 16-bit elements)</a>&nbsp;
+      <span class="author">by Mats Rosengren</span>
+      <p class="item-desc">An expansion on the 8-bit Optimal Sort above, this version allows for
+      sorting of large numbers (over 255) of 16-bit elements.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/radix.html">Radix 256 Counting Sort</a>&nbsp;
+      <span class="author">by Dwight Elvey</span>
+      <p class="item-desc">A radix 256 counting sort to demonstrate that other sorts can be
+      significantly faster than QuickSort.  This implementation does a
+      signed 16-bit integer sort of 1K of data.</p>
+    </li>
+
+    <li>
+      <a href="/source/sorting/shell.html">Shell Sort (for 16-bit elements)</a>&nbsp;
+      <span class="author">by Fredrik Ramsberg</span>
+      <p class="item-desc">The Shell Sort is a highly-efficient sorting algorithm. This
+      implementation can sort a large number (>32,000) of 16-bit elements.
+      Sorting a completely unsorted array of 10,000 elements takes just over
+      thirty seconds on a 1 Mhz machine.</p>
+    </li>
+  </ul>
+
+  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
+  <a name="strings"><b>String Manipulations</b></a>
+
+  <ul>
+    <li>
+      <a href="/source/strings/patmatch.htm">Pattern Matcher</a>&nbsp;
+      <span class="author">by Paul Guertin</span>
+      <p class="item-desc">Matches a string against a pattern and returns with the carry bit set if
+      they match, or clear if they don't. Supports wildcard characters "?" and
+      "*".</p>
+    </li>
+
+    <li>
+      <a href="/source/strings/comparisons.html">Simple Comparisons</a>&nbsp;
+      <span class="author">by Jonathyn Bet'nct</span>
+      <p class="item-desc">Compare two strings in memory stored in Pascal string format (length
+      byte followed by string). Case-sensitive and -insensitive versions are
+      provided.</p>
+    </li>
+
+    <li>
+      <a href="/source/strings/ascii-to-32bit.html">Convert ASCII Number String to 32-bit Binary</a>&nbsp;
+      <span class="author">by BigDumbDinosaur</span>
+      <p class="item-desc">This 6502 assembly language program converts a null-terminated ASCII number
+      string into a 32-bit unsigned binary value in little-endian format.  It can
+      accept a number in binary, octal, decimal or hexadecimal format.</p>
+    </li>
+
+    <li>
+      <a href="/source/strings/32bit-to-ascii.html">Convert 32-bit Binary to ASCII Number String</a>&nbsp;
+      <span class="author">by BigDumbDinosaur</span>
+      <p class="item-desc">This program converts 32-bit binary back to an ASCII string.  It is a
+      companion to "Convert ASCII Number String to 32-bit Binary" above.</p>
+    </li>
+
+    <li>
+      <a href="/source/strings/816stringlib.zip">W65C816 String Manipulation Library [816STRINGLIB.ZIP: 648KB]</a>&nbsp;
+      <span class="author">by BigDumbDinosaur</span>
+      <p class="item-desc">This W65C816S string manipulation library is a collection of assembly language subroutines
+      that perform common character string operations, such as copying and concatenating.</p>
+    </li>
+  </ul>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <div class="sidebar-box">
+      <div class="boxtitle">Related Sites</div>
+      <div class="box">
+        <p><a href="http://www.ffd2.com/fridge">The Fridge</a> &mdash;
+        6502 assembly language routines for the Commodore 64 and other computers.</p>
+
+        <p><a href="http://alfter.us/aal.php">Apple Assembly Line</a> &mdash;
+        archive of an old Apple II publication with a lot of good general 6502 content.</p>
+
+        <p><a href="http://codebase64.org/">Codebase 64</a> &mdash;
+        wiki with general 6502 code examples and material specific to the C64 and other Commodore machines.</p>
+      </div>
+    </div>
+
+    <div class="sidebar-callout">
+      <strong>Contribute</strong>
+      <p>
+        Have source code that should be included?
+        <?= $this->mailTo(CONTACT_EMAIL, 'Send it to us', ['subject' => '6502.org Source Code', 'encode' => 'javascript']) ?>
+        in any format.
+      </p>
+    </div>
+  </aside>
 </div>

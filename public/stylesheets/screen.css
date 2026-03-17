@@ -103,7 +103,7 @@ a[name]:not([href]):active {
 
 .doc-folder-desc {
   width: 100%;
-  padding: 6px 0 2px 20px;
+  padding: 6px 0 2px 28px;
   font-weight: normal;
 }
 
@@ -616,6 +616,7 @@ a.featured-card:hover {
 
 /* === Section Headers (folder icons on content pages) === */
 .section-header {
+  margin: 0;
   padding-top: 20px;
   display: flex;
   align-items: center;
@@ -642,11 +643,19 @@ a.featured-card:hover {
 
 /* === Content page lists === */
 .content-page ul {
-  padding-left: 24px;
+  padding-left: 28px;
+}
+
+.content-page ul li {
+  margin-bottom: 5px;
 }
 
 .content-page ul li p {
   margin-top: 4px;
+}
+
+.item-desc {
+  margin: 4px 0 0 28px;
 }
 
 /* === Better selection highlight === */
