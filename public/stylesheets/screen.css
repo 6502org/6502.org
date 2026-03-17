@@ -119,6 +119,30 @@ a[name]:not([href]):active {
   padding-left: 20px;
 }
 
+.doc-obsolete {
+  display: none;
+}
+
+.doc-older-link {
+  color: var(--gray-500);
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.doc-older-link:hover {
+  color: var(--blue-500);
+  text-decoration: underline;
+}
+
+@keyframes doc-highlight-fade {
+  from { background-color: #fef9c3; }
+  to   { background-color: transparent; }
+}
+
+.doc-highlight {
+  animation: doc-highlight-fade 10s ease-out;
+}
+
 /* === Error Pages === */
 .error-page {
   text-align: center;
@@ -153,7 +177,9 @@ a[name]:not([href]):active {
 }
 
 /* === External link indicator === */
-.content-page a[href^="http"]:not([href*="6502.org"])::after {
+.content-page a[href^="http"]:not([href*="6502.org"])::after,
+.two-col-main a[href^="http"]:not([href*="6502.org"])::after,
+a.offsite::after {
   content: "\2009\2197";
   font-size: 0.75em;
   vertical-align: super;

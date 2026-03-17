@@ -1,36 +1,45 @@
 <? $this->title = 'Documents Archive' ?>
 <? $this->description = 'A collection of useful documents pertaining to the 6502 microprocessor.' ?>
+<?= $this->javascriptIncludeTag('documents') ?>
 
 <div class="two-col-layout">
   <div class="two-col-main">
 
     <?= $this->breadcrumbs() ?>
 
-    <? foreach ($this->myFolders as $folder): ?>
+    <? foreach ($this->folder->subfolders as $subfolder): ?>
       <div class="doc-folder">
         <img src="/images/files/folder_closed.gif" alt="**">&nbsp;
 
-        <a href="<?= $folder['url'] ?>"><?= $this->h($folder['title']) ?></a>
+        <a href="<?= $subfolder->path() ?>"><?= $this->h($subfolder->title) ?></a>
 
-        <? if (! empty($folder['description'])): ?>
+        <? if (! empty($subfolder->description)): ?>
           <div class="doc-folder-desc">
-            <?= $this->h($folder['description']) ?>
+            <?= $this->h($subfolder->description) ?>
           </div>
         <? endif ?>
       </div>
     <? endforeach ?>
 
+    <? $files = iterator_to_array($this->folder->documentFiles) ?>
+
     <div class="doc-list">
-      <? foreach ($this->myFolder['docs'] as $doc): ?>
-        <? if ($doc['visible']): ?>
-          <div class="doc-item">
+      <? foreach ($files as $doc): ?>
+        <? if ($doc->visible): ?>
+          <div class="doc-item<? if ($doc->obsolete): ?> doc-obsolete<? endif ?>">
             <div>
-              <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc['url']) ?>
-              &nbsp;&nbsp;<?= $this->h($doc['title']) ?>
+              <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc->downloadUrl()) ?>
+              &nbsp;&nbsp;<?= $this->h($doc->title) ?>
+              <? if (!$doc->obsolete): ?>
+                <? $olderCount = $this->countPrecedingObsolete($doc, $files) ?>
+                <? if ($olderCount > 0): ?>
+                  <a href="#" class="doc-older-link">(+ <?= $olderCount ?> older)</a>
+                <? endif ?>
+              <? endif ?>
             </div>
             <div class="doc-item-detail">
-              &nbsp;&nbsp;<a href="<?= $doc['url'] ?>"><?= $this->h($doc['filename']) ?></a> -
-              <?= $doc['pages'] ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc['filesize']) ?>
+              &nbsp;&nbsp;<a href="<?= $doc->downloadUrl() ?>"<? if (!$doc->isReadable()): ?> class="offsite"<? endif ?>><?= $this->h($doc->filename) ?></a> -
+              <?= $doc->pages ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc->filesize) ?>
             </div>
           </div>
         <? endif ?>
@@ -40,12 +49,12 @@
   </div>
 
   <aside class="two-col-sidebar">
-    <? if (count($this->myFolders) > 0): ?>
+    <? if (count($this->folder->subfolders) > 0): ?>
     <div class="sidebar-box">
-      <div class="boxtitle"><?= $this->h($this->truncate($this->myFolder['title'], 30)) ?></div>
+      <div class="boxtitle"><?= $this->h($this->truncate($this->folder->title, 30)) ?></div>
       <ul class="box sidebar-list">
-        <? foreach ($this->myFolders as $folder): ?>
-        <li><a href="<?= $folder['url'] ?>"><?= $this->h($this->truncate($folder['title'], 30)) ?></a></li>
+        <? foreach ($this->folder->subfolders as $subfolder): ?>
+        <li><a href="<?= $subfolder->path() ?>"><?= $this->h($this->truncate($subfolder->title, 30)) ?></a></li>
         <? endforeach ?>
       </ul>
     </div>
@@ -55,7 +64,7 @@
       <strong>Contribute</strong>
       <p>
         Have a document that should be included?
-        <?= $this->mailTo(CONTACT_EMAIL, 'Contact us', ['subject' => '6502.org Documents Archive', 'encode' => 'javascript']) ?>
+        <?= $this->emailLink('contact us', '6502.org Documents Archive') ?>
         to submit it.
       </p>
     </div>

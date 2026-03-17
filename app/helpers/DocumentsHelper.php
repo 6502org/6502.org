@@ -4,24 +4,43 @@ class DocumentsHelper extends ApplicationHelper
 {
     public function breadcrumbs()
     {
-        $crumbs = array();
-        $last = count($this->folders) -1;
+        $crumbs = [];
+        $last = count($this->folders) - 1;
 
         foreach ($this->folders as $i => $folder) {
             if ($i == $last) {
-                $crumbs[] = $this->h($folder['title']);
+                $crumbs[] = $this->h($folder->title);
             } else {
-                $crumbs[] = $this->linkTo($folder['title'], $folder['url']);
+                $crumbs[] = $this->linkTo($folder->title, $folder->path());
             }
         }
 
         return $this->contentTag('div', implode(' / ', $crumbs),
-                                 array('class' => 'breadcrumbs'));
+                                 ['class' => 'breadcrumbs']);
     }
 
-    public function fileFormatIcon($docItem)
+    /**
+     * Count consecutive obsolete (and visible) files immediately
+     * preceding $doc in the file list. This matches what the JS
+     * reveal will do when walking previousElementSibling.
+     */
+    public function countPrecedingObsolete($doc, $files)
     {
-        $ext = pathinfo($docItem['filename'], PATHINFO_EXTENSION);
+        $count = 0;
+        foreach ($files as $file) {
+            if ($file->id == $doc->id) { break; }
+            if ($file->obsolete && $file->visible) {
+                $count++;
+            } elseif ($file->visible) {
+                $count = 0;
+            }
+        }
+        return $count;
+    }
+
+    public function fileFormatIcon($doc)
+    {
+        $ext = pathinfo($doc->filename, PATHINFO_EXTENSION);
         $ext = strtolower($ext);
         return "files/$ext.gif";
     }

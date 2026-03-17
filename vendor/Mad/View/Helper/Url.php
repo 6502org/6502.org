@@ -406,7 +406,10 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
             $onclick = "{$this->methodJavascriptFunction($method, $url, $href)}return false;";
         }
 
-        $htmlOptions['onclick'] = empty($htmlOptions['onclick']) ? $onclick : $htmlOptions['onclick'].$onclick;
+        $onclick = empty($htmlOptions['onclick']) ? $onclick : $htmlOptions['onclick'].$onclick;
+        if (!empty($onclick)) {
+            $htmlOptions['onclick'] = $onclick;
+        }
         return $htmlOptions;
     }
 

@@ -1,5 +1,7 @@
 <? $this->title = 'The 6502 Microprocessor Resource' ?>
+<? $this->navTitle = '&nbsp;' ?>
 <? $this->description = 'Information, links, and projects for enthusiasts of the 6502 microprocessor.' ?>
+<?= $this->render(['partial' => 'shared/schema']) ?>
 
 <div class="home-layout">
   <div class="home-main">
@@ -150,7 +152,7 @@
       <p>
         If you have something to share,
         even if it's in paper form,
-        <?= $this->mailTo(CONTACT_EMAIL, 'contact us', ['subject' => '6502.org Submission', 'encode' => 'javascript']) ?>.
+        <?= $this->emailLink('contact us', '6502.org Submission') ?>.
       </p>
       <p>
         6502.org is developed as an open project

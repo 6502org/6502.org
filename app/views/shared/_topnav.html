@@ -1,23 +1,15 @@
 <nav class="site-nav">
   <span class="nav-title">
-    <? if ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'home'): ?>
-    &nbsp;
-    <? else: ?>
     <?= $this->navTitle ? $this->navTitle : $this->title ?>
-    <? endif ?>
   </span>
 
-  <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+  <button class="nav-toggle" aria-label="Menu">&#9776;</button>
 
   <div class="nav-links">
-    <?= $this->linkTo('Projects', ['controller' => 'contents', 'action' => 'homebuilt'],
-          ['class' => ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'homebuilt') ? 'nav-active' : '']) ?>
-    <?= $this->linkTo('Code', ['controller' => 'contents', 'action' => 'repository'],
-          ['class' => ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'repository') ? 'nav-active' : '']) ?>
-    <?= $this->linkTo('Documents', ['controller' => 'documents', 'action' => 'index'],
-          ['class' => ($this->controller->getControllerName() == 'documents') ? 'nav-active' : '']) ?>
-    <?= $this->linkTo('Tools', ['controller' => 'tools', 'action' => 'index'],
-          ['class' => ($this->controller->getControllerName() == 'tools') ? 'nav-active' : '']) ?>
-    <?= $this->linkTo('Forum', 'http://forum.6502.org') ?>
+    <?= $this->navLink('Projects', ['controller' => 'contents', 'action' => 'homebuilt']) ?>
+    <?= $this->navLink('Code', ['controller' => 'contents', 'action' => 'repository']) ?>
+    <?= $this->navLink('Documents', ['controller' => 'documents']) ?>
+    <?= $this->navLink('Tools', ['controller' => 'tools']) ?>
+    <?= $this->navLink('Forum', 'http://forum.6502.org') ?>
   </div>
 </nav>
