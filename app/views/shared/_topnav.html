@@ -3,7 +3,7 @@
     <? if ($this->controller->getControllerName() == 'contents' && $this->controller->getActionName() == 'home'): ?>
     &nbsp;
     <? else: ?>
-    <?= $this->title ?>
+    <?= $this->navTitle ? $this->navTitle : $this->title ?>
     <? endif ?>
   </span>
 
