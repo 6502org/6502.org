@@ -196,9 +196,9 @@ class Horde_Db_Adapter_Pdo_Pgsql extends Horde_Db_Adapter_Pdo_Abstract
     protected function _selectRaw($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        if (!$result) return array();
+        if (!$result) return [];
 
-        $moneyFields = array();
+        $moneyFields = [];
         for ($i = 0, $i_max = $result->columnCount(); $i < $i_max; $i++) {
             $f = $result->getColumnMeta($i);
             if (!empty($f['pgsql:oid']) && $f['pgsql:oid'] == Horde_Db_Adapter_Postgresql_Column::MONEY_COLUMN_TYPE_OID) {

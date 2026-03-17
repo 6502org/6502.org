@@ -23,7 +23,7 @@ class Mad_Script_Fixtures extends Mad_Script_Base
      * The fixtures created by the given yml names
      * @var Array[Mad_Test_Fixture_Bases]
      */
-    protected $_fixtures = array();
+    protected $_fixtures = [];
 
 
     /*##########################################################################

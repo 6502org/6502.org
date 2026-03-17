@@ -133,7 +133,7 @@ class Mad_Model_Join_Base
             $cols = $this->_model->getColumns($this->aliasedTableName(), false, false);
             foreach ($cols as $i => $col) {
                 $this->_columnNamesWithAliasForSelect[] =
-                    array($col, $this->aliasedPrefix().'_R'.$i);
+                    [$col, $this->aliasedPrefix().'_R'.$i];
             }
         }
         return $this->_columnNamesWithAliasForSelect;
@@ -147,7 +147,7 @@ class Mad_Model_Join_Base
         if (empty($this->_columnNamesWithAliasForExtract)) {
             foreach ($this->_model->getColumns() as $i => $col) {
                 $this->_columnNamesWithAliasForExtract[] =
-                    array($col, $this->aliasedPrefix().'_R'.$i);
+                    [$col, $this->aliasedPrefix().'_R'.$i];
             }
         }
         return $this->_columnNamesWithAliasForExtract;
@@ -164,7 +164,7 @@ class Mad_Model_Join_Base
             list($col, $alias) = $colAlias;
             $record[$col] = isset($row[$alias]) ? $row[$alias] : null;
         }
-        return isset($record) ? $record : array();
+        return isset($record) ? $record : [];
     }
 
     /**

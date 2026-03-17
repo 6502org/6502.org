@@ -35,7 +35,7 @@ class Mad_Controller_Rescue_SourceExtractor
         $source = $this->convertTabsToSpaces($source);
         $source = $this->stripWhitespace($source);
 
-        return (object)array('line' => $line, 'source' => $source);
+        return (object)['line' => $line, 'source' => $source];
     }
 
     /**
@@ -54,7 +54,7 @@ class Mad_Controller_Rescue_SourceExtractor
      */
     public function linesAround($lines, $center, $above=3, $below=3)
     {
-        $extracted = array();
+        $extracted = [];
         
         // extract source at error line and above
         $lbound = ($center - $above) -2;
@@ -105,7 +105,7 @@ class Mad_Controller_Rescue_SourceExtractor
      * @return array            Stripped lines
      */
     public function stripWhitespace($lines) {
-        $leaders = array();
+        $leaders = [];
         foreach ($lines as &$l) {
             // right-trim line 
             $l = rtrim($l);

@@ -32,7 +32,7 @@ class Mad_Test_Fixture_Base
      * A cache of the records read in by the YAML parser. This way we don't
      * need to re-parse the same YAML file every test.
      */
-    protected static $_ymlCache = array();
+    protected static $_ymlCache = [];
 
     /**
      * Remember which fixtures have been parsed. This is remembered staticly
@@ -41,7 +41,7 @@ class Mad_Test_Fixture_Base
      *
      * @var array
      */
-    protected static $_parsed   = array();
+    protected static $_parsed   = [];
 
     /**
      * Keep track of which specific fixture files have already been loaded
@@ -49,7 +49,7 @@ class Mad_Test_Fixture_Base
      *
      * @var array
      */
-    protected static $_toLoad  = array();
+    protected static $_toLoad  = [];
 
     /**
      * Keep track of which specific fixture files have been torn down so far.
@@ -59,7 +59,7 @@ class Mad_Test_Fixture_Base
      *
      * @var array
      */
-    protected static $_toTeardown = array();
+    protected static $_toTeardown = [];
 
     /**
      * A counter used for suppressing/resuming application logging.
@@ -94,19 +94,19 @@ class Mad_Test_Fixture_Base
      * The yml records to load for this fixture
      * @var array
      */
-    protected $_records = array();
+    protected $_records = [];
 
     /**
      * The options for the yml load
      * @var array
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Required fixtures to setup before this fixture
      * @var	Array[Fixtures]
      */
-    protected $_required = array();
+    protected $_required = [];
 
 
     /*##########################################################################
@@ -208,7 +208,7 @@ class Mad_Test_Fixture_Base
     public function getRecord($name)
     {
         $totalRecords = $this->_totalRecords();
-        return isset($totalRecords[$name]) ? $totalRecords[$name] : array();
+        return isset($totalRecords[$name]) ? $totalRecords[$name] : [];
     }
 
     /**
@@ -247,9 +247,9 @@ class Mad_Test_Fixture_Base
      */
     public static function resetParsed()
     {
-        self::$_parsed     = array();
-        self::$_toLoad     = array();
-        self::$_toTeardown = array();
+        self::$_parsed     = [];
+        self::$_toLoad     = [];
+        self::$_toTeardown = [];
     }
 
     /**
@@ -328,13 +328,13 @@ class Mad_Test_Fixture_Base
             $records = Horde_Yaml::load($fixtureData);
 
             // Parse options
-            $options = isset($records['options']) ? $records['options'] : array();
-            $valid = array('table'  => $ymlName, 'log'   => null,    'requires' => array(),
-                           'before' => array(),  'after' => array(), 'teardown' => array());
+            $options = isset($records['options']) ? $records['options'] : [];
+            $valid = ['table'  => $ymlName, 'log'   => null,    'requires' => [],
+                           'before' => [],  'after' => [], 'teardown' => []];
             $options = Mad_Support_Base::assertValidKeys($options, $valid);
             unset($records['options']);
 
-            self::$_ymlCache[$ymlName] = array('records' => $records, 'options' => $options);
+            self::$_ymlCache[$ymlName] = ['records' => $records, 'options' => $options];
         }
         $this->_records = self::$_ymlCache[$ymlName]['records'];
         $this->_options = self::$_ymlCache[$ymlName]['options'];

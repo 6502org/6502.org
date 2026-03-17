@@ -78,14 +78,14 @@ abstract class Mad_Model_Association_Proxy extends Mad_Model_Association_Base
      * @param   array   $args
      * @return  object
      */
-    abstract function getObject($args=array());
+    abstract function getObject($args=[]);
 
     /**
      * Assigns the associate object, extracts the pk, and sets it as the foreign key
      *
      * @param   array   $args
      */
-    public function setObject($args=array())
+    public function setObject($args=[])
     {
         $associationModel = isset($args[0]) ? $args[0] : null;
         if (!$associationModel instanceof Mad_Model_Base) {
@@ -104,7 +104,7 @@ abstract class Mad_Model_Association_Proxy extends Mad_Model_Association_Base
      * @param   array  $attributes
      * @return  object
      */
-    public function buildObject($args=array())
+    public function buildObject($args=[])
     {
         $attributes = isset($args[0]) ? $args[0] : null;
 
@@ -123,9 +123,9 @@ abstract class Mad_Model_Association_Proxy extends Mad_Model_Association_Base
      * @param   array  $attributes
      * @return  object
      */
-    public function createObject($args=array())
+    public function createObject($args=[])
     {
-        $attributes = isset($args[0]) ? $args[0] : array();
+        $attributes = isset($args[0]) ? $args[0] : [];
         if (!is_array($attributes)) {
             $msg = 'dynamic create{Object} method must be given an array of attributes.';
             throw new Mad_Model_Association_Exception($msg);

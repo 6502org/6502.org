@@ -41,7 +41,7 @@ class Mad_Model_Validation_Format extends Mad_Model_Validation_Base
         $this->_attribute = $attribute;
 
         // verify options
-        $valid = array('on' => 'save', 'with', 'message' => Mad_Model_Errors::$defaultErrorMessages['invalid']);
+        $valid = ['on' => 'save', 'with', 'message' => Mad_Model_Errors::$defaultErrorMessages['invalid']];
         $this->_options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // validate regular expression

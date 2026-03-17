@@ -41,10 +41,10 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
      */
     public function __construct($assocName, $options, Mad_Model_Base $model)
     {
-        $valid = array('className', 'foreignKey', 'associationForeignKey', 
+        $valid = ['className', 'foreignKey', 'associationForeignKey', 
                        'primaryKey', 'associationPrimaryKey', 'include', 
                        'select', 'conditions', 'order', 'finderSql',
-                       'through', 'dependent' => 'deleteAll');
+                       'through', 'dependent' => 'deleteAll'];
 
         $this->_options   = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_assocName = $assocName;
@@ -61,7 +61,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
         $singular = Mad_Support_Inflector::singularize($toMethod);
         $toClass  = ucfirst($singular);
 
-        $this->_methods = array(
+        $this->_methods = [
             $toMethod         => 'getObjects',     // tags
             $singular.'Ids'   => 'getObjectIds',   // tagIds
             $singular.'Count' => 'getObjectCount', // tagsCount
@@ -69,7 +69,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
             Mad_Support_Inflector::pluralize('delete'.$toClass) => 'deleteObjects', // deleteDocuments
             Mad_Support_Inflector::pluralize('clear'.$toClass)  => 'clearObjects',  // clearDocuments
             Mad_Support_Inflector::pluralize('find'.$toClass)   => 'findObjects',   // findDocuments
-        );
+        ];
     }
 
     /*##########################################################################
@@ -91,7 +91,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
         $fkValue     = $baseModel->$pkName;
 
         // save associations from associated model objects
-        $assocIdValues = array();
+        $assocIdValues = [];
         if ($this->isLoaded()) {
             $assocModels = $this->getObjects();
 
@@ -129,7 +129,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
                    " WHERE $fkName = ".$this->_conn->quote($fkValue)." ".
                    "   AND $assocFkName IN (".join(', ', $this->_deleteIds).")";
             $this->_conn->delete($sql, 'Delete');
-            $this->_deleteIds = array();
+            $this->_deleteIds = [];
         }
     }
 
@@ -153,8 +153,8 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
         // destroy dependent records
         if ($this->_options['dependent'] == 'destroy') {
             $joinModel = new $this->_throughClass;
-            $joins = $joinModel->find('all', array('conditions' => "$fkName = :val"),  
-                                             array(':val'       => $fkValue));
+            $joins = $joinModel->find('all', ['conditions' => "$fkName = :val"],  
+                                             [':val'       => $fkValue]);
             foreach ($joins as $model) {
                 $model->destroy();
             }
@@ -186,7 +186,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
      * @param   array   $args
      * @return  object
      */
-    public function getObjects($args=array())
+    public function getObjects($args=[])
     {
         if (!isset($this->_loaded['getObjects'])) {
             $this->_loaded['getObjects'] = $this->getObjectsUsingJoin();
@@ -205,7 +205,7 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
      * @param   array   $args
      * @return  int
      */
-    public function getObjectCount($args=array())
+    public function getObjectCount($args=[])
     {
         if (!isset($this->_loaded['getObjectCount'])) {
             $this->_loaded['getObjectCount'] = $this->getObjectCountUsingJoin();
@@ -219,12 +219,12 @@ class Mad_Model_Association_HasManyThrough extends Mad_Model_Association_Collect
      * @param   array   $args
      * @return  array
      */
-    public function findObjects($args=array())
+    public function findObjects($args=[])
     {
         // method arguments - validate
         $type    = isset($args[0]) ? $args[0] : 'all';
-        $options = isset($args[1]) ? $args[1] : array();
-        $binds   = isset($args[2]) ? $args[2] : array();
+        $options = isset($args[1]) ? $args[1] : [];
+        $binds   = isset($args[2]) ? $args[2] : [];
 
         return $this->findObjectsUsingJoin($type, $options, $binds);
     }

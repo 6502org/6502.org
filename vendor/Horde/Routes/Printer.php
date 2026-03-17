@@ -51,7 +51,7 @@ class Horde_Routes_Printer
         }
   
         // find the max $widths to size the output columns {'name'=>40, 'method'=>6, ...}
-        $widths = array();
+        $widths = [];
         foreach (array_keys($routes[0]) as $key) {
           $width = 0;
           foreach($routes as $r) { 
@@ -82,7 +82,7 @@ class Horde_Routes_Printer
          * Traverse all routes connected to the mapper in match order, 
          * and assemble an array of $routes used to build the output
          */
-        $routes = array();
+        $routes = [];
         foreach ($this->_mapper->matchList as $route) {
           // name of this route, or empty string if anonymous
           $routeName = '';
@@ -91,13 +91,13 @@ class Horde_Routes_Printer
           }
 
           // request_method types recognized by this route, or empty string for any
-          $methods = array('');
+          $methods = [''];
           if (isset($route->conditions['method']) && is_array($route->conditions['method']) ) {
             $methods = $route->conditions['method'];
           }
 
           // hardcoded defaults that can't be overriden by the request path as {:key=>"value"}
-          $hardcodes = array();
+          $hardcodes = [];
           foreach ($route->hardCoded as $key) {
             $value = isset($route->defaults[$key]) ? $route->defaults[$key] : 'NULL';
             $dump = ":{$key}=>\"{$value}\"";
@@ -107,10 +107,10 @@ class Horde_Routes_Printer
 
           // route data for output 
           foreach ($methods as $method) {
-            $routes[] = array('name'      => $routeName,
+            $routes[] = ['name'      => $routeName,
                               'method'    => $method,
                               'path'      => '/' . $route->routePath,
-                              'hardcodes' => $hardcodes);
+                              'hardcodes' => $hardcodes];
           }
         }
 

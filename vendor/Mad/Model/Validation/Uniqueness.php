@@ -39,8 +39,8 @@ class Mad_Model_Validation_Uniqueness extends Mad_Model_Validation_Base
     public function __construct($attribute, $options)
     {
         // verify options
-        $valid = array('on' => 'save', 'scope',
-                       'message' => Mad_Model_Errors::$defaultErrorMessages['taken']);
+        $valid = ['on' => 'save', 'scope',
+                       'message' => Mad_Model_Errors::$defaultErrorMessages['taken']];
         $this->_options = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_attribute = $attribute;
     }
@@ -74,7 +74,7 @@ class Mad_Model_Validation_Uniqueness extends Mad_Model_Validation_Base
             }
         }
 
-        $model = $this->_model->find('first', array('conditions' => $conditions), $bindVars);
+        $model = $this->_model->find('first', ['conditions' => $conditions], $bindVars);
         if ($model) {
             $this->_model->errors->add($column, $this->_options['message']);
         }

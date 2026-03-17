@@ -25,7 +25,7 @@ class Mad_Support_PhpErrorHandler
      */
     public static function install()
     {
-        $callback = array('Mad_Support_PhpErrorHandler', 'handle');
+        $callback = ['Mad_Support_PhpErrorHandler', 'handle'];
 		set_error_handler($callback);
     }
     

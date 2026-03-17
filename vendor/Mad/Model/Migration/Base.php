@@ -40,7 +40,7 @@ class Mad_Model_Migration_Base
     {
         foreach ($args as $arg) {
             if (is_array($arg)) {
-                $vals = array();
+                $vals = [];
                 foreach ($arg as $key => $value) {
                     $vals[] = "$key => ".var_export($value, true);
                 }
@@ -55,7 +55,7 @@ class Mad_Model_Migration_Base
         $t = new Horde_Support_Timer();
         $t->push();
             $connection = Mad_Model_Base::connection();
-            $result = call_user_func_array(array($connection, $method), $args);
+            $result = call_user_func_array([$connection, $method], $args);
         $time = $t->pop();
 
         // print stats

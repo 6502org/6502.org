@@ -28,7 +28,7 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
             if (!isset($this->_options['indent'])) { 
                 $this->_options['indent'] = 2; 
             }            
-            $options = array('indent' => $this->_options['indent']);
+            $options = ['indent' => $this->_options['indent']];
 
             if (!empty($this->_options['builder'])) {
                 $this->_builder = $this->_options['builder'];
@@ -82,7 +82,7 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
      */
     public function getSerializableAttributes()
     {
-        $attributes = array();
+        $attributes = [];
         foreach ($this->getSerializableAttributeNames() as $name) {
             $attributes[] = new Mad_Model_Serializer_Attribute($name, $this->_record);
         }
@@ -94,9 +94,9 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
      */
     public function getSerializableMethodAttributes()
     {
-        $methods = !empty($this->_options['methods']) ? $this->_options['methods'] : array();
+        $methods = !empty($this->_options['methods']) ? $this->_options['methods'] : [];
 
-        $methodAttributes = array();
+        $methodAttributes = [];
 
         foreach ((array)$methods as $name) {
             if (method_exists($this->_record, $name)) {
@@ -111,9 +111,9 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
      */
     public function getSerializablePropertyAttributes()
     {
-        $properties = !empty($this->_options['properties']) ? $this->_options['properties'] : array();
+        $properties = !empty($this->_options['properties']) ? $this->_options['properties'] : [];
 
-        $propertyAttributes = array();
+        $propertyAttributes = [];
 
         foreach ((array)$properties as $name) {
             try {
@@ -148,7 +148,7 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
         
         // check if attribute values need to be further serialized
         if (is_array($attrValue)) {
-            $options = array_merge($this->_options, array('root' => $attrName));
+            $options = array_merge($this->_options, ['root' => $attrName]);
             $ao = new Mad_Support_ArrayObject($attrValue);
             $ao->toXml($options);
 
@@ -169,14 +169,14 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
             $name = $this->dasherize($association);
 
             if (empty($records)) {
-                $this->getBuilder()->tag($name, '', array('type' => 'array'));
+                $this->getBuilder()->tag($name, '', ['type' => 'array']);
 
             } else {            
-                $tag = $this->getBuilder()->startTag($name, '', array('type' => 'array'));
+                $tag = $this->getBuilder()->startTag($name, '', ['type' => 'array']);
                     $associationName = Mad_Support_Inflector::singularize($association);
                     foreach ($records as $record) {
                         $type = get_class($record) == $associationName ? null : get_class($record);
-                        $options = array_merge($opts, array('root' => $associationName, 'type' => $type));
+                        $options = array_merge($opts, ['root' => $associationName, 'type' => $type]);
                         $record->toXml($options);
                     }
                 $tag->end();
@@ -184,7 +184,7 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
 
         // single association
         } else {
-            $records->toXml(array_merge($opts, array('root' => $association)));
+            $records->toXml(array_merge($opts, ['root' => $association]));
         }
     }
     
@@ -207,7 +207,7 @@ class Mad_Model_Serializer_Xml extends Mad_Model_Serializer_Base
      */
     public function serialize()
     {
-        $args = array();
+        $args = [];
         if (!empty($this->_options['namespace'])) {
             $args['xmlns'] = $this->_options['namespace'];
         }

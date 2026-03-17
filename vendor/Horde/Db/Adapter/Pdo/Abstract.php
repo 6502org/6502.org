@@ -78,7 +78,7 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
     public function selectAll($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        return $result ? $result->fetchAll(PDO::FETCH_BOTH) : array();
+        return $result ? $result->fetchAll(PDO::FETCH_BOTH) : [];
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
     public function selectOne($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        return $result ? $result->fetch(PDO::FETCH_BOTH) : array();
+        return $result ? $result->fetch(PDO::FETCH_BOTH) : [];
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
     public function selectValues($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        return $result ? $result->fetchAll(PDO::FETCH_COLUMN, 0) : array();
+        return $result ? $result->fetchAll(PDO::FETCH_COLUMN, 0) : [];
     }
 
 
@@ -155,7 +155,7 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
     protected function _parseConfig()
     {
         // check required config keys are present
-        $required = array('adapter', 'username');
+        $required = ['adapter', 'username'];
         $diff = array_diff_key(array_flip($required), $this->_config);
         if (! empty($diff)) {
             $msg = 'Required config missing: ' . implode(', ', array_keys($diff));
@@ -172,7 +172,7 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
         unset($dsnOpts['adapter'], $dsnOpts['username'], $dsnOpts['password']);
 
         // rewrite rails config key names to pdo equivalents
-        $rails2pdo = array('database' => 'dbname', 'socket' => 'unix_socket');
+        $rails2pdo = ['database' => 'dbname', 'socket' => 'unix_socket'];
         foreach ($rails2pdo as $from => $to) {
             if (isset($dsnOpts[$from])) {
                 $dsnOpts[$to] = $dsnOpts[$from];
@@ -188,10 +188,10 @@ abstract class Horde_Db_Adapter_Pdo_Abstract extends Horde_Db_Adapter_Abstract
         $dsn = rtrim($dsn, ';');
 
         // return DSN and user/pass for connection
-        return array(
+        return [
             $dsn,
             $this->_config['username'],
-            $this->_config['password']);
+            $this->_config['password']];
     }
 
 }

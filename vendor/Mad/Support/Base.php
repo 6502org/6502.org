@@ -19,7 +19,7 @@ class Mad_Support_Base
      */
     public static function initialize()
     {
-        spl_autoload_register(array('Mad_Support_Base', 'autoload'));
+        spl_autoload_register(['Mad_Support_Base', 'autoload']);
         Mad_View_Stream::install();
         Mad_Support_PhpErrorHandler::install();
     }
@@ -55,7 +55,7 @@ class Mad_Support_Base
      */
     public static function modelExists($class)
     {
-        static $classes = array();
+        static $classes = [];
 
         // build array of all classes in the app/models models
         if (empty($classes)) {

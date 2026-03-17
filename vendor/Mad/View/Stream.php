@@ -91,7 +91,7 @@ class Mad_View_Stream
          */
         $this->_process();
 
-        $this->stat = array('mode' => 0100777, 'size' => strlen($this->data));
+        $this->stat = ['mode' => 0100777, 'size' => strlen($this->data)];
         return true;
     }
 
@@ -105,10 +105,10 @@ class Mad_View_Stream
          * and <?= ?> to long-form <?php echo ?>.
          */
         if ($this->forceShortTagRewrite || (! ini_get('short_open_tag'))) {
-            $find    = array('/\<\? (.*?)(\?\>){1}?/s',
-                             '/\<\?\= (.*?)(\?\>){1}?/s');
-            $replace = array('<?php $1?>',
-                             '<?php echo $1?>');
+            $find    = ['/\<\? (.*?)(\?\>){1}?/s',
+                             '/\<\?\= (.*?)(\?\>){1}?/s'];
+            $replace = ['<?php $1?>',
+                             '<?php echo $1?>'];
             $this->data = preg_replace($find, $replace, $this->data);
         }
 

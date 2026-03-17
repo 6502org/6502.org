@@ -38,7 +38,7 @@ class Mad_Model_Validation_Presence extends Mad_Model_Validation_Base
     public function __construct($attribute, $options)
     {
         // verify options
-        $valid = array('on' => 'save', 'message' => Mad_Model_Errors::$defaultErrorMessages['empty']);
+        $valid = ['on' => 'save', 'message' => Mad_Model_Errors::$defaultErrorMessages['empty']];
         $this->_options = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_attribute = $attribute;
     }

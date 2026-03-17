@@ -29,13 +29,13 @@ class Mad_View_Base
      * Template path stack
      * @var array
      */
-    private $_paths = array();
+    private $_paths = [];
 
     /**
      * Stack of helper objects methods with associated objects
      * @var array
      */
-    private $_helpers = array();
+    private $_helpers = [];
 
     /**
      * The controller to delegate component rendering to
@@ -70,7 +70,7 @@ class Mad_View_Base
         }
 
         // call the helper method
-        return call_user_func_array(array($this->_helpers[$name], $name), $args);
+        return call_user_func_array([$this->_helpers[$name], $name], $args);
     }
 
     /**
@@ -203,7 +203,7 @@ class Mad_View_Base
      * @param   array   $locals
      * @return  string  The template output.
      */
-    public function render($name, $locals = array())
+    public function render($name, $locals = [])
     {
         // render partial
         if (is_array($name) && $partial = $name['partial']) {
@@ -234,19 +234,19 @@ class Mad_View_Base
      * @param   array   $options
      * @return  string  The template output
      */
-    public function renderPartial($name, $options=array())
+    public function renderPartial($name, $options=[])
     {
         // pop name off of the path
-        $parts = strstr($name, '/') ? explode('/', $name) : array($name);
+        $parts = strstr($name, '/') ? explode('/', $name) : [$name];
         $name = array_pop($parts);
         $path = implode('/', $parts)."/";
 
         // check if they passed in a collection before validating keys
         $useCollection = array_key_exists('collection', $options);
 
-        $valid = array('object', 'locals' => array(), 'collection' => array());
+        $valid = ['object', 'locals' => [], 'collection' => []];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
-        $locals = array($name => null);
+        $locals = [$name => null];
 
         // set the object variable
         if ($options['object']) {

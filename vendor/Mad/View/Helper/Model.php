@@ -25,7 +25,7 @@ class Mad_View_Helper_Model extends Mad_View_Helper_Base
             }
             return $this->contentTag('div', 
                                      "{$prependText}{$errors}{$appendText}",
-                                     array('class' => $cssClass));
+                                     ['class' => $cssClass]);
         } else {
             return '';
         }
@@ -34,9 +34,9 @@ class Mad_View_Helper_Model extends Mad_View_Helper_Base
     public function errorMessagesFor()
     {
         $params = func_get_args();
-        $options = (is_array(end($params))) ? array_pop($params) : array();
+        $options = (is_array(end($params))) ? array_pop($params) : [];
 
-        $objects = array();
+        $objects = [];
         $count   = 0;
         foreach ($params as $objectName) {
             $obj = $this->{$objectName};
@@ -50,8 +50,8 @@ class Mad_View_Helper_Model extends Mad_View_Helper_Base
             return '';
         }
             
-        $htmlOptions = array();
-        foreach(array('id', 'class') as $key) {
+        $htmlOptions = [];
+        foreach(['id', 'class'] as $key) {
             if (array_key_exists($key, $options)) {
                 $value = $options[$key];
                 if (strlen((string)$value)) {

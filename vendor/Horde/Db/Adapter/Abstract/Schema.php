@@ -41,7 +41,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
     /**
      * @var array
      */
-    protected $_adapterMethods = array();
+    protected $_adapterMethods = [];
 
 
     /*##########################################################################
@@ -52,7 +52,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param Horde_Db_Adapter_Abstract $adapter
      * @param array $config
      */
-    public function __construct($adapter, $config = array())
+    public function __construct($adapter, $config = [])
     {
         $this->_adapter = $adapter;
         $this->_adapterMethods = array_flip(get_class_methods($adapter));
@@ -75,7 +75,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
     public function __call($method, $args)
     {
         if (isset($this->_adapterMethods[$method])) {
-            return call_user_func_array(array($this->_adapter, $method), $args);
+            return call_user_func_array([$this->_adapter, $method], $args);
         }
 
         throw new BadMethodCallException('Call to undeclared method "'.$method.'"');
@@ -96,7 +96,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      */
     public function quote($value, $column=null)
     {
-        if (is_object($value) && is_callable(array($value, 'quotedId'))) {
+        if (is_object($value) && is_callable([$value, 'quotedId'])) {
             return $value->quotedId();
         }
 
@@ -144,7 +144,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      */
     public function quoteString($string)
     {
-        return "'".str_replace(array('\\', '\''), array('\\\\', '\\\''), $string)."'";
+        return "'".str_replace(['\\', '\''], ['\\\\', '\\\''], $string)."'";
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      */
     public function nativeDatabaseTypes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -328,7 +328,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $name
      * @param   array   $options
      */
-    public function createTable($name, $options=array())
+    public function createTable($name, $options=[])
     {
         $pk = isset($options['primaryKey']) &&
               $options['primaryKey'] === false ? false : 'id';
@@ -346,7 +346,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $name
      * @param   array   $options
      */
-    public function endTable($name, $options=array())
+    public function endTable($name, $options=[])
     {
         if ($name instanceof Horde_Db_Adapter_Abstract_TableDefinition) {
             $tableDefinition = $name;
@@ -399,7 +399,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $type
      * @param   array   $options
      */
-    public function addColumn($tableName, $columnName, $type, $options=array())
+    public function addColumn($tableName, $columnName, $type, $options=[])
     {
         $this->_clearTableCache($tableName);
 
@@ -442,7 +442,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $type
      * @param   array   $options
      */
-    abstract public function changeColumn($tableName, $columnName, $type, $options=array());
+    abstract public function changeColumn($tableName, $columnName, $type, $options=[]);
 
     /**
      * Sets a new default value for a column.  If you want to set the default
@@ -503,12 +503,12 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $columnName
      * @param   array   $options
      */
-    public function addIndex($tableName, $columnName, $options=array())
+    public function addIndex($tableName, $columnName, $options=[])
     {
         $this->_clearTableCache($tableName);
 
         $columnNames = (array)($columnName);
-        $indexName = $this->indexName($tableName, array('column' => $columnNames));
+        $indexName = $this->indexName($tableName, ['column' => $columnNames]);
 
         $indexType = !empty($options['unique']) ? "UNIQUE"         : null;
         $indexName = !empty($options['name'])   ? $options['name'] : $indexName;
@@ -539,7 +539,7 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $tableName
      * @param   array   $options
      */
-    public function removeIndex($tableName, $options=array())
+    public function removeIndex($tableName, $options=[])
     {
         $this->_clearTableCache($tableName);
 
@@ -554,10 +554,10 @@ abstract class Horde_Db_Adapter_Abstract_Schema
      * @param   string  $tableName
      * @param   array   $options
      */
-    public function indexName($tableName, $options=array())
+    public function indexName($tableName, $options=[])
     {
         if (!is_array($options)) {
-            $options = array('column' => $options);
+            $options = ['column' => $options];
         }
 
         if (isset($options['column'])) {

@@ -18,8 +18,8 @@ class Mad_View_Helper_Javascript extends Mad_View_Helper_Javascript_Base
 {
     public function escapeJavascript($javascript)
     {
-        $escaped = str_replace(array('\\',   "\r\n", "\r",  "\n",  '"',  "'"), 
-                               array('\0\0', "\\n",  "\\n", "\\n", '\"', "\'"), 
+        $escaped = str_replace(['\\',   "\r\n", "\r",  "\n",  '"',  "'"], 
+                               ['\0\0', "\\n",  "\\n", "\\n", '\"', "\'"], 
                                $javascript);
         return $escaped;        
     }
@@ -33,11 +33,11 @@ class Mad_View_Helper_Javascript extends Mad_View_Helper_Javascript_Base
         return json_encode($data);
     }
     
-    public function javascriptTag($content, $htmlOptions = array())
+    public function javascriptTag($content, $htmlOptions = [])
     {
         return $this->contentTag('script', 
                                  $this->javascriptCdataSection($content),
-                                 array_merge($htmlOptions, array('type' => 'text/javascript')));
+                                 array_merge($htmlOptions, ['type' => 'text/javascript']));
     }
     
     // @todo nodoc

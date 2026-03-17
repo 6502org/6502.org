@@ -36,17 +36,17 @@ class Horde_Log_Logger
      * @var array of log levels where the keys are the
      * level priorities and the values are the level names
      */
-    private $_levels = array();
+    private $_levels = [];
 
     /**
      * @var array of Horde_Log_Handler_Abstract objects
      */
-    private $_handlers = array();
+    private $_handlers = [];
 
     /**
      * @var array of Horde_Log_Filter_Interface objects
      */
-    private $_filters = array();
+    private $_filters = [];
 
     /**
      * Class constructor.  Create a new logger
@@ -113,7 +113,7 @@ class Horde_Log_Logger
         } else {
             // Create an event array from the message and level
             // arguments.
-            $event = array('message' => $event, 'level' => $level);
+            $event = ['message' => $event, 'level' => $level];
         }
 
         if (!isset($this->_levels[$event['level']])) {

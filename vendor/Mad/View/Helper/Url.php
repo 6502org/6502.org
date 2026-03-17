@@ -75,7 +75,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *
      * @return  string
      */
-    public function urlFor($first = array(), $second = array())
+    public function urlFor($first = [], $second = [])
     {
         return $this->controller->getUrlWriter()->urlFor($first, $second);
     }
@@ -114,7 +114,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *        var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method');
      *        m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;">Delete Image</a>
      */
-    public function linkTo($name, $options = array(), $htmlOptions = array())
+    public function linkTo($name, $options = [], $htmlOptions = [])
     {
         $url = is_string($options) ? $options : $this->urlFor($options);
 
@@ -171,7 +171,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *        end 
      *     %>
      */
-    public function linkToUnlessCurrent($name, $options = array(), $htmlOptions = array())
+    public function linkToUnlessCurrent($name, $options = [], $htmlOptions = [])
     {
         return $this->linkToUnless($this->isCurrentPage($options),
                                    $name, $options, $htmlOptions);
@@ -199,7 +199,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *   # If not...
      *   # => <a href="/accounts/signup">Reply</a>    
      */
-    public function linkToUnless($condition, $name, $options = array(), $htmlOptions = array())
+    public function linkToUnless($condition, $name, $options = [], $htmlOptions = [])
     {
         return ($condition) ? $name : $this->linkTo($name, $options, $htmlOptions);
     }
@@ -226,7 +226,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *   # If they are logged in...
      *   # => <a href="/accounts/show/3">my_username</a>
      */
-    public function linkToIf($condition, $name, $options = array(), $htmlOptions = array())
+    public function linkToIf($condition, $name, $options = [], $htmlOptions = [])
     {
         return $this->linkToUnless((! $condition),
                                    $name, $options, $htmlOptions); 
@@ -276,11 +276,11 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
      *            'subject' => "This is an example email"))
      *   # => <a href="mailto:me@domain.com?cc=ccaddress@domain.com&subject=This%20is%20an%20example%20email">My email</a>
      */
-    public function mailTo($emailAddress, $name = null, $htmlOptions = array())
+    public function mailTo($emailAddress, $name = null, $htmlOptions = [])
     {
         // extra options "cc", "bcc", "subject", "body"
         $extras = '';
-        $extraParts = array('cc', 'bcc', 'body', 'subject');
+        $extraParts = ['cc', 'bcc', 'body', 'subject'];
         foreach ($extraParts as $partName) {
             if (isset($htmlOptions[$partName])) {
                 $partValue = str_replace('+', '%20', urlencode($htmlOptions[$partName]));
@@ -294,7 +294,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
 
         // obfuscation options "replaceAt" and "replaceDot"
         $emailAddressObfuscated = $emailAddress;
-        foreach (array('replaceAt' => '@', 'replaceDot' => '.') as $option => $find) {
+        foreach (['replaceAt' => '@', 'replaceDot' => '.'] as $option => $find) {
             if (isset($htmlOptions[$option])) {
                 $emailAddressObfuscated = str_replace($find, 
                                                       $htmlOptions[$option], 
@@ -311,7 +311,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
         if ($encode == 'javascript') {
             $name = isset($name) ? $name : $emailAddress;
             $htmlOptions = array_merge($htmlOptions, 
-                                       array('href' => "mailto:{$emailAddress}{$extras}"));
+                                       ['href' => "mailto:{$emailAddress}{$extras}"]);
             $tag = $this->contentTag('a', $name, $htmlOptions);
 
             foreach (str_split("document.write('$tag');") as $c) {
@@ -339,13 +339,13 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
             }
             $name = isset($name) ? $name : $emailAddressEncoded;
             $htmlOptions = array_merge($htmlOptions,
-                                       array('href' => $string . $extras));
+                                       ['href' => $string . $extras]);
             return $this->contentTag('a', $name, $htmlOptions);
 
         } else {
             $name = isset($name) ? $name : $emailAddressObfuscated;
             $htmlOptions = array_merge($htmlOptions,
-                                       array('href' => "mailto:{$emailAddress}{$extras}"));
+                                       ['href' => "mailto:{$emailAddress}{$extras}"]);
             return $this->contentTag('a', $name, $htmlOptions);
         }
     }
@@ -392,7 +392,7 @@ class Mad_View_Helper_Url extends Mad_View_Helper_Base
 
     private function convertOptionsToJavascript($htmlOptions, $url = '')
     {
-        foreach (array('confirm', 'popup', 'method', 'href') as $option){
+        foreach (['confirm', 'popup', 'method', 'href'] as $option){
             $$option = isset($htmlOptions[$option]) ? $htmlOptions[$option] : false;
             unset($htmlOptions[$option]);
         }

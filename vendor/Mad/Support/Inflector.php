@@ -19,7 +19,7 @@ class Mad_Support_Inflector
     /**
      * @var array   cache inflections performed
      */
-    protected static $_inflections = array();
+    protected static $_inflections = [];
 
 
     /**
@@ -39,7 +39,7 @@ class Mad_Support_Inflector
             return $result; 
         }
 
-        $pluralRules = array(
+        $pluralRules = [
             '/(s)tatus$/'             => '\1\2tatuses',
             '/^(ox)$/'                => '\1\2en',      // ox
             '/([m|l])ouse$/'          => '\1ice',       // mouse, louse
@@ -60,7 +60,7 @@ class Mad_Support_Inflector
             '/(ax|cri|test)is$/'      => '\1es',        // axis, crisis
             '/s$/'                    => 's',           // no change (compatibility)
             '/$/'                     => 's'
-        );
+        ];
 
         foreach ($pluralRules as $rule => $replacement) {
             if (preg_match($rule, $word)) {
@@ -90,7 +90,7 @@ class Mad_Support_Inflector
             return $result; 
         }
 
-        $singularRules = array(
+        $singularRules = [
             '/(s)tatus$/i'          => '\1\2tatus',
             '/(s)tatuses$/'         => '\1\2tatus',
             '/(matr)ices$/'         =>'\1ix',
@@ -120,7 +120,7 @@ class Mad_Support_Inflector
             '/(n)ews$/'             => '\1\2ews',
             '/ess$/'                => 'ess',
             '/s$/'                  => ''
-        );
+        ];
 
         foreach ($singularRules as $rule => $replacement) {
             if (preg_match($rule, $word)) {
@@ -169,7 +169,7 @@ class Mad_Support_Inflector
 
         // lowercase first letter of each namespace
         if ($firstLetter == 'lower') {
-            $parts = array();
+            $parts = [];
             foreach (explode('/', $result) as $part) {
                 $parts[] = strtolower($part[0]).substr($part, 1);
             }
@@ -338,7 +338,7 @@ class Mad_Support_Inflector
         $number = (int)$number;
         $abs = abs($number);
 
-        if (in_array($abs % 100, array(11, 12, 13))) {
+        if (in_array($abs % 100, [11, 12, 13])) {
             return $number . 'th';
         }
 
@@ -360,7 +360,7 @@ class Mad_Support_Inflector
      */
     public static function clearCache()
     {
-        self::$_inflections = array();
+        self::$_inflections = [];
     }
 
     /**

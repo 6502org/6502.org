@@ -28,7 +28,7 @@ abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
      * Generic data struct for storing overloaded attributes
      * @var object
      */
-    protected $_data = array();
+    protected $_data = [];
     
     /**
      * Database connection spec
@@ -76,7 +76,7 @@ abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
         if (!method_exists($helper, $name)) {
             throw new Mad_Test_Exception("Call to undefined method '$name'");
         }
-        return call_user_func_array(array($helper, $name), $args);
+        return call_user_func_array([$helper, $name], $args);
     }
 
 
@@ -140,7 +140,7 @@ abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
         $this->_connect();
         $ymlFiles = func_get_args();
         $last = end($ymlFiles);
-        $options = is_array($last) ? array_pop($ymlFiles) : array();
+        $options = is_array($last) ? array_pop($ymlFiles) : [];
 
         // don't load fixtures for these methods
         if (isset($options['except'])) {
@@ -172,7 +172,7 @@ abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
             if (!Mad_Support_Base::modelExists($class)) { break; }
             $model = new $class;
 
-            $this->_records[$name] = array();
+            $this->_records[$name] = [];
             foreach ($fixture->getRecords() as $recordName => $attrs) {
                 $this->_records[$name][$recordName] = $model->instantiate($attrs); 
             }
@@ -208,7 +208,7 @@ abstract class Mad_Test_Unit extends \PHPUnit\Framework\TestCase
      */ 
     protected function clearLog()
     {
-        $this->mock->events = array();
+        $this->mock->events = [];
     }
 
     /**

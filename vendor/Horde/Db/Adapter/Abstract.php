@@ -27,7 +27,7 @@ abstract class Horde_Db_Adapter_Abstract
      * Config options
      * @var array
      */
-    protected $_config = array();
+    protected $_config = [];
 
     /**
      * @var mixed
@@ -77,7 +77,7 @@ abstract class Horde_Db_Adapter_Abstract
     /**
      * @var array
      */
-    protected $_schemaMethods = array();
+    protected $_schemaMethods = [];
 
 
     /*##########################################################################
@@ -92,8 +92,8 @@ abstract class Horde_Db_Adapter_Abstract
     {
         // Create a stub if we don't have a useable cache.
         if (isset($config['cache'])
-            && is_callable(array($config['cache'], 'get'))
-            && is_callable(array($config['cache'], 'set'))) {
+            && is_callable([$config['cache'], 'get'])
+            && is_callable([$config['cache'], 'set'])) {
             $this->_cache = $config['cache'];
             unset($config['cache']);
         } else {
@@ -102,7 +102,7 @@ abstract class Horde_Db_Adapter_Abstract
 
         // Create a stub if we don't have a useable logger.
         if (isset($config['logger'])
-            && is_callable(array($config['logger'], 'log'))) {
+            && is_callable([$config['logger'], 'log'])) {
             $this->_logger = $config['logger'];
             unset($config['logger']);
         } else {
@@ -116,9 +116,9 @@ abstract class Horde_Db_Adapter_Abstract
         // object.
         if (!$this->_schemaClass)
             $this->_schemaClass = get_class($this).'_Schema';
-        $this->_schema = new $this->_schemaClass($this, array(
+        $this->_schema = new $this->_schemaClass($this, [
             'cache' => $this->_cache,
-            'logger' => $this->_logger));
+            'logger' => $this->_logger]);
         $this->_schemaMethods = array_flip(get_class_methods($this->_schema));
 
         $this->connect();
@@ -146,7 +146,7 @@ abstract class Horde_Db_Adapter_Abstract
     public function __call($method, $args)
     {
         if (isset($this->_schemaMethods[$method])) {
-            return call_user_func_array(array($this->_schema, $method), $args);
+            return call_user_func_array([$this->_schema, $method], $args);
         }
 
         throw new BadMethodCallException('Call to undeclared method "'.$method.'"');
@@ -291,7 +291,7 @@ abstract class Horde_Db_Adapter_Abstract
      */
     public function selectAll($sql, $arg1=null, $arg2=null)
     {
-        $rows = array();
+        $rows = [];
         $result = $this->select($sql, $arg1, $arg2);
         if ($result) {
             foreach ($result as $row) {
@@ -313,7 +313,7 @@ abstract class Horde_Db_Adapter_Abstract
     public function selectOne($sql, $arg1=null, $arg2=null)
     {
         $result = $this->selectAll($sql, $arg1, $arg2);
-        return $result ? current($result) : array();
+        return $result ? current($result) : [];
     }
 
     /**
@@ -344,7 +344,7 @@ abstract class Horde_Db_Adapter_Abstract
         foreach ($result as $row) {
             $values[] = current($row);
         }
-        return isset($values) ? $values : array();
+        return isset($values) ? $values : [];
     }
 
     /**
@@ -493,7 +493,7 @@ abstract class Horde_Db_Adapter_Abstract
      *   add_lock! 'SELECT * FROM suppliers', :lock => true
      *   add_lock! 'SELECT * FROM suppliers', :lock => ' FOR UPDATE'
      */
-    public function addLock(&$sql, $options = array())
+    public function addLock(&$sql, $options = [])
     {
         if (isset($options['lock']) && is_string($options['lock'])) {
             $sql .= ' ' . $lock;

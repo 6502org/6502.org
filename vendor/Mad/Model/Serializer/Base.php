@@ -18,11 +18,11 @@ class Mad_Model_Serializer_Base
 {
     protected $_record = null;
 
-    protected $_options = array();
+    protected $_options = [];
 
-    protected $_serializableRecord = array();
+    protected $_serializableRecord = [];
 
-    public function __construct($record, $options = array()) 
+    public function __construct($record, $options = []) 
     {
         $this->_record  = $record;
         $this->_options = $options;
@@ -54,7 +54,7 @@ class Mad_Model_Serializer_Base
         // except
         } else {
             $this->_options['only'] = null;
-            $except = isset($this->_options['except']) ? (array)$this->_options['except'] : array();
+            $except = isset($this->_options['except']) ? (array)$this->_options['except'] : [];
             $except = array_merge($except, (array)$this->_record->inheritanceColumn());
             $this->_options['except'] = array_unique($except);
             $attributeNames = array_diff($attributeNames, $this->_options['except']);
@@ -65,9 +65,9 @@ class Mad_Model_Serializer_Base
 
     public function getSerializableMethodNames()
     {
-        $methodAttributes = array();
+        $methodAttributes = [];
 
-        $methods = isset($this->_options['methods']) ? (array)$this->_options['methods'] : array();
+        $methods = isset($this->_options['methods']) ? (array)$this->_options['methods'] : [];
         foreach ($methods as $method) {
             if (method_exists($this->_record, $method)) {
                 $methodAttributes[] = $method; 
@@ -79,9 +79,9 @@ class Mad_Model_Serializer_Base
 
     public function getSerializablePropertyNames()
     {
-        $propertyAttributes = array();
+        $propertyAttributes = [];
 
-        $properties = isset($this->_options['properties']) ? (array)$this->_options['properties'] : array();
+        $properties = isset($this->_options['properties']) ? (array)$this->_options['properties'] : [];
         foreach ($properties as $property) {
             $propertyAttributes[] = $property; 
         }
@@ -113,8 +113,8 @@ class Mad_Model_Serializer_Base
         }
         if (empty($includeAssociations)) { return; }
 
-        $baseOnlyOrExcept = array('except' => $this->_options['except'], 
-                                  'only'   => $this->_options['only']);
+        $baseOnlyOrExcept = ['except' => $this->_options['except'], 
+                                  'only'   => $this->_options['only']];
 
         // associative array includes have additional options
         $includeHasOptions = !is_int(key($includeAssociations));
@@ -159,7 +159,7 @@ class Mad_Model_Serializer_Base
     {
         // multiple record association
         if (is_array($records)) {
-            $serialized = array();
+            $serialized = [];
             foreach ($records as $record) {
                 $serializer = new self($record, $opts);
                 $serialized[] = $serializer->getSerializableRecord();
@@ -175,7 +175,7 @@ class Mad_Model_Serializer_Base
 
     public function getSerializableRecord()
     {
-        $this->_serializableRecord = array();
+        $this->_serializableRecord = [];
         
         foreach ($this->getSerializableAttributeNames() as $name) {
             $this->_serializableRecord[$name] = $this->_record->$name;

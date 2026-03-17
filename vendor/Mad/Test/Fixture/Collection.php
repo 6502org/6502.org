@@ -29,7 +29,7 @@ class Mad_Test_Fixture_Collection
      * The list of fixtures
      * @var array
      */
-    protected $_fixtures = array();
+    protected $_fixtures = [];
 
 
     /*##########################################################################
@@ -111,7 +111,7 @@ class Mad_Test_Fixture_Collection
                 $records = $fixture->getRecords();
             }
         }
-        return !empty($records) ? $records : array();
+        return !empty($records) ? $records : [];
     }
 
 

@@ -22,13 +22,13 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * Ids to be deleted when a save is performed
      * @var array
      */
-    protected $_deleteIds = array();
+    protected $_deleteIds = [];
 
     /**
      * Ids to be replace when a save is performed
      * @var array
      */
-    protected $_replaceIds = array();
+    protected $_replaceIds = [];
 
     /*##########################################################################
     # Implementation of abstract methods
@@ -55,7 +55,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         // set as loaded
         if ($loaded) {
             if (!isset($this->_loaded['getObjects'])) {
-                $this->_loaded['getObjects'] = array();
+                $this->_loaded['getObjects'] = [];
             }
         // set as not loaded
         } else {
@@ -84,7 +84,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         // set as loaded
         if ($loaded) {
             if (!isset($this->_loaded['getObjectIds'])) {
-                $this->_loaded['getObjectIds'] = array();
+                $this->_loaded['getObjectIds'] = [];
             }
         // set as not loaded
         } else {
@@ -113,7 +113,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  array
      */
-    abstract public function getObjects($args=array());
+    abstract public function getObjects($args=[]);
 
     /**
      * Return the number of associated objects
@@ -121,7 +121,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  object
      */
-    abstract public function getObjectCount($args=array());
+    abstract public function getObjectCount($args=[]);
     
     /**
      *
@@ -142,7 +142,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         $pkValue    = $this->getPkValue();
 
         // empty set if there is no pk value
-        if (empty($pkValue)) { return array(); }
+        if (empty($pkValue)) { return []; }
 
         // condition args
         $conditions = null;
@@ -151,10 +151,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         }
 
         // build find options
-        $options = array('select'     => $assocCols,
+        $options = ['select'     => $assocCols,
                          'from'       => "$assocTable, $joinTable",
                          'conditions' => "$assocTable.$assocPkName = $joinTable.$assocFkName ".
-                                         "AND $joinTable.$fkName = :value $conditions");
+                                         "AND $joinTable.$fkName = :value $conditions"];
         if (!empty($this->_options['order'])) {
             $options['order'] = $this->_options['order'];
         }
@@ -163,7 +163,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
             $options['include'] = $this->_options['include'];
         }
 
-        $binds = array(':value' => $pkValue);
+        $binds = [':value' => $pkValue];
         return $this->getAssocModel()->find('all', $options, $binds);
     }
 
@@ -195,10 +195,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         }
 
         // build find options
-        $options = array('from'       => "$assocTable, $joinTable",
+        $options = ['from'       => "$assocTable, $joinTable",
                          'conditions' => "$assocTable.$assocPkName = $joinTable.$assocFkName ".
-                                         "AND $joinTable.$fkName = :value $conditions");
-        $binds = array(':value' => $pkValue);
+                                         "AND $joinTable.$fkName = :value $conditions"];
+        $binds = [':value' => $pkValue];
         return $this->getAssocModel()->count($options, $binds);
     }
 
@@ -208,10 +208,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  array
      */
-    public function getObjectIds($args=array())
+    public function getObjectIds($args=[])
     {
         if (!isset($this->_loaded['getObjectIds'])) {
-            $this->_loaded['getObjectIds'] = array();
+            $this->_loaded['getObjectIds'] = [];
             foreach ($this->getObjects() as $model) {
                 $this->_loaded['getObjectIds'][] = $model->id;
             }
@@ -224,8 +224,8 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      */
     public function findObjectsUsingJoin($type, $options, $binds) 
     {
-        $valid = array('conditions', 'include', 'order', 'limit', 'offset', 
-                       'page', 'perPage');
+        $valid = ['conditions', 'include', 'order', 'limit', 'offset', 
+                       'page', 'perPage'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // tables/keys/values
@@ -243,7 +243,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
         $include    = $this->_constructInclude($options['include']);
 
         // build find options
-        $options = array('select'     => $assocCols,
+        $options = ['select'     => $assocCols,
                          'from'       => "$assocTable, $joinTable",
                          'conditions' => "$assocTable.$assocPkName = $joinTable.$assocFkName ".
                                          "AND $joinTable.$fkName = :pkValue $conditions",
@@ -251,7 +251,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
                          'limit'      => $options['limit'],
                          'offset'     => $options['offset'], 
                          'page'       => $options['page'], 
-                         'perPage'    => $options['perPage']);
+                         'perPage'    => $options['perPage']];
         $binds[':pkValue'] = $pkValue;
 
         if (!empty($options['page'])) {
@@ -267,11 +267,11 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * Set the array of associated objects
      * @param   array   $collection
      */
-    public function setObjects($args=array())
+    public function setObjects($args=[])
     {
         // first destroy dependent records since we're redefining them
         $this->destroyDependent();
-        $this->_loaded['getObjects'] = array();
+        $this->_loaded['getObjects'] = [];
         $this->addObject($args);
     }
 
@@ -282,10 +282,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @throws  Mad_Model_Association_Exception
      */
-    public function addObject($args=array())
+    public function addObject($args=[])
     {
         $models = !empty($args[0]) ? $args[0] : null;
-        $models = is_array($models) ? $models : array($models);
+        $models = is_array($models) ? $models : [$models];
 
         // can't set objects by both object and id
         if (isset($this->_loaded['getObjectIds'])) {
@@ -310,10 +310,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  object
      */
-    public function setObjectIds($args=array())
+    public function setObjectIds($args=[])
     {
         $ids = !empty($args[0]) ? $args[0] : null;
-        $ids = is_array($ids) ? $ids : array($ids);
+        $ids = is_array($ids) ? $ids : [$ids];
 
         // first destroy dependent records since we're redefining them
         $this->destroyDependent();
@@ -329,17 +329,17 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  array
      */
-    public function replaceObjects($args=array())
+    public function replaceObjects($args=[])
     {
         $models = isset($args[0]) ? $args[0] : null;
-        $models = is_array($models) ? $models : array($models);
+        $models = is_array($models) ? $models : [$models];
 
         // what type of association ref are we using
         $useObjects   = isset($models[0]) && $models[0] instanceof Mad_Model_Base;
         $useObjectIds = isset($models[0]) && is_numeric($models[0]);
 
         // build array of ids that we're replacing
-        $replaceObjects = array();
+        $replaceObjects = [];
         foreach ($models as $model) {
             $pk = $useObjects ? $model->id : $model;
             $replaceObjects[$pk] = $model;
@@ -381,10 +381,10 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  object
      */
-    public function deleteObjects($args=array())
+    public function deleteObjects($args=[])
     {
         $models = isset($args[0]) ? $args[0] : null;
-        $models = is_array($models) ? $models : array($models);
+        $models = is_array($models) ? $models : [$models];
 
         // build array of ids that we're deleting
         foreach ($models as $model) {
@@ -402,14 +402,14 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
      * @param   array   $args
      * @return  object
      */
-    public function clearObjects($args=array())
+    public function clearObjects($args=[])
     {
         $this->destroyDependent();
         if (!empty($this->_loaded['getObjects'])) {
-            $this->_loaded['getObjects'] = array();
+            $this->_loaded['getObjects'] = [];
         }
         if (!empty($this->_loaded['getObjectIds'])) {
-            $this->_loaded['getObjectIds'] = array();
+            $this->_loaded['getObjectIds'] = [];
         }
         $this->_changed = true;
     }
@@ -479,7 +479,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
     {
         // unset currently associated
         if ($this->isLoaded()) {
-            $getObjects = array();
+            $getObjects = [];
             foreach ($this->getObjects() as $key=>$object) {
                 if (!in_array($object->id, $this->_deleteIds)) {
                     $getObjects[] = $object;
@@ -488,7 +488,7 @@ abstract class Mad_Model_Association_Collection extends Mad_Model_Association_Ba
             $this->_loaded['getObjects'] = $getObjects;
 
         } elseif ($this->areIdsLoaded()) {
-            $getObjectIds = array();
+            $getObjectIds = [];
             foreach ($this->getObjectIds() as $key=>$pk) {
                 if (!in_array($pk, $this->_deleteIds)) {
                     $getObjectIds[] = $pk;

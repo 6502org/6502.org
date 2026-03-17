@@ -22,7 +22,7 @@ class Mad_Script_Base
      * Generic data struct for storing overloaded attributes
      * @var object
      */
-    protected $_data   = array();
+    protected $_data   = [];
 
 
     /*##########################################################################

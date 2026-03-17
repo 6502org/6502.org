@@ -149,7 +149,7 @@ class Mad_Script_Generator extends Mad_Script_Base
         $content = $this->_tpl->render('migration.php');
 
         // Find next migration version
-        $versions = array();
+        $versions = [];
         foreach (glob(MAD_ROOT."/db/migrate/[0-9]*_*.php") as $file) {
             preg_match_all('/([0-9]+)_([_a-z0-9]*).php/', $file, $matches);
             $versions[] = (int)$matches[1][0];

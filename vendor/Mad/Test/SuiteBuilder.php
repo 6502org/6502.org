@@ -21,7 +21,7 @@ class Mad_Test_SuiteBuilder
      *
      * @param array<string> 
      */
-    protected $_dirs = array('test/unit', 'test/functional');
+    protected $_dirs = ['test/unit', 'test/functional'];
     
     /**
      * Temp file with test inclusion list, relative to MAD_ROOT
@@ -77,7 +77,7 @@ class Mad_Test_SuiteBuilder
      */
     public function findAll()
     {
-        $pathnames = array();
+        $pathnames = [];
         foreach ($this->getTestDirectories() as $dir) {
             foreach(new RecursiveIteratorIterator(
                      new RecursiveDirectoryIterator($dir)) as $file) {
@@ -98,7 +98,7 @@ class Mad_Test_SuiteBuilder
      */
     public function readFileList($filename)
     {
-        $pathnames = array();
+        $pathnames = [];
         foreach (file($filename) as $line) {
             $pathname = rtrim($line);
             if (!empty($pathname) && file_exists($pathname)) {
@@ -115,7 +115,7 @@ class Mad_Test_SuiteBuilder
      */
     public function getTestDirectories() 
     {
-        $dirs = array();
+        $dirs = [];
         foreach ($this->_dirs as $type) {
             $dirs[] = MAD_ROOT . DIRECTORY_SEPARATOR
                     . str_replace('/', DIRECTORY_SEPARATOR, $type) 

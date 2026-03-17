@@ -22,12 +22,12 @@ class Mad_Controller_Mime_Type
     public $synonyms;
     public $string;
     
-    public static $set             = array();
-    public static $lookup          = array();
-    public static $extensionLookup = array();
+    public static $set             = [];
+    public static $lookup          = [];
+    public static $extensionLookup = [];
     public static $registered      = false;
     
-    public function __construct($string, $symbol = null, $synonyms = array())
+    public function __construct($string, $symbol = null, $synonyms = [])
     {
         $this->string   = $string;
         $this->symbol   = $symbol;
@@ -57,7 +57,7 @@ class Mad_Controller_Mime_Type
         }
     }
 
-    public static function register($string, $symbol, $synonyms = array(), $extSynonyms = array())
+    public static function register($string, $symbol, $synonyms = [], $extSynonyms = [])
     {
         $type = new Mad_Controller_Mime_Type($string, $symbol, $synonyms);
         self::$set[] = $type;
@@ -79,7 +79,7 @@ class Mad_Controller_Mime_Type
      */
     public static function parse($acceptHeader)
     {
-        $types = array();
+        $types = [];
 
         if (strstr($acceptHeader, 'text/javascript')) {
             if (isset(self::$extensionLookup['js'])) {
@@ -111,11 +111,11 @@ class Mad_Controller_Mime_Type
     {
         if (!self::$registered) {
             Mad_Controller_Mime_Type::register("*/*",             'all');
-            Mad_Controller_Mime_Type::register("text/plain",      'text', array(), array('txt'));
-            Mad_Controller_Mime_Type::register("text/html",       'html', array('application/xhtml+xml'), array('xhtml'));
-            Mad_Controller_Mime_Type::register("text/javascript", 'js',   array('application/javascript', 'application/x-javascript'), array('xhtml'));
+            Mad_Controller_Mime_Type::register("text/plain",      'text', [], ['txt']);
+            Mad_Controller_Mime_Type::register("text/html",       'html', ['application/xhtml+xml'], ['xhtml']);
+            Mad_Controller_Mime_Type::register("text/javascript", 'js',   ['application/javascript', 'application/x-javascript'], ['xhtml']);
             Mad_Controller_Mime_Type::register("text/csv",        'csv');
-            Mad_Controller_Mime_Type::register("application/xml", 'xml',  array('text/xml', 'application/x-xml'));        
+            Mad_Controller_Mime_Type::register("application/xml", 'xml',  ['text/xml', 'application/x-xml']);        
             self::$registered = true;
         }
     }

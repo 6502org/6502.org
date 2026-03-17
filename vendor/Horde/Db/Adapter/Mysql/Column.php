@@ -26,7 +26,7 @@ class Horde_Db_Adapter_Mysql_Column extends Horde_Db_Adapter_Abstract_Column
     /**
      * @var array
      */
-    protected static $_hasEmptyStringDefault = array('binary', 'string', 'text');
+    protected static $_hasEmptyStringDefault = ['binary', 'string', 'text'];
 
     /**
      * @var string

@@ -33,7 +33,7 @@ class Mad_Controller_UrlWriter
      * @param  array                   $defaults  Defaults to merge for urlFor()
      * @param  null|Horde_Route_Utils  $utils     Route utilities
      */
-    public function __construct($defaults = array(), $utils = null)
+    public function __construct($defaults = [], $utils = null)
     {
         $this->_defaults = $defaults;
         
@@ -50,7 +50,7 @@ class Mad_Controller_UrlWriter
      * @param  $second  mixed
      * @return string
      */
-    public function urlFor($first, $second = array())
+    public function urlFor($first, $second = [])
     {
         // anonymous route: serialize to params & merge defaults
         //   urlFor(array('controller' => 'books'))
@@ -66,7 +66,7 @@ class Mad_Controller_UrlWriter
         }
 
         // url generation "route memory" is not useful here
-        $this->_utils->mapperDict = array();
+        $this->_utils->mapperDict = [];
 
         // generate url
         return $this->_utils->urlFor($first, $second);

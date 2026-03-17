@@ -38,12 +38,12 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * Test data available to sub-classes for testing requests
      */
     protected $expire  = '15 mins';
-    protected $session = array();
-    protected $cookies = array();
-    protected $flash   = array();
-    protected $get     = array();
-    protected $post    = array();
-    protected $files   = array();
+    protected $session = [];
+    protected $cookies = [];
+    protected $flash   = [];
+    protected $get     = [];
+    protected $post    = [];
+    protected $files   = [];
 
     public function setUp(): void
     {
@@ -214,7 +214,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
 
             $this->response = new Mad_Controller_Response_Mock();
 
-            $this->_initParams('GET', array(), $this->session);
+            $this->_initParams('GET', [], $this->session);
             $this->_sendRequest($redirectUrl, 'GET');
 
         } else {
@@ -831,9 +831,9 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
      * @param   array   $options
      * @param   string  $msg
      */
-    public function assertFileSent($options=array(), $msg='')
+    public function assertFileSent($options=[], $msg='')
     {
-        $valid = array('filename', 'type', 'disposition');
+        $valid = ['filename', 'type', 'disposition'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // parse headers for info in the format of:
@@ -892,7 +892,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
         // if $uri doesn't start with '/', it's an action name
         // if it does start with '/', it's already the URI
         if (substr($uri, 0, 1) != '/') {
-            $uri = $this->_urlWriter->urlFor(array('action' => $uri));
+            $uri = $this->_urlWriter->urlFor(['action' => $uri]);
         }
 
         $this->_initRequest($uri, $requestMethod);
@@ -915,7 +915,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
         $utils = $dispatcher->getRouteUtils();
         
         // build defaults for UrlWriter
-        $defaults = array();
+        $defaults = [];
         $controller = $this->_getControllerNameFromTest();
         if ($controller) {
             $defaults['controller'] = $controller;
@@ -947,11 +947,11 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
     protected function _initParams($method, $options, $session)
     {
         if ($method == 'POST' || $method == 'PUT' || $method == 'DELETE') {
-            $this->post = isset($options) ? $options : array();
+            $this->post = isset($options) ? $options : [];
         } elseif ($method == 'GET') {
-            $this->get  = isset($options) ? $options : array();
+            $this->get  = isset($options) ? $options : [];
         }
-        $this->session = isset($session) ? $session : array();
+        $this->session = isset($session) ? $session : [];
     }
 
     /**
@@ -1035,7 +1035,7 @@ abstract class Mad_Test_Functional extends Mad_Test_Unit
         unset($params[':action']);
         unset($params['action']);
 
-        $paramList = array();
+        $paramList = [];
         foreach ($params as $key=>$value) {
             $paramList[] = "$key => $value";
         }

@@ -28,7 +28,7 @@ class Mad_View_Helper_Pagination extends Mad_View_Helper_Base
      * Renders Digg-style pagination. (We know you wanna!)
      * Returns '1' if there is only one page in total (can't paginate that).
      */
-    public function willPaginate($entries, $options=array())
+    public function willPaginate($entries, $options=[])
     {
         $totalPages = $entries->pageCount;
         if ($totalPages < 1)  { return; }
@@ -36,11 +36,11 @@ class Mad_View_Helper_Pagination extends Mad_View_Helper_Base
         $page = $entries->currentPage;
 
         // get options
-        $valids = array('href', 'class' => 'pagination', 
+        $valids = ['href', 'class' => 'pagination', 
                         'prevLabel'   => "&larr; Prev", 
                         'nextLabel'   => 'Next &rarr;', 
                         'innerWindow' => 2, 
-                        'outerWindow' => 1);
+                        'outerWindow' => 1];
         $options = Mad_Support_Base::assertValidKeys($options, $valids);
         $href        = $options['href'];        unset($options['href']);
         $innerWindow = $options['innerWindow']; unset($options['innerWindow']);
@@ -56,7 +56,7 @@ class Mad_View_Helper_Pagination extends Mad_View_Helper_Base
         $tail      = range($totalPages - $outerWindow, $totalPages);
         $visible   = array_merge($current, $beginning, $tail);
 
-        $links = array();
+        $links = [];
         foreach (range(1, $totalPages) as $n) {
             if (in_array($n, $visible)) {
                 $links[] = $this->_linkOrSpan($n, $n == $page, 'current', $n, $href);
@@ -86,7 +86,7 @@ class Mad_View_Helper_Pagination extends Mad_View_Helper_Base
     protected function _linkOrSpan($page, $conditionForSpan, $spanClass, $text, $href)
     {
         if ($conditionForSpan) {
-            return $this->contentTag('span', $text, array('class' => $spanClass)).' ';
+            return $this->contentTag('span', $text, ['class' => $spanClass]).' ';
         } else {
             // set order_by param, default to 'created_at'
             list($baseUrl, $params) = $this->_parseUrl($href);
@@ -108,21 +108,21 @@ class Mad_View_Helper_Pagination extends Mad_View_Helper_Base
             $paramPairs = explode('&', isset($qs) ? $qs : '');
         } else {
             $baseUrl = $url;
-            $paramPairs = array();
+            $paramPairs = [];
         }
         // split up all vals
-        $params = array();
+        $params = [];
         foreach ($paramPairs as $paramPair) {
             list($key, $value) = explode('=', $paramPair);
             $params[$key] = $value;
         }
-        return array($baseUrl, $params);
+        return [$baseUrl, $params];
     }
 
     // rejoin params to string for url
     protected function _buildParamString($params)
     {
-        $values = array();
+        $values = [];
         foreach ($params as $key => $value) { 
             $values[] = "$key=$value"; 
         }

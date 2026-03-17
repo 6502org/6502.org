@@ -28,8 +28,8 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
     protected $_options = null;
     protected $_columns = null;
 
-    protected $_columntypes = array ('string', 'text', 'integer', 'float',
-        'datetime', 'timestamp', 'time', 'date', 'binary', 'boolean');
+    protected $_columntypes =  ['string', 'text', 'integer', 'float',
+        'datetime', 'timestamp', 'time', 'date', 'binary', 'boolean'];
 
     /**
      * Class Constructor
@@ -38,12 +38,12 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      * @param  Horde_Db_Adapter_Abstract_Schema  $base
      * @param  array   $options
      */
-    public function __construct($name, $base, $options=array())
+    public function __construct($name, $base, $options=[])
     {
         $this->_name    = $name;
         $this->_base    = $base;
         $this->_options = $options;
-        $this->_columns = array();
+        $this->_columns = [];
     }
 
     /**
@@ -114,7 +114,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      *
      * @return  TableDefinition
      */
-    public function column($name, $type, $options=array())
+    public function column($name, $type, $options=[])
     {
         if (is_array($name)) {
             foreach ($name as $col)
@@ -153,7 +153,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      */
     public function timestamps()
     {
-        return $this->column(array('created_at', 'updated_at'), 'datetime');
+        return $this->column(['created_at', 'updated_at'], 'datetime');
     }
 
     /*
@@ -196,7 +196,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
         }
         else if (count($arguments) > 0 && count($arguments) < 3) {
           return $this->column($arguments[0], $method, 
-              isset($arguments[1]) ? $arguments[1] : array());
+              isset($arguments[1]) ? $arguments[1] : []);
         }
         else {
           throw new BadMethodCallException('Method "'.$method.'" takes two arguments');
@@ -220,7 +220,7 @@ class Horde_Db_Adapter_Abstract_TableDefinition implements ArrayAccess
      */
     public function toSql()
     {
-        $cols = array();
+        $cols = [];
         foreach ($this->_columns as $col) { $cols[] = $col->toSql(); }
 
         return "  ".implode(", \n  ", $cols);

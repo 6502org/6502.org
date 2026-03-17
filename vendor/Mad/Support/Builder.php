@@ -17,12 +17,12 @@
 class Mad_Support_Builder
 {
     protected $_xml = null;
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * @param   array   $options
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         $options['indent'] = isset($options['indent']) ? $options['indent'] : 0;
         $this->_options = $options;
@@ -63,7 +63,7 @@ class Mad_Support_Builder
     /** 
      * Start/end entire tag at once
      */
-    public function tag($name, $value = '', $attributes = array())
+    public function tag($name, $value = '', $attributes = [])
     {
         $this->startTag($name, $value, $attributes);
         $this->end();
@@ -76,7 +76,7 @@ class Mad_Support_Builder
      * @param   string  $value
      * @param   array   $attributes
      */
-    public function startTag($name, $value = '', $attributes = array())
+    public function startTag($name, $value = '', $attributes = [])
     {
         $this->_xml->startElement($name);
         foreach ($attributes as $attrKey => $attrValue) {

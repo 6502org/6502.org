@@ -41,8 +41,8 @@ class Horde_Log_Handler_Db extends Horde_Log_Handler_Base
      *
      * @var array
      */
-    protected $_options = array('fieldMessage'  => 'message',
-                                'fieldLevel'    => 'level');
+    protected $_options = ['fieldMessage'  => 'message',
+                                'fieldLevel'    => 'level'];
 
     /**
      * Class constructor
@@ -64,10 +64,10 @@ class Horde_Log_Handler_Db extends Horde_Log_Handler_Base
      */
     public function write($event)
     {
-        $fields = array(
+        $fields = [
             $this->_options['fieldMessage'] => $event['message'],
             $this->_options['fieldLevel']   => $event['level'],
-        );
+        ];
 
         $this->_db->insert($this->_table, $fields);
         return true;

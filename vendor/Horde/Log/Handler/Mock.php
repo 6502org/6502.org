@@ -27,7 +27,7 @@ class Horde_Log_Handler_Mock extends Horde_Log_Handler_Base
     /**
      * array of log events
      */
-    public $events = array();
+    public $events = [];
 
     /**
      * shutdown called?

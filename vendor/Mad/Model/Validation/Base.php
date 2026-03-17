@@ -73,7 +73,7 @@ abstract class Mad_Model_Validation_Base
     {
         $this->_model = $model;
 
-        $errorMsgs = array();
+        $errorMsgs = [];
         foreach ($this->_model->getAttributes() as $name => $value) {
             // Only validate specified attribute on given action
             if ($name != $this->_attribute || $on != $this->_options['on']) {

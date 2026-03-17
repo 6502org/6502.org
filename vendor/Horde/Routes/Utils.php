@@ -28,7 +28,7 @@ class Horde_Routes_Utils
      * Match data from last match; implements for urlFor() route memory
      * @var array
      */
-    public $mapperDict = array();
+    public $mapperDict = [];
 
     /**
      * Callback function used for redirectTo()
@@ -92,7 +92,7 @@ class Horde_Routes_Utils
      * be added if present, otherwise the string will be used as the url with
      * keyword args becoming GET query args.
      */
-    public function urlFor($first = array(), $second = array())
+    public function urlFor($first = [], $second = [])
     {
         if (is_array($first)) {
             // urlFor(array('controller' => 'foo', ...))
@@ -113,7 +113,7 @@ class Horde_Routes_Utils
         unset($kargs['qualified']);
 
         // Remove special words from kargs, convert placeholders
-        foreach (array('anchor', 'host', 'protocol') as $key) {
+        foreach (['anchor', 'host', 'protocol'] as $key) {
             if (array_key_exists($key, $kargs)) {
                 unset($kargs[$key]);
             }
@@ -124,7 +124,7 @@ class Horde_Routes_Utils
         }
 
         $route = null;
-        $routeArgs = array();
+        $routeArgs = [];
         $static = false;
         $encoding = $this->mapper->encoding;
         $environ = $this->mapper->environ;
@@ -157,7 +157,7 @@ class Horde_Routes_Utils
             if ($static) {
                 if (!empty($kargs)) {
                     $url .= '?';
-                    $query_args = array();
+                    $query_args = [];
                     foreach ($kargs as $key => $val) {
                         $query_args[] = urlencode(self::_encodeUrl($key)) . '=' .
                             urlencode(self::_encodeUrl($val));
@@ -169,7 +169,7 @@ class Horde_Routes_Utils
 
         if (! $static) {
             if ($route) {
-                $routeArgs = array($route);
+                $routeArgs = [$route];
                 $newargs = $route->defaults;
                 foreach ($kargs as $key => $value) {
                     $newargs[$key] = $value;
@@ -240,7 +240,7 @@ class Horde_Routes_Utils
      * @param   mixed  $second  Second argument in varargs
      * @return  mixed           Result of redirect callback
      */
-    public function redirectTo($first = array(), $second = array())
+    public function redirectTo($first = [], $second = [])
     {
         $target = $this->urlFor($first, $second);
         return call_user_func($this->redirect, $target);
@@ -275,7 +275,7 @@ class Horde_Routes_Utils
      */
     public static function controllerScan($dirname = null, $prefix = '')
     {
-        $controllers = array();
+        $controllers = [];
 
         if ($dirname === null) {
             return $controllers;
@@ -298,7 +298,7 @@ class Horde_Routes_Utils
             }
         }
 
-        $callback = array('Horde_Routes_Utils', 'longestFirst');
+        $callback = ['Horde_Routes_Utils', 'longestFirst'];
         usort($controllers, $callback);
 
         return $controllers;

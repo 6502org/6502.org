@@ -44,7 +44,7 @@ class Mad_View_Helper_Number extends Mad_View_Helper_Base
     * @param  array    $options   Format options
     * @return string              Formatted phone number
     */
-    public function numberToPhone($number, $options = array())
+    public function numberToPhone($number, $options = [])
     {
         $areaCode    = isset($options['areaCode'])  ? $options['areaCode'] : null;
         $delimiter   = isset($options['delimiter']) ? $options['delimiter'] : '-';
@@ -92,7 +92,7 @@ class Mad_View_Helper_Number extends Mad_View_Helper_Base
      * @param  options  $options  Format options
      * @return string             Formatted currency value
      */
-    public function numberToCurrency($number, $options = array())
+    public function numberToCurrency($number, $options = [])
     {
         if (! strlen((string)$number)) {
             return $number;
@@ -127,7 +127,7 @@ class Mad_View_Helper_Number extends Mad_View_Helper_Base
      * @param  array          $options  Format options
      * @return string                   Formatted percentage value
      */
-    public function numberToPercentage($number, $options = array())
+    public function numberToPercentage($number, $options = [])
     {
         if (! strlen((string)$number)) {
             return $number;

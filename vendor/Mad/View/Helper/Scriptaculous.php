@@ -16,10 +16,10 @@
  */
 class Mad_View_Helper_Scriptaculous extends Mad_View_Helper_Javascript_Base
 {
-    private $_toggleEffects = array('toggleAppear', 'toggleSlide', 'toggleBlind');
+    private $_toggleEffects = ['toggleAppear', 'toggleSlide', 'toggleBlind'];
     
     
-    public function visualEffect($name, $elementId = false, $jsOptions = array()) {
+    public function visualEffect($name, $elementId = false, $jsOptions = []) {
         $element = ($elementId ? $this->jsonEncode($elementId) : 'element');
 
         if (isset($jsOptions['queue'])) {
@@ -44,14 +44,14 @@ class Mad_View_Helper_Scriptaculous extends Mad_View_Helper_Javascript_Base
         }
     }
     
-    public function sortableElement($elementId, $options = array())
+    public function sortableElement($elementId, $options = [])
     {
         $js = Mad_Support_Base::chopToNull($this->sortableElementJs($elementId, $options));
         return $this->javascriptTag($js);
     }
 
     // @todo nodoc
-    public function sortableElementJs($elementId, $options = array()) 
+    public function sortableElementJs($elementId, $options = []) 
     {
         if (! isset($options['with'])) {
             $options['with'] = 'Sortable.serialize(' . $this->jsonEncode($elementId) . ')';
@@ -64,7 +64,7 @@ class Mad_View_Helper_Scriptaculous extends Mad_View_Helper_Javascript_Base
         $ajaxOptions = array_flip($this->getPrototypeAjaxOptions());
         $options = array_diff_key($options, $ajaxOptions);
 
-        foreach (array('tag', 'overlap', 'constraint', 'handle') as $option) {
+        foreach (['tag', 'overlap', 'constraint', 'handle'] as $option) {
             if (isset($options[$option])) {
                 $options[$option] = "'" . $options[$option] . "'";
             }
@@ -84,14 +84,14 @@ class Mad_View_Helper_Scriptaculous extends Mad_View_Helper_Javascript_Base
         return "Sortable.create($elementId, $options);";
     }
     
-    public function draggableElement($elementId, $options = array())
+    public function draggableElement($elementId, $options = [])
     {
         $js = Mad_Support_Base::chopToNull($this->draggableElementJs($elementId, $options));
         return $this->javascriptTag($js);        
     }
     
     // @todo nodoc
-    public function draggableElementJs($elementId, $options = array())
+    public function draggableElementJs($elementId, $options = [])
     {
         $elementId = $this->jsonEncode($elementId);
         $options   = $this->_optionsForJavascript($options);
@@ -99,13 +99,13 @@ class Mad_View_Helper_Scriptaculous extends Mad_View_Helper_Javascript_Base
         return "new Draggable($elementId, $options);";
     }
     
-    public function dropReceivingElement($elementId, $options = array())
+    public function dropReceivingElement($elementId, $options = [])
     {
         $js = Mad_Support_Base::chopToNull($this->dropReceivingElementJs($elementId, $options));
         return $this->javascriptTag($js);           
     }
     
-    public function dropReceivingElementJs($elementId, $options = array())
+    public function dropReceivingElementJs($elementId, $options = [])
     {
         if (! isset($options['with'])) {
             $options['with'] = "'id=' + encodeURIComponent(element.id)";

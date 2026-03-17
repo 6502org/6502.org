@@ -209,7 +209,7 @@ class Horde_Db_Adapter_Mysqli extends Horde_Db_Adapter_Abstract
     public function selectAll($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        $rows = array();
+        $rows = [];
         if ($result) {
             while ($row = $result->fetch_array()) {
                 $rows[] = $row;
@@ -230,7 +230,7 @@ class Horde_Db_Adapter_Mysqli extends Horde_Db_Adapter_Abstract
     public function selectOne($sql, $arg1=null, $arg2=null)
     {
         $result = $this->execute($sql, $arg1, $arg2);
-        return $result ? $result->fetch_array() : array();
+        return $result ? $result->fetch_array() : [];
     }
 
     /**
@@ -257,7 +257,7 @@ class Horde_Db_Adapter_Mysqli extends Horde_Db_Adapter_Abstract
      */
     public function selectValues($sql, $arg1=null, $arg2=null)
     {
-        $values = array();
+        $values = [];
         $result = $this->execute($sql, $arg1, $arg2);
         if ($result) {
             while ($row = $result->fetch_row()) {
@@ -374,7 +374,7 @@ class Horde_Db_Adapter_Mysqli extends Horde_Db_Adapter_Abstract
     protected function _parseConfig()
     {
         // check required config keys are present
-        $required = array('username');
+        $required = ['username'];
         $diff = array_diff_key(array_flip($required), $this->_config);
         if (! empty($diff)) {
             $msg = 'Required config missing: ' . implode(', ', array_keys($diff));

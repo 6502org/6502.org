@@ -49,10 +49,10 @@ class Mad_Model_Validation_Length extends Mad_Model_Validation_Base
     public function __construct($attribute, $options)
     {
         // verify options
-        $valid = array('on' => 'save', 'allowNull', 'minimum', 'maximum', 'is', 'within',
+        $valid = ['on' => 'save', 'allowNull', 'minimum', 'maximum', 'is', 'within',
                        'tooLong'     => Mad_Model_Errors::$defaultErrorMessages['tooLong'],
                        'tooShort'    => Mad_Model_Errors::$defaultErrorMessages['tooShort'],
-                       'wrongLength' => Mad_Model_Errors::$defaultErrorMessages['wrongLength']);
+                       'wrongLength' => Mad_Model_Errors::$defaultErrorMessages['wrongLength']];
         $this->_options = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_attribute = $attribute;
     }

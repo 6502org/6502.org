@@ -30,11 +30,11 @@ class Mad_Madness_Configuration
     protected static $_instance = null;
 
     // options for diff components
-    public $controller = array();
-    public $mailer     = array();
-    public $view       = array();
-    public $model      = array();
-    public $test       = array();
+    public $controller = [];
+    public $mailer     = [];
+    public $view       = [];
+    public $model      = [];
+    public $test       = [];
 
     /**
      * Singleton - don't instantiate directly

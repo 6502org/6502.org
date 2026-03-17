@@ -28,7 +28,7 @@ class Mad_View_Helper_Tag extends Mad_View_Helper_Base
      *
      * @var array
      */
-    private $_booleanAttributes = array('disabled', 'readonly', 'multiple');
+    private $_booleanAttributes = ['disabled', 'readonly', 'multiple'];
     
     /**
      * Returns an empty HTML tag of type $name which by default is XHTML

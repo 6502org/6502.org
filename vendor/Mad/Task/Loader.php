@@ -20,7 +20,7 @@ class Mad_Task_Loader
      * Files that have been loaded by this loader.
      * @var array<string>
      */
-    protected $_files = array();
+    protected $_files = [];
     
     /**
      * Load all built-in tasks and application tasks.

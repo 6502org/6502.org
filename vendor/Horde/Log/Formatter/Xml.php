@@ -24,13 +24,13 @@
  */
 class Horde_Log_Formatter_Xml
 {
-    protected $_options = array('elementEntry'     => 'log',
+    protected $_options = ['elementEntry'     => 'log',
                                 'elementTimestamp' => 'timestamp',
                                 'elementMessage'   => 'message',
                                 'elementLevel'     => 'level',
-                                'lineEnding'       => PHP_EOL);
+                                'lineEnding'       => PHP_EOL];
 
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         $this->_options = array_merge($this->_options, $options);
     }

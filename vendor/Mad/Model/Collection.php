@@ -32,7 +32,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
      * As we access each row, we cache them in an array for later access.
      * @var array
      */
-    protected $_collection  = array();
+    protected $_collection  = [];
 
     /**
      * The position in the iterator over the objects.
@@ -95,7 +95,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
     /**                
      * Serialize the collection to XML.
      */
-    public function toXml($options = array()) 
+    public function toXml($options = []) 
     {
         if (!isset($options['root'])) {
             $options['root'] = Mad_Support_Inflector::pluralize(get_class($this->_model));
@@ -298,7 +298,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
      * @return array                    Results collected
      */
     public function collect($property) {
-        $values = array();
+        $values = [];
 
         if (substr($property, -2, 2) == '()') {
             // method call
@@ -307,7 +307,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
             array_shift($args);
 
             foreach ($this as $member) { 
-                $callback = array($member, $method);
+                $callback = [$member, $method];
                 $values[] = call_user_func_array($callback, $args);
             }
         } else {

@@ -62,27 +62,27 @@ class Mad_Test_DomAssertion
         if (strstr($selector, ' ')) {
             $elements = explode(' ', $selector);
         } else {
-            $elements = array($selector);
+            $elements = [$selector];
         }
 
-        $previousTag = array();
+        $previousTag = [];
 
         foreach (array_reverse($elements) as $element) {
             $element = str_replace('__SPACE__', ' ', $element);
 
             // child selector
             if ($element == '>') {
-                $previousTag = array('child' => $previousTag['descendant']);
+                $previousTag = ['child' => $previousTag['descendant']];
                 continue;
             }
 
             // adjacent-sibling selector
             if ($element == '+') {
-                $previousTag = array('adjacent-sibling' => $previousTag['descendant']);
+                $previousTag = ['adjacent-sibling' => $previousTag['descendant']];
                 continue;
             }
 
-            $tag = array();
+            $tag = [];
 
             // match element tag
             preg_match("/^([^\.#\[]*)/", $element, $eltMatches);
@@ -99,8 +99,8 @@ class Mad_Test_DomAssertion
             );
 
             if (!empty($matches[1])) {
-                $classes = array();
-                $attrs   = array();
+                $classes = [];
+                $attrs   = [];
 
                 foreach ($matches[1] as $match) {
                     // id matched
@@ -160,7 +160,7 @@ class Mad_Test_DomAssertion
                 unset($tag['content']);
             }
 
-            $previousTag = array('descendant' => $tag);
+            $previousTag = ['descendant' => $tag];
         }
 
         return $tag;
@@ -226,12 +226,12 @@ class Mad_Test_DomAssertion
      */
     public static function findNodes(DOMDocument $dom, array $options, $isHtml = true)
     {
-        $valid = array(
+        $valid = [
             'id', 'class', 'tag', 'content', 'attributes', 'parent',
             'child', 'ancestor', 'descendant', 'children', 'adjacent-sibling'
-        );
+        ];
 
-        $filtered = array();
+        $filtered = [];
         $options  = self::_assertValidKeys($options, $valid);
 
         // find the element by id
@@ -243,7 +243,7 @@ class Mad_Test_DomAssertion
             $options['attributes']['class'] = $options['class'];
         }
 
-        $nodes = array();
+        $nodes = [];
 
         // find the element by a tag type
         if ($options['tag']) {
@@ -265,7 +265,7 @@ class Mad_Test_DomAssertion
 
         // no tag selected, get them all
         } else {
-            $tags = array(
+            $tags = [
                 'a', 'abbr', 'acronym', 'address', 'area', 'b', 'base', 'bdo',
                 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'cite',
                 'code', 'col', 'colgroup', 'dd', 'del', 'div', 'dfn', 'dl',
@@ -283,7 +283,7 @@ class Mad_Test_DomAssertion
                 'footer', 'header', 'hgroup', 'keygen', 'mark', 'meter', 'nav',
                 'output', 'progress', 'ruby', 'rt', 'rp', 'track', 'section',
                 'source', 'summary', 'time', 'video', 'wbr'
-            );
+            ];
 
             foreach ($tags as $tag) {
                 if ($isHtml) {
@@ -345,7 +345,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -380,7 +380,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -400,7 +400,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -410,7 +410,7 @@ class Mad_Test_DomAssertion
         // filter by child node
         if ($options['child']) {
             $childNodes = self::findNodes($dom, $options['child'], $isHtml);
-            $childNodes = !empty($childNodes) ? $childNodes : array();
+            $childNodes = !empty($childNodes) ? $childNodes : [];
 
             foreach ($nodes as $node) {
                 foreach ($node->childNodes as $child) {
@@ -423,7 +423,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -436,7 +436,7 @@ class Mad_Test_DomAssertion
                 $dom, $options['adjacent-sibling'], $isHtml
             );
             $adjacentSiblingNodes = !empty($adjacentSiblingNodes)
-                ? $adjacentSiblingNodes : array();
+                ? $adjacentSiblingNodes : [];
 
             foreach ($nodes as $node) {
                 $sibling = $node;
@@ -458,7 +458,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -482,7 +482,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -495,7 +495,7 @@ class Mad_Test_DomAssertion
                 $dom, $options['descendant'], $isHtml
             );
             $descendantNodes = !empty($descendantNodes)
-                ? $descendantNodes : array();
+                ? $descendantNodes : [];
 
             foreach ($nodes as $node) {
                 foreach (self::_getDescendants($node) as $descendant) {
@@ -508,7 +508,7 @@ class Mad_Test_DomAssertion
             }
 
             $nodes    = $filtered;
-            $filtered = array();
+            $filtered = [];
 
             if (empty($nodes)) {
                 return false;
@@ -517,13 +517,13 @@ class Mad_Test_DomAssertion
 
         // filter by children
         if ($options['children']) {
-            $validChild   = array('count', 'greater_than', 'less_than', 'only');
+            $validChild   = ['count', 'greater_than', 'less_than', 'only'];
             $childOptions = self::_assertValidKeys(
                 $options['children'], $validChild
             );
 
             foreach ($nodes as $node) {
-                $children  = array();
+                $children  = [];
                 $childNodes = $node->childNodes;
 
                 foreach ($childNodes as $childNode) {
@@ -592,7 +592,7 @@ class Mad_Test_DomAssertion
             }
         }
 
-        return !empty($nodes) ? $nodes : array();
+        return !empty($nodes) ? $nodes : [];
     }
 
 
@@ -609,7 +609,7 @@ class Mad_Test_DomAssertion
      */
     private static function _assertValidKeys(array $hash, array $validKeys)
     {
-        $valids = array();
+        $valids = [];
 
         foreach ($validKeys as $key => $val) {
             is_int($key) ? $valids[$val] = null : $valids[$key] = $val;
@@ -690,8 +690,8 @@ class Mad_Test_DomAssertion
      */
     private static function _getDescendants(DOMNode $node)
     {
-        $allChildren = array();
-        $childNodes  = $node->childNodes ? $node->childNodes : array();
+        $allChildren = [];
+        $childNodes  = $node->childNodes ? $node->childNodes : [];
 
         foreach ($childNodes as $child) {
             if ($child->nodeType === XML_CDATA_SECTION_NODE ||
@@ -700,7 +700,7 @@ class Mad_Test_DomAssertion
             }
 
             $children    = self::_getDescendants($child);
-            $allChildren = array_merge($allChildren, $children, array($child));
+            $allChildren = array_merge($allChildren, $children, [$child]);
         }
 
         return $allChildren;

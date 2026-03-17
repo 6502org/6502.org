@@ -26,12 +26,12 @@ class Mad_Controller_Request_Mock extends Mad_Controller_Request_Http
     /**
      * Request is populated with all the superglobals from page request.
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         $this->initData();
-        $this->setCookie(array());
-        $this->setSession(array());
-        $this->setFlash(array());
+        $this->setCookie([]);
+        $this->setSession([]);
+        $this->setFlash([]);
         $this->setSessionId('1');
 
         parent::__construct($options);
@@ -230,7 +230,7 @@ class Mad_Controller_Request_Mock extends Mad_Controller_Request_Http
      */
     public function initData()
     {
-        $_SERVER = array(
+        $_SERVER = [
             'DOCUMENT_ROOT'   => '/Users/derek/work/yarc',
             'HTTP_HOST'       => 'www.maintainable.com:33443',
             'HTTP_ACCEPT'     => 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5',
@@ -248,39 +248,39 @@ class Mad_Controller_Request_Mock extends Mad_Controller_Request_Http
             'SCRIPT_NAME'     => '/dispatcher.php',
             'PATH_TRANSLATED' => '/Users/derek/work/yarc/public/dispatcher.php',
             'PHP_SELF'        => '/dispatcher.php'
-        );
+        ];
 
         $_ENV['TEST_DATA']    = 'my unit test data';
 
-        $_COOKIE  = array('my_test_cookie'  => 'cookie value', 
-                          'my_other_cookie' => 'cookie stuff');
-        $_SESSION = array('my_test_session'  => 'session value',
+        $_COOKIE  = ['my_test_cookie'  => 'cookie value', 
+                          'my_other_cookie' => 'cookie stuff'];
+        $_SESSION = ['my_test_session'  => 'session value',
                           'my_other_session' => 'session stuff',
-                          '_flash' => array('my_test_flash'  => 'flash value', 
-                                            'my_other_flash' => 'flash stuff'));
+                          '_flash' => ['my_test_flash'  => 'flash value', 
+                                            'my_other_flash' => 'flash stuff']];
 
-        $_GET     = array('document' => array('filesize' => '100'), 
-                          'get_test1'  => 'true', 'get_test2' => 'go mets');
-        $_POST    = array('document' => array('name' => 'hey'), 
-                          'post_test1' => 'false', 'post_test2' => 'go yanks');
-        $_REQUEST = array();
+        $_GET     = ['document' => ['filesize' => '100'], 
+                          'get_test1'  => 'true', 'get_test2' => 'go mets'];
+        $_POST    = ['document' => ['name' => 'hey'], 
+                          'post_test1' => 'false', 'post_test2' => 'go yanks'];
+        $_REQUEST = [];
 
         // this wacky array represents how PHP mungles multi-dimensional file data
-        $_FILES = array(
-            'picture' => array('name'     => 'my_picture.gif', 
+        $_FILES = [
+            'picture' => ['name'     => 'my_picture.gif', 
                               'type'     => 'image/gif', 
                               'size'     => '1234567', 
-                              'tmp_name' => '/tmp/test1'), 
-            'document' => array(
-                'name'     => array('icon'  => 'dummy.gif', 
-                                    'photo' => 'dummy.jpg'),
-                'type'     => array('icon'  => 'image/gif', 
-                                    'photo' => 'image/jpeg'),
-                'tmp_name' => array('icon'  => '/tmp/test2', 
-                                    'photo' => '/tmp/test3'),
-                'size'     => array('icon'  => 32, 
-                                    'photo' => 45))
-        );
+                              'tmp_name' => '/tmp/test1'], 
+            'document' => [
+                'name'     => ['icon'  => 'dummy.gif', 
+                                    'photo' => 'dummy.jpg'],
+                'type'     => ['icon'  => 'image/gif', 
+                                    'photo' => 'image/jpeg'],
+                'tmp_name' => ['icon'  => '/tmp/test2', 
+                                    'photo' => '/tmp/test3'],
+                'size'     => ['icon'  => 32, 
+                                    'photo' => 45]]
+        ];
     }
 
 }

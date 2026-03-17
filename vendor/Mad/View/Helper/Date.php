@@ -82,7 +82,7 @@ class Mad_View_Helper_Date extends Mad_View_Helper_Base
         return $this->timeAgoInWords($fromTime, $includeSeconds);
     }
 
-    public function dateSelect($objectName, $method, $options = array())
+    public function dateSelect($objectName, $method, $options = [])
     {
         $object = isset($options['object']) ? $options['object'] : null;
         unset($options['object']);

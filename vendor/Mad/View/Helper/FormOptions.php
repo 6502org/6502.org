@@ -19,7 +19,7 @@ class Mad_View_Helper_FormOptions extends Mad_View_Helper_Base
     private $_instanceTag = 'Mad_View_Helper_Form_InstanceTag_FormOptions';
 
     public function select($objectName, $method, $choices, 
-                           $options = array(), $htmlOptions = array())
+                           $options = [], $htmlOptions = [])
     {
         $object = isset($options['object']) ? $options['object'] : null;
         unset($options['object']);
@@ -28,7 +28,7 @@ class Mad_View_Helper_FormOptions extends Mad_View_Helper_Base
     }
 
     public function collectionSelect($objectName, $method, $collection, $valueMethod, $textMethod, 
-                                     $options = array(), $htmlOptions = array()) 
+                                     $options = [], $htmlOptions = []) 
     {
         $object = isset($options['object']) ? $options['object'] : null;
         unset($options['object']);
@@ -38,7 +38,7 @@ class Mad_View_Helper_FormOptions extends Mad_View_Helper_Base
     }
     
     public function timeZoneSelect($objecttName, $method, $priorityZones = null,
-                                   $options = array(), $htmlOptions = array())
+                                   $options = [], $htmlOptions = [])
     {
         $object = isset($options['object']) ? $options['object'] : null;
         unset($options['object']);

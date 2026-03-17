@@ -39,8 +39,8 @@ class Mad_View_Helper_Form_Builder
             throw new InvalidArgumentException('No object property specified');
         }
         $objectProperty = $args[0];
-        $options        = array_merge(isset($args[1]) ? $args[1] : array(), 
-                                      array('object' => $this->_object));
+        $options        = array_merge(isset($args[1]) ? $args[1] : [], 
+                                      ['object' => $this->_object]);
 
         return $this->_view->{$method}($this->_objectName, $objectProperty, $options);
     }
@@ -49,27 +49,27 @@ class Mad_View_Helper_Form_Builder
         $name = "{$this->_objectName}[$name]";
         $args = func_get_args();
         $args[0] = $name;
-        return call_user_func_array(array($this->_view, 'fieldsFor'), $args);
+        return call_user_func_array([$this->_view, 'fieldsFor'], $args);
     }
     
-    public function checkBox($method, $options = array(), $checkedValue = '1', $uncheckedValue = '0') 
+    public function checkBox($method, $options = [], $checkedValue = '1', $uncheckedValue = '0') 
     {
-        $options = array_merge($options, array('object' => $this->_object));
+        $options = array_merge($options, ['object' => $this->_object]);
         return $this->_view->checkBox($this->_objectName, $method, $options, $checkedValue, $uncheckedValue);
     }
 
-    public function radioButton($method, $tagValue, $options = array()) 
+    public function radioButton($method, $tagValue, $options = []) 
     {
-        $options = array_merge($options, array('object' => $this->_object));
+        $options = array_merge($options, ['object' => $this->_object]);
         return $this->_view->radioButton($this->_objectName, $method, $tagValue, $options);
     }
 
     // @todo error_message_on
     // @todo error_messages
     
-    public function submit($value = 'Save changes', $options = array())
+    public function submit($value = 'Save changes', $options = [])
     {
-        $options = array_merge(array('id' => "{$this->_objectName}_submit"), $options);
+        $options = array_merge(['id' => "{$this->_objectName}_submit"], $options);
         return $this->_view->submitTag($value, $options);
     }
     

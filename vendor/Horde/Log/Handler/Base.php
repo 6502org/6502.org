@@ -27,12 +27,12 @@ abstract class Horde_Log_Handler_Base
     /**
      * @var array of key/value pair options
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * @var array of Horde_Log_Filter_Interface
      */
-    protected $_filters = array();
+    protected $_filters = [];
 
     /**
      * Add a filter specific to this handler.

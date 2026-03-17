@@ -71,20 +71,20 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
      */
     public function nativeDatabaseTypes()
     {
-        return array(
+        return [
             'primaryKey' => 'int(11) NOT NULL auto_increment PRIMARY KEY',
-            'string'     => array('name' => 'varchar',  'limit' => 255),
-            'text'       => array('name' => 'text',     'limit' => null),
-            'integer'    => array('name' => 'int',      'limit' => 11),
-            'float'      => array('name' => 'float',    'limit' => null),
-            'decimal'    => array('name' => 'decimal',  'limit' => null),
-            'datetime'   => array('name' => 'datetime', 'limit' => null),
-            'timestamp'  => array('name' => 'datetime', 'limit' => null),
-            'time'       => array('name' => 'time',     'limit' => null),
-            'date'       => array('name' => 'date',     'limit' => null),
-            'binary'     => array('name' => 'blob',     'limit' => null),
-            'boolean'    => array('name' => 'tinyint',  'limit' => 1),
-        );
+            'string'     => ['name' => 'varchar',  'limit' => 255],
+            'text'       => ['name' => 'text',     'limit' => null],
+            'integer'    => ['name' => 'int',      'limit' => 11],
+            'float'      => ['name' => 'float',    'limit' => null],
+            'decimal'    => ['name' => 'decimal',  'limit' => null],
+            'datetime'   => ['name' => 'datetime', 'limit' => null],
+            'timestamp'  => ['name' => 'datetime', 'limit' => null],
+            'time'       => ['name' => 'time',     'limit' => null],
+            'date'       => ['name' => 'date',     'limit' => null],
+            'binary'     => ['name' => 'blob',     'limit' => null],
+            'boolean'    => ['name' => 'tinyint',  'limit' => 1],
+        ];
     }
 
     /**
@@ -171,16 +171,16 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
      */
     public function indexes($tableName, $name=null)
     {
-        $indexes = array();
+        $indexes = [];
         $currentIndex = null;
         foreach ($this->select('SHOW KEYS FROM ' . $this->quoteTableName($tableName)) as $row) {
             if ($currentIndex != $row[2]) {
                 if ($row[2] == 'PRIMARY') continue;
                 $currentIndex = $row[2];
-                $indexes[] = (object)array('table'   => $row[0],
+                $indexes[] = (object)['table'   => $row[0],
                                            'name'    => $row[2],
                                            'unique'  => $row[1] == '0',
-                                           'columns' => array());
+                                           'columns' => []];
             }
             $indexes[sizeof($indexes)-1]->columns[] = $row[4];
         }
@@ -206,7 +206,7 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
         }
 
         // create columns from rows
-        $columns = array();
+        $columns = [];
         foreach ($rows as $row) {
             $columns[] = new Horde_Db_Adapter_Mysql_Column(
                 $row[0], $row[4], $row[1], $row[2] == 'YES');
@@ -219,7 +219,7 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
      * param    string  $name
      * param    array   $options
      */
-    public function createTable($name, $options=array())
+    public function createTable($name, $options=[])
     {
         $pk = isset($options['primaryKey']) && $options['primaryKey'] === false ? false : 'id';
         $tableDefinition =
@@ -234,9 +234,9 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param   string  $name
      * @param   array   $options
      */
-    public function endTable($name, $options=array())
+    public function endTable($name, $options=[])
     {
-        $inno = array('options' => 'ENGINE=InnoDB');
+        $inno = ['options' => 'ENGINE=InnoDB'];
         return parent::endTable($name, array_merge($inno, $options));
     }
 
@@ -279,7 +279,7 @@ class Horde_Db_Adapter_Mysql_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param   string  $type
      * @param   array   $options
      */
-    public function changeColumn($tableName, $columnName, $type, $options=array())
+    public function changeColumn($tableName, $columnName, $type, $options=[])
     {
         $this->_clearTableCache($tableName);
 

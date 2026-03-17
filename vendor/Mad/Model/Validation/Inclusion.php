@@ -35,11 +35,11 @@ class Mad_Model_Validation_Inclusion extends Mad_Model_Validation_Base
     {
         $this->_attribute = $attribute;
 
-        $valid = array('in', 
+        $valid = ['in', 
                        'on'        => 'save', 
                        'allowNull' => false,
                        'strict'    => false, 
-                       'message'   => Mad_Model_Errors::$defaultErrorMessages['inclusion']);
+                       'message'   => Mad_Model_Errors::$defaultErrorMessages['inclusion']];
         $this->_options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         if (!is_array($this->_options['in']) && !$this->_options['in'] instanceof Traversable) {

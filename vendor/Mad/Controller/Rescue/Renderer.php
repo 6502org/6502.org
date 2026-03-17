@@ -117,7 +117,7 @@ class Mad_Controller_Rescue_Renderer
         }
         
         // build an array of objects for the trace frames
-        $out = array();
+        $out = [];
         foreach ($trace as $frame) {
             $out[] = $this->formatFrame($frame);
         }
@@ -152,11 +152,11 @@ class Mad_Controller_Rescue_Renderer
         $method .= isset($frame['type'])     ? $frame['type']     : '';
         $method .= isset($frame['function']) ? $frame['function'] : '';
         
-        return (object)array('file' => $file,
+        return (object)['file' => $file,
                              'fileStripped' => $this->stripPath($file),
                              'url'  => $this->linkTo($file, $line),
                              'line' => $line, 
-                             'method' => $method);
+                             'method' => $method];
     }
 
     /**

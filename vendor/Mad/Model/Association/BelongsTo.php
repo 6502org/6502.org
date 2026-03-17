@@ -30,7 +30,7 @@ class Mad_Model_Association_BelongsTo extends Mad_Model_Association_Proxy
      */
     public function __construct($assocName, $options, Mad_Model_Base $model)
     {
-        $valid = array('className', 'foreignKey', 'primaryKey', 'include');
+        $valid = ['className', 'foreignKey', 'primaryKey', 'include'];
 
         $this->_options   = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_assocName = $assocName;
@@ -42,12 +42,12 @@ class Mad_Model_Association_BelongsTo extends Mad_Model_Association_Proxy
         $toMethod = str_replace('/', '_', $toMethod);
         $toClass  = ucfirst($toMethod);
 
-        $this->_methods = array(
+        $this->_methods = [
             $toMethod         => 'getObject',   // folder
             $toMethod.'='     => 'setObject',   // folder=
             'build'.$toClass  => 'buildObject', // buildFolder
             'create'.$toClass => 'createObject' // createFolder
-        );
+        ];
     }
 
 
@@ -79,7 +79,7 @@ class Mad_Model_Association_BelongsTo extends Mad_Model_Association_Proxy
      * @param   array   $args
      * @return  object
      */
-    public function getObject($args=array())
+    public function getObject($args=[])
     {
         if (!isset($this->_loaded['getObject'])) {
             $table   = $this->getAssocTable();
@@ -88,11 +88,11 @@ class Mad_Model_Association_BelongsTo extends Mad_Model_Association_Proxy
             $pkValue = !empty($pkValue) ? $pkValue : "0";
 
             // find Options
-            $options = array('conditions' => "$table.$pkName = :value");
+            $options = ['conditions' => "$table.$pkName = :value"];
             if (!empty($this->_options['include'])) {
               $options['include'] = $this->_options['include'];
             }
-            $binds = array(':value' => $pkValue);
+            $binds = [':value' => $pkValue];
 
             // load associated object
             $object = $this->getAssocModel()->find('first', $options, $binds);

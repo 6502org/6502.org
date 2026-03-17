@@ -18,7 +18,7 @@ class Mad_Controller_StatusCodes
      * All known status codes and their messages
      * @var array
      */
-    public static $statusCodes = array(
+    public static $statusCodes = [
       100 => "Continue",
       101 => "Switching Protocols",
       102 => "Processing",
@@ -72,7 +72,7 @@ class Mad_Controller_StatusCodes
       505 => "HTTP Version Not Supported",
       507 => "Insufficient Storage",
       510 => "Not Extended"
-    );
+    ];
 
     /**
      * Given a status parameter, determine whether it needs to be converted
@@ -107,7 +107,7 @@ class Mad_Controller_StatusCodes
             // Build a string-to-integer lookup for converting a symbol (like
             // 'created' or 'notImplemented') into its corresponding HTTP status
             // code (like 200 or 501).    
-            static $symbolToStatusCode = array();
+            static $symbolToStatusCode = [];
             if (empty($symbolToStatusCode)) {
                 foreach (self::$statusCodes as $code => $message) {
                     $symbol = Mad_Support_Inflector::camelize($message, 

@@ -61,9 +61,9 @@ class Mad_Controller_Proxy_Session implements ArrayAccess
     /** @todo hack: session unset/reset is broken without this */
     public function reset()
     {
-        $this->_request->setSession(array());
-        $this->_response->setSession(array());
+        $this->_request->setSession([]);
+        $this->_response->setSession([]);
 
-        $_SESSION = array();        
+        $_SESSION = [];        
     }
 }

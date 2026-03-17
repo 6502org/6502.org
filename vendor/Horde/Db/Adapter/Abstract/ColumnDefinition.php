@@ -67,8 +67,8 @@ class Horde_Db_Adapter_Abstract_ColumnDefinition
         } catch (Exception $e) {
             $sql .= $this->_type;
         }
-        return $this->_addColumnOptions($sql, array('null'    => $this->_null,
-                                                    'default' => $this->_default));
+        return $this->_addColumnOptions($sql, ['null'    => $this->_null,
+                                                    'default' => $this->_default]);
     }
 
     /**
@@ -220,7 +220,7 @@ class Horde_Db_Adapter_Abstract_ColumnDefinition
     protected function _addColumnOptions($sql, $options)
     {
         return $this->_base->addColumnOptions($sql,
-            array_merge($options, array('column' => $this))
+            array_merge($options, ['column' => $this])
         );
     }
 

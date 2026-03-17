@@ -30,9 +30,9 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      */
     public function __construct($assocName, $options, Mad_Model_Base $model)
     {
-        $valid = array('className', 'foreignKey', 'primaryKey', 'associationPrimaryKey',
+        $valid = ['className', 'foreignKey', 'primaryKey', 'associationPrimaryKey',
                        'include', 'select', 'conditions', 'order', 'finderSql',
-                       'dependent' => 'nullify');
+                       'dependent' => 'nullify'];
 
         $this->_options   = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_assocName = $assocName;
@@ -45,7 +45,7 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
         $singular = Mad_Support_Inflector::singularize($toMethod);
         $toClass  = ucfirst($singular);
 
-        $this->_methods = array(
+        $this->_methods = [
             $toMethod          => 'getObjects',      // documents
             $toMethod.'='      => 'setObjects',      // documents=
             $singular.'Ids'    => 'getObjectIds',    // documentIds
@@ -58,7 +58,7 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
             Mad_Support_Inflector::pluralize('delete'.$toClass)  => 'deleteObjects',   // deleteDocuments
             Mad_Support_Inflector::pluralize('clear'.$toClass)   => 'clearObjects',    // clearDocuments
             Mad_Support_Inflector::pluralize('find'.$toClass)    => 'findObjects',     // findDocuments
-        );
+        ];
     }
 
     /*##########################################################################
@@ -97,13 +97,13 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
             $assocModel->updateAll(
                 "$fkName = :fkValue",
                 "$assocPkName IN (".join(', ', $assocModelIds).")",
-                array(':fkValue' => $fkValue));
+                [':fkValue' => $fkValue]);
         }
 
         // check if we need to delete any associations
         if (!empty($this->_deleteIds)) {
             $assocModel->deleteAll("$assocPkName IN (".join(', ', $this->_deleteIds).")");
-            $this->_deleteIds = array();
+            $this->_deleteIds = [];
         }
         $this->_changed = false;
     }
@@ -131,12 +131,12 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
         // deleteAll dependent records
         } elseif ($this->_options['dependent'] == 'deleteAll') {
             $this->getAssocModel()->deleteAll("$fkName = :value",
-                                        array(':value' => $baseModel->$pkName));
+                                        [':value' => $baseModel->$pkName]);
 
         // (default) nullify dependent records
         } elseif ($this->_options['dependent'] == 'nullify') {
             $this->getAssocModel()->updateAll("$fkName = NULL", "$fkName = :value",
-                                        array(':value' => $baseModel->$pkName));
+                                        [':value' => $baseModel->$pkName]);
 
         // invalid dependency
         } else {
@@ -156,7 +156,7 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      * @param   array   $args
      * @return  object
      */
-    public function getObjects($args=array())
+    public function getObjects($args=[])
     {
         if (!isset($this->_loaded['getObjects'])) {
             $fkName  = $this->getFkName();
@@ -169,15 +169,15 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
                 $select     = $this->_constructSelect();
                 $include    = $this->_constructInclude();
 
-                $options = array('conditions' => $conditions, 'order'   => $order,
-                                 'select'     => $select,     'include' => $include);
-                $binds = array(':pkValue' => $pkValue);
+                $options = ['conditions' => $conditions, 'order'   => $order,
+                                 'select'     => $select,     'include' => $include];
+                $binds = [':pkValue' => $pkValue];
 
                 // Query for the associated objects
                 $collection = $this->getAssocModel()->find('all', $options, $binds);
                 $this->_loaded['getObjects'] = $collection;
             } else {
-                $this->_loaded['getObjects'] = array();
+                $this->_loaded['getObjects'] = [];
             }
         }
         // create model collection of objects if it's an array
@@ -194,7 +194,7 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      * @param   array   $args
      * @return  int
      */
-    public function getObjectCount($args=array())
+    public function getObjectCount($args=[])
     {
         if (!isset($this->_loaded['getObjectCount'])) {
             $fkName  = $this->getFkName();
@@ -207,14 +207,14 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
                 } else {
                     $conditions = null;
                 }
-                $options = array('conditions' => "$fkName = :value $conditions");
+                $options = ['conditions' => "$fkName = :value $conditions"];
 
                 // select
                 if (isset($this->_options['select'])) {
                     $options['select'] = $this->_options['select'];
                 }
 
-                $binds = array(':value' => $pkValue);
+                $binds = [':value' => $pkValue];
 
                 // Query for the associated objects
                 $count = $this->getAssocModel()->count($options, $binds);
@@ -232,15 +232,15 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      * @param   array   $args
      * @return  array
      */
-    public function findObjects($args=array())
+    public function findObjects($args=[])
     {
         // method arguments - validate
         $type    = isset($args[0]) ? $args[0] : 'all';
-        $options = isset($args[1]) ? $args[1] : array();
-        $binds   = isset($args[2]) ? $args[2] : array();
+        $options = isset($args[1]) ? $args[1] : [];
+        $binds   = isset($args[2]) ? $args[2] : [];
 
-        $valid = array('select', 'conditions', 'include', 'order', 'limit', 
-                       'offset', 'page', 'perPage');
+        $valid = ['select', 'conditions', 'include', 'order', 'limit', 
+                       'offset', 'page', 'perPage'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // keys/values
@@ -254,13 +254,13 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
         $select     = $this->_constructSelect($options['select']);
         $include    = $this->_constructInclude($options['include']);
 
-        $options = array('conditions' => $conditions, 'order'   => $order,
+        $options = ['conditions' => $conditions, 'order'   => $order,
                          'select'     => $select,     'include' => $include,
                          'order'      => $options['order'],
                          'limit'      => $options['limit'], 
                          'offset'     => $options['offset'], 
                          'page'       => $options['page'], 
-                         'perPage'    => $options['perPage']);
+                         'perPage'    => $options['perPage']];
         $binds[':pkValue'] = $pkValue;
 
         // Query for the associated objects
@@ -283,7 +283,7 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      * @param   array   $args
      * @return  object
      */
-    public function buildObject($args=array())
+    public function buildObject($args=[])
     {
         $attributes = isset($args[0]) ? $args[0] : null;
 
@@ -310,9 +310,9 @@ class Mad_Model_Association_HasMany extends Mad_Model_Association_Collection
      * @param   array   $args
      * @return  object
      */
-    public function createObject($args=array())
+    public function createObject($args=[])
     {
-        $attributes = isset($args[0]) ? $args[0] : array();
+        $attributes = isset($args[0]) ? $args[0] : [];
         if (!is_array($attributes)) {
             $msg = 'dynamic createObject method must be given an array of attributes.';
             throw new Mad_Model_Association_Exception();

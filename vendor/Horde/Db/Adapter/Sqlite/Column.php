@@ -26,7 +26,7 @@ class Horde_Db_Adapter_Sqlite_Column extends Horde_Db_Adapter_Abstract_Column
     /**
      * @var array
      */
-    protected static $_hasEmptyStringDefault = array('binary', 'string', 'text');
+    protected static $_hasEmptyStringDefault = ['binary', 'string', 'text'];
 
 
     /*##########################################################################
@@ -61,12 +61,12 @@ class Horde_Db_Adapter_Sqlite_Column extends Horde_Db_Adapter_Abstract_Column
 
     public function stringToBinary($value)
     {
-        return str_replace(array("\0", '%'), array('%00', '%25'), $value);
+        return str_replace(["\0", '%'], ['%00', '%25'], $value);
     }
 
     public function binaryToString($value)
     {
-        return str_replace(array('%00', '%25'), array("\0", '%'), $value);
+        return str_replace(['%00', '%25'], ["\0", '%'], $value);
     }
 
 }

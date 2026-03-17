@@ -18,19 +18,19 @@ class Mad_Support_Object
      * List of attributes available for reading
      * @var array
      */
-    protected $_attrReaders = array();
+    protected $_attrReaders = [];
 
     /**
      * List of attribute available for writing
      * @var array
      */
-    protected $_attrWriters = array();
+    protected $_attrWriters = [];
 
     /**
      * anonymous attribute values 
      * @var array
      */
-    protected $_attrValues = array();
+    protected $_attrValues = [];
 
 
     /**

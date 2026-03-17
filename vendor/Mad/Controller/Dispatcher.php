@@ -51,9 +51,9 @@ class Mad_Controller_Dispatcher
      */
     public function reload()
     {
-        $options = array('directory' => MAD_ROOT . '/app/controllers',
+        $options = ['directory' => MAD_ROOT . '/app/controllers',
                          'explicit'  => false
-                        );
+                        ];
 
         $map = new Horde_Routes_Mapper($options);
         include MAD_ROOT . '/config/routes.php';
@@ -139,8 +139,8 @@ class Mad_Controller_Dispatcher
     {
         // pass a subset of the request environment
         // horde_routes_mapper for route matching
-        $environ = array('REQUEST_METHOD' => $request->getMethod());
-        foreach (array('HTTP_HOST', 'SERVER_NAME', 'HTTPS') as $k) { 
+        $environ = ['REQUEST_METHOD' => $request->getMethod()];
+        foreach (['HTTP_HOST', 'SERVER_NAME', 'HTTPS'] as $k) { 
             $environ[$k] = $request->getServer($k); 
         }
         $this->_mapper->environ = $environ;
@@ -186,7 +186,7 @@ class Mad_Controller_Dispatcher
      */
     public function formatMatchdata($matchdata)
     {
-        $ret = array();
+        $ret = [];
         foreach ($matchdata as $key=>$val) {
             if ($key == 'controller') {
                 $ret['controller'] = $val;

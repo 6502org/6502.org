@@ -85,20 +85,20 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
      */
     public function nativeDatabaseTypes()
     {
-        return array(
+        return [
             'primaryKey' => 'serial primary key',
-            'string'     => array('name' => 'character varying',  'limit' => 255),
-            'text'       => array('name' => 'text',               'limit' => null),
-            'integer'    => array('name' => 'integer',            'limit' => null),
-            'float'      => array('name' => 'float',              'limit' => null),
-            'decimal'    => array('name' => 'decimal',            'limit' => null),
-            'datetime'   => array('name' => 'timestamp',          'limit' => null),
-            'timestamp'  => array('name' => 'timestamp',          'limit' => null),
-            'time'       => array('name' => 'time',               'limit' => null),
-            'date'       => array('name' => 'date',               'limit' => null),
-            'binary'     => array('name' => 'bytea',              'limit' => null),
-            'boolean'    => array('name' => 'boolean',            'limit' => null),
-        );
+            'string'     => ['name' => 'character varying',  'limit' => 255],
+            'text'       => ['name' => 'text',               'limit' => null],
+            'integer'    => ['name' => 'integer',            'limit' => null],
+            'float'      => ['name' => 'float',              'limit' => null],
+            'decimal'    => ['name' => 'decimal',            'limit' => null],
+            'datetime'   => ['name' => 'timestamp',          'limit' => null],
+            'timestamp'  => ['name' => 'timestamp',          'limit' => null],
+            'time'       => ['name' => 'time',               'limit' => null],
+            'date'       => ['name' => 'date',               'limit' => null],
+            'binary'     => ['name' => 'bytea',              'limit' => null],
+            'boolean'    => ['name' => 'boolean',            'limit' => null],
+        ];
     }
 
     /**
@@ -132,9 +132,9 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
      *   create_database config[:database], config
      *   create_database 'foo_development', :encoding => 'unicode'
      */
-    public function createDatabase($name, $options = array())
+    public function createDatabase($name, $options = [])
     {
-        $options = array_merge(array('encoding' => 'utf8'), $options);
+        $options = array_merge(['encoding' => 'utf8'], $options);
 
         $optionString = '';
         foreach ($options as $key => $value) {
@@ -190,7 +190,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
      */
     public function tables($name = null)
     {
-        $schemas = array();
+        $schemas = [];
         foreach (explode(',', $this->getSchemaSearchPath()) as $p) {
             $schemas[] = $this->quote($p);
         }
@@ -203,7 +203,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
      */
     public function indexes($tableName, $name = null)
     {
-        $schemas = array();
+        $schemas = [];
         foreach (explode(',', $this->getSchemaSearchPath()) as $p) {
             $schemas[] = $this->quote($p);
         }
@@ -228,14 +228,14 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
         $result = $this->select($sql, $name);
 
         $currentIndex = null;
-        $indexes = array();
+        $indexes = [];
 
         foreach ($result as $row) {
             if ($currentIndex != $row[0]) {
-                $indexes[] = (object)array('table'   => $tableName,
+                $indexes[] = (object)['table'   => $tableName,
                                            'name'    => $row[0],
                                            'unique'  => $row[1] == 't',
-                                           'columns' => array());
+                                           'columns' => []];
                 $currentIndex = $row[0];
             }
             $indexes[sizeof($indexes)-1]->columns[] = $row[2];
@@ -261,7 +261,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
         }
 
         // create columns from rows
-        $columns = array();
+        $columns = [];
         foreach ($rows as $row) {
             $columns[] = new Horde_Db_Adapter_Postgresql_Column(
                 $row[0], $row[2], $row[1], !(bool)$row[3]);
@@ -406,7 +406,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
         }
 
         // [primary_key, sequence]
-        return array($result[0], $result[1]);
+        return [$result[0], $result[1]];
     }
 
     /**
@@ -423,7 +423,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
      * Adds a new column to the named table.
      * See TableDefinition#column for details of the options you can use.
      */
-    public function addColumn($tableName, $columnName, $type, $options = array())
+    public function addColumn($tableName, $columnName, $type, $options = [])
     {
         $this->_clearTableCache($tableName);
 
@@ -445,7 +445,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
     /**
      * Changes the column of a table.
      */
-    public function changeColumn($tableName, $columnName, $type, $options = array())
+    public function changeColumn($tableName, $columnName, $type, $options = [])
     {
         $this->_clearTableCache($tableName);
 
@@ -532,7 +532,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
     /**
      * Drops an index from a table.
      */
-    public function removeIndex($tableName, $options = array())
+    public function removeIndex($tableName, $options = [])
     {
         $this->_clearTableCache($tableName);
         return $this->execute('DROP INDEX '.$this->indexName($tableName, $options));
@@ -579,7 +579,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
 
         // Construct a clean list of column names from the ORDER BY clause, removing
         // any ASC/DESC modifiers
-        $orderColumns = array();
+        $orderColumns = [];
         foreach (preg_split('/\s*,\s*/', $orderBy, -1, PREG_SPLIT_NO_EMPTY) as $orderByClause) {
             $orderColumns[] = current(preg_split('/\s+/', $orderByClause, -1, PREG_SPLIT_NO_EMPTY)) . ' AS alias_' . count($orderColumns);
         }
@@ -599,7 +599,7 @@ class Horde_Db_Adapter_Postgresql_Schema extends Horde_Db_Adapter_Abstract_Schem
     {
         if (empty($options['order'])) return $sql;
 
-        $order = array();
+        $order = [];
         foreach (preg_split('/\s*,\s*/', $options['order'], -1, PREG_SPLIT_NO_EMPTY) as $s) {
             if (preg_match('/\bdesc$/i', $s)) $s = 'DESC';
             $order[] = 'id_list.alias_'.count($order).' '.$s;

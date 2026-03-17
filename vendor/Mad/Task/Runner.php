@@ -24,7 +24,7 @@ class Mad_Task_Runner
     /**
      * array<Mad_Task_Set>
      */
-    protected $_taskSets = array();
+    protected $_taskSets = [];
 
     /**
      * Add a task set to this runner.
@@ -71,7 +71,7 @@ class Mad_Task_Runner
      */ 
     public function getTasks()
     {
-        $tasks = array();
+        $tasks = [];
         foreach ($this->_taskSets as $set) {
             foreach ($set->getTasks() as $name => $desc) {            
                 if (! isset($tasks[$name])) { $tasks[$name] = $desc; }

@@ -142,7 +142,7 @@ class Mad_Model_Migration_Migrator
      */
     protected function _getMigrationClasses()
     {
-        $migrations = array();
+        $migrations = [];
         foreach ($this->_getMigrationFiles() as $migrationFile) {
             require_once $migrationFile;
             list($version, $name) = $this->_getMigrationVersionAndName($migrationFile);
@@ -200,7 +200,7 @@ class Mad_Model_Migration_Migrator
     protected function _getMigrationVersionAndName($migrationFile)
     {
         preg_match_all('/([0-9]+)_([_a-z0-9]*).php/', $migrationFile, $matches);
-        return array($matches[1][0], $matches[2][0]);
+        return [$matches[1][0], $matches[2][0]];
     }
 
     /**

@@ -22,7 +22,7 @@
  */
 class Horde_Yaml_Dumper
 {
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Dump PHP array to YAML
@@ -40,15 +40,15 @@ class Horde_Yaml_Dumper
      * @param  integer            $options   Options for dumping
      * @return string                        YAML representation of $value
      */
-    public function dump($value, $options = array())
+    public function dump($value, $options = [])
     {
         // validate & merge default options
         if (!is_array($options)) {
             throw new InvalidArgumentException('Options must be an array');
         }
 
-        $defaults = array('indent'   => 2,
-                          'wordwrap' => 40);
+        $defaults = ['indent'   => 2,
+                          'wordwrap' => 40];
         $this->_options = array_merge($defaults, $options);
 
         if (! is_int($this->_options['indent'])) {

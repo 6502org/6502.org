@@ -16,21 +16,21 @@
  */
 class Mad_Support_ArrayConversion
 {
-    public $xmlTypeNames = array(
+    public $xmlTypeNames = [
       "integer" => "integer", 
       "double"  => "float", 
       "boolean" => "boolean"
-    );
+    ];
 
-    public $xmlFormatting = array(
+    public $xmlFormatting = [
       "boolean"  => 'formatBoolean',
       "binary"   => 'formatBinary',
       "date"     => 'formatDate',
       "datetime" => 'formatDatetime',
       "yaml"     => 'formatYaml'
-    );
+    ];
     
-    public $xmlParsing = array(
+    public $xmlParsing = [
       "symbol"       => 'parseSymbol',
       "date"         => 'parseDate',
       "datetime"     => 'parseDatetime',
@@ -44,7 +44,7 @@ class Mad_Support_ArrayConversion
       "yaml"         => 'parseYaml',
       "base64Binary" => 'parseBase64Binary',
       "file"         => 'parseFile',
-    );
+    ];
     
     /**
      * Convert an array to XML. While PHP has a single array() to do 
@@ -54,7 +54,7 @@ class Mad_Support_ArrayConversion
      * @param   array   $array
      * @param   array   $options
      */
-    public function toXml($array, $options = array()) 
+    public function toXml($array, $options = []) 
     {
         // associative
         $arr = is_array($array) ? $array : (array)$array;
@@ -92,14 +92,14 @@ class Mad_Support_ArrayConversion
      * @param   array   $options
      * @return  string
      */
-    public function hashToXml($hash, $options = array())
+    public function hashToXml($hash, $options = [])
     {  
         if (!isset($options['indent'])) { $options['indent'] = 2; }
         if (!isset($options['root']))   { $options['root']   = 'hash'; }
 
         if (empty($options['builder'])) {
             $options['builder'] = new Mad_Support_Builder(
-                array('indent' => $options['indent']));
+                ['indent' => $options['indent']]);
         }
         if (empty($options['skipInstruct'])) {
             $options['builder']->instruct(); 
@@ -111,20 +111,20 @@ class Mad_Support_ArrayConversion
         foreach ($hash as $key => $value) {
             // associative array
             if (is_array($value) && !is_int(key($value))) {
-                $opts = array_merge($options, array('root' => $key, 'skipInstruct' => true));
+                $opts = array_merge($options, ['root' => $key, 'skipInstruct' => true]);
                 $this->hashToXml($value, $opts);
 
             // array
             } elseif (is_array($value)) {
-                $opts = array_merge($options, array('children'     => Mad_Support_Inflector::singularize($key), 
+                $opts = array_merge($options, ['children'     => Mad_Support_Inflector::singularize($key), 
                                                     'root'         => $key, 
-                                                    'skipInstruct' => true));
+                                                    'skipInstruct' => true]);
                 $this->arrayToXml($value, $opts);
 
             } else {
                 // object
-                if (is_object($value) && is_callable(array($value, 'toXml'))) {
-                    $opts = array_merge($options, array('root' => $key, 'skipInstruct' => true));
+                if (is_object($value) && is_callable([$value, 'toXml'])) {
+                    $opts = array_merge($options, ['root' => $key, 'skipInstruct' => true]);
                     $value->toXml($opts);
 
                 // object without toXml
@@ -141,9 +141,9 @@ class Mad_Support_ArrayConversion
                     $key = $dasherize ? Mad_Support_Inflector::dasherize($key) : $key;
                     
                     if (!empty($options['skipTypes']) || $value === null || $typeName === null) {
-                        $attributes = array();
+                        $attributes = [];
                     } else {
-                        $attributes = array('type' => $typeName);
+                        $attributes = ['type' => $typeName];
                     }
 
                     if ($value === null) { $attributes['nil'] = 'true'; }
@@ -167,7 +167,7 @@ class Mad_Support_ArrayConversion
      * @param   array   $array
      * @param   array   $options
      */
-    public function arrayToXml($array, $options = array())
+    public function arrayToXml($array, $options = [])
     {
         if (is_object($array) && $array instanceof \Traversable) {
             $array = iterator_to_array($array);
@@ -178,7 +178,7 @@ class Mad_Support_ArrayConversion
 
         foreach ($array as $element) {
             // either an array or object with toXml method
-            if (!is_array($element) && !is_callable(array($element, 'toXml'))) {
+            if (!is_array($element) && !is_callable([$element, 'toXml'])) {
                 throw new Mad_Support_Exception("Not all elements respond to toXml");
             }
             $elementType = is_object($element) ? get_class($element) : gettype($element);
@@ -201,7 +201,7 @@ class Mad_Support_ArrayConversion
 
         if (empty($options['builder'])) {
             $options['builder'] = new Mad_Support_Builder(
-                array('indent' => $options['indent']));
+                ['indent' => $options['indent']]);
         }
 
         $root = $options['root'];
@@ -217,10 +217,10 @@ class Mad_Support_ArrayConversion
             $options['builder']->instruct(); 
         }
 
-        $opts = array_merge($options, array('root' => $children));
+        $opts = array_merge($options, ['root' => $children]);
 
         $builder = $options['builder'];
-        $attrs   = $options['skipTypes'] ? array() : array('type' => 'array');
+        $attrs   = $options['skipTypes'] ? [] : ['type' => 'array'];
         
         // no elements in array
         if (count($array) == 0) {
@@ -408,12 +408,12 @@ class Mad_Support_ArrayConversion
         $contents = base64_decode($file);
         file_put_contents($path, $contents);
 
-        $file = array(
+        $file = [
             'originalFilename' => $entity['name'], 
             'contentType'      => $entity['content_type'], 
             'length'           => filesize($path),
             'path'             => $path
-        );
+        ];
         return (object)$file;
     }
 
@@ -427,27 +427,27 @@ class Mad_Support_ArrayConversion
     {
         $name    = $element->getName();
         $text    = preg_replace("/^\s+$/", "", (string)$element);
-        $content = $text !== '' ? array('__content__' => $text) : array();
+        $content = $text !== '' ? ['__content__' => $text] : [];
 
-        $attrs = array();
+        $attrs = [];
         foreach ($element->attributes() as $key => $val) {
             $attrs[$key] = (string)$val;
         }
 
-        $children = array();
+        $children = [];
         foreach ($element->children() as $child) {
             $childData = $this->_parseElement($child);
             $childName = $child->getName();
 
             if (isset($children[$childName])) {
-                $children[$childName]   = array($children[$childName]);
+                $children[$childName]   = [$children[$childName]];
                 $children[$childName][] = $childData[$childName];
             } else {
                 $children[$childName] = $childData[$childName];
             }
         }
 
-        return array($name => array_merge($attrs, $content, $children));
+        return [$name => array_merge($attrs, $content, $children)];
     }
     
     /**
@@ -462,7 +462,7 @@ class Mad_Support_ArrayConversion
         if (is_array($value) && !is_int(key($value))) {
             // collection
             if (isset($value['type']) && $value['type'] == 'array') {
-                $entries = array();
+                $entries = [];
                 foreach ($value as $k => $v) {
                     if ($k != 'type') { $entries[] =  $v; }
                 }
@@ -470,12 +470,12 @@ class Mad_Support_ArrayConversion
 
                 // empty
                 if (empty($entries) || (isset($value['__content__']) && empty($value['__content__']))) {
-                    return array();
+                    return [];
 
                 } else {
                     // array
                     if (is_array($entries) && is_int(key($entries))) {
-                        $result = array();
+                        $result = [];
                         foreach ($entries as $v) {
                             $result[] = $this->_typecastXmlValue($v);
                         }
@@ -483,7 +483,7 @@ class Mad_Support_ArrayConversion
 
                     // associative array
                     } elseif (is_array($entries)) {
-                        return array($this->_typecastXmlValue($entries));
+                        return [$this->_typecastXmlValue($entries)];
                     
                     // error
                     } else {
@@ -520,7 +520,7 @@ class Mad_Support_ArrayConversion
                 return null;
 
             } else {
-                $xmlValue = array();
+                $xmlValue = [];
                 foreach ($value as $k => $v) {
                     $xmlValue[$k] = $this->_typecastXmlValue($v);
                 }
@@ -537,7 +537,7 @@ class Mad_Support_ArrayConversion
 
         // array
         } elseif (is_array($value)) {
-            $vals = array();
+            $vals = [];
             foreach ($value as $val) {
                 $vals[] = $this->_typecastXmlValue($val);
             }
@@ -570,7 +570,7 @@ class Mad_Support_ArrayConversion
     {
         // associative array
         if (is_array($params) && !is_int(key($params))) {
-            $result = array();
+            $result = [];
             foreach ($params as $k => $v) {
                 $result[strtr($k, '-', '_')] = $this->_undasherizeKeys($v);
             }
@@ -578,7 +578,7 @@ class Mad_Support_ArrayConversion
 
         // array
         } elseif (is_array($params)) {
-            $results = array();
+            $results = [];
             foreach ($params as $v) {
                 $results[] = $this->_undasherizeKeys($v);
             }

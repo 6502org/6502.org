@@ -16,15 +16,15 @@
  */
 class Mad_View_Helper_Form_InstanceTag_Date extends Mad_View_Helper_Form_InstanceTag_Base
 {
-    public function toDateSelectTag($options = array())
+    public function toDateSelectTag($options = [])
     {
-        $options = array_merge($options, array('discardHour' => true));
+        $options = array_merge($options, ['discardHour' => true]);
         return $this->_dateOrTimeSelect($options);
     }
 
     private function _dateOrTimeSelect($options)
     {
-        $defaults = array('discardType' => true);
+        $defaults = ['discardType' => true];
         $options = array_merge($defaults, $options);
 
         $datetime = $this->value($this->object());
@@ -32,16 +32,16 @@ class Mad_View_Helper_Form_InstanceTag_Date extends Mad_View_Helper_Form_Instanc
             $datetime = time();
         }
 
-        $position = array('year' => 1, 'month' => 2, 'day' => 3,
-                          'hour' => 4, 'minute' => 5, 'second' => 6);
+        $position = ['year' => 1, 'month' => 2, 'day' => 3,
+                          'hour' => 4, 'minute' => 5, 'second' => 6];
         
         if (! isset($options['order'])) {
-            $options['order'] = array('year', 'month', 'day');
+            $options['order'] = ['year', 'month', 'day'];
         }
         $order = $options['order'];
         
         // Discard explicit and implicit by not being included in the 'order'
-        $discard = array();
+        $discard = [];
         if (isset($options['discardYear']) || !in_array('year', $order)) {
             $discard['year'] = true;
         }
@@ -62,14 +62,14 @@ class Mad_View_Helper_Form_InstanceTag_Date extends Mad_View_Helper_Form_Instanc
         }
 
         // Maintain valid dates by including hidden fields for discarded elements
-        foreach(array('day', 'month', 'year') as $o) {
+        foreach(['day', 'month', 'year'] as $o) {
             if (! in_array($o, $order)) {
                 array_unshift($order, $o);
             }
         }
 
         // Ensure proper ordering of 'hour', 'minute', and 'second'
-        foreach(array('day', 'minute', 'second') as $o) {
+        foreach(['day', 'minute', 'second'] as $o) {
             // @todo
             //           [:hour, :minute, :second].each { |o| order.delete(o); order.push(o) }
         }
@@ -84,7 +84,7 @@ class Mad_View_Helper_Form_InstanceTag_Date extends Mad_View_Helper_Form_Instanc
             }
 
             $selectMethod = "select" . ucfirst($param);
-            $options = array_merge($options, array('useHidden' => $discard[$param]));
+            $options = array_merge($options, ['useHidden' => $discard[$param]]);
             $optionsWithPrefix = $this->_optionsWithPrefix($position[$param], $options);
             
             $dateOrTimeSelect = $this->$selectMethod($dateTime, $optionsWithPrefix)
@@ -118,7 +118,7 @@ class Mad_View_Helper_Form_InstanceTag_Date extends Mad_View_Helper_Form_Instanc
         }
         
         $prefix = "{$prefix}[{$this->objectProperty}]({$position}i)";
-        $options = array_merge($options, array('prefix' => $prefix));
+        $options = array_merge($options, ['prefix' => $prefix]);
         
         return $options;
     }

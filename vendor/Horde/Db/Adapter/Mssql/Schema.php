@@ -84,9 +84,9 @@ class Horde_Db_Adapter_Mssql_Schema extends Horde_Db_Adapter_Abstract_Schema
                 $identity = '';
             }
 
-            $model->addField($col['column_name'], array('type' => $type,
+            $model->addField($col['column_name'], ['type' => $type,
                                                         'null' => !(bool)$col['is_nullable'] == 'NO',
-                                                        'default' => $col['column_def']));
+                                                        'default' => $col['column_def']]);
             if (strtolower($identity) == 'identity') {
                 $model->key = $col['column_name'];
             }

@@ -77,13 +77,13 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * List of attributes excluded from mass assignment
      * @var array
      */
-    protected $_attrProtected = array();
+    protected $_attrProtected = [];
 
     /**
      * List of attribute name=>value pairs
      * @var array
      */
-    protected $_attributes = array();
+    protected $_attributes = [];
 
     /**
      * Name of this class
@@ -112,17 +112,17 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     /**
      * @var array
      */
-    protected $_columns = array();
+    protected $_columns = [];
     
     /**
      * @var array
      */
-    protected $_columnsHash = array();
+    protected $_columnsHash = [];
     
     /**
      * @var array
      */
-    protected $_columnNames = array();
+    protected $_columnNames = [];
     
     /**
      * An object cannot allow attribute access once it has been destroyed
@@ -181,7 +181,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * The list of validations that thie model enforces before an update/insert
      * @var array
      */
-    protected $_validations = array();
+    protected $_validations = [];
     
     /**
      * Should we throw exceptions when validations fail
@@ -291,7 +291,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         $this->_initAssociations();
         if (isset($this->_associationMethods[$name])) {
             return $this->_associationMethods[$name]
-                        ->callMethod($name, array());
+                        ->callMethod($name, []);
 
         // unknown attribute
         } else {
@@ -332,7 +332,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         $this->_initAssociations();
         if (isset($this->_associationMethods[$name.'='])) {
             return $this->_associationMethods[$name.'=']
-                        ->callMethod($name.'=', array($value));
+                        ->callMethod($name.'=', [$value]);
 
         // unknown attribute
         } else {
@@ -404,8 +404,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public function __sleep()
     {
-        return array('_attributes', '_attrReaders', 
-                     '_attrWriters', '_attrValues');
+        return ['_attributes', '_attrReaders', 
+                     '_attrWriters', '_attrValues'];
     }
 
     /**
@@ -824,7 +824,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * Mass assign attributes for this model
      * @param   array   $attributes
      */
-    public function setAttributes($attributes = array())
+    public function setAttributes($attributes = [])
     {
         // Set attributes by array
         if (is_array($attributes)) {
@@ -944,7 +944,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         foreach ($this->_attributes as $name => $value) {
             $cols[] = $tblAlias.($name);
         }
-        return isset($cols) ? $cols : array();
+        return isset($cols) ? $cols : [];
     }
 
     /**
@@ -978,7 +978,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     public function getInsertValuesStr() 
     {
-        $vals = array();
+        $vals = [];
         foreach ($this->_attributes as $name => $value) {
             $vals[] = $this->_quoteValue($value);
         }
@@ -1099,7 +1099,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         return static::class;
     }
 
-    public static function find($type, $options=array(), $bindVars=null)
+    public static function find($type, $options=[], $bindVars=null)
     {
         $m = new static;
         return $m->_find($type, $options, $bindVars);
@@ -1115,7 +1115,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   array $options
      * @param   array $bindVars
      */
-    public static function first($options=array(), $bindVars=null)
+    public static function first($options=[], $bindVars=null)
     {
         $m = new static;
         return $m->_find('first', $options, $bindVars);
@@ -1127,7 +1127,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *  $binderCnt = Binder::count(array('name' => 'Stubbed Images'));
      * </code>
      */
-    public static function count($options=array(), $bindVars=null) 
+    public static function count($options=[], $bindVars=null) 
     {
         $m = new static;
         return $m->_count($options, $bindVars);
@@ -1198,7 +1198,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   array   $bindVars
      * @return  Mad_Model_Collection
      */
-    public static function paginate($options=array(), $bindVars=null)
+    public static function paginate($options=[], $bindVars=null)
     {
         $m = new static;
         return $m->_paginate($options, $bindVars);
@@ -1909,11 +1909,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   mixed   $attributes
      * @param   array   $options
      */
-    protected function validatesFormatOf($attributes, $options=array())
+    protected function validatesFormatOf($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('format', $attributes, $options);
     }
@@ -1956,11 +1956,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   int     $minLength
      * @param   int     $maxLength
      */
-    protected function validatesLengthOf($attributes, $options=array())
+    protected function validatesLengthOf($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('length', $attributes, $options);
     }
@@ -1985,11 +1985,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *
      * @param   mixed   $attributes
      */
-    protected function validatesNumericalityOf($attributes, $options=array())
+    protected function validatesNumericalityOf($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('numericality', $attributes, $options);
     }
@@ -2010,11 +2010,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *
      * @param   mixed   $attributes
      */
-    protected function validatesPresenceOf($attributes, $options=array())
+    protected function validatesPresenceOf($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('presence', $attributes, $options);
     }
@@ -2037,11 +2037,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *
      * @param   mixed   $attributes
      */
-    protected function validatesUniquenessOf($attributes, $options=array())
+    protected function validatesUniquenessOf($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('uniqueness', $attributes, $options);
     }
@@ -2065,11 +2065,11 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *
      * @param   mixed   $attributes
      */
-    protected function validatesInclusionOf($attributes, $options = array())
+    protected function validatesInclusionOf($attributes, $options = [])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $this->_addValidation('inclusion', $attributes, $options);
     }
@@ -2089,16 +2089,16 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *  ?>
      * </code>
      */
-    protected function validatesEmailAddress($attributes, $options=array())
+    protected function validatesEmailAddress($attributes, $options=[])
     {
         $attributes = func_get_args();
         $last = end($attributes);
-        $options = is_array($last) ? array_pop($attributes) : array();
+        $options = is_array($last) ? array_pop($attributes) : [];
 
         $with = "/^[0-9a-z_\.-]+@(([0-9]{1,3}\.){3}[0-9]{1,3}|".
                 "([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,3})$/i";
         $msg  = "must be a valid address";
-        $options = array_merge(array('with' => $with, 'message' => $msg), $options);
+        $options = array_merge(['with' => $with, 'message' => $msg], $options);
         $this->_addValidation('format', $attributes, $options);
     }
 
@@ -2231,7 +2231,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      *      }
      *   }
      */
-    public function toXml($options = array())
+    public function toXml($options = [])
     {
         $serializer = new Mad_Model_Serializer_Xml($this, $options);
         return $serializer->serialize();
@@ -2312,7 +2312,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @param   array   $options
      * @return  string
      */
-    public function toJson($options = array())
+    public function toJson($options = [])
     {
         $serializer = new Mad_Model_Serializer_Json($this, $options);
         $serialized = $serializer->serialize();
@@ -2382,7 +2382,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _attributesFromColumnDefinition()
     {
-        $attributes = array();
+        $attributes = [];
         foreach ($this->columns() as $col) {
             $attributes[$col->getName()] = null;
             if ($col->getName() != $this->primaryKey()) {
@@ -2425,7 +2425,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _find($type, $options, $bindVars)
     {
-        $bindVars = !empty($bindVars) ? $bindVars : array();
+        $bindVars = !empty($bindVars) ? $bindVars : [];
 
         // find the first record that match the options
         if ($type == 'first') {
@@ -2455,7 +2455,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      * @return  Mad_Model_Collection|Mad_Model_Base
      * @throws  Mad_Model_Exception_RecordNotFound
      */
-    protected function _findFromIds($ids, $options=array(), $bindVars=array())
+    protected function _findFromIds($ids, $options=[], $bindVars=[])
     {
         $expectsArray = is_array($ids);
         $ids = (array)$ids;
@@ -2470,7 +2470,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
 
         } elseif (count($ids) == 1) {
             $result = $this->_findOne($ids[0], $options, $bindVars);
-            return $expectsArray ? new Mad_Model_Collection($this, array($result)) : $result;
+            return $expectsArray ? new Mad_Model_Collection($this, [$result]) : $result;
 
         } else {
             return $this->_findSome($ids, $options, $bindVars);
@@ -2583,7 +2583,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     {
         // if $options is a string, default it to be the conditions
         if (is_string($options)) {
-            $options = array('conditions' => $options);
+            $options = ['conditions' => $options];
         }
         if (!isset($options['select'])) $options['select'] = 'COUNT(1)';
 
@@ -2616,7 +2616,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _findBySql($type, $sql, $bindVars)
     {
-        $bindVars = !empty($bindVars) ? $bindVars : array();
+        $bindVars = !empty($bindVars) ? $bindVars : [];
 
         // find all records that match the options
         if ($type == 'all') {
@@ -2653,8 +2653,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     protected function _findInitialBySql($sql, $bindVars)
     {
         $sql = $this->sanitizeSql($sql, $bindVars);
-        $sql = $this->connection->addLimitOffset($sql, array('limit'  => 1, 
-                                                             'offset' => 0));
+        $sql = $this->connection->addLimitOffset($sql, ['limit'  => 1, 
+                                                             'offset' => 0]);
 
         if ($row = $this->connection->selectOne($sql, "$this->_className Load")) {
             return $this->instantiate($row);
@@ -2712,7 +2712,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
 
             $results = $this->_find('all', $options, $bindVars);
         } else {
-            $results = new Mad_Model_Collection($this, array());
+            $results = new Mad_Model_Collection($this, []);
         }
 
         // paginated collection
@@ -2763,8 +2763,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _constructFinderSqlWithAssoc($options, $joinDependency, $bindVars)
     {
-        $valid = array('select', 'from', 'conditions', 'include',
-                       'order', 'group', 'limit', 'offset');
+        $valid = ['select', 'from', 'conditions', 'include',
+                       'order', 'group', 'limit', 'offset'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // get columns from dependency
@@ -2822,7 +2822,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
         $result = $this->connection->selectAll(
             $this->_constructFinderSqlForAssocLimiting($options, $joinDependency, $bindVars), 
             "$this->_className Load IDs For Limited Eager Loading");
-        $ids = array();
+        $ids = [];
         foreach ($result as $row) {
             $ids[] = $this->connection->quote($row[$this->primaryKey()]);
         }
@@ -2923,7 +2923,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
     protected function _constructAssociationJoinSql($joinDependency) 
     {
         // get joins from dependency
-        $joins = array();
+        $joins = [];
         foreach ($joinDependency->joinAssociations() as $joinAssoc) {
             $joins[] = $joinAssoc->associationJoin();
         }
@@ -2938,8 +2938,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _constructFinderSql($options)
     {
-        $valid = array('select', 'from', 'conditions', 'include',
-                       'order', 'group', 'limit', 'offset');
+        $valid = ['select', 'from', 'conditions', 'include',
+                       'order', 'group', 'limit', 'offset'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         $sql = "SELECT ".($options['select'] ? $options['select'] : $this->getColumnStr());
@@ -2961,7 +2961,7 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     private function _addConditions($sql, $conditions)
     {
-        $segments = array();
+        $segments = [];
         if (!empty($conditions)) $segments[] = $conditions;
 
         if (!empty($segments)) $sql .= ' WHERE ('.join(') AND (', $segments).')';
@@ -3442,8 +3442,8 @@ abstract class Mad_Model_Base extends Mad_Support_Object
      */
     protected function _addAssociation($type, $associationId, $options)
     {
-        $options = !empty($options) ? $options : array();
-        $this->_associationList[$associationId] = array($type, $options);
+        $options = !empty($options) ? $options : [];
+        $this->_associationList[$associationId] = [$type, $options];
     }
 
     /**

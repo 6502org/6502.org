@@ -19,7 +19,7 @@ class Mad_View_Helper_Text extends Mad_View_Helper_Base
     /**
      * @var array
      */
-    protected $_cycles = array();
+    protected $_cycles = [];
 
     /**
      * Escapes a value for output in a view template. Technically
@@ -214,8 +214,8 @@ class Mad_View_Helper_Text extends Mad_View_Helper_Base
     public function makeBreakable($str)
     {
         return str_replace(
-            array('/',      '_'),
-            array('/<wbr>', '_<wbr>'),
+            ['/',      '_'],
+            ['/<wbr>', '_<wbr>'],
             $str
         );
     }

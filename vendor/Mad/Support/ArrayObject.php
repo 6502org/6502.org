@@ -111,7 +111,7 @@ class Mad_Support_ArrayObject extends ArrayObject
      */
     public function clear()
     {
-        $this->exchangeArray(array());
+        $this->exchangeArray([]);
     }
     
     /**
@@ -133,7 +133,7 @@ class Mad_Support_ArrayObject extends ArrayObject
      */
     public function getKeys()
     {
-        $keys = array();
+        $keys = [];
         foreach ($this->getIterator() as $k => $v) { $keys[] = $k; }
         return $keys;
     }
@@ -145,7 +145,7 @@ class Mad_Support_ArrayObject extends ArrayObject
      */
     public function getValues()
     {
-        $values = array();
+        $values = [];
         foreach ($this->getIterator() as $k => $v) { $values[] = $v; }
         return $values;
     }
@@ -153,7 +153,7 @@ class Mad_Support_ArrayObject extends ArrayObject
     /**
      * Convert the array to XML
      */
-    public function toXml($options = array())
+    public function toXml($options = [])
     {
         $conversion = new Mad_Support_ArrayConversion;
         return $conversion->toXml($this, $options);

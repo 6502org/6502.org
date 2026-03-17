@@ -18,7 +18,7 @@ class Mad_Model_PaginatedCollection implements ArrayAccess, Iterator, Countable
      * The collection of objects
      * @var array
      */
-    protected $_collection  = array();
+    protected $_collection  = [];
 
     /**
      * Paging variables
@@ -74,7 +74,7 @@ class Mad_Model_PaginatedCollection implements ArrayAccess, Iterator, Countable
     /** 
      * Delegate toXml() to Mad_Model_Collection
      */
-    public function toXml($options = array()) 
+    public function toXml($options = []) 
     {
         return $this->_collection->toXml($options);
     }

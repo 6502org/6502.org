@@ -16,7 +16,7 @@
  */
 class Mad_View_Helper_Form_InstanceTag_Form extends Mad_View_Helper_Form_InstanceTag_Base
 {
-    public function toInputFieldTag($fieldType, $options = array())
+    public function toInputFieldTag($fieldType, $options = [])
     {
         if (! isset($options['size'])) {
             $options['size'] = isset($options['maxlength']) ? $options['maxlength']
@@ -38,7 +38,7 @@ class Mad_View_Helper_Form_InstanceTag_Form extends Mad_View_Helper_Form_Instanc
         return $this->tag('input', $options);
     }
 
-    public function toRadioButtonTag($tagValue, $options = array())
+    public function toRadioButtonTag($tagValue, $options = [])
     {
         $options = array_merge($this->_defaultRadioOptions, $options);
         $options['type']  = 'radio';
@@ -71,7 +71,7 @@ class Mad_View_Helper_Form_InstanceTag_Form extends Mad_View_Helper_Form_Instanc
         return $this->tag('input', $options);
     }
 
-    public function toTextAreaTag($options = array())
+    public function toTextAreaTag($options = [])
     {
         $options = array_merge($this->_defaultTextAreaOptions, $options);
         $options = $this->addDefaultNameAndId($options);
@@ -93,7 +93,7 @@ class Mad_View_Helper_Form_InstanceTag_Form extends Mad_View_Helper_Form_Instanc
         return $this->contentTag('textarea', htmlentities($value, ENT_QUOTES, 'utf-8'), $options);
     }
 
-    public function toCheckBoxTag($options = array(), $checkedValue = '1', $uncheckedValue = '0')
+    public function toCheckBoxTag($options = [], $checkedValue = '1', $uncheckedValue = '0')
     {
         $options['type'] = 'checkbox';
         $options['value'] = $checkedValue;
@@ -110,20 +110,20 @@ class Mad_View_Helper_Form_InstanceTag_Form extends Mad_View_Helper_Form_Instanc
         $options = $this->addDefaultNameAndId($options);
 
         // hidden must output first in PHP to not overwrite checkbox value
-        $tags = $this->tag('input', array('name'  => $options['name'],
+        $tags = $this->tag('input', ['name'  => $options['name'],
                                           'type'  => 'hidden',
-                                          'value' => $uncheckedValue)).
+                                          'value' => $uncheckedValue]).
                 $this->tag('input', $options);
         return $tags;
     }
 
-    public function toLabelTag($options = array())
+    public function toLabelTag($options = [])
     {
         if (!isset($options['for'])) {
             $options['for'] = $this->tagId();
         }
         if (!isset($options['value'])) {
-            $options['value'] = ucwords(str_replace(array('_', '.', ':'), ' ',
+            $options['value'] = ucwords(str_replace(['_', '.', ':'], ' ',
                     $this->objectProperty));
         }
 

@@ -24,12 +24,12 @@ class Horde_Log_Handler_Syslog extends Horde_Log_Handler_Base
      * Options to be set by setOption().  Sets openlog and syslog options.
      * @var array
      */
-    protected $_options = array(
+    protected $_options = [
         'ident'            => false,
         'facility'         => LOG_USER,
         'openlogOptions'   => false,
         'defaultPriority'  => LOG_ERR,
-    );
+    ];
 
     /**
      * Last ident set by a syslog-handler instance
@@ -47,7 +47,7 @@ class Horde_Log_Handler_Syslog extends Horde_Log_Handler_Base
      * Map of log levels to syslog priorities
      * @var array
      */
-    protected $_priorities = array(
+    protected $_priorities = [
         Horde_Log::EMERG   => LOG_EMERG,
         Horde_Log::ALERT   => LOG_ALERT,
         Horde_Log::CRIT    => LOG_CRIT,
@@ -56,7 +56,7 @@ class Horde_Log_Handler_Syslog extends Horde_Log_Handler_Base
         Horde_Log::NOTICE  => LOG_NOTICE,
         Horde_Log::INFO    => LOG_INFO,
         Horde_Log::DEBUG   => LOG_DEBUG,
-    );
+    ];
 
     /**
      * Write a message to the log.

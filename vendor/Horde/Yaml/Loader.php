@@ -26,29 +26,29 @@ class Horde_Yaml_Loader
      * List of nodes with references
      * @var array
      */
-    protected $_haveRefs = array();
+    protected $_haveRefs = [];
 
     /**
      * All nodes
      * @var array
      */
-    protected $_allNodes = array();
+    protected $_allNodes = [];
 
     /**
      * Array of node parents
      * @var array
      */
-    protected $_allParent = array();
+    protected $_allParent = [];
 
     /**
      * Last indent level
      * @var integer
      */
-    protected $_ref = array();
+    protected $_ref = [];
 
     protected $_lastIndent = 0;
 
-    protected $_indentSort = array();
+    protected $_indentSort = [];
 
     /**
      * Last node id
@@ -272,7 +272,7 @@ class Horde_Yaml_Loader
      */
     protected function _parseLine($line)
     {
-        $array = array();
+        $array = [];
 
         $line = trim($line);
         if (preg_match('/^-(.*):$/', $line)) {
@@ -285,7 +285,7 @@ class Horde_Yaml_Loader
                 // Set the type of the value. Int, string, etc
                 $array[] = $this->_toType(trim(substr($line, 1)));
             } else {
-                $array[] = array();
+                $array[] = [];
             }
         } elseif (preg_match('/^(.+):/', $line, $key)) {
             // It's a key/value pair most likely
@@ -330,11 +330,11 @@ class Horde_Yaml_Loader
         $lower_value = strtolower($value);
 
         if (preg_match('/^("(.*)"|\'(.*)\')/', $value, $matches)) {
-            $value = (string)str_replace(array('\'\'', '\\\''), "'", end($matches));
+            $value = (string)str_replace(['\'\'', '\\\''], "'", end($matches));
             $value = str_replace('\\"', '"', $value);
         } elseif (preg_match('/^\\[(\s*)\\]$/', $value)) {
             // empty inline mapping
-            $value = array();
+            $value = [];
         } elseif (preg_match('/^\\[(.+)\\]$/', $value, $matches)) {
             // Inline Sequence
 
@@ -342,13 +342,13 @@ class Horde_Yaml_Loader
             $explode = $this->_inlineEscape($matches[1]);
 
             // Propogate value array
-            $value  = array();
+            $value  = [];
             foreach ($explode as $v) {
                 $value[] = $this->_toType($v);
             }
         } elseif (preg_match('/^\\{(\s*)\\}$/', $value)) {
             // empty inline mapping
-            $value = array();
+            $value = [];
         } elseif (strpos($value, ': ') !== false && !preg_match('/^{(.+)/', $value)) {
             // inline mapping
             $array = explode(': ', $value);
@@ -356,7 +356,7 @@ class Horde_Yaml_Loader
             array_shift($array);
             $value = trim(implode(': ', $array));
             $value = $this->_toType($value);
-            $value = array($key => $value);
+            $value = [$key => $value];
         } elseif (preg_match("/{(.+)}$/", $value, $matches)) {
             // Inline Mapping
 
@@ -364,7 +364,7 @@ class Horde_Yaml_Loader
             $explode = $this->_inlineEscape($matches[1]);
 
             // Propogate value array
-            $array = array();
+            $array = [];
             foreach ($explode as $v) {
                 $array = $array + $this->_toType($v);
             }
@@ -380,10 +380,10 @@ class Horde_Yaml_Loader
         } elseif (ctype_digit($value)) {
             $value = (int)$value;
         } elseif (in_array($lower_value,
-                           array('true', 'on', '+', 'yes', 'y'))) {
+                           ['true', 'on', '+', 'yes', 'y'])) {
             $value = true;
         } elseif (in_array($lower_value,
-                           array('false', 'off', '-', 'no', 'n'))) {
+                           ['false', 'off', '-', 'no', 'n'])) {
             $value = false;
         } elseif (is_numeric($value)) {
             $value = (float)$value;
@@ -476,7 +476,7 @@ class Horde_Yaml_Loader
      */
     protected function _inlineEscape($inline)
     {
-        $saved_strings = array();
+        $saved_strings = [];
 
         // Check for strings
         $regex = '/(?:(")|(?:\'))((?(1)[^"]+|[^\']+))(?(1)"|\')/';
@@ -543,7 +543,7 @@ class Horde_Yaml_Loader
      */
     protected function _buildArray()
     {
-        $trunk = array();
+        $trunk = [];
         if (!isset($this->_indentSort[0])) {
             return $trunk;
         }
@@ -635,7 +635,7 @@ class Horde_Yaml_Loader
      */
     protected function _gatherChildren($nid)
     {
-        $return = array();
+        $return = [];
         $node =& $this->_allNodes[$nid];
         if (is_array ($this->_allParent[$node->id])) {
             foreach ($this->_allParent[$node->id] as $nodeZ) {
@@ -684,7 +684,7 @@ class Horde_Yaml_Loader
             } else {
                 // Same as above, find the children of this node
                 $children = $this->_gatherChildren($node->id);
-                $node->data = array();
+                $node->data = [];
                 $node->data[] = $children;
             }
         } else {

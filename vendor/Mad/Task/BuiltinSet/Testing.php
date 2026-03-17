@@ -71,7 +71,7 @@ class Mad_Task_BuiltinSet_Testing extends Mad_Task_Set
      */
     private function _ensureAnnotated($group)
     {
-        $missing = array();
+        $missing = [];
         foreach (glob("*Test.php") as $file) {
             $contents = file_get_contents($file);
             if (strpos($contents, "Group('$group')") === false &&

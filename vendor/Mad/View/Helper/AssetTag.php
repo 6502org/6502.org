@@ -115,7 +115,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      */
     public function getJavascriptDefaultSources() 
     {
-        return array('prototype', 'effects', 'dragdrop', 'controls');
+        return ['prototype', 'effects', 'dragdrop', 'controls'];
     }
 
     /**
@@ -197,15 +197,15 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
     public function stylesheetLinkTag($sources) 
     {
         $sources = func_get_args();
-        $options = (is_array(end($sources))) ? array_pop($sources) : array();
+        $options = (is_array(end($sources))) ? array_pop($sources) : [];
         
         $sources = $this->_expandStylesheetSources($sources);
-        $tags = array();
+        $tags = [];
         foreach ($sources as $source) {
-            $defaults = array('rel'   => 'stylesheet',
+            $defaults = ['rel'   => 'stylesheet',
                               'type'  => 'text/css',
                               'media' => 'screen',
-                              'href'  => $this->h($this->stylesheetPath($source)));
+                              'href'  => $this->h($this->stylesheetPath($source))];
             $tags[] = $this->tag('link', array_merge($defaults, $options), false, false);
         }
         $tags = implode("\n", $tags);
@@ -218,14 +218,14 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
     public function javascriptIncludeTag($sources)
     {
         $sources = func_get_args();
-        $options = (is_array(end($sources))) ? array_pop($sources) : array();
+        $options = (is_array(end($sources))) ? array_pop($sources) : [];
    
         $sources = $this->_expandJavascriptSources($sources);
 
-        $tags = array();
+        $tags = [];
         foreach ($sources as $source) {
-            $defaults = array('type'  => 'text/javascript',
-                              'src'   => $this->javascriptPath($source));
+            $defaults = ['type'  => 'text/javascript',
+                              'src'   => $this->javascriptPath($source)];
             $tags[] = $this->contentTag('script', '', array_merge($defaults, $options));
         }                
         $tags = implode("\n", $tags);
@@ -285,7 +285,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      *  $this->imageTag("/icons/icon.gif", :class => "menu_icon") # =>
      *    <img alt="Icon" class="menu_icon" src="/icons/icon.gif" />
      */
-    public function imageTag($source, $options = array())
+    public function imageTag($source, $options = [])
     {
         $options['src'] = $this->imagePath($source);
         $options['alt'] = isset($options['alt']) ? $options['alt'] : '';
@@ -297,7 +297,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
                 $name = pathinfo($options['src'], PATHINFO_FILENAME);
             } else {
                 // pathinfo() array keys are not guaranteed to be present
-                $pathstub = array('basename' => '', 'extension' => '');
+                $pathstub = ['basename' => '', 'extension' => ''];
                 $pathinfo = array_merge($pathstub, pathinfo($options['src']));
 
                 // "logo.gif?1190248363" -> "logo"
@@ -435,7 +435,7 @@ class Mad_View_Helper_AssetTag extends Mad_View_Helper_Base
      */
     protected function _filesInDirWithExt($path, $ext)
     {
-        $files = array();
+        $files = [];
         $extpos = -(strlen($ext) +1);
         foreach(new DirectoryIterator($path) as $f) {
             $filename = $f->getFilename();

@@ -66,7 +66,7 @@ class Mad_Controller_Scanner
     public function analyze()
     {
         $needScan = false;
-        $controllers = array();
+        $controllers = [];
         foreach ($this->_mapper->matchList as $route) {
             if (in_array('controller', $route->hardCoded)) {
                 $controllers[ $route->defaults['controller'] ] = true;
@@ -78,9 +78,9 @@ class Mad_Controller_Scanner
         $this->_controllers = array_keys($controllers);
 
         if ($needScan || empty($this->_controllers)) {
-            $this->_callback = array($this, 'scanFilesystem');
+            $this->_callback = [$this, 'scanFilesystem'];
         } else {
-            $this->_callback = array($this, 'scanHardcodes');
+            $this->_callback = [$this, 'scanHardcodes'];
         }
     }
 
@@ -105,10 +105,10 @@ class Mad_Controller_Scanner
     public function scanFilesystem($dirname = null, $prefix = '')
     {
         if ($dirname === null) { 
-            return array(); 
+            return []; 
         }
 
-        $controllers = array();
+        $controllers = [];
         foreach (new DirectoryIterator($dirname) as $entry) {
             if ($entry->isFile()) {
                 if (preg_match('/^[^_]{1,1}.*\.php$/', $entry) !== false) {
@@ -137,7 +137,7 @@ class Mad_Controller_Scanner
         if ($prefix === null) {
             $controllers = $this->_controllers;
         } else {
-            $controllers = array();
+            $controllers = [];
             foreach ($this->_controllers as $controller) {
                 $controllers[] = $prefix . $controller;
             }

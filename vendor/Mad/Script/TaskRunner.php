@@ -140,7 +140,7 @@ class Mad_Script_TaskRunner extends Mad_Script_Base
      */
     public function getTasks()
     {
-        $tasks = array();
+        $tasks = [];
         foreach ($this->_runner->getTasks() as $name => $desc) {
             $tasks[ str_replace('_', ':', $name) ] = $desc;
         }

@@ -21,7 +21,7 @@ abstract class Mad_Controller_Base
      * Generic data struct for storing overloaded attributes
      * @var array
      */
-    private $_data = array();
+    private $_data = [];
 
     /**
      * Name of dir where views are for controller.
@@ -124,7 +124,7 @@ abstract class Mad_Controller_Base
      * Normal methods available as action requests.
      * @var array
      */
-    private $_actionMethods = array();
+    private $_actionMethods = [];
 
     /**
      * Filters enable controllers to run shared pre and post processing code for its actions.
@@ -133,7 +133,7 @@ abstract class Mad_Controller_Base
      *  Methods that execute AFTER the action:  $_filters['after']
      * @var array
      */
-    private $_filters = array('before' => array(), 'after' => array());
+    private $_filters = ['before' => [], 'after' => []];
 
 
     /*##########################################################################
@@ -225,7 +225,7 @@ abstract class Mad_Controller_Base
             if ($this->_performed()) return $this->_response;
 
             // Initialize sub-controller logic used thru all actions
-            if (is_callable(array($this, '_initialize'))) {
+            if (is_callable([$this, '_initialize'])) {
                 $this->_initialize();
             }
 
@@ -368,7 +368,7 @@ abstract class Mad_Controller_Base
      * @param   array  $options
      * @throws  Mad_Controller_Exception
      */
-    protected function render($options=array())
+    protected function render($options=[])
     {
         // should not render/redirect more than once.
         if ($this->_performed()) {
@@ -376,7 +376,7 @@ abstract class Mad_Controller_Base
         }
         
         // validate options
-        $valid = array('text', 'nothing', 'action', 'status', 'location', 'xml');
+        $valid = ['text', 'nothing', 'action', 'status', 'location', 'xml'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // set response status
@@ -531,7 +531,7 @@ abstract class Mad_Controller_Base
      * @param  array                 $second  Options array
      * @return void
      */
-    protected function head($first, $second=array())
+    protected function head($first, $second=[])
     {
         if (is_array($first)) {
             $options = $first;
@@ -558,7 +558,7 @@ abstract class Mad_Controller_Base
         }
 
         $this->_response->setStatus($status);
-        $this->render(array('nothing' => true));
+        $this->render(['nothing' => true]);
     }
 
     /**
@@ -576,7 +576,7 @@ abstract class Mad_Controller_Base
      * @param  array         $second  options array (if not in $first)   
      * @return string                 generated url    
      */
-    protected function urlFor($first = array(), $second = array())
+    protected function urlFor($first = [], $second = [])
     {
         return $this->getUrlWriter()->urlFor($first, $second);
     }
@@ -590,7 +590,7 @@ abstract class Mad_Controller_Base
     {
         // instantiate UrlWriter that will generate URLs for this controller
         if (! $this->_urlWriter) {
-            $defaults = array('controller' => $this->getControllerName());
+            $defaults = ['controller' => $this->getControllerName()];
             $this->_urlWriter = new Mad_Controller_UrlWriter($defaults);
         } 
         return $this->_urlWriter;
@@ -640,7 +640,7 @@ abstract class Mad_Controller_Base
      * @return null
      * @throws Mad_Controller_Exception
      */
-    protected function redirectTo($first = array(), $second = array())
+    protected function redirectTo($first = [], $second = [])
     {
         // should not render/redirect more than once
         if ($this->_performed()) {
@@ -960,7 +960,7 @@ abstract class Mad_Controller_Base
     {
         $values = func_get_args();
         $last = end($values);
-        $options = is_array($last) ? array_pop($values) : array();
+        $options = is_array($last) ? array_pop($values) : [];
 
         foreach ($values as $method) {
             $this->_addFilter('before', $method, $options);
@@ -1002,7 +1002,7 @@ abstract class Mad_Controller_Base
     {
         $values = func_get_args();
         $last = end($values);
-        $options = is_array($last) ? array_pop($values) : array();
+        $options = is_array($last) ? array_pop($values) : [];
 
         foreach ($values as $method) {
             $this->_addFilter('after', $method, $options);
@@ -1043,7 +1043,7 @@ abstract class Mad_Controller_Base
     {
         $values = func_get_args();
         $last = end($values);
-        $options = is_array($last) ? array_pop($values) : array();
+        $options = is_array($last) ? array_pop($values) : [];
 
         foreach ($values as $method) {
             $this->_removeFilter('before', $method, $options);
@@ -1084,7 +1084,7 @@ abstract class Mad_Controller_Base
     {
         $values = func_get_args();
         $last = end($values);
-        $options = is_array($last) ? array_pop($values) : array();
+        $options = is_array($last) ? array_pop($values) : [];
 
         foreach ($values as $method) {
             $this->_removeFilter('after', $method, $options);
@@ -1119,7 +1119,7 @@ abstract class Mad_Controller_Base
         $renderer = new Mad_Controller_Rescue_Renderer();
         $html = $renderer->render($exception, $this->_request, $this->_response);
 
-        $this->render(array('text' => $html, 'status' => 500));
+        $this->render(['text' => $html, 'status' => 500]);
     }
 
     /*##########################################################################
@@ -1230,7 +1230,7 @@ abstract class Mad_Controller_Base
     protected function _sendFileHeaders($options)
     {
         // validate options
-        $valid = array('filename', 'type', 'disposition', 'length');
+        $valid = ['filename', 'type', 'disposition', 'length'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // default type/disposition/filename
@@ -1267,7 +1267,7 @@ abstract class Mad_Controller_Base
     private function _addFilter($type, $method, $options)
     {
         // validate options
-        $valid = array('except', 'only');
+        $valid = ['except', 'only'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         // make sure the method exists before adding as a filter
@@ -1289,7 +1289,7 @@ abstract class Mad_Controller_Base
     private function _removeFilter($type, $method, $options) 
     {
         // validate options
-        $valid = array('except', 'only');
+        $valid = ['except', 'only'];
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
 
         $thisAction = $this->params[':controller'] . '::' . $this->params[':action'];

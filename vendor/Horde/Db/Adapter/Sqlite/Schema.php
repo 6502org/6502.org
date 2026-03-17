@@ -57,20 +57,20 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      */
     public function nativeDatabaseTypes()
     {
-        return array(
+        return [
             'primaryKey' => $this->_defaultPrimaryKeyType(),
-            'string'     => array('name' => 'varchar',  'limit' => 255),
-            'text'       => array('name' => 'text',     'limit' => null),
-            'integer'    => array('name' => 'int',      'limit' => null),
-            'float'      => array('name' => 'float',    'limit' => null),
-            'decimal'    => array('name' => 'decimal',  'limit' => null),
-            'datetime'   => array('name' => 'datetime', 'limit' => null),
-            'timestamp'  => array('name' => 'datetime', 'limit' => null),
-            'time'       => array('name' => 'time',     'limit' => null),
-            'date'       => array('name' => 'date',     'limit' => null),
-            'binary'     => array('name' => 'blob',     'limit' => null),
-            'boolean'    => array('name' => 'boolean',  'limit' => null),
-        );
+            'string'     => ['name' => 'varchar',  'limit' => 255],
+            'text'       => ['name' => 'text',     'limit' => null],
+            'integer'    => ['name' => 'int',      'limit' => null],
+            'float'      => ['name' => 'float',    'limit' => null],
+            'decimal'    => ['name' => 'decimal',  'limit' => null],
+            'datetime'   => ['name' => 'datetime', 'limit' => null],
+            'timestamp'  => ['name' => 'datetime', 'limit' => null],
+            'time'       => ['name' => 'time',     'limit' => null],
+            'date'       => ['name' => 'date',     'limit' => null],
+            'binary'     => ['name' => 'blob',     'limit' => null],
+            'boolean'    => ['name' => 'boolean',  'limit' => null],
+        ];
     }
 
     /**
@@ -147,12 +147,12 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      */
     public function indexes($tableName, $name=null)
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($this->select('PRAGMA index_list(' . $this->quoteTableName($tableName) . ')') as $row) {
-            $index = (object)array('table'   => $tableName,
+            $index = (object)['table'   => $tableName,
                                    'name'    => $row[1],
                                    'unique'  => (bool)$row[2],
-                                   'columns' => array());
+                                   'columns' => []];
             foreach ($this->select('PRAGMA index_info(' . $this->quoteColumnName($index->name) . ')') as $field) {
                 $index->columns[] = $field[2];
             }
@@ -181,7 +181,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
         }
 
         // create columns from rows
-        $columns = array();
+        $columns = [];
         foreach ($rows as $row) {
             $columns[] = new Horde_Db_Adapter_Sqlite_Column(
                 $row[1], $row[4], $row[2], !(bool)$row[3]);
@@ -194,7 +194,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      * param    string  $name
      * param    array   $options
      */
-    public function createTable($name, $options=array())
+    public function createTable($name, $options=[])
     {
         $pk = isset($options['primaryKey']) && $options['primaryKey'] === false ? false : 'id';
         $tableDefinition =
@@ -225,7 +225,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param   string  $type
      * @param   array   $options
      */
-    public function addColumn($tableName, $columnName, $type, $options=array())
+    public function addColumn($tableName, $columnName, $type, $options=[])
     {
         if ($this->transactionStarted()) {
             throw new Horde_Db_Exception('Cannot add columns to a SQLite database while inside a transaction');
@@ -255,7 +255,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
         if (!$exists) { return; }
 
         $this->_clearTableCache($tableName);
-        $this->_alterTable($tableName, array(), function($definition) use ($columnName) {
+        $this->_alterTable($tableName, [], function($definition) use ($columnName) {
             unset($definition[$columnName]);
         });
     }
@@ -266,10 +266,10 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param   string  $type
      * @param   array   $options
      */
-    public function changeColumn($tableName, $columnName, $type, $options=array())
+    public function changeColumn($tableName, $columnName, $type, $options=[])
     {
         $this->_clearTableCache($tableName);
-        $this->_alterTable($tableName, array(), function($definition) use ($columnName, $type, $options) {
+        $this->_alterTable($tableName, [], function($definition) use ($columnName, $type, $options) {
             $col = $definition[$columnName];
             $col->setType($type);
             if (isset($options['limit']))              { $col->setLimit($options['limit']); }
@@ -286,7 +286,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
     public function changeColumnDefault($tableName, $columnName, $default)
     {
         $this->_clearTableCache($tableName);
-        $this->_alterTable($tableName, array(), function($definition) use ($columnName, $default) {
+        $this->_alterTable($tableName, [], function($definition) use ($columnName, $default) {
             $definition[$columnName]->setDefault($default);
         });
     }
@@ -299,7 +299,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
     public function renameColumn($tableName, $columnName, $newColumnName)
     {
         $this->_clearTableCache($tableName);
-        $this->_alterTable($tableName, array('rename' => array($columnName => $newColumnName)));
+        $this->_alterTable($tableName, ['rename' => [$columnName => $newColumnName]]);
     }
 
     /**
@@ -319,7 +319,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param   string  $tableName
      * @param   array   $options
      */
-    public function removeIndex($tableName, $options=array())
+    public function removeIndex($tableName, $options=[])
     {
         $this->_clearTableCache($tableName);
 
@@ -350,13 +350,13 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
      * @param array    $options    Options: 'rename' => array(old => new)
      * @param callable $callback   Receives the table definition for modification
      */
-    protected function _alterTable($tableName, $options = array(), $callback = null)
+    protected function _alterTable($tableName, $options = [], $callback = null)
     {
         $alteredTableName = "altered_{$tableName}";
 
         // First copy applies the rename (if any) and creates a temp table
         $this->_moveTable($tableName, $alteredTableName,
-            array_merge($options, array('temporary' => true)));
+            array_merge($options, ['temporary' => true]));
 
         // Second copy moves back from the temp table. Don't pass rename
         // options since the columns were already renamed in the first copy.
@@ -365,13 +365,13 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
         $this->_moveTable($alteredTableName, $tableName, $optionsWithoutRename, $callback);
     }
 
-    protected function _moveTable($from, $to, $options = array(), $callback = null)
+    protected function _moveTable($from, $to, $options = [], $callback = null)
     {
         $this->_copyTable($from, $to, $options, $callback);
         $this->dropTable($from);
     }
 
-    protected function _copyTable($from, $to, $options = array(), $callback = null)
+    protected function _copyTable($from, $to, $options = [], $callback = null)
     {
         $fromColumns = $this->columns($from);
         $hasId = false;
@@ -379,7 +379,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
             if ($col->getName() == 'id') { $hasId = true; break; }
         }
 
-        $createOptions = array_merge($options, array('id' => $hasId));
+        $createOptions = array_merge($options, ['id' => $hasId]);
         if ($hasId) {
             $createOptions['primaryKey'] = 'id';
         } else {
@@ -388,7 +388,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
 
         $definition = $this->createTable($to, $createOptions);
 
-        $rename = isset($options['rename']) ? $options['rename'] : array();
+        $rename = isset($options['rename']) ? $options['rename'] : [];
 
         foreach ($fromColumns as $column) {
             $columnName = $column->getName();
@@ -396,7 +396,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
 
             $newName = isset($rename[$columnName]) ? $rename[$columnName] : $columnName;
 
-            $colOptions = array();
+            $colOptions = [];
             if ($column->getLimit())   { $colOptions['limit'] = $column->getLimit(); }
             if ($column->getDefault() !== null) { $colOptions['default'] = $column->getDefault(); }
             if (!$column->isNull())    { $colOptions['null'] = false; }
@@ -414,9 +414,9 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
         $this->_copyTableContents($from, $to, $definition, $rename);
     }
 
-    protected function _copyTableIndexes($from, $to, $rename = array())
+    protected function _copyTableIndexes($from, $to, $rename = [])
     {
-        $toColumnNames = array();
+        $toColumnNames = [];
         foreach ($this->columns($to) as $col) {
             $toColumnNames[] = $col->getName();
         }
@@ -429,7 +429,7 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
                 $name = substr($name, 5);
             }
 
-            $columns = array();
+            $columns = [];
             foreach ($index->columns as $col) {
                 $newCol = isset($rename[$col]) ? $rename[$col] : $col;
                 if (in_array($newCol, $toColumnNames)) {
@@ -438,22 +438,22 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
             }
 
             if (!empty($columns)) {
-                $opts = array('name' => str_replace("_{$from}_", "_{$to}_", $name));
+                $opts = ['name' => str_replace("_{$from}_", "_{$to}_", $name)];
                 if ($index->unique) { $opts['unique'] = true; }
                 $this->addIndex($to, $columns, $opts);
             }
         }
     }
 
-    protected function _copyTableContents($from, $to, $definition, $rename = array())
+    protected function _copyTableContents($from, $to, $definition, $rename = [])
     {
-        $columnNames = array();
+        $columnNames = [];
         foreach ($definition->getColumns() as $col) {
             $columnNames[] = $col->getName();
         }
 
         // Build column mapping (new name => old name)
-        $columnMappings = array();
+        $columnMappings = [];
         foreach ($columnNames as $name) {
             $columnMappings[$name] = $name;
         }
@@ -462,20 +462,20 @@ class Horde_Db_Adapter_Sqlite_Schema extends Horde_Db_Adapter_Abstract_Schema
         }
 
         // Filter to columns that exist in the source table
-        $fromColumnNames = array();
+        $fromColumnNames = [];
         foreach ($this->columns($from) as $col) {
             $fromColumnNames[] = $col->getName();
         }
 
-        $validColumns = array();
+        $validColumns = [];
         foreach ($columnNames as $name) {
             if (in_array($columnMappings[$name], $fromColumnNames)) {
                 $validColumns[] = $name;
             }
         }
 
-        $fromCols = array();
-        $toCols = array();
+        $fromCols = [];
+        $toCols = [];
         foreach ($validColumns as $name) {
             $toCols[] = $this->quoteColumnName($name);
             $fromCols[] = $this->quoteColumnName($columnMappings[$name]);

@@ -16,7 +16,7 @@
  */
 class Mad_Model_Errors implements Iterator, Countable
 {
-    public static $defaultErrorMessages = array(
+    public static $defaultErrorMessages = [
         'inclusion'            => "is not included in the list",
         'exclusion'            => "is reserved",
         'invalid'              => "is invalid",
@@ -36,12 +36,12 @@ class Mad_Model_Errors implements Iterator, Countable
         'lessThanOrEqualTo'    => "must be less than or equal to %d",
         'odd'                  => "must be odd",
         'even'                 => "must be even"
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $_errors  = array();
+    protected $_errors  = [];
 
     /**
      * The position in the iterator over the objects.
@@ -119,7 +119,7 @@ class Mad_Model_Errors implements Iterator, Countable
      */
     public function on($attr) 
     {
-        return isset($this->_errors[$attr]) ? $this->_errors[$attr] : array();
+        return isset($this->_errors[$attr]) ? $this->_errors[$attr] : [];
     }
 
     /**
@@ -139,7 +139,7 @@ class Mad_Model_Errors implements Iterator, Countable
      */
     public function fullMessages() 
     {
-        $fullMessages = array();
+        $fullMessages = [];
         foreach ($this->_errors as $attr => $messages) {
             foreach ($messages as $msg) { 
                 if ($attr != 'base') {
@@ -156,7 +156,7 @@ class Mad_Model_Errors implements Iterator, Countable
      */
     public function clear()
     {
-        $this->_errors = array();
+        $this->_errors = [];
         $this->rewind();
     }
 
@@ -175,7 +175,7 @@ class Mad_Model_Errors implements Iterator, Countable
      * 
      * @return  string
      */
-    public function toXml($options = array())
+    public function toXml($options = [])
     {
         if (!isset($options['root']))   { $options['root']   = 'errors'; }
         if (!isset($options['indent'])) { $options['indent'] = 2; }
@@ -183,7 +183,7 @@ class Mad_Model_Errors implements Iterator, Countable
         if (!empty($options['builder'])) {
             $builder = $options['builder'];
         } else {
-            $builder = new Mad_Support_Builder(array('indent' => $options['indent']));
+            $builder = new Mad_Support_Builder(['indent' => $options['indent']]);
         }
         if (empty($options['skipInstruct'])) { $builder->instruct(); }
 

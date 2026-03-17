@@ -50,7 +50,7 @@ class Mad_Model_Serializer_Attribute
      */
     public function getNeedsEncoding()
     {
-        $types = array('binary', 'date', 'datetime', 'boolean', 'float', 'integer');
+        $types = ['binary', 'date', 'datetime', 'boolean', 'float', 'integer'];
         return !in_array($this->_type, $types);
     }
 
@@ -60,7 +60,7 @@ class Mad_Model_Serializer_Attribute
      */
     public function getDecorations($includeTypes = true)
     {
-        $decorations = array();
+        $decorations = [];
         if ($this->_type == 'binary') {
             $decorations['encoding'] = 'base64';
         }

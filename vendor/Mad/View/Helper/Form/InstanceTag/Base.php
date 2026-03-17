@@ -16,10 +16,10 @@
  */
 class Mad_View_Helper_Form_InstanceTag_Base extends Mad_View_Helper_Tag
 {
-    protected $_defaultFieldOptions = array('size' => 30);
-    protected $_defaultRadioOptions = array();
-    protected $_defaultTextAreaOptions = array('cols' => 40, 'rows' => 20);
-    protected $_defaultDateOptions = array('discardType' => true);
+    protected $_defaultFieldOptions = ['size' => 30];
+    protected $_defaultRadioOptions = [];
+    protected $_defaultTextAreaOptions = ['cols' => 40, 'rows' => 20];
+    protected $_defaultDateOptions = ['discardType' => true];
 
     protected $objectName;
     protected $objectProperty;

@@ -24,8 +24,8 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
     public function getPrototypeCallbacks()
     {
         if ($this->_callbacks === null) {
-            $this->_callbacks = array('uninitialized', 'loading', 'loaded', 
-                                      'interactive', 'complete', 'failure', 'success');
+            $this->_callbacks = ['uninitialized', 'loading', 'loaded', 
+                                      'interactive', 'complete', 'failure', 'success'];
             $this->_callbacks = array_merge($this->_callbacks, range(100,599));
         }
 
@@ -37,9 +37,9 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
     public function getPrototypeAjaxOptions()
     {
         if ($this->_ajaxOptions === null) {
-            $this->_ajaxOptions = array('before', 'after', 'condition', 'url', 
+            $this->_ajaxOptions = ['before', 'after', 'condition', 'url', 
                                         'asynchronous', 'method', 'insertion', 
-                                        'position', 'form', 'with', 'update', 'script');
+                                        'position', 'form', 'with', 'update', 'script'];
             $this->_ajaxOptions = array_merge($this->_ajaxOptions, 
                                               $this->getPrototypeCallbacks());
         }
@@ -53,7 +53,7 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
 
         $update = '';
         if (isset($options['update']) && is_array($options['update'])) {
-            $update = array();
+            $update = [];
 
             if (isset($options['update']['success'])) {
                 $update[] = "success:'{$options['update']['success']}'";
@@ -73,7 +73,7 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
 
         $urlOptions = isset($options['url']) ? $options['url'] : null;
         if (is_array($urlOptions)) {
-            $urlOptions = array_merge($urlOptions, array('escape' => false));
+            $urlOptions = array_merge($urlOptions, ['escape' => false]);
         }
         $function .= "'" . $this->urlFor($urlOptions) . "'";
         $function .= ", $javascriptOptions)";
@@ -143,7 +143,7 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
         }
     }
 
-    private function _buildObserver($klass, $name, $options = array())
+    private function _buildObserver($klass, $name, $options = [])
     {
         if (isset($options['with']) && strpos($options['with'], '=') === false) {
             $options['with'] = "'{$options['with']}=' + value";
@@ -172,7 +172,7 @@ class Mad_View_Helper_Prototype extends Mad_View_Helper_Javascript_Base
 
     private function _buildCallbacks($options)
     {
-        $callbacks = array();
+        $callbacks = [];
         foreach ($options as $callback => $code) {
             if (in_array($callback, $this->getPrototypeCallbacks())) {
                 $name = 'on' + ucfirst($callback);

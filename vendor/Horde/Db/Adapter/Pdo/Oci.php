@@ -83,7 +83,7 @@ class Horde_Db_Adapter_Pdo_Oci extends Horde_Db_Adapter_Pdo_Abstract
      *
      * @param array $options Connection options.
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         parent::__construct($options);
     }
@@ -98,10 +98,10 @@ class Horde_Db_Adapter_Pdo_Oci extends Horde_Db_Adapter_Pdo_Abstract
         $tblinfo = $this->select('SELECT column_name, data_type, data_length, nullable, data_default FROM all_tab_columns WHERE table_name = '
                                  . $table);
         while ($col = $tblinfo->fetch()) {
-            $model->addField($col['column_name'], array('type' => $col['data_type'],
+            $model->addField($col['column_name'], ['type' => $col['data_type'],
                                                         'null' => ($col['nullable'] != 'N'),
                                                         'default' => $col['data_default'],
-                                                        'length' => $col['data_length']));
+                                                        'length' => $col['data_length']]);
         }
 
         // Only fetch the first primary key for now.

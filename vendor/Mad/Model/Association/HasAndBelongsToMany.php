@@ -31,9 +31,9 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
      */
     public function __construct($assocName, $options, Mad_Model_Base $model)
     {
-        $valid = array('className', 'conditions', 'order', 'foreignKey', 'primaryKey',
+        $valid = ['className', 'conditions', 'order', 'foreignKey', 'primaryKey',
                        'associationForeignKey', 'associationPrimaryKey', 'joinTable',
-                       'uniq', 'include', 'finderSql', 'deleteSql', 'insertSql');
+                       'uniq', 'include', 'finderSql', 'deleteSql', 'insertSql'];
 
         $this->_options   = Mad_Support_Base::assertValidKeys($options, $valid);
         $this->_assocName = $assocName;
@@ -46,7 +46,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
         $singular = Mad_Support_Inflector::singularize($toMethod);
         $toClass  = ucfirst($singular);
 
-        $this->_methods = array(
+        $this->_methods = [
             $toMethod         => 'getObjects',      // documents
             $toMethod.'='     => 'setObjects',      // documents=
             $singular.'Ids'   => 'getObjectIds',    // documentIds
@@ -57,7 +57,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
             Mad_Support_Inflector::pluralize('delete'.$toClass)  => 'deleteObjects',   // deleteDocuments
             Mad_Support_Inflector::pluralize('clear'.$toClass)   => 'clearObjects',    // clearDocuments
             Mad_Support_Inflector::pluralize('find'.$toClass)    => 'findObjects'      // findDocuments
-        );
+        ];
     }
 
 
@@ -80,7 +80,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
         $fkValue     = $baseModel->$pkName;
 
         // save associations from associated model objects
-        $assocIdValues = array();
+        $assocIdValues = [];
         if ($this->isLoaded()) {
             $assocModels = $this->getObjects();
 
@@ -122,7 +122,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
                    " WHERE $fkName = ".$this->_conn->quote($fkValue)." ".
                    "   AND $assocFkName IN (".join(', ', $this->_deleteIds).")";
             $this->_conn->delete($sql, 'Delete');
-            $this->_deleteIds = array();
+            $this->_deleteIds = [];
         }
 
         $this->_changed = false;
@@ -158,7 +158,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
      * @param   array   $args
      * @return  object
      */
-    public function getObjects($args=array())
+    public function getObjects($args=[])
     {
         if (!isset($this->_loaded['getObjects'])) {
             $this->_loaded['getObjects'] = $this->getObjectsUsingJoin();
@@ -177,7 +177,7 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
      * @param   array   $args
      * @return  int
      */
-    public function getObjectCount($args=array())
+    public function getObjectCount($args=[])
     {
         if (!isset($this->_loaded['getObjectCount'])) {
             $this->_loaded['getObjectCount'] = $this->getObjectCountUsingJoin();
@@ -191,12 +191,12 @@ class Mad_Model_Association_HasAndBelongsToMany extends Mad_Model_Association_Co
      * @param   array   $args
      * @return  array
      */
-    public function findObjects($args=array())
+    public function findObjects($args=[])
     {
         // method arguments - validate
         $type    = isset($args[0]) ? $args[0] : 'all';
-        $options = isset($args[1]) ? $args[1] : array();
-        $binds   = isset($args[2]) ? $args[2] : array();
+        $options = isset($args[1]) ? $args[1] : [];
+        $binds   = isset($args[2]) ? $args[2] : [];
 
         return $this->findObjectsUsingJoin($type, $options, $binds);
     }

@@ -42,7 +42,7 @@ class Horde_Db_Adapter_Postgresql_Column extends Horde_Db_Adapter_Abstract_Colum
     /**
      * @var array
      */
-    protected static $_hasEmptyStringDefault = array('binary', 'string', 'text');
+    protected static $_hasEmptyStringDefault = ['binary', 'string', 'text'];
 
 
     /**

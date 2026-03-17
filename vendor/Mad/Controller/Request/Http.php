@@ -75,7 +75,7 @@ class Mad_Controller_Request_Http
      *
      * @param   array   $options  Associative array with all superglobals
      */
-    public function __construct($options=array())
+    public function __construct($options=[])
     {
         try {
             $this->_initRequestId();
@@ -91,7 +91,7 @@ class Mad_Controller_Request_Http
             $this->_request = isset($options['request']) ? $options['request'] : $_REQUEST;
             $this->_server  = isset($options['server'])  ? $options['server']  : $_SERVER;
             $this->_env     = isset($options['env'])     ? $options['env']     : $_ENV;
-            $this->_pathParams = array();
+            $this->_pathParams = [];
             $this->_formattedRequestParams = $this->_parseFormattedRequestParameters();
 
             // use FileUpload object to store files
@@ -99,7 +99,7 @@ class Mad_Controller_Request_Http
                 
             // clear superglobals forces developers to use the request object
             if (empty($options['preserveSuperglobals'])) {
-                $_GET = $_POST = $_FILES = $_COOKIE = $_REQUEST = $_SERVER = array();
+                $_GET = $_POST = $_FILES = $_COOKIE = $_REQUEST = $_SERVER = [];
             }
 
             $this->_domain   = $this->getServer('SERVER_NAME');
@@ -150,7 +150,7 @@ class Mad_Controller_Request_Http
      */
     public function getMethod()
     {
-        $methods = array('GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'OPTIONS');
+        $methods = ['GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'OPTIONS'];
         
         if ($this->_method == 'POST') {
             $params = $this->getParameters();
@@ -171,14 +171,14 @@ class Mad_Controller_Request_Http
      */
     public function getGlobals()
     {
-        return array('get'     => $this->_get,
+        return ['get'     => $this->_get,
                      'post'    => $this->_post,
                      'cookie'  => $this->_cookie,
                      'session' => $this->_session,
                      'files'   => $this->_files,
                      'request' => $this->_request,
                      'server'  => $this->_server,
-                     'env'     => $this->_env);
+                     'env'     => $this->_env];
     }
 
     /**
@@ -296,7 +296,7 @@ class Mad_Controller_Request_Http
         if (!isset($this->_accepts)) {
             $accept = $this->getServer('HTTP_ACCEPT');
             if (empty($accept)) {
-                $types = array();
+                $types = [];
                 $contentType = $this->getContentType();
                 if ($contentType) { $types[] = $contentType; }
                 $types[] = Mad_Controller_Mime_Type::lookupByExtension('all');
@@ -428,9 +428,9 @@ class Mad_Controller_Request_Http
      */
     public function getParameters()
     {
-        $allParams = array();
-        $paramArrays = array($this->_pathParams, $this->_formattedRequestParams, 
-                             $this->_get, $this->_post, $this->_files);
+        $allParams = [];
+        $paramArrays = [$this->_pathParams, $this->_formattedRequestParams, 
+                             $this->_get, $this->_post, $this->_files];
 
         foreach ($paramArrays as $params) {
             foreach ((array)$params as $key => $value) {
@@ -548,7 +548,7 @@ class Mad_Controller_Request_Http
      */
     public function setPathParams($params)
     {
-        $this->_pathParams = !empty($params) ? $params : array();
+        $this->_pathParams = !empty($params) ? $params : [];
     }
 
     /**
@@ -587,19 +587,19 @@ class Mad_Controller_Request_Http
      */
     protected function _parseFormattedRequestParameters()
     {
-        if ($this->getContentLength() == 0) { return array(); }
+        if ($this->getContentLength() == 0) { return []; }
 
         $mimeType = $this->getContentType();
-        if ($mimeType === null) { return array(); }
+        if ($mimeType === null) { return []; }
 
         // parse xml into params
         if ($mimeType->symbol == 'xml') {
             $body = $this->getBody();
-            return empty($body) ? array() : Mad_Support_ArrayObject::fromXml($body);
+            return empty($body) ? [] : Mad_Support_ArrayObject::fromXml($body);
 
         // nothing else supported now
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -630,7 +630,7 @@ class Mad_Controller_Request_Http
         unset($_SESSION['_flash']);
         
         // Important: Setting "$this->_session = $_SESSION" does NOT work.
-        $this->_session = array();
+        $this->_session = [];
         if (is_array($_SESSION)) {
             foreach($_SESSION as $key => $value) {
                 $this->_session[$key] = $value;
@@ -644,10 +644,10 @@ class Mad_Controller_Request_Http
     protected function _setFilesSuperglobals()
     {
         if (empty($_FILES)) { 
-            $this->_files = array(); 
+            $this->_files = []; 
             return; 
         }
-        $_FILES = array_map(array($this, '_fixNestedFiles'), $_FILES);
+        $_FILES = array_map([$this, '_fixNestedFiles'], $_FILES);
 
         // create FileUpload object of of the file options
         foreach ((array)$_FILES as $name => $options) {

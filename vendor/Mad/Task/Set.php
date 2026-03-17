@@ -38,7 +38,7 @@ abstract class Mad_Task_Set
      */
     public function __call($method, $args)
     {
-        $callback = array($this->method, $args);
+        $callback = [$this->method, $args];
         return call_user_func_array($callback, $args);
     }
 
@@ -50,7 +50,7 @@ abstract class Mad_Task_Set
      */
     public function getTasks()
     {
-        $tasks = array();
+        $tasks = [];
         $builtins = get_class_methods('Mad_Task_Set');
 
         $reflector = new ReflectionClass($this);
@@ -60,7 +60,7 @@ abstract class Mad_Task_Set
 
             $desc = $method->getDocComment();
             if ($desc !== false) {
-                $desc = trim(str_replace(array('/*', '*/', '*'), '', $desc));
+                $desc = trim(str_replace(['/*', '*/', '*'], '', $desc));
             }
             $tasks[$method->name] = $desc;
         }

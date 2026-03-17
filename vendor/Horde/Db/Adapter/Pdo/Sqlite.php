@@ -111,7 +111,7 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
      */
     public function execute($sql, $arg1=null, $arg2=null)
     {
-        return $this->_catchSchemaChanges('execute', array($sql, $arg1, $arg2));
+        return $this->_catchSchemaChanges('execute', [$sql, $arg1, $arg2]);
     }
 
     /**
@@ -142,7 +142,7 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
     /**
      * SELECT ... FOR UPDATE is redundant since the table is locked.
      */
-    public function addLock(&$sql, $options = array())
+    public function addLock(&$sql, $options = [])
     {
     }
 
@@ -156,11 +156,11 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
     # Protected
     ##########################################################################*/
 
-    protected function _catchSchemaChanges($method, $args = array())
+    protected function _catchSchemaChanges($method, $args = [])
     {
         $callable = function() use ($method, $args) {
             switch ($method) {
-                case 'execute':              return parent::execute($args[0], $args[1], $args[2]);
+                case 'execute':             return parent::execute(...$args);
                 case 'beginDbTransaction':   return parent::beginDbTransaction();
                 case 'commitDbTransaction':  return parent::commitDbTransaction();
                 case 'rollbackDbTransaction':return parent::rollbackDbTransaction();
@@ -198,7 +198,7 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
         unset($dsnOpts['adapter'], $dsnOpts['username'], $dsnOpts['password']);
 
         // rewrite rails config key names to pdo equivalents
-        $rails2pdo = array('database' => 'dbname');
+        $rails2pdo = ['database' => 'dbname'];
         foreach ($rails2pdo as $from => $to) {
             if (isset($dsnOpts[$from])) {
                 $dsnOpts[$to] = $dsnOpts[$from];
@@ -210,7 +210,7 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
         $dsn = 'sqlite:' . $dsnOpts['dbname'];
 
         // return DSN and dummy user/pass for connection
-        return array($dsn, '', '');
+        return [$dsn, '', ''];
     }
 
 }

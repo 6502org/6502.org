@@ -21,31 +21,31 @@ class Mad_Model_Join_Dependency
      * is always the base model.
      * @var array
      */
-    protected $_joins = array();
+    protected $_joins = [];
 
     /**
      * The array of association reflections
      * @var array
      */
-    protected $_reflections = array();
+    protected $_reflections = [];
 
     /**
      * The 'include' association array used to build the dependency
      * @var array
      */
-    protected $_associations = array();
+    protected $_associations = [];
 
     /**
      * The list of table aliases used to build SQL To make sure we don't duplicate.
      * @var array
      */
-    protected $_tableAliases = array();
+    protected $_tableAliases = [];
 
     /**
      * The hash of base records
      * @var array
      */
-    protected $_baseRecordsHash = array();
+    protected $_baseRecordsHash = [];
 
 
     /*##########################################################################
@@ -59,9 +59,9 @@ class Mad_Model_Join_Dependency
      */
     public function __construct(Mad_Model_Base $model, $associations)
     {
-        $this->_joins              = array(new Mad_Model_Join_Base($model));
+        $this->_joins              = [new Mad_Model_Join_Base($model)];
         $this->_associations       = $associations;
-        $this->_baseRecordsHash    = array();
+        $this->_baseRecordsHash    = [];
         $this->_tableAliases[$model->tableName()] = 1;
 
         $this->_build($associations);
@@ -291,7 +291,7 @@ class Mad_Model_Join_Dependency
             // make sure object isn't already included
             $getter = Mad_Support_Inflector::camelize($join->reflection()->getAssocName(), 'lower');
             $getter = str_replace('/', '_', $getter);
-            $exists = array();
+            $exists = [];
             foreach ($record->$getter as $val) { $exists[] = $val->id; }
 
             if (!in_array($association->id, $exists)) {

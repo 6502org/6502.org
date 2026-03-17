@@ -22,19 +22,19 @@ class Mad_Controller_Response_Http
      * Cookies sent with response
      * @var array
      */
-    protected $_cookie = array();
+    protected $_cookie = [];
      
     /**
      * Stored session data
      * @var array
      */
-    protected $_session = array();
+    protected $_session = [];
 
     /**
      * Session data saved for a single request
      * @var array
      */
-    protected $_flash = array();
+    protected $_flash = [];
 
 
     /**
@@ -53,7 +53,7 @@ class Mad_Controller_Response_Http
      * HTTP headers to send
      * @var array
      */
-    protected $_headers = array();
+    protected $_headers = [];
 
     /**
      * prevent cached content (ie)
@@ -152,9 +152,9 @@ class Mad_Controller_Response_Http
     public function setCookie($name, $value, $expiration=0, $path=null)
     {
         // only set cookies for this matter by default
-        $this->_cookie[$name] = array('value'      => $value,
+        $this->_cookie[$name] = ['value'      => $value,
                                       'expiration' => $expiration,
-                                      'path' => isset($path) ? $path : '/');
+                                      'path' => isset($path) ? $path : '/'];
     }
 
     /**

@@ -32,7 +32,7 @@ class Mad_Mailer_Base
     /**
      * The list of attachment names
      */
-    private $_attachments = array();
+    private $_attachments = [];
 
     /**
      * MIME boundary string for multipart messages
@@ -75,19 +75,19 @@ class Mad_Mailer_Base
      * the e-mail
      * @var array
      */
-    protected $body = array();
+    protected $body = [];
 
     /**
      * Blind-copy recipients, using the same format as $recipients. 
      * @var array|string
      */
-    protected $bcc = array();
+    protected $bcc = [];
 
     /**
      * Carbon-copy recipients, using the same format as $recipients. 
      * @var array|string
      */
-    protected $cc = array();
+    protected $cc = [];
 
     /**
      * The character set used in the e-mail’s Content-Type header. 
@@ -108,7 +108,7 @@ class Mad_Mailer_Base
      * $this->headers["Organization"] = "Maintainable Software, LLC" 
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * One or more recipient e-mail addresses. These may be simple addresses, 
@@ -122,7 +122,7 @@ class Mad_Mailer_Base
      * );
      * @var array|string
      */
-    protected $recipients = array();
+    protected $recipients = [];
 
     /**
      * A Timestamp that sets the e-mail’s Date: header. If not specified, 
@@ -220,12 +220,12 @@ class Mad_Mailer_Base
     /**
      * @param   array   $options
      */
-    public function attachment($options = array())
+    public function attachment($options = [])
     {
-        $valid = array('filename'         => 'attachment', 
+        $valid = ['filename'         => 'attachment', 
                        'body'             => '',
                        'contentType'      => 'application/octet-stream',
-                       'transferEncoding' => 'base64');        
+                       'transferEncoding' => 'base64'];        
         $options = Mad_Support_Base::assertValidKeys($options, $valid);
         
         // verify body & filename
@@ -308,7 +308,7 @@ class Mad_Mailer_Base
         $this->_reset();
 
         // method sets instance variables
-        call_user_func_array(array($this, $methodName), $args);
+        call_user_func_array([$this, $methodName], $args);
         
         // common mime boundary
         $this->_mimeBoundary = '__' . md5(time());
@@ -325,13 +325,13 @@ class Mad_Mailer_Base
      */
     protected function _reset()
     {
-        $this->body       = array();
-        $this->bcc        = array();
-        $this->cc         = array();
+        $this->body       = [];
+        $this->bcc        = [];
+        $this->cc         = [];
         $this->charset    = 'utf-8';
         $this->from       = null;
-        $this->headers    = array();
-        $this->recipients = array();
+        $this->headers    = [];
+        $this->recipients = [];
         $this->sentOn     = time();
         $this->subject    = null;
 

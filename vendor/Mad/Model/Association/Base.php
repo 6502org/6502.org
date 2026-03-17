@@ -149,19 +149,19 @@ abstract class Mad_Model_Association_Base
     /**
      * The list of association options
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * The list of dynamic methods added to the model through this association
      * @var array
      */
-    protected $_methods = array();
+    protected $_methods = [];
 
     /**
      * The list of data that has already been loaded
      * @var array
      */
-    protected $_loaded = array();
+    protected $_loaded = [];
 
     /**
      * Has the association changed in any way
@@ -591,7 +591,7 @@ abstract class Mad_Model_Association_Base
 
             // determine table name by convention from DO data
             } elseif ($macro == 'hasAndBelongsToMany') {
-                $tbls = array($this->_model->tableName(), $this->getAssocTable());
+                $tbls = [$this->_model->tableName(), $this->getAssocTable()];
                 sort($tbls);
                 $this->_joinTable = implode('_', $tbls);
 
