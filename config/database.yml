@@ -1,11 +1,11 @@
 development:
-  adapter: "sqlite"
+  adapter: "pdo_sqlite"
   database: "db/database.sqlite3"
 
 test:
-  adapter: "sqlite"
+  adapter: "pdo_sqlite"
   database: "db/database.sqlite3"
 
 production:
-  adapter: "sqlite"
+  adapter: "pdo_sqlite"
   database: "db/database.sqlite3"

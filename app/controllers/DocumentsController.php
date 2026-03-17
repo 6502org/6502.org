@@ -3,16 +3,7 @@
 class DocumentsController extends ApplicationController
 {
     public function index() {
-        $config = Horde_Yaml::loadFile(MAD_ROOT.'/config/database.yml');
-        $spec = $config[MAD_ENV];
-        if ($spec['adapter'] == 'sqlite') {
-            $dbfile = $spec['database'];
-            if ($dbfile[0] != '/') { $dbfile = MAD_ROOT . '/' . $dbfile; }
-            $this->pdo = new PDO("sqlite:$dbfile", null, null);
-        } else { // mysql
-            $this->pdo = new PDO("mysql:host={$spec['host']};dbname={$spec['database']}",
-                                 $spec['username'], $spec['password']);
-        }
+        $this->db = Mad_Model_Base::connection();
 
         $keyList = explode('/', trim($this->params['path'], '/'));
         foreach($keyList as $k => $v) {
@@ -39,29 +30,24 @@ class DocumentsController extends ApplicationController
 
             $sql = 'SELECT *
                     FROM document_folders
-                    WHERE (slug = :slug) AND (parent_folder_id = :parent_folder_id)
+                    WHERE (slug = ?) AND (parent_folder_id = ?)
                     LIMIT 1';
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array('slug' => $key,
-                                 'parent_folder_id' => $parent_folder_id));
-            $folder = $stmt->fetch();
+            $folder = $this->db->selectOne($sql, array($key, $parent_folder_id));
 
             if (!empty($folder)) {
                 $url .= $folder['slug'] . '/';
                 $folder['url'] = $url;
                 array_push($this->folders, $folder);
             } else {
-                /* If the key does not exist, it might also be a filename.  
+                /* If the key does not exist, it might also be a filename.
                    If it is, redirect.  */
                 if (count($this->folders) > 0) {
                     $sql = 'SELECT *
                             FROM document_files
-                            WHERE (filename = :key) AND (folder_id = :id)
+                            WHERE (filename = ?) AND (folder_id = ?)
                             LIMIT 1';
-                    $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute(array('key' => $key,
-                                         'id'  => $this->folders[count($this->folders)-1]['id']));
-                    $doc = $stmt->fetch();
+                    $doc = $this->db->selectOne($sql,
+                        array($key, $this->folders[count($this->folders)-1]['id']));
 
                     if (empty($doc)) {
                         // If the filename could not be found, redirect to last known-good keys.
@@ -105,22 +91,18 @@ class DocumentsController extends ApplicationController
         // Get subfolders of the current folder
         $this->myFolder = $this->folders[count($this->folders)-1];
         $sql="SELECT * FROM document_folders
-              WHERE parent_folder_id = :id
+              WHERE parent_folder_id = ?
               ORDER BY LOWER(COALESCE(sort_title, title)) ASC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id' => $this->myFolder['id']));
-        $this->myFolders = $stmt->fetchAll();
+        $this->myFolders = $this->db->selectAll($sql, array($this->myFolder['id']));
 
         for ($i=0; $i<count($this->myFolders); $i++) {
             $this->myFolders[$i]['url'] = $url . $this->myFolders[$i]['slug'] . '/';
         }
 
         $sql="SELECT * FROM document_files
-              WHERE folder_id = :id
+              WHERE folder_id = ?
               ORDER BY LOWER(COALESCE(sort_title, title)) ASC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id' => $this->myFolder['id']));
-        $this->myFolder['docs'] = $stmt->fetchAll();
+        $this->myFolder['docs'] = $this->db->selectAll($sql, array($this->myFolder['id']));
 
         // Create URL for each doc
         foreach ($this->myFolder['docs'] as &$doc) {
