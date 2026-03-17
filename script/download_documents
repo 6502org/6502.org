@@ -19,7 +19,7 @@
  * Exit status: 0 if all files downloaded successfully, 1 if not.
  */
 
-$options = getopt('', array('output:', 'delay:', 'retry-delay:', 'retries:', 'filter:', 'help'));
+$options = getopt('', array('output:', 'delay:', 'retry-delay:', 'retries:', 'filter:', 'dry-run', 'help'));
 
 if (isset($options['help'])) {
     fprintf(STDOUT, "Usage: php %s [options]\n\n", $argv[0]);
@@ -29,6 +29,7 @@ if (isset($options['help'])) {
     fprintf(STDOUT, "  --retries=N             Max retries per file (default: 5)\n");
     fprintf(STDOUT, "  --retry-delay=SECONDS   Delay before retry (default: 30)\n");
     fprintf(STDOUT, "  --filter=STRING         Only download files whose path contains STRING\n");
+    fprintf(STDOUT, "  --dry-run               Show local path and mirror URL for each file\n");
     fprintf(STDOUT, "  --help                  Show this help message\n");
     exit(0);
 }
@@ -83,6 +84,20 @@ if ($filter !== null) {
         $path = $file['path'] . $file['filename'];
         return stripos($path, $filter) !== false;
     }));
+}
+
+if ($filter !== null) {
+    // already filtered above
+}
+
+if (isset($options['dry-run'])) {
+    foreach ($files as $file) {
+        $localPath = $file['path'] . $file['filename'];
+        $mirrorUrl = $file['mirror_url'];
+        fprintf(STDOUT, "%s\n  %s\n\n", $localPath, $mirrorUrl);
+    }
+    fprintf(STDOUT, "%d files\n", count($files));
+    exit(0);
 }
 
 $totalFiles = count($files);
