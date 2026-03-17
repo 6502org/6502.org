@@ -7,8 +7,8 @@
   </p>
 
   <p class="error-contact">
-    Please try your request again later. If the problem persists, contact
-    <?= $this->mailTo(CONTACT_EMAIL, null, ['subject' => '6502.org Error', 'encode' => 'javascript']) ?>.
+    Please try your request again later. If the problem persists, 
+    you can <?= $this->emailLink('contact us', '6502.org Error') ?>.
   </p>
 
   <p class="error-home">
