@@ -1,6 +1,7 @@
 .DS_Store
 *.pyc
 /db/*.sql
+/db/test.sqlite3
 /log/*
 /public/*.php
 !/public/index.php
