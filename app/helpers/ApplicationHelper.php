@@ -2,6 +2,11 @@
 
 class ApplicationHelper extends Mad_View_Helper_Base
 {
+    public function isProduction()
+    {
+        return MAD_ENV == 'production';
+    }
+
     public function emailLink($label, $subject)
     {
         return $this->mailTo(CONTACT_EMAIL, $label, [

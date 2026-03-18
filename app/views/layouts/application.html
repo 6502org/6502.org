@@ -17,11 +17,15 @@
           . '<span class="site-title-group"><span class="site-title">6502.org</span>'
           . '<span class="site-subtitle">The 6502 Microprocessor Resource</span></span>',
           ['controller' => 'contents', 'action' => 'home']) ?>
+    <? if (!$this->isProduction()): ?>
+      <span class="env-badge"><?= strtoupper(MAD_ENV) ?> MODE</span>
+    <? endif ?>
   </header>
 
   <?= $this->render(['partial' => 'shared/topnav']) ?>
 
   <main>
+    <?= $this->render(['partial' => 'shared/flash']) ?>
     <?= $this->contentForLayout ?>
   </main>
 

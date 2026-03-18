@@ -143,6 +143,26 @@ a[name]:not([href]):active {
   animation: doc-highlight-fade 10s ease-out;
 }
 
+/* === Flash Messages === */
+.flash-notice, .flash-alert {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.flash-notice {
+  background: #f0fdf4;
+  border-bottom: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.flash-alert {
+  background: #fef2f2;
+  border-bottom: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
 /* === Error Pages === */
 .error-page {
   text-align: center;
@@ -220,6 +240,18 @@ a.offsite::after {
 }
 
 .site-header a:hover { text-decoration: none; color: var(--white); }
+
+.env-badge {
+  margin-left: auto;
+  background: var(--white);
+  color: #c00;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: var(--radius);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
 
 .site-icon {
   width: 48px;
