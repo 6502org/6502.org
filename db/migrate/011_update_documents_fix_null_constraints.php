@@ -40,7 +40,7 @@ class UpdateDocumentsFixNullConstraints extends Mad_Model_Migration_Base
         $this->execute("INSERT INTO document_files_new SELECT * FROM document_files");
         $this->dropTable('document_files');
         $this->renameTable('document_files_new', 'document_files');
-        $this->execute("CREATE UNIQUE INDEX idx_document_files_filename ON document_files ((LOWER(filename)))");
+        $this->addIndex('document_files', 'LOWER(filename)', ['unique' => true, 'name' => 'idx_document_files_filename']);
     }
 
     public function down()
@@ -79,6 +79,6 @@ class UpdateDocumentsFixNullConstraints extends Mad_Model_Migration_Base
         $this->execute("INSERT INTO document_files_new SELECT * FROM document_files");
         $this->dropTable('document_files');
         $this->renameTable('document_files_new', 'document_files');
-        $this->execute("CREATE UNIQUE INDEX idx_document_files_filename ON document_files ((LOWER(filename)))");
+        $this->addIndex('document_files', 'LOWER(filename)', ['unique' => true, 'name' => 'idx_document_files_filename']);
     }
 }

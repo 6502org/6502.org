@@ -17,7 +17,7 @@ class CreateDocumentFiles extends Mad_Model_Migration_Base
             $t->column('mirror_url', 'text');
         });
 
-        $this->execute("CREATE UNIQUE INDEX idx_document_files_filename ON document_files ((LOWER(filename)))");
+        $this->addIndex('document_files', 'LOWER(filename)', ['unique' => true, 'name' => 'idx_document_files_filename']);
     }
 
     public function down()

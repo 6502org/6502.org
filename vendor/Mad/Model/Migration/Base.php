@@ -39,17 +39,9 @@ class Mad_Model_Migration_Base
      *       $t->column('name', 'string');
      *   });
      *
-     *   $this->createTable('users', ['primaryKey' => false], function($t) {
-     *       $t->column('name', 'string');
-     *   });
-     *
      * Without a closure, returns the table definition for manual use:
      *
      *   $t = $this->createTable('users');
-     *       $t->column('name', 'string');
-     *   $t->end();
-     *
-     *   $t = $this->createTable('users', ['primaryKey' => false]);
      *       $t->column('name', 'string');
      *   $t->end();
      */
