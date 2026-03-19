@@ -4,7 +4,7 @@ class CreateDocumentFiles extends Mad_Model_Migration_Base
 {
     public function up()
     {
-        $t = $this->createTable('document_files');
+        $this->createTable('document_files', function($t) {
             $t->column('title',      'string',  ['limit' => 100, 'null' => false]);
             $t->column('filename',   'string',  ['limit' => 100, 'null' => false]);
             $t->column('pages',      'integer', ['null' => false, 'default' => 0]);
@@ -15,9 +15,9 @@ class CreateDocumentFiles extends Mad_Model_Migration_Base
             $t->column('visible',    'integer', ['default' => 1]);
             $t->column('sha1',       'string',  ['limit' => 40, 'null' => false]);
             $t->column('mirror_url', 'text');
-        $t->end();
+        });
 
-        $this->execute("CREATE UNIQUE INDEX idx_document_files_filename ON document_files (filename COLLATE NOCASE)");
+        $this->execute("CREATE UNIQUE INDEX idx_document_files_filename ON document_files ((LOWER(filename)))");
     }
 
     public function down()

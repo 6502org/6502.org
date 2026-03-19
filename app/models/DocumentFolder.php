@@ -17,6 +17,10 @@ class DocumentFolder extends Mad_Model_Base
             'className'  => 'DocumentFolder',
             'foreignKey' => 'parent_folder_id'
         ]);
+
+        $this->validatesPresenceOf('title');
+        $this->validatesPresenceOf('slug');
+        $this->validatesUniquenessOf('slug', ['scope' => 'parent_folder_id']);
     }
 
     /**
@@ -30,7 +34,7 @@ class DocumentFolder extends Mad_Model_Base
         array_unshift($slugs, 'documents');
 
         $folders = [];
-        $parentId = 0;
+        $parentId = 0; // root has parent_folder_id=0 (NOT NULL constraint)
 
         foreach ($slugs as $slug) {
             $folder = self::findBySlugAndParent($slug, $parentId);

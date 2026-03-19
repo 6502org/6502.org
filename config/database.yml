@@ -4,7 +4,7 @@ development:
 
 test:
   adapter: "pdo_sqlite"
-  database: "db/database.sqlite3"
+  database: "db/test.sqlite3"
 
 production:
   adapter: "pdo_sqlite"

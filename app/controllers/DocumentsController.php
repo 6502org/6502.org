@@ -27,8 +27,11 @@ class DocumentsController extends ApplicationController
                     $this->sendFile($doc->localPath(), [
                         'disposition' => 'inline'
                     ]);
+                } elseif (!empty($doc->mirror_url)) {
+                    $this->redirectTo($doc->mirror_url);
                 } else {
-                    $this->redirectTo($doc->downloadUrl());
+                    $this->flash['alert'] = "\"{$doc->title}\" is not currently available.";
+                    $this->redirectTo($currentFolder->path());
                 }
                 return;
             }

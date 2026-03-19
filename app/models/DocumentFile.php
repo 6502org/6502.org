@@ -5,14 +5,14 @@ class DocumentFile extends Mad_Model_Base
     public function _initialize()
     {
         $this->belongsTo('DocumentFolder', ['foreignKey' => 'folder_id']);
-    }
 
-    public function downloadUrl()
-    {
-        if ($this->isReadable()) {
-            return '/documents/' . $this->documentFolder->path . $this->filename;
-        }
-        return $this->mirror_url;
+        $this->validatesPresenceOf('title');
+        $this->validatesPresenceOf('filename');
+        $this->validatesUniquenessOf('filename');
+        $this->validatesPresenceOf('folder_id');
+        $this->validatesFormatOf('sha1', ['with' => '/^[0-9a-f]{40}$/']);
+        $this->validatesNumericalityOf('pages');
+        $this->validatesNumericalityOf('filesize');
     }
 
     public function localPath()
@@ -25,4 +25,10 @@ class DocumentFile extends Mad_Model_Base
     {
         return is_readable($this->localPath());
     }
+
+    public function isIntact()
+    {
+        return $this->isReadable() && sha1_file($this->localPath()) === $this->sha1;
+    }
+
 }

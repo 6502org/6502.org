@@ -32,12 +32,64 @@ class Mad_Model_Migration_Base
     public function __contruct() {}
 
     /**
+     * Create a table. Accepts an optional closure to define columns,
+     * which automatically calls end() when done.
+     *
+     *   $this->createTable('users', function($t) {
+     *       $t->column('name', 'string');
+     *   });
+     *
+     *   $this->createTable('users', ['primaryKey' => false], function($t) {
+     *       $t->column('name', 'string');
+     *   });
+     *
+     * Without a closure, returns the table definition for manual use:
+     *
+     *   $t = $this->createTable('users');
+     *       $t->column('name', 'string');
+     *   $t->end();
+     *
+     *   $t = $this->createTable('users', ['primaryKey' => false]);
+     *       $t->column('name', 'string');
+     *   $t->end();
+     */
+    public function createTable($name, $options=null, $closure=null)
+    {
+        // createTable('name', function($t) { ... })
+        if (is_callable($options)) {
+            $closure = $options;
+            $options = [];
+        }
+        if ($options === null) {
+            $options = [];
+        }
+
+        $this->say("createTable($name" . ($closure ? ", {closure}" : "") . ")");
+
+        $t = new Horde_Support_Timer();
+        $t->push();
+            $connection = Mad_Model_Base::connection();
+            $tableDefinition = $connection->createTable($name, $options);
+        $time = $t->pop();
+        $this->say(sprintf("%.4fs", $time), 'subitem');
+
+        if ($closure !== null) {
+            $closure($tableDefinition);
+            $tableDefinition->end();
+            return;
+        }
+
+        return $tableDefinition;
+    }
+
+    /**
      * Proxy methods over to the connection
      * @param   string  $method
      * @param   array   $args
      */
     public function __call($method, $args)
     {
+        $a = [];
         foreach ($args as $arg) {
             if (is_array($arg)) {
                 $vals = [];
@@ -45,6 +97,8 @@ class Mad_Model_Migration_Base
                     $vals[] = "$key => ".var_export($value, true);
                 }
                 $a[] = 'array('.join(', ', $vals).')';
+            } elseif ($arg instanceof Closure) {
+                $a[] = '{closure}';
             } else {
                 $a[] = $arg;
             }

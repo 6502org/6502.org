@@ -21,24 +21,22 @@
       </div>
     <? endforeach ?>
 
-    <? $files = iterator_to_array($this->folder->documentFiles) ?>
-
     <div class="doc-list">
-      <? foreach ($files as $doc): ?>
+      <? foreach ($this->folder->documentFiles as $doc): ?>
         <? if ($doc->visible): ?>
           <div class="doc-item<? if ($doc->obsolete): ?> doc-obsolete<? endif ?>">
             <div>
-              <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $doc->downloadUrl()) ?>
+              <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $this->downloadUrl($doc)) ?>
               &nbsp;&nbsp;<?= $this->h($doc->title) ?>
               <? if (!$doc->obsolete): ?>
-                <? $olderCount = $this->countPrecedingObsolete($doc, $files) ?>
+                <? $olderCount = $this->countPrecedingObsolete($doc, $this->folder->documentFiles) ?>
                 <? if ($olderCount > 0): ?>
                   <a href="#" class="doc-older-link">(+ <?= $olderCount ?> older)</a>
                 <? endif ?>
               <? endif ?>
             </div>
             <div class="doc-item-detail">
-              &nbsp;&nbsp;<a href="<?= $doc->downloadUrl() ?>"<? if (!$doc->isReadable()): ?> class="offsite"<? endif ?>><?= $this->h($doc->filename) ?></a> -
+              &nbsp;&nbsp;<a href="<?= $this->downloadUrl($doc) ?>"<? if (!$doc->isReadable()): ?> class="offsite"<? endif ?>><?= $this->h($doc->filename) ?></a> -
               <?= $doc->pages ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc->filesize) ?>
             </div>
           </div>
@@ -64,7 +62,7 @@
       <strong>Contribute</strong>
       <p>
         Have a document that should be included?
-        <?= $this->emailLink('Contact us', '6502.org Documents Archive') ?>
+        <?= $this->emailLink('contact us', '6502.org Documents Archive') ?>
         to submit it.
       </p>
     </div>

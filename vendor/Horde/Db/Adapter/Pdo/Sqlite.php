@@ -160,7 +160,7 @@ class Horde_Db_Adapter_Pdo_Sqlite extends Horde_Db_Adapter_Pdo_Abstract
     {
         $callable = function() use ($method, $args) {
             switch ($method) {
-                case 'execute':              return parent::execute($args[0], $args[1], $args[2]);
+                case 'execute':             return parent::execute(...$args);
                 case 'beginDbTransaction':   return parent::beginDbTransaction();
                 case 'commitDbTransaction':  return parent::commitDbTransaction();
                 case 'rollbackDbTransaction':return parent::rollbackDbTransaction();

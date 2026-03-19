@@ -81,7 +81,7 @@ class UpdateDocumentsAddObsoleteToFiles extends Mad_Model_Migration_Base
         $this->execute("DROP TABLE document_files_backup");
         $this->execute("
             CREATE UNIQUE INDEX idx_document_files_filename
-            ON document_files (filename COLLATE NOCASE)
+            ON document_files ((LOWER(filename)))
         ");
     }
 }

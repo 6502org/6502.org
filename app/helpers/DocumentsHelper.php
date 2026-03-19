@@ -38,6 +38,21 @@ class DocumentsHelper extends ApplicationHelper
         return $count;
     }
 
+    public function downloadUrl($doc)
+    {
+        $url = '/documents/' . $doc->documentFolder->path . $doc->filename;
+
+        if ($doc->isReadable()) {
+            // keep local url (have local file)
+        } else if (empty($doc->mirror_url)) {
+            // keep local url (file missing and no mirror)
+        } else {
+            $url = $doc->mirror_url;
+        }
+
+        return $url;
+    }
+
     public function fileFormatIcon($doc)
     {
         $ext = pathinfo($doc->filename, PATHINFO_EXTENSION);

@@ -19,7 +19,7 @@
  * @copyright  (c) 2007-2009 Maintainable Software, LLC
  * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
-class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
+class Mad_Model_Collection implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * The {@link Mad_Model_Base} class used to instantiate new objects
@@ -33,12 +33,6 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
      * @var array
      */
     protected $_collection  = [];
-
-    /**
-     * The position in the iterator over the objects.
-     * @var int
-     */
-    protected $_position = 0;
 
 
     /*##########################################################################
@@ -86,16 +80,16 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
     /*##########################################################################
     # Accessors
     ##########################################################################*/
-    
+
     public function getCollection()
     {
         return $this->_collection;
     }
 
-    /**                
+    /**
      * Serialize the collection to XML.
      */
-    public function toXml($options = []) 
+    public function toXml($options = [])
     {
         if (!isset($options['root'])) {
             $options['root'] = Mad_Support_Inflector::pluralize(get_class($this->_model));
@@ -134,90 +128,53 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
 
 
     /*##########################################################################
-    # Iterator Interface
+    # IteratorAggregate Interface
     ##########################################################################*/
 
     /**
-     * Get the current object from the collection
+     * Return a new iterator for each foreach loop. This allows nested
+     * iteration over the same collection without corrupting position.
      *
-     * <code>
-     *  <?php
-     *  ...
-     *  current($folders);
-     *  ...
-     *  ?>
-     * </code>
-     * @return  Mad_Model_Base
+     * @return  ArrayIterator
      */
     #[\ReturnTypeWillChange]
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_collection);
+    }
+
+
+    /*##########################################################################
+    # Direct iteration methods (backwards compatibility)
+    ##########################################################################*/
+
+    /**
+     * @var int
+     */
+    protected $_position = 0;
+
     public function current()
     {
         return $this->offsetGet($this->_position);
     }
 
-    /**
-     * Get the current position in the Collection
-     *
-     * <code>
-     *  <?php
-     *  ...
-     *  key($folders);
-     *  ...
-     *  ?>
-     * </code>
-     *
-     * @return  int
-     */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_position;
     }
 
-    /**
-     * Get the next element on the Collection
-     *
-     * <code>
-     *  <?php
-     *  ...
-     *  next($folders);
-     *  ...
-     *  ?>
-     * </code>
-     *
-     * @return  Mad_Model_Base
-     */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_position++;
         return $this->current();
     }
 
-    /**
-     * Rewind collection to first element
-     *
-     * <code>
-     *  <?php
-     *  ...
-     *  rewind($folders);
-     *  ...
-     *  ?>
-     * </code>
-     *
-     */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_position = 0;
         return $this->current();
     }
 
-    /**
-     * Check if the current element exists
-     * @return  boolean
-     */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->offsetExists($this->_position);
@@ -230,7 +187,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * Check if the given offset exists
-     * 
+     *
      * @param   int     $offset
      * @return  boolean
      */
@@ -264,22 +221,22 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      * @param   mixed   $value
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value) 
+    public function offsetSet($offset, $value)
     {
         // Can only add Models to the collection
         if ($value instanceof Mad_Model_Base) {
             $this->_collection[] = $value;
-        }        
+        }
     }
 
     /**
      * Collection is readonly, so this is not allowed (method required by interface)
-     * 
+     *
      * @param   int     $offset
      */
     #[\ReturnTypeWillChange]
@@ -290,7 +247,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
      * a property or calling a method, and return all of the
      * results in an array.
      *
-     * The first argument ($property) is interpreted as a property name.  
+     * The first argument ($property) is interpreted as a property name.
      * However, if the first argument ends with "()" then it will be
      * interpreted as a method and varargs be passed to that method.
      *
@@ -306,7 +263,7 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
             $args = func_get_args();
             array_shift($args);
 
-            foreach ($this as $member) { 
+            foreach ($this as $member) {
                 $callback = [$member, $method];
                 $values[] = call_user_func_array($callback, $args);
             }
@@ -316,13 +273,13 @@ class Mad_Model_Collection implements ArrayAccess, Iterator, Countable
                 $values[] = $member->$property;
             }
         }
-    
+
         return $values;
     }
 
     /**
      * Initialize result set into object collection
-     * 
+     *
      * @param   object  $model
      * @param   array   $results
      */

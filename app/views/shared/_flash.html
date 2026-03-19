@@ -1,0 +1,6 @@
+<? if (isset($this->flash['notice'])): ?>
+  <div class="flash-notice"><?= $this->h($this->flash['notice']) ?></div>
+<? endif ?>
+<? if (isset($this->flash['alert'])): ?>
+  <div class="flash-alert"><?= $this->h($this->flash['alert']) ?></div>
+<? endif ?>

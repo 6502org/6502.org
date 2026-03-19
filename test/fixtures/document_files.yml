@@ -1,0 +1,52 @@
+mos_6502_current:
+  id: 1
+  title: "6500 Microprocessors (Nov. 1985)"
+  filename: mos_6500_mpu_nov_1985.pdf
+  pages: 24
+  sort_title: "6502_198511"
+  filesize: 1234567
+  folder_id: 3
+  sha1: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  mirror_url: "https://example.com/mos_6500_mpu_nov_1985.pdf"
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+mos_6502_obsolete:
+  id: 2
+  title: "6500 Microprocessors (Mar. 1980)"
+  filename: mos_6500_mpu_mar_1980.pdf
+  pages: 20
+  sort_title: "6502_198003"
+  filesize: 1000000
+  folder_id: 3
+  sha1: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+  mirror_url: "https://example.com/mos_6500_mpu_mar_1980.pdf"
+  visible: 1
+  obsolete: 1
+  created_at: "2026-01-01 00:00:00"
+
+unavailable_file:
+  id: 3
+  title: "Unavailable Document"
+  filename: does_not_exist.pdf
+  pages: 10
+  filesize: 5000
+  folder_id: 4
+  sha1: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+  mirror_url: ""
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+hidden_file:
+  id: 4
+  title: "Hidden Document"
+  filename: hidden.pdf
+  pages: 1
+  filesize: 100
+  folder_id: 3
+  sha1: cccccccccccccccccccccccccccccccccccccccc
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
