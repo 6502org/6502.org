@@ -514,7 +514,11 @@ abstract class Horde_Db_Adapter_Abstract_Schema
         $indexName = !empty($options['name'])   ? $options['name'] : $indexName;
 
         foreach ($columnNames as $colName) {
-            $quotedCols[] = $this->quoteColumnName($colName);
+            if (strpos($colName, '(') !== false) {
+                $quotedCols[] = $colName; // index on expression
+            } else {
+                $quotedCols[] = $this->quoteColumnName($colName);
+            }
         }
         $quotedColumnNames = implode(', ', $quotedCols);
         $sql = "CREATE $indexType INDEX ".$this->quoteColumnName($indexName).
