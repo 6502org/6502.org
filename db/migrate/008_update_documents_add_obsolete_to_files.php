@@ -79,6 +79,6 @@ class UpdateDocumentsAddObsoleteToFiles extends Mad_Model_Migration_Base
             SELECT * FROM document_files_backup
         ");
         $this->execute("DROP TABLE document_files_backup");
-        $this->addIndex('document_files', 'LOWER(filename)', ['unique' => true, 'name' => 'idx_document_files_filename']);
+        $this->addIndex('document_files', 'filename', ['name' => 'idx_document_files_filename']);
     }
 }
