@@ -14,5 +14,7 @@ jobs:
           wget -q https://phar.phpunit.de/phpunit-11.phar -O phpunit
           chmod +x phpunit
           sudo mv phpunit /usr/local/bin/phpunit
+      - name: Create and migrate test database
+        run: MAD_ENV=test php ./script/task db:migrate
       - name: Run tests
         run: php ./script/task test
