@@ -3,7 +3,6 @@
 $map->connect('', array('controller' => 'contents', 'action' => 'home'));
 
 $map->connect('news',          array('controller' => 'contents', 'action' => 'news'));
-$map->connect('ads',           array('controller' => 'contents', 'action' => 'ads'));
 $map->connect('books',         array('controller' => 'contents', 'action' => 'books'));
 $map->connect('homebuilt',     array('controller' => 'contents', 'action' => 'homebuilt'));
 $map->connect('commercial',    array('controller' => 'contents', 'action' => 'commercial'));
