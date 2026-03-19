@@ -9,8 +9,7 @@
     computer.
   </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="games"><b>Games</b></a>
+  <?= $this->categoryHeader('games', 'Games') ?>
 
   <ul>
     <li>
@@ -24,8 +23,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="floatingpoint"><b>Floating Point Math</b></a>
+  <?= $this->categoryHeader('floatingpoint', 'Floating Point Math') ?>
 
   <ul>
     <li>
@@ -71,8 +69,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="general"><b>General Purpose</b></a>
+  <?= $this->categoryHeader('general', 'General Purpose') ?>
 
   <ul>
     <li>
@@ -128,8 +125,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="integermath"><b>Integer Math</b></a>
+  <?= $this->categoryHeader('integermath', 'Integer Math') ?>
 
   <ul>
     <li>
@@ -236,8 +232,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="io"><b>I/O Techniques</b></a>
+  <?= $this->categoryHeader('io', 'I/O Techniques') ?>
 
   <ul>
     <li>
@@ -294,8 +289,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="monitors"><b>Monitors, Assemblers, and Interpreters</b></a>
+  <?= $this->categoryHeader('monitors', 'Monitors, Assemblers, and Interpreters', 'Monitors, Assemblers, Interpreters') ?>
 
   <ul>
     <li>
@@ -355,8 +349,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="kernels"><b>Operating System Kernels</b></a>
+  <?= $this->categoryHeader('kernels', 'Operating System Kernels') ?>
 
   <ul>
     <li>
@@ -368,8 +361,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="sorting"><b>Sorting Algorithms</b></a>
+  <?= $this->categoryHeader('sorting', 'Sorting Algorithms') ?>
 
   <ul>
     <li>
@@ -426,8 +418,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="strings"><b>String Manipulations</b></a>
+  <?= $this->categoryHeader('strings', 'String Manipulations') ?>
 
   <ul>
     <li>
@@ -472,6 +463,8 @@
   </div>
 
   <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+
     <div class="sidebar-box">
       <div class="boxtitle">Related Sites</div>
       <div class="box">

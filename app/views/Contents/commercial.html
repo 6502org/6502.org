@@ -2,17 +2,18 @@
 <? $this->description = 'Links to companies supporting the 6502 microprocessor.' ?>
 
 <div class="content-page">
-  Send your company's link via
-  <?= $this->emailLink('email', '6502.org Commercial Support') ?>
-  with a brief profile (100 words or less) to be added to our list. Only
-  companies providing products or services useful to 6502 developers or
-  hobbyists will be indexed.
+  <p>
+    Send your company's link via
+    <?= $this->emailLink('email', '6502.org Commercial Support') ?>
+    with a brief profile (100 words or less) to be added to our list. Only
+    companies providing products or services useful to 6502 developers or
+    hobbyists will be indexed.
+  </p>
 
   <p>(This page links to companies offering commercial support - see the <a href="/">front page</a>
-  for general resources.)
+  for general resources.)</p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="cores"><b>Semiconductors and Synthesizable Cores</b></a>
+  <?= $this->categoryHeader('cores', 'Semiconductors and Synthesizable Cores') ?>
 
   <ul>
     <li>
@@ -72,8 +73,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="tools"><b>Development Tools</b></a>
+  <?= $this->categoryHeader('tools', 'Development Tools') ?>
 
   <ul>
     <li>
@@ -118,4 +118,8 @@
       14 MHz.
     </li>
   </ul>
+
+  <? if (false): /* not enough categories for a sidebar */ ?>
+    <?= $this->categoriesSidebar() ?>
+  <? endif ?>
 </div>

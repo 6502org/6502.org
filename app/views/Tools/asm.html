@@ -2,12 +2,12 @@
 <? $this->navTitle = 'Development Tools' ?>
 <? $this->description = 'Assemblers, Disassemblers, and Optimizers for 6502 code.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
     <div class="breadcrumbs"><a href="/tools">Development Tools</a> / Assemblers and Disassemblers</div>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="assemblers"><b>Assemblers and IDEs</b></a>
+    <?= $this->categoryHeader('assemblers', 'Assemblers and IDEs') ?>
   		<ul>
         <li>
           <a href="https://github.com/SYSPROG-JLS/6502Asm">6502Asm</a> -
@@ -191,8 +191,7 @@
         </li>
       </ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="web"><b>Web-based Assemblers and IDEs</b></a>
+    <?= $this->categoryHeader('web', 'Web-based Assemblers and IDEs', 'Web-based') ?>
   		<ul>
 
         <li>
@@ -242,8 +241,7 @@
         </li>
       </ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="disassemblers"><b>Disassemblers</b></a>
+    <?= $this->categoryHeader('disassemblers', 'Disassemblers') ?>
   		<ul>
         <li>
           <a href="https://github.com/tcarmelveilleux/dcc6502">DCC6502</a> -
@@ -345,8 +343,7 @@
 
   		</ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="optimizers"><b>Optimizers</b></a>
+    <?= $this->categoryHeader('optimizers', 'Optimizers') ?>
   		<ul>
         <li>
           <a href="http://web.archive.org/web/20010627195141/http://www.heilbronn.netsurf.de/~dallmann/peephole.html">6502/10 Peephole Optimizer</a> [archive.org] -
@@ -356,4 +353,9 @@
         </li>
   		</ul>
 
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+  </aside>
 </div>

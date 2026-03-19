@@ -16,8 +16,7 @@
     <?= $this->emailLink('email', '6502.org Mini-Projects') ?>!
   </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="mini-projects"><b>Hardware Mini Projects</b></a></p>
+  <?= $this->categoryHeader('mini-projects', 'Hardware Mini Projects') ?>
 
   <div class="mini-project-item">
     <a href="/mini-projects/flash/28f.htm">28F010 Flash Device</a> <span class="mp-author">by Pete McCollum</span>
@@ -84,4 +83,7 @@
     <div class="mp-desc">Describes a generic schematic for generating the RDY line used by the 65C02 microprocessor to hold bus accesses when a device is not ready.</div>
   </div>
 
+  <? if (false): /* not enough categories for a sidebar */ ?>
+    <?= $this->categoriesSidebar() ?>
+  <? endif ?>
 </div>

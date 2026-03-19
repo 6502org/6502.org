@@ -31,6 +31,47 @@ class ApplicationHelper extends Mad_View_Helper_Base
             $active ? ['class' => 'nav-active'] : []);
     }
 
+    /**
+     * Renders a category header and registers it for the sidebar.
+     *
+     *   <?= $this->categoryHeader('games', 'Games') ?>
+     */
+    protected $categories = [];
+
+    public function categoryHeader($anchor, $title, $shortTitle = null)
+    {
+        foreach ($this->categories as $category) {
+            if ($category['anchor'] === $anchor) {
+                throw new Exception("Duplicate category anchor: $anchor");
+            }
+        }
+        $this->categories[] = ['anchor' => $anchor, 'title' => $shortTitle ? $shortTitle : $title];
+
+        return '<p class="category-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;'
+             . '<a name="' . $this->h($anchor) . '"><b>' . $this->h($title) . '</b></a>';
+    }
+
+    /**
+     * Renders the categories sidebar box from accumulated categoryHeader() calls.
+     */
+    public function categoriesSidebar()
+    {
+        if (empty($this->categories)) { return ''; }
+
+        $html = '<div class="sidebar-box">'
+              . '<div class="boxtitle">Categories</div>'
+              . '<ul class="box sidebar-list">';
+
+        foreach ($this->categories as $category) {
+            $html .= '<li><a href="#' . $this->h($category['anchor']) . '">'
+                   . $this->h($category['title']) . '</a></li>';
+        }
+
+        $html .= '</ul></div>';
+        $this->categories = [];
+        return $html;
+    }
+
     public function milestoneYears()
     {
         $foundedYear = 1999;

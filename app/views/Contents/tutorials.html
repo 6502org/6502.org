@@ -1,73 +1,15 @@
 <? $this->title = 'Tutorials and Primers' ?>
 <? $this->description = 'Learn how to do all kinds of things with the 6502 microprocessor.' ?>
 
-<div class="content-page">
-  Here you will find lessons on various aspects of the 6502 and its
-  programming, along with handy reference material.  <br>Please submit
-  contributions for "Tutorials and Primers"
-  to us via <?= $this->emailLink('email', '6502.org Tutorials') ?>.
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="programming"><b>Assembly language programming tutorials and books [off-site]</b></a>
+  <p>
+    Here you will find lessons on various aspects of the 6502 and its
+    programming, along with handy reference material.
+  </p>
 
-  <ul>
-    <li>
-      <a href="http://skilldrick.github.io/easy6502/">Easy6502</a>&nbsp;
-      <span class="author">by Nick Morgan</span>
-      <p class="item-desc">An in-browser tutorial with emulator.</p>
-    </li>
-
-    <li>
-      <a href="http://www.dwheeler.com/6502/oneelkruns/asm1step.html">Assembly In One Step</a>&nbsp;
-      <span class="author">by Ron Kneusel adapted from Leo Scanlon's <i>6502 Software Design</i></span>
-      <p class="item-desc">A classic introductory text online, also available <a href="http://nesdev.com/6502guid.txt">here</a>.</p>
-    </li>
-
-    <li>
-      <a href="http://www.abebooks.co.uk/search/sortby/3/an/Lance+Leventhal+/tn/+6502+Assembly+Language">6502 Assembly Language Programming</a>&nbsp;
-      <span class="author">by Lance A. Leventhal</span>
-      <p class="item-desc">A comprehensive and classic book. The second edition covers 65C02 instructions.</p>
-    </li>
-
-    <li>
-      <a href="http://www.abebooks.co.uk/servlet/SearchResults?kn=Programming+the+6502+Rodnay+Zaks&sts=t&x=94&y=10">Programming the 6502</a>&nbsp;
-      <span class="author">by Rodnay Zaks</span>
-      <p class="item-desc">A comprehensive and classic book.</p>
-    </li>
-
-    <li>
-      <a href="http://www.atariarchives.org/mlb/">Machine Language For Beginners</a>&nbsp;
-      <span class="author">by Richard Mansfield</span>
-      <p class="item-desc">Online version of 1983 book, with permission of the author.</p>
-    </li>
-
-    <li>
-      <a href="http://www.abebooks.co.uk/servlet/SearchResults?kn=Using+6502+assembly+language+hyde&sts=t&x=0&y=0">Using 6502 Assembly Language: How Anyone Can Programme the Apple II</a>&nbsp;
-      <span class="author">by Randall Hyde</span>
-      <p class="item-desc">A classic book, which may be the same as <i>How to Program the Apple II Using 6502 Assembly Language</i>.</p>
-    </li>
-
-    <li>
-      <a href="https://web.archive.org/web/20061114024257/http://www.westerndesigncenter.com/wdc/documentation/Programmanual.pdf">Programming the 65816, including the 6502, 65C02 and 65802</a>&nbsp;
-      <span class="author">by David Eyes and Ron Lichty, copyright WDC</span>
-      <p class="item-desc">Western Design Center's official programming manual has some introductory material and is free to download.</p>
-    </li>
-
-    <li>
-      <a href="http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=4440">Nerdy Nights week 3: 6502 Assembly (forum post)</a>&nbsp;
-      <span class="author">by bunnyboy</span>
-      <p class="item-desc">One in <a href="http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=7155">a series of posts</a> on the NintendoAge forum covering NES programming.</p>
-    </li>
-
-    <li>
-      <a href="http://www.abebooks.com/servlet/SearchResults?kn=Visible+Computer%3A+6502&sts=t&x=0&y=0">The Visible Computer (manual)</a>&nbsp;
-      <span class="author">by Charles Anderson of Software Masters</span>
-      <p class="item-desc">Manual for "The Visible Computer", a program originally for Apple ][, which runs happily on modern emulators - if you can find a copy.</p>
-    </li>
-  </ul>
-
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="tutorials"><b>Tutorials, References, and Primers</b></a>
+  <?= $this->categoryHeader('tutorials', 'Tutorials, References, and Primers', 'Tutorials & References') ?>
 
   <ul>
     <li>
@@ -211,4 +153,76 @@
     </li>
   </ul>
 
+  <?= $this->categoryHeader('offsite', 'Off-Site Assembly Language Tutorials and Books', 'Off-Site Tutorials & Books') ?>
+
+  <ul>
+    <li>
+      <a href="http://skilldrick.github.io/easy6502/">Easy6502</a>&nbsp;
+      <span class="author">by Nick Morgan</span>
+      <p class="item-desc">An in-browser tutorial with emulator.</p>
+    </li>
+
+    <li>
+      <a href="http://www.dwheeler.com/6502/oneelkruns/asm1step.html">Assembly In One Step</a>&nbsp;
+      <span class="author">by Ron Kneusel adapted from Leo Scanlon's <i>6502 Software Design</i></span>
+      <p class="item-desc">A classic introductory text online, also available <a href="http://nesdev.com/6502guid.txt">here</a>.</p>
+    </li>
+
+    <li>
+      <a href="http://www.abebooks.co.uk/search/sortby/3/an/Lance+Leventhal+/tn/+6502+Assembly+Language">6502 Assembly Language Programming</a>&nbsp;
+      <span class="author">by Lance A. Leventhal</span>
+      <p class="item-desc">A comprehensive and classic book. The second edition covers 65C02 instructions.</p>
+    </li>
+
+    <li>
+      <a href="http://www.abebooks.co.uk/servlet/SearchResults?kn=Programming+the+6502+Rodnay+Zaks&sts=t&x=94&y=10">Programming the 6502</a>&nbsp;
+      <span class="author">by Rodnay Zaks</span>
+      <p class="item-desc">A comprehensive and classic book.</p>
+    </li>
+
+    <li>
+      <a href="http://www.atariarchives.org/mlb/">Machine Language For Beginners</a>&nbsp;
+      <span class="author">by Richard Mansfield</span>
+      <p class="item-desc">Online version of 1983 book, with permission of the author.</p>
+    </li>
+
+    <li>
+      <a href="http://www.abebooks.co.uk/servlet/SearchResults?kn=Using+6502+assembly+language+hyde&sts=t&x=0&y=0">Using 6502 Assembly Language: How Anyone Can Programme the Apple II</a>&nbsp;
+      <span class="author">by Randall Hyde</span>
+      <p class="item-desc">A classic book, which may be the same as <i>How to Program the Apple II Using 6502 Assembly Language</i>.</p>
+    </li>
+
+    <li>
+      <a href="https://web.archive.org/web/20061114024257/http://www.westerndesigncenter.com/wdc/documentation/Programmanual.pdf">Programming the 65816, including the 6502, 65C02 and 65802</a>&nbsp;
+      <span class="author">by David Eyes and Ron Lichty, copyright WDC</span>
+      <p class="item-desc">Western Design Center's official programming manual has some introductory material and is free to download.</p>
+    </li>
+
+    <li>
+      <a href="http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=4440">Nerdy Nights week 3: 6502 Assembly (forum post)</a>&nbsp;
+      <span class="author">by bunnyboy</span>
+      <p class="item-desc">One in <a href="http://nintendoage.com/forum/messageview.cfm?catid=22&threadid=7155">a series of posts</a> on the NintendoAge forum covering NES programming.</p>
+    </li>
+
+    <li>
+      <a href="http://www.abebooks.com/servlet/SearchResults?kn=Visible+Computer%3A+6502&sts=t&x=0&y=0">The Visible Computer (manual)</a>&nbsp;
+      <span class="author">by Charles Anderson of Software Masters</span>
+      <p class="item-desc">Manual for "The Visible Computer", a program originally for Apple ][, which runs happily on modern emulators - if you can find a copy.</p>
+    </li>
+  </ul>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+
+    <div class="sidebar-callout">
+      <strong>Contribute</strong>
+      <p>
+        Have a tutorial that should be listed?
+        <?= $this->emailLink('Contact us', '6502.org Tutorials') ?>
+        to submit it.
+      </p>
+    </div>
+  </aside>
 </div>

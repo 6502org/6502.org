@@ -2,12 +2,12 @@
 <? $this->navTitle = 'Development Tools' ?>
 <? $this->description = 'High-level language compilers and interpreters for the 6502 microprocessor.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
     <div class="breadcrumbs"><a href="/tools">Development Tools</a> / Compilers and Languages</div>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="articles"><b>Articles</b></a>
+    <?= $this->categoryHeader('articles', 'Articles') ?>
   		<ul>
         <li>
           <a href="http://www.dwheeler.com/6502">6502 Language Implementation Approaches</a> -
@@ -16,8 +16,7 @@
         </li>
   		</ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="compilers"><b>Compilers</b></a>
+    <?= $this->categoryHeader('compilers', 'Compilers') ?>
   		<ul>
         <li>
           <a href="http://www.cc65.org">CC65</a> -
@@ -76,12 +75,17 @@
 
   		</ul>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="interpreters"><b>Interpreters</b></a>
+    <?= $this->categoryHeader('interpreters', 'Interpreters') ?>
   		<ul>
         <li>
           Interpreted languages and other development tools written in native 6502
           code can be found in the <a href="/source/">Source Code Library</a>.
         </li>
   		</ul>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+  </aside>
 </div>

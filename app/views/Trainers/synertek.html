@@ -1,7 +1,8 @@
 <? $this->title = 'Synertek SYM-1 Resources' ?>
 <? $this->description = 'Information and links for the enthusiasts of the SYM-1 microcomputer.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
     <p>
       This section contains information and binaries for the Synertek Systems
       SYM-1 Single Board Computer. Additional documents from Synertek, such as
@@ -17,8 +18,7 @@
       <?= $this->emailLink('email', '6502.org Syntertek SYM-1 Resources') ?>.
     </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="web-resources"><b>Synertek Web Resources</b></a>
+  <?= $this->categoryHeader('web-resources', 'Synertek Web Resources', 'Web Resources') ?>
   		<ul>
         <li>
           <a href="/users/dallas/">Dallas' SYM-1 Pages</a> - Dallas Shell has
@@ -41,8 +41,7 @@
   		</ul>
 	  </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="manuals"><b>Synertek SYM-1 Manuals</b></a>
+  <?= $this->categoryHeader('manuals', 'Synertek SYM-1 Manuals', 'Manuals') ?>
   		<ul>
         <li>
           <a href="/trainers/synertek/manuals/srefman.pdf">SYM-1 Reference Manual</a> from Synertek
@@ -62,8 +61,7 @@
   		</ul>
 	  </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="symphysis"><b>SYM-PHYSIS: The SYM-1 Users' Group Newsletter</b></a>
+  <?= $this->categoryHeader('symphysis', 'SYM-PHYSIS: The SYM-1 Users\' Group Newsletter', 'SYM-PHYSIS Newsletter') ?>
   		<ul>
         <li>
           <a href="/documents/publications/symphysis/">SYM-PHYSIS</a> -
@@ -75,8 +73,7 @@
   		</ul>
 	  </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="monitor"><b>SYM-1 Monitor</b></a>
+  <?= $this->categoryHeader('monitor', 'SYM-1 Monitor', 'Monitor') ?>
   		<ul>
         <li>
           <a href="/trainers/synertek/monitor/sy1_1mon.pdf">Monitor Enhancements</a> -
@@ -90,8 +87,7 @@
   		</ul>
 	  </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="rae"><b>RAE: Resident Assembler Editor</b></a>
+  <?= $this->categoryHeader('rae', 'RAE: Resident Assembler Editor', 'RAE Assembler') ?>
   		<ul>
         <li><a href="/trainers/synertek/rae/raeman.pdf">RAE Reference Manual</a> - from Synertek</li>
         <li><a href="/trainers/synertek/rae/raenote1.pdf">RAE Notes Issue #1</a> - from the SYM-1 Users' Group</li>
@@ -104,8 +100,7 @@
 	  </p>
 
 
-	  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="basic"><b>SYM-1 BASIC Interpreter</b></a>
+  <?= $this->categoryHeader('basic', 'SYM-1 BASIC Interpreter', 'BASIC') ?>
   		<ul>
         <li>
           <a href="basic/sym-basic.txt">Leland Goertz's Listings</a>
@@ -129,8 +124,7 @@
   		</ul>
 	  </p>
 
-	  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="forth"><b>FDC-FORTH: FORTH Interest Group FORTH for the SYM-1</b></a>
+  <?= $this->categoryHeader('forth', 'FDC-FORTH: FORTH Interest Group FORTH for the SYM-1', 'FDC-FORTH') ?>
   		<ul>
         <li>
           <a href="/trainers/synertek/symforth/fig_4th.pdf">Installation Instructions</a> -
@@ -141,8 +135,7 @@
   		</ul>
 	  </p>
 
-    <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-      <a name="persymone"><b>perSYMone FDC-1 Floppy Disk Controller</b></a>
+  <?= $this->categoryHeader('persymone', 'perSYMone FDC-1 Floppy Disk Controller', 'perSYMone FDC-1') ?>
       <ul>
         <li><a href="/trainers/synertek/persymone/fdc1_instruction_manual.pdf">Instruction Manual for the perSYMone FDC-1 Floppy Disk Controller</a>
         <li><a href="/trainers/synertek/persymone/assembling_the_fdc1.pdf">Assembling the FDC-1 perSYMone</a>
@@ -153,8 +146,7 @@
       </ul>
     </p>
 
-    <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-      <a name="sym1-69"><b>SYM-1/69 Mod Board (Replaces 6502 with 6809)</b></a>
+  <?= $this->categoryHeader('sym1-69', 'SYM-1/69 Mod Board (Replaces 6502 with 6809)', 'SYM-1/69 Mod Board') ?>
       <ul>
         <li>
           <a href="/trainers/synertek/sym1_69_mod_board/sym1_69_mod_board_photo.jpg">Photo</a>
@@ -162,8 +154,7 @@
       </ul>
     </p>
 
-    <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-      <a name="ktm2"><b>Synertek KTM-2 Terminal</b></a>
+  <?= $this->categoryHeader('ktm2', 'Synertek KTM-2 Terminal', 'KTM-2 Terminal') ?>
       <ul>
         <li>
           <a href="/trainers/synertek/ktm2/ktm2_schematic.jpg">Schematic</a>
@@ -171,8 +162,7 @@
       </ul>
     </p>
 
-    <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-      <a name="saturn"><b>Saturn Software Limited</b></a>
+  <?= $this->categoryHeader('saturn', 'Saturn Software Limited', 'Saturn Software') ?>
       <ul>
         <li><a href="/trainers/synertek/saturn/skforth79_users_guide.pdf">SK-FORTH79 User's Guide and Glossaries</a></li>
         <li><a href="/trainers/synertek/saturn/skforth79_source_listing.pdf">SK-FORTH79 Source Listing</a></li>
@@ -181,8 +171,7 @@
       </ul>
     </p>
 
-	  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="symulator"><b>SYMulator: The SYM-1 Emulator</b></a>
+  <?= $this->categoryHeader('symulator', 'SYMulator: The SYM-1 Emulator', 'SYMulator') ?>
   		<ul>
         <li>
           <a href="/trainers/synertek/symulator/symulator.zip">SYMulator</a> -
@@ -193,5 +182,10 @@
             supports Supermon 1.1 at $8000, Basic at $C000, and RAE at $B000.
         </li>
   		</ul>
-	  </p>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+  </aside>
 </div>

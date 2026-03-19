@@ -1,14 +1,16 @@
 <? $this->title = 'Simple Microcomputers and Trainers' ?>
 <? $this->description = 'Information and links for the first generation of 6502-based systems.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
-  This section is dedicated to the first generation of 6502-based microcomputers and
-  trainers, such as the MOS KIM-1 and Rockwell AIM-65.  Modern trainers and
-  simple computers built in the same spirit can also be found here.
+  <p>
+    This section is dedicated to the first generation of 6502-based microcomputers and
+    trainers, such as the MOS KIM-1 and Rockwell AIM-65.  Modern trainers and
+    simple computers built in the same spirit can also be found here.
+  </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="acorn"><b>Acorn Microcomputer (Acorn System 1)</b></a>
+  <?= $this->categoryHeader('acorn', 'Acorn Microcomputer (Acorn System 1)', 'Acorn System 1') ?>
   <ul>
     <li>
       <a href="http://speleotrove.com/acorn/index.html">Mike Cowlishaw's Acorn Pages</a> -
@@ -18,8 +20,7 @@
   </ul>
   </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="kim1"><b>MOS Technology KIM-1</b></a>
+  <?= $this->categoryHeader('kim1', 'MOS Technology KIM-1', 'KIM-1') ?>
   <ul>
     <li>
       <a href="/trainers/buildkim/kim.htm">What is the KIM-1?</a> -
@@ -81,8 +82,7 @@
   </ul>
   </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="sym1"><b>Synertek SYM-1</b></a>
+  <?= $this->categoryHeader('sym1', 'Synertek SYM-1', 'SYM-1') ?>
   <ul>
     <li>
       The <a href="synertek">Synertek SYM-1 Resources</a>
@@ -92,8 +92,7 @@
   </ul>
   </p>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="microtan65"><b>Tangerine Microtan 65</b></a>
+  <?= $this->categoryHeader('microtan65', 'Tangerine Microtan 65', 'Microtan 65') ?>
   <ul>
     <li>
       <a href="http://oric.free.fr/microtan.html">The Microtan65 Page</a> -
@@ -114,6 +113,10 @@
       came bundled with several Microtan programs.
     </li>
   </ul>
-  </p>
 
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+  </aside>
 </div>

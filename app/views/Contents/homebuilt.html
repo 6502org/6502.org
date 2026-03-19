@@ -1,18 +1,16 @@
 <? $this->title = 'Homebuilt Projects' ?>
 <? $this->description = 'Links to 6502-based computers and CPUs built by hobbyists.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
-		Here is a collection of some amazing 6502-based projects on the web built
+  <p>
+    Here is a collection of some amazing 6502-based projects on the web built
     by fellow enthusiasts. Many of these sites offer schematics, source code,
-    and even photos! If you know of a self-built 6502 system on the web that
-    is not listed here please send us the URL via
-		<?= $this->emailLink('email', '6502.org Homebuilt Projects') ?>.
-		Also, 6502.org offers free web hosting for sites with good 6502
-    content, just ask if you'd like to take advantage of this service.
+    and even photos!
+  </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-		<a name="hardware"><b>Homebuilt 6502 Computers &amp; Hardware</b></a>
+  <?= $this->categoryHeader('hardware', 'Homebuilt 6502 Computers & Hardware', 'Hardware') ?>
 
 		<ul>
   		<li>
@@ -362,8 +360,7 @@
   		</li>
     </ul>
 
-	  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-	  <a name="HDL"><b>6502 CPU Projects in HDL (for FPGA)</b></a>
+  <?= $this->categoryHeader('hdl', '6502 CPU Projects in HDL (for FPGA)', 'HDL / FPGA') ?>
 
   	<ul>
   		<li>
@@ -471,8 +468,7 @@
 
 	  </ul>
 
-  	<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  	<a name="software"><b>Homebuilt 6502 Software Projects</b></a>
+  <?= $this->categoryHeader('software', 'Homebuilt 6502 Software Projects', 'Software') ?>
 
   	<ul>
   		<li>
@@ -534,8 +530,7 @@
       </li>
   	</ul>
 
-	  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-	  <a name="software"><b>Reverse Engineering Projects</b></a>
+  <?= $this->categoryHeader('reverse', 'Reverse Engineering Projects', 'Reverse Engineering') ?>
 
 	  <ul>
 	    <li>
@@ -547,4 +542,18 @@
       </li>
     </ul>
 
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+
+    <div class="sidebar-callout">
+      <strong>Contribute</strong>
+      <p>
+        Have a 6502 project that should be listed?
+        <?= $this->emailLink('Contact us', '6502.org Homebuilt Projects') ?>
+        with the URL.
+      </p>
+    </div>
+  </aside>
 </div>

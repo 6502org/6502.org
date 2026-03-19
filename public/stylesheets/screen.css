@@ -143,6 +143,21 @@ a[name]:not([href]):active {
   animation: doc-highlight-fade 10s ease-out;
 }
 
+/* === Groups filter === */
+.groups-filter {
+  font-size: 13px;
+  color: var(--gray-600);
+  background: var(--gray-100);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  margin: 12px 0 4px 0;
+  display: inline-block;
+}
+
+.groups-filter label {
+  cursor: pointer;
+}
+
 /* === Flash Messages === */
 .flash-notice, .flash-alert {
   max-width: var(--max-width);
@@ -467,6 +482,10 @@ a.offsite::after {
   line-height: 1.8;
 }
 
+.sidebar-box .box p:first-child {
+  margin-top: 0;
+}
+
 .sidebar-box .box a:link    { font-size: 14px; color: var(--blue-600); text-decoration: none; }
 .sidebar-box .box a:visited { font-size: 14px; color: var(--blue-700); }
 .sidebar-box .box a:hover   { text-decoration: underline; color: var(--blue-500); }
@@ -672,8 +691,8 @@ a.featured-card:hover {
   line-height: 1.5;
 }
 
-/* === Section Headers (folder icons on content pages) === */
-.section-header {
+/* === Category Headers (folder icons on content pages) === */
+.category-header {
   margin: 0;
   padding-top: 20px;
   display: flex;

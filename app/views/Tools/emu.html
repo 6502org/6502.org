@@ -2,7 +2,8 @@
 <? $this->navTitle = 'Development Tools' ?>
 <? $this->description = 'Programs that emulate the 6502 microprocessor and its support chips.' ?>
 
-<div class="content-page">
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
     <div class="breadcrumbs"><a href="/tools">Development Tools</a> / Emulators</div>
 
@@ -16,8 +17,7 @@
       dramatically speed up your development process.
     </p>
 
-    <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-      <a name="javascript"><b>Web-based 6502 Emulators</b></a>
+    <?= $this->categoryHeader('javascript', 'Web-based 6502 Emulators', 'Web-based') ?>
       <ul>
         <li>
           <a href="http://www.6502asm.com/">6502 Assembler &amp; Emulator in JavaScript</a> -
@@ -50,8 +50,7 @@
       </ul>
     </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="emulation"><b>Desktop-based 6502 Emulation and Simulators</b></a>
+    <?= $this->categoryHeader('emulation', 'Desktop-based 6502 Emulation and Simulators', 'Desktop-based') ?>
   		<ul>
         <li>
           <a href="/tools/emu/la6502emu.txt">6502 Emulation Core for 680X0</a> -
@@ -215,8 +214,7 @@
       </ul>
     </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="embedded"><b>Embedded 6502 emulation</b> (on microcontrollers)</a>
+    <?= $this->categoryHeader('embedded', 'Embedded 6502 Emulation (on Microcontrollers)', 'Embedded') ?>
   		<ul>
         <li>
           <a href="http://sourceforge.net/p/em-65c02/wiki/Home/">Andrew Jacobs'</a>
@@ -262,8 +260,7 @@
       </ul>
     </p>
 
-		<p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  		<a name="tests"><b>6502 Test programs</b> (for emulators and re-implementations)</a>
+    <?= $this->categoryHeader('tests', '6502 Test Programs (for Emulators and Re-implementations)', 'Test Programs') ?>
   		<ul>
         <li>
           <a href="https://github.com/Klaus2m5/6502_65C02_functional_tests/tree/master">Klaus Dormann's test suite</a> -
@@ -312,6 +309,10 @@
           by Piotr Fusik include exhaustive tests for ADC, SBC and 0x6B as well as a few tests for other undocumented opcodes.
        </li>
       </ul>
-    </p>
 
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+  </aside>
 </div>

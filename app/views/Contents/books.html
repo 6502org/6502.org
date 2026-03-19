@@ -1,17 +1,17 @@
 <? $this->title = 'Books' ?>
 <? $this->description = 'A listing of must-read books about the 6502 microprocessor.' ?>
 
-<div class="content-page">
-  Many good books have been published about the 6502 over the years.
-  This list attempts to catalog as many of them as possible.  If you know of a book
-  that's not on the list, please
-  <?= $this->emailLink('email', '6502.org Books') ?>
-  its information to us.  Be sure to include all relevant information (author,
-  title, publisher/location, date).  The list is maintained in the form of citations
-  as specified by the <a href="http://www.mla.org">Modern Language Association</a> (MLA).
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="print-english"><b>Print: English Language</b></a>
+  <p>
+    Many good books have been published about the 6502 over the years.
+    This list attempts to catalog as many of them as possible.
+    The list is maintained in the form of citations
+    as specified by the <a href="http://www.mla.org">Modern Language Association</a> (MLA).
+  </p>
+
+  <?= $this->categoryHeader('print-english', 'Print: English Language', 'English') ?>
 
   <ul>
     <li>
@@ -179,8 +179,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="print-other"><b>Print: Other Languages</b></a>
+  <?= $this->categoryHeader('print-other', 'Print: Other Languages', 'Other Languages') ?>
 
   <ul>
     <li>
@@ -219,8 +218,7 @@
     </li>
   </ul>
 
-  <p class="section-header"><img src="/images/files/folder_open.gif" alt="**">&nbsp;
-  <a name="online"><b>Books Available Online</b></a>
+  <?= $this->categoryHeader('online', 'Books Available Online', 'Online') ?>
 
   <ul>
     <li>
@@ -242,4 +240,19 @@
       same building blocks have gotten a lot denser and faster.
     </li>
   </ul>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->categoriesSidebar() ?>
+
+    <div class="sidebar-callout">
+      <strong>Contribute</strong>
+      <p>
+        Know of a book that should be listed?
+        <?= $this->emailLink('Contact us', '6502.org Books') ?>
+        with the details (author, title, publisher, date).
+      </p>
+    </div>
+  </aside>
 </div>
