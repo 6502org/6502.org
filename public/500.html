@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Internal Server Error - 6502.org</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, Helvetica, Arial, sans-serif;
+      color: #374151;
+      background: #f4f5f7;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e4f7a 0%, #2a6099 50%, #3574b4 100%);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .header a {
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .header img {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+      margin-top: 2px;
+    }
+    .title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .title {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 2px;
+    }
+    .content {
+      text-align: center;
+      padding: 80px 20px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+    .code {
+      font-size: 48px;
+      font-weight: 700;
+      color: #1e4f7a;
+    }
+    .title-text {
+      font-size: 28px;
+      font-weight: 600;
+      color: #374151;
+      margin-top: 4px;
+    }
+    .path {
+      font-size: 18px;
+      margin-top: 24px;
+    }
+    .message {
+      font-size: 18px;
+      margin-top: 24px;
+    }
+    .home {
+      margin-top: 24px;
+    }
+    .home a {
+      color: #2a6099;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .home a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="/">
+      <img src="/images/6502org_logo.png" alt="">
+      <span class="title-group">
+        <span class="title">6502.org</span>
+        <span class="subtitle">The 6502 Microprocessor Resource</span>
+      </span>
+    </a>
+  </div>
+  <div class="content">
+    <p class="code">500</p>
+    <p class="title-text">Internal Server Error</p>
+    <p class="message">This is probably a temporary error. Please try again
+      in a few minutes. If the problem persists, you can help us fix it
+      by opening an issue
+      <a href="https://github.com/6502org/6502.org">on GitHub</a>
+      (account required).</p>
+    <p class="home"><a href="/">&larr; Return to the home page</a></p>
+  </div>
+</body>
+</html>

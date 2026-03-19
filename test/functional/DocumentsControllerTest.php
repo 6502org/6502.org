@@ -34,14 +34,20 @@ class DocumentsControllerTest extends Mad_Test_Functional
         $this->assertResponseContains('6500 Microprocessors');
     }
 
-    public function testReadableFileIsServed(): void
+    // The webserver should serve files directly. If a readable file
+    // reaches the controller, the server is misconfigured.
+    public function testReadableFileReturns500(): void
     {
-        $path = MAD_ROOT . '/public/documents/datasheets/mos/mos_6500_mpu_nov_1985.pdf';
-        @mkdir(dirname($path), 0755, true);
+        $path = DOCUMENTS_ROOT . 'datasheets/mos/mos_6500_mpu_nov_1985.pdf';
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0755, true);
+        }
         file_put_contents($path, 'fake pdf');
+
         try {
             $this->get('/documents/datasheets/mos/mos_6500_mpu_nov_1985.pdf');
-            $this->assertResponse('success');
+            $this->assertResponse(500);
+            $this->assertSelect('p.message', '/mod_rewrite/');
         } finally {
             unlink($path);
         }

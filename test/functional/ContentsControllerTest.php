@@ -76,5 +76,15 @@ class ContentsControllerTest extends Mad_Test_Functional
         $this->assertResponse('success');
         $this->assertResponseContains('Discussion Groups');
     }
+
+    // The site icon is referenced by the standalone error pages
+    // (public/404.html), so we have to update those pages if we
+    // change the icon filename.
+    public function testSiteIconExists(): void
+    {
+        $this->assertTrue(
+            file_exists(MAD_ROOT . '/public/images/6502org_logo.png')
+        );
+    }
 }
 

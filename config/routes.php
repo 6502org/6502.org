@@ -13,6 +13,4 @@ $map->connect('source',        array('controller' => 'contents', 'action' => 're
 
 $map->connect('documents*path',        array('controller' => 'documents', 'action' => 'index'));
 
-$map->connect('404',        array('controller' => 'errors', 'action' => 'error404'));
-
 $map->connect(':controller/:action/:id', array('id' => null));

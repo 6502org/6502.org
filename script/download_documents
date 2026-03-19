@@ -282,7 +282,7 @@ function formatBytes($bytes)
  * Main
  */
 
-$destDir = isset($options['output']) ? rtrim($options['output'], '/') : MAD_ROOT . '/public/documents';
+$destDir = isset($options['output']) ? rtrim($options['output'], '/') : rtrim(DOCUMENTS_ROOT, '/');
 $downloadDelay = isset($options['delay']) ? (int)$options['delay'] : 5;
 $maxRetries = isset($options['retries']) ? (int)$options['retries'] : 5;
 $retryDelay = isset($options['retry-delay']) ? (int)$options['retry-delay'] : 30;

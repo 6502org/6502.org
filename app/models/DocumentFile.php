@@ -17,7 +17,7 @@ class DocumentFile extends Mad_Model_Base
 
     public function localPath()
     {
-        return MAD_ROOT . '/public/documents/'
+        return DOCUMENTS_ROOT
              . $this->documentFolder->path . $this->filename;
     }
 

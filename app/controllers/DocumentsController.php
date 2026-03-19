@@ -24,9 +24,7 @@ class DocumentsController extends ApplicationController
 
             if ($doc) {
                 if ($doc->isReadable()) {
-                    $this->sendFile($doc->localPath(), [
-                        'disposition' => 'inline'
-                    ]);
+                    $this->_renderErrorForServerMisconfiguration($doc);
                 } elseif (!empty($doc->mirror_url)) {
                     $this->redirectTo($doc->mirror_url);
                 } else {
@@ -47,5 +45,24 @@ class DocumentsController extends ApplicationController
             return end($this->folders)->path();
         }
         return '/';
+    }
+
+    // The webserver should serve document files directly, never through
+    // PHP. If a readable file reaches this controller, the server is
+    // misconfigured (e.g. missing rewrite rules).
+    protected function _renderErrorForServerMisconfiguration($doc)
+    {
+        $template = file_get_contents(MAD_ROOT . '/public/500.html');
+        $replacement = $this->_view->render(
+            'Documents/_file_error.html', 
+            ['url' => $this->_request->getUri()]);
+
+        $html = preg_replace(
+            '/<p class="message">.*?<\/p>/s',
+            $replacement,
+            $template
+        );
+
+        $this->render(['text' => $html, 'status' => 500]);
     }
 }

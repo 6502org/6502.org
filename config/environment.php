@@ -14,3 +14,7 @@ $config = Mad_Madness_Initializer::run();
 $config->end();
 
 define('CONTACT_EMAIL', 'mike@naberezny.com');
+
+if (!defined('DOCUMENTS_ROOT')) {
+    define('DOCUMENTS_ROOT', MAD_ROOT . '/public/documents/');
+}
