@@ -123,6 +123,10 @@ a[name]:not([href]):active {
   display: none;
 }
 
+.doc-hidden {
+  opacity: 0.4;
+}
+
 .doc-older-link {
   color: var(--gray-500);
   text-decoration: none;

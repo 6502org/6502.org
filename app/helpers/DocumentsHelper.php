@@ -57,7 +57,11 @@ class DocumentsHelper extends ApplicationHelper
     {
         $ext = pathinfo($doc->filename, PATHINFO_EXTENSION);
         $ext = strtolower($ext);
-        return "files/$ext.gif";
+        $path = "files/$ext.gif";
+        if (!file_exists(MAD_ROOT . "/public/images/$path")) {
+            $path = "files/file.gif";
+        }
+        return $path;
     }
 
     public function numberToHumanSizeWithDotZero($num)

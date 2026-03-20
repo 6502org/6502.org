@@ -50,3 +50,731 @@ hidden_file:
   visible: 0
   obsolete: 0
   created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 manuals
+sym1_reference_manual:
+  id: 100
+  title: "SYM-1 Reference Manual"
+  filename: sym1_reference_manual.pdf
+  pages: 255
+  filesize: 14615308
+  folder_id: 7
+  sha1: 1a8e0e346ee0b83dab7af98162a0c0b8cd39e2cc
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_technical_notes:
+  id: 101
+  title: "SYM-1 Technical Notes"
+  filename: sym1_technical_notes.pdf
+  pages: 57
+  filesize: 4386127
+  folder_id: 7
+  sha1: a63a95b2f8db02780a1157e94d7ef2839c2a0406
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_hardware_theory:
+  id: 102
+  title: "Hardware Theory of Operations Manual"
+  filename: sym1_hardware_theory_of_operations.pdf
+  pages: 45
+  filesize: 3451746
+  folder_id: 7
+  sha1: 8909b6a6360fa36199d56e27e2ef0f5cbc2c24b5
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_monitor_theory:
+  id: 103
+  title: "Monitor Theory of Operations Manual"
+  filename: sym1_monitor_theory_of_operations.pdf
+  pages: 77
+  filesize: 6723673
+  folder_id: 7
+  sha1: 5faf6148ecb73de6440df31db302c91c2a9a40c5
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 monitor
+sym1_monitor_enhancements:
+  id: 104
+  title: "Monitor Version 1.1 Enhancements"
+  filename: sym1_monitor_v1.1_enhancements.pdf
+  pages: 54
+  filesize: 1801914
+  folder_id: 8
+  sha1: 3f92218d9032bf321a6c8bc834e001cc56f356c4
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 RAE
+sym1_rae_reference:
+  id: 105
+  title: "RAE Reference Manual"
+  filename: sym1_rae_reference_manual.pdf
+  pages: 80
+  filesize: 6128211
+  folder_id: 9
+  sha1: bf323421ccb8ed444bb431454670e06819626a6f
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_rae_quick_ref:
+  id: 106
+  title: "RAE Quick Reference Card"
+  filename: sym1_rae_quick_reference_card.pdf
+  pages: 2
+  filesize: 2685686
+  folder_id: 9
+  sha1: 371fb0e1890614082b9edf176b789123d864affc
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_rae_notes_1:
+  id: 107
+  title: "RAE Notes Issue #1"
+  filename: sym1_rae_notes_issue_1.pdf
+  pages: 2
+  filesize: 281895
+  folder_id: 9
+  sha1: da68da06bb87aacfde1eba57863b39c3cb1038c2
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_rae_notes_2:
+  id: 108
+  title: "RAE Notes Issue #2"
+  filename: sym1_rae_notes_issue_2.pdf
+  pages: 14
+  filesize: 1284176
+  folder_id: 9
+  sha1: cb3c1c2bfb26033e31f28eee4f7fce21ee0c22ca
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_rae_notes_3:
+  id: 109
+  title: "RAE Notes Issue #3"
+  filename: sym1_rae_notes_issue_3.pdf
+  pages: 10
+  filesize: 1005857
+  folder_id: 9
+  sha1: 6f11343d3c78d05fa1b432a68a4f1f961a49096a
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_rae_dessaintes:
+  id: 110
+  title: "Dessainte's Disassembler for RAE"
+  filename: sym1_rae_dessaintes_disassembler.pdf
+  pages: 4
+  filesize: 1735294
+  folder_id: 9
+  sha1: 1545b63033e8c0c8af4d291f20e2cace84a14f0d
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 BASIC
+sym1_basic_1978:
+  id: 111
+  title: "Synertek BASIC Reference Manual (1978)"
+  filename: sym1_basic_reference_manual_1978.pdf
+  pages: 59
+  filesize: 1685598
+  folder_id: 10
+  sha1: 04546d5a8583d6c85ca8715ad496e59b710db335
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_basic_1981:
+  id: 112
+  title: "Synertek BASIC Reference Manual (1981)"
+  filename: sym1_basic_reference_manual_1981.pdf
+  pages: 65
+  filesize: 4054126
+  folder_id: 10
+  sha1: 2905c13fc306f26e5079fa549b0ca7fbd1c35105
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_basic_listings:
+  id: 113
+  title: "BASIC Source Listings"
+  filename: sym1_basic_source_listings.pdf
+  pages: 21
+  filesize: 2664331
+  folder_id: 10
+  sha1: 8f7d1c9c6e6e2c2ce169da310da04b56646c7be4
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 perSYMone
+persymone_instruction:
+  id: 114
+  title: "perSYMone FDC-1 Instruction Manual"
+  filename: persymone_fdc1_instruction_manual.pdf
+  pages: 41
+  filesize: 1257576
+  folder_id: 11
+  sha1: 1d8964dcee57c48b272e57b72ba1c4356e07d98b
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+persymone_source:
+  id: 115
+  title: "FDC-1 Source Code (SYMDOS MON/BAS/RAE Interface)"
+  filename: persymone_fdc1_source_code.pdf
+  pages: 56
+  filesize: 2135056
+  folder_id: 11
+  sha1: 13fa66d64cfc5f02712e36e735162b010b1fcd2b
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+persymone_assembly:
+  id: 116
+  title: "Assembling the FDC-1 perSYMone"
+  filename: persymone_fdc1_assembly_instructions.pdf
+  pages: 1
+  filesize: 49350
+  folder_id: 11
+  sha1: 60bcb83a3cb2d37d30ecb742c2aa34d5ca38fd2b
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+persymone_technotes:
+  id: 117
+  title: "FDC-1 Technical Notes"
+  filename: persymone_fdc1_technical_notes.pdf
+  pages: 1
+  filesize: 48153
+  folder_id: 11
+  sha1: 4908b3600110ac319694ec184f346d1daef811d3
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 Saturn Software
+sym1_skforth79_guide:
+  id: 118
+  title: "SK-FORTH79 User's Guide and Glossaries"
+  filename: sym1_skforth79_users_guide.pdf
+  pages: 69
+  filesize: 20183168
+  folder_id: 12
+  sha1: f7d4e6ca19acb90dd786ef53b2e6236bb7ffb329
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_skforth79_source:
+  id: 119
+  title: "SK-FORTH79 Source Listing"
+  filename: sym1_skforth79_source_listing.pdf
+  pages: 73
+  filesize: 18372137
+  folder_id: 12
+  sha1: 8f85efba15f3e3dd679642c1d069691f8d7ecd65
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_sympascal:
+  id: 120
+  title: "SYM-PASCAL User's Guide"
+  filename: sym1_sympascal_users_guide.pdf
+  pages: 23
+  filesize: 5273938
+  folder_id: 12
+  sha1: d2896ea485cd4be4349fbd88e35af79ec9ffb296
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_xray:
+  id: 121
+  title: "X-RAY User's Guide and Listing"
+  filename: sym1_xray_users_guide_and_listing.pdf
+  pages: 22
+  filesize: 6608038
+  folder_id: 12
+  sha1: d9d863c5e6f701ef8070b56940d6c7982028df41
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Synertek SYM-1 FORTH
+sym1_fdc_forth:
+  id: 122
+  title: "FDC-FORTH Installation Instructions"
+  filename: sym1_fdc_forth_installation.pdf
+  pages: 4
+  filesize: 424331
+  folder_id: 13
+  sha1: 04f91895c345a432eb47e89cd92c57bd41966c22
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+persymone_photo:
+  id: 124
+  title: "FDC-1 Board Photo"
+  filename: fdc1_photo.jpg
+  pages: 0
+  filesize: 712258
+  folder_id: 11
+  sha1: 681c86b315bb9eceb93c4ec1b9f1e35b92b5d6b8
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+persymone_eprom:
+  id: 125
+  title: "FDC-1 EPROM (Intel HEX)"
+  filename: symfdc1.hex
+  pages: 0
+  filesize: 11391
+  folder_id: 11
+  sha1: 74f8969b3076347670b5694e8c6fd7958ec7d6dc
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+sym1_ktm2_schematic:
+  id: 123
+  title: "KTM-2 Schematic"
+  filename: ktm2_schematic.jpg
+  pages: 0
+  filesize: 6767749
+  folder_id: 14
+  sha1: 17bceabef313246ee171474c72084bd670043155
+  visible: 1
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+# Downloads (hidden files)
+dl_conv:
+  id: 200
+  title: "65C816 to 6502 Converter Files"
+  filename: conv.zip
+  pages: 0
+  filesize: 35403
+  folder_id: 52
+  sha1: 1df4e7c0fd78ec8eb1b58f12aa473a3724310a08
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_datapod_project:
+  id: 201
+  title: "Data Pod Project Files"
+  filename: datapod_project.zip
+  pages: 0
+  filesize: 1551790
+  folder_id: 53
+  sha1: b1aa5c20979ab9d5c42707ad4844161843de25e0
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_lp2954a:
+  id: 202
+  title: "LP2954A Datasheet"
+  filename: lp2954a.pdf
+  pages: 13
+  filesize: 345088
+  folder_id: 53
+  sha1: c5bdb709176ce9bf9c29729646e1501ebb030834
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_i2c:
+  id: 203
+  title: "I2C Bus Specification"
+  filename: i2c_bus_specification.pdf
+  pages: 46
+  filesize: 286576
+  folder_id: 53
+  sha1: d553eed17afdf6a59127186c37cabe043864eca8
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_at24c256:
+  id: 204
+  title: "AT24C256 Datasheet"
+  filename: at24c256.pdf
+  pages: 16
+  filesize: 270024
+  folder_id: 53
+  sha1: 278701098e3bf6a31abeda57f0c377b526e8e905
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_at24c512:
+  id: 205
+  title: "AT24C512 Datasheet"
+  filename: at24c512.pdf
+  pages: 12
+  filesize: 255912
+  folder_id: 53
+  sha1: 6cca19e141eae590af7b55500e57f065673790f7
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_nm24c17u:
+  id: 206
+  title: "NM24C17U Datasheet"
+  filename: nm24c17u.pdf
+  pages: 13
+  filesize: 99345
+  folder_id: 53
+  sha1: 7c346ad389278fabdba432262735847feb7bc3e8
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_an794:
+  id: 207
+  title: "AN-794: EEPROM Endurance"
+  filename: an794_eeprom_endurance.pdf
+  pages: 10
+  filesize: 38176
+  folder_id: 53
+  sha1: d6d0cd16aa2f6c7c7bd80c6060686c3d2b0f0885
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_datapod_source:
+  id: 208
+  title: "Data Pod Source Code"
+  filename: datapod_source_code.zip
+  pages: 0
+  filesize: 34658
+  folder_id: 53
+  sha1: 27ebb56837daeac1b53805fd264fa9f4d8654950
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_forth65:
+  id: 209
+  title: "FIG-FORTH for the 6502"
+  filename: forth65.zip
+  pages: 0
+  filesize: 33581
+  folder_id: 56
+  sha1: e3301236c655dd5b33ff34178b7826ea587661aa
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_uchess:
+  id: 210
+  title: "MicroChess"
+  filename: uchess.pdf
+  pages: 15
+  filesize: 905901
+  folder_id: 55
+  sha1: ee79961a932279344e698d6cd289e1197e649339
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_supermon816:
+  id: 211
+  title: "SuperMon 816"
+  filename: supermon816.zip
+  pages: 0
+  filesize: 849037
+  folder_id: 56
+  sha1: 0a4bb9f4d3917aeb39499e9e5cdc21b79dca38c1
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_2ksa:
+  id: 212
+  title: "2KSA Symbolic Assembler"
+  filename: 2ksa.pdf
+  pages: 65
+  filesize: 4553733
+  folder_id: 57
+  sha1: 6e95bdc55b1dee548c638b9e1190697e8eeb92d8
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_816stringlib:
+  id: 213
+  title: "65C816 String Library"
+  filename: 816stringlib.zip
+  pages: 0
+  filesize: 661413
+  folder_id: 58
+  sha1: 08c0ccd3f27829f2dabf30b0115bbaa5881df090
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_fasm10:
+  id: 214
+  title: "FASM 1.0"
+  filename: fasm10.zip
+  pages: 0
+  filesize: 44631
+  folder_id: 60
+  sha1: d2edd550e13a2a4b242a479ed40ee6dbd25aa95c
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_ida37fw:
+  id: 215
+  title: "IDA Pro 3.7 Freeware"
+  filename: ida37fw.zip
+  pages: 0
+  filesize: 726117
+  folder_id: 60
+  sha1: 49970ff4f4fd340e0747fddeaf163c0c318e6937
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_lyxassv40:
+  id: 216
+  title: "LyxAss v4.0"
+  filename: lyxassv40.zip
+  pages: 0
+  filesize: 25960
+  folder_id: 60
+  sha1: f3a68f3014c1c29243a3459a645dc01a40044eae
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_pvu6502:
+  id: 217
+  title: "PVU6502 Disassembler"
+  filename: pvu6502.zip
+  pages: 0
+  filesize: 289442
+  folder_id: 60
+  sha1: ba1257657f0a52a9c18a4ad508450b53a3ae1e37
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_tasm301:
+  id: 218
+  title: "TASM 3.01"
+  filename: tasm301.zip
+  pages: 0
+  filesize: 144656
+  folder_id: 60
+  sha1: b89131072b465a4b19549e34af99792b6f6bc619
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_u05500:
+  id: 219
+  title: "ASxxxx Cross Assemblers"
+  filename: u05500.zip
+  pages: 0
+  filesize: 1358213
+  folder_id: 60
+  sha1: 524013b908fd7affac4a4a6e08793cada74da61a
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_lib6502_10:
+  id: 220
+  title: "lib6502 1.0"
+  filename: lib6502-1.0.tar.gz
+  pages: 0
+  filesize: 31066
+  folder_id: 61
+  sha1: 100889cfbc1c0dcb299d11f3936136267f5e0e14
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_lib6502_13:
+  id: 221
+  title: "lib6502 1.3"
+  filename: lib6502-1.3.tar.gz
+  pages: 0
+  filesize: 31147
+  folder_id: 61
+  sha1: 17553f64c5bff489f046ff713209801a9a261c2d
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_lcc:
+  id: 222
+  title: "LCC 1.9 Retargetable C Compiler"
+  filename: lcc-1.9-retargetable.tar.gz
+  pages: 0
+  filesize: 972188
+  folder_id: 62
+  sha1: 8bbbdb44b86783e8274447b7d013b7c21279b270
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_hard_asc:
+  id: 223
+  title: "KIM-1 Hardware Manual (ASCII)"
+  filename: hard-asc.zip
+  pages: 0
+  filesize: 92023
+  folder_id: 64
+  sha1: afa11b569d0c3435d443fa790486cc3e74007aba
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_hard_dos:
+  id: 224
+  title: "KIM-1 Hardware Manual (DOS)"
+  filename: hard-dos.zip
+  pages: 0
+  filesize: 92788
+  folder_id: 64
+  sha1: 7f73b68bb3d5d2591126c5d0c1187c3a302be153
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_hint_asc:
+  id: 225
+  title: "KIM-1 Hints Guide (ASCII)"
+  filename: hint-asc.zip
+  pages: 0
+  filesize: 9970
+  folder_id: 64
+  sha1: 18c93433bc9bd083d3a72c59d8448937e3e9e50a
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_hint_dos:
+  id: 226
+  title: "KIM-1 Hints Guide (DOS)"
+  filename: hint-dos.zip
+  pages: 0
+  filesize: 9970
+  folder_id: 64
+  sha1: a3cce4b871ab4417ea234f61d9229a63c07cf0b1
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_kim:
+  id: 227
+  title: "Build Your Own KIM-1"
+  filename: kim.zip
+  pages: 0
+  filesize: 528894
+  folder_id: 64
+  sha1: 5c7d2f35e01078ae6a40c35a7f2e95664d669635
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_user_asc:
+  id: 228
+  title: "KIM-1 User's Guide (ASCII)"
+  filename: user-asc.zip
+  pages: 0
+  filesize: 59902
+  folder_id: 64
+  sha1: 54f80f42c22a1c06a844ce635a28d4989d0f0aaa
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_user_dos:
+  id: 229
+  title: "KIM-1 User's Guide (DOS)"
+  filename: user-dos.zip
+  pages: 0
+  filesize: 60044
+  folder_id: 64
+  sha1: b4944d2f566d379a8877543b736ac7dd258cde0e
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_mathpac:
+  id: 230
+  title: "MATHPAC"
+  filename: mathpac.zip
+  pages: 0
+  filesize: 514561
+  folder_id: 65
+  sha1: 965e4c717bc7e4cd11b9571c464fde517a7d4e58
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_raeref:
+  id: 231
+  title: "RAE Quick Reference"
+  filename: raeref.pdf
+  pages: 2
+  filesize: 268539
+  folder_id: 66
+  sha1: ae1872d01363d93a432047e0e04cb897c892f77d
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_symulator:
+  id: 232
+  title: "SYMulator"
+  filename: symulator.zip
+  pages: 0
+  filesize: 103807
+  folder_id: 66
+  sha1: ec264f3501f04493694b98f90c2bc7a1a7fbefc4
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"
+
+dl_forth_interrupts:
+  id: 233
+  title: "Zero-Overhead FORTH Interrupts"
+  filename: zero_overhead_forth_interrupts.pdf
+  pages: 5
+  filesize: 1211710
+  folder_id: 67
+  sha1: 46520bb16acbaa8e5c5fb8eb0344d1ab05b0d778
+  visible: 0
+  obsolete: 0
+  created_at: "2026-01-01 00:00:00"

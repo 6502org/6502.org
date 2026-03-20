@@ -1069,7 +1069,7 @@ class Horde_Routes_Mapper
         if (count($array) < 2) { return; }
 
         // split the array in half
-        $halfway = count($array) / 2;
+        $halfway = (int)(count($array) / 2);
         $array1 = array_slice($array, 0, $halfway);
         $array2 = array_slice($array, $halfway);
 

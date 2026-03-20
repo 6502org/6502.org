@@ -8,7 +8,8 @@
     <?= $this->breadcrumbs() ?>
 
     <? foreach ($this->folder->subfolders as $subfolder): ?>
-      <div class="doc-folder">
+      <? if ($subfolder->visible || !$this->isProduction()): ?>
+      <div class="doc-folder<? if (!$subfolder->visible): ?> doc-hidden<? endif ?>">
         <img src="/images/files/folder_closed.gif" alt="**">&nbsp;
 
         <a href="<?= $subfolder->path() ?>"><?= $this->h($subfolder->title) ?></a>
@@ -19,12 +20,13 @@
           </div>
         <? endif ?>
       </div>
+      <? endif ?>
     <? endforeach ?>
 
     <div class="doc-list">
       <? foreach ($this->folder->documentFiles as $doc): ?>
-        <? if ($doc->visible): ?>
-          <div class="doc-item<? if ($doc->obsolete): ?> doc-obsolete<? endif ?>">
+        <? if ($doc->visible || !$this->isProduction()): ?>
+          <div class="doc-item<? if ($doc->obsolete): ?> doc-obsolete<? endif ?><? if (!$doc->visible): ?> doc-hidden<? endif ?>">
             <div>
               <?= $this->linkTo($this->imageTag($this->fileFormatIcon($doc), ['border' => 0]), $this->downloadUrl($doc)) ?>
               &nbsp;&nbsp;<?= $this->h($doc->title) ?>
@@ -37,7 +39,7 @@
             </div>
             <div class="doc-item-detail">
               &nbsp;&nbsp;<a href="<?= $this->downloadUrl($doc) ?>"<? if (!$doc->isReadable()): ?> class="offsite"<? endif ?>><?= $this->h($doc->filename) ?></a> -
-              <?= $doc->pages ?> pages, <?= $this->numberToHumanSizeWithDotZero($doc->filesize) ?>
+              <? if ($doc->pages > 0): ?><?= $doc->pages ?> pages, <? endif ?><?= $this->numberToHumanSizeWithDotZero($doc->filesize) ?>
             </div>
           </div>
         <? endif ?>
@@ -52,7 +54,9 @@
       <div class="boxtitle"><?= $this->h($this->truncate($this->folder->title, 30)) ?></div>
       <ul class="box sidebar-list">
         <? foreach ($this->folder->subfolders as $subfolder): ?>
+        <? if ($subfolder->visible || !$this->isProduction()): ?>
         <li><a href="<?= $subfolder->path() ?>"><?= $this->h($this->truncate($subfolder->title, 30)) ?></a></li>
+        <? endif ?>
         <? endforeach ?>
       </ul>
     </div>

@@ -134,6 +134,32 @@ class DocumentFileTest extends Mad_Test_Unit
         $this->assertFalse($file->isReadable());
     }
 
+    // findByPath
+
+    public function testFindByPath(): void
+    {
+        $file = DocumentFile::findByPath('datasheets/mos/mos_6500_mpu_nov_1985.pdf');
+        $this->assertNotNull($file);
+        $this->assertEquals('mos_6500_mpu_nov_1985.pdf', $file->filename);
+    }
+
+    public function testFindByPathIsCaseInsensitive(): void
+    {
+        $file = DocumentFile::findByPath('datasheets/mos/MOS_6500_MPU_NOV_1985.PDF');
+        $this->assertNotNull($file);
+        $this->assertEquals('mos_6500_mpu_nov_1985.pdf', $file->filename);
+    }
+
+    public function testFindByPathReturnsNullForBadFilename(): void
+    {
+        $this->assertNull(DocumentFile::findByPath('datasheets/mos/nonexistent.pdf'));
+    }
+
+    public function testFindByPathReturnsNullForBadFolder(): void
+    {
+        $this->assertNull(DocumentFile::findByPath('datasheets/nonexistent/mos_6500_mpu_nov_1985.pdf'));
+    }
+
     // Helper
 
     private function _validFile()

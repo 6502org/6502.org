@@ -25,3 +25,218 @@ wdc:
   slug: wdc
   path: datasheets/wdc/
   parent_folder_id: 2
+
+microcomputers:
+  id: 5
+  title: Microcomputer Support
+  slug: microcomputers
+  path: microcomputers/
+  parent_folder_id: 1
+
+synertek_sym1:
+  id: 6
+  title: Synertek SYM-1
+  slug: synertek-sym1
+  path: microcomputers/synertek-sym1/
+  parent_folder_id: 5
+
+sym1_manuals:
+  id: 7
+  title: Manuals
+  slug: manuals
+  path: microcomputers/synertek-sym1/manuals/
+  parent_folder_id: 6
+
+sym1_monitor:
+  id: 8
+  title: Monitor
+  slug: monitor
+  path: microcomputers/synertek-sym1/monitor/
+  parent_folder_id: 6
+
+sym1_rae:
+  id: 9
+  title: RAE
+  slug: rae
+  path: microcomputers/synertek-sym1/rae/
+  parent_folder_id: 6
+
+sym1_basic:
+  id: 10
+  title: BASIC
+  slug: basic
+  path: microcomputers/synertek-sym1/basic/
+  parent_folder_id: 6
+
+sym1_persymone:
+  id: 11
+  title: perSYMone
+  slug: persymone
+  path: microcomputers/synertek-sym1/persymone/
+  parent_folder_id: 6
+
+sym1_saturn:
+  id: 12
+  title: Saturn Software
+  slug: saturn
+  path: microcomputers/synertek-sym1/saturn/
+  parent_folder_id: 6
+
+sym1_forth:
+  id: 13
+  title: FORTH
+  slug: forth
+  path: microcomputers/synertek-sym1/forth/
+  parent_folder_id: 6
+
+sym1_ktm2:
+  id: 14
+  title: KTM-2 Terminal
+  slug: ktm2
+  path: microcomputers/synertek-sym1/ktm2/
+  parent_folder_id: 6
+
+# Downloads (hidden)
+downloads:
+  id: 50
+  title: Downloads
+  slug: downloads
+  path: downloads/
+  parent_folder_id: 1
+  visible: 0
+
+dl_mini_projects:
+  id: 51
+  title: Mini-Projects
+  slug: mini-projects
+  path: downloads/mini-projects/
+  parent_folder_id: 50
+  visible: 0
+
+dl_816conv:
+  id: 52
+  title: 65C816 to 6502 Converter
+  slug: 816conv
+  path: downloads/mini-projects/816conv/
+  parent_folder_id: 51
+  visible: 0
+
+dl_datapod:
+  id: 53
+  title: Data Pod
+  slug: datapod
+  path: downloads/mini-projects/datapod/
+  parent_folder_id: 51
+  visible: 0
+
+dl_source:
+  id: 54
+  title: Source Code
+  slug: source
+  path: downloads/source/
+  parent_folder_id: 50
+  visible: 0
+
+dl_games:
+  id: 55
+  title: Games
+  slug: games
+  path: downloads/source/games/
+  parent_folder_id: 54
+  visible: 0
+
+dl_interpreters:
+  id: 56
+  title: Interpreters
+  slug: interpreters
+  path: downloads/source/interpreters/
+  parent_folder_id: 54
+  visible: 0
+
+dl_monitors:
+  id: 57
+  title: Monitors
+  slug: monitors
+  path: downloads/source/monitors/
+  parent_folder_id: 54
+  visible: 0
+
+dl_strings:
+  id: 58
+  title: String Libraries
+  slug: strings
+  path: downloads/source/strings/
+  parent_folder_id: 54
+  visible: 0
+
+dl_tools:
+  id: 59
+  title: Development Tools
+  slug: tools
+  path: downloads/tools/
+  parent_folder_id: 50
+  visible: 0
+
+dl_asm:
+  id: 60
+  title: Assemblers
+  slug: asm
+  path: downloads/tools/asm/
+  parent_folder_id: 59
+  visible: 0
+
+dl_emu:
+  id: 61
+  title: Emulators
+  slug: emu
+  path: downloads/tools/emu/
+  parent_folder_id: 59
+  visible: 0
+
+dl_lang:
+  id: 62
+  title: Compilers and Languages
+  slug: lang
+  path: downloads/tools/lang/
+  parent_folder_id: 59
+  visible: 0
+
+dl_trainers:
+  id: 63
+  title: Trainers
+  slug: trainers
+  path: downloads/trainers/
+  parent_folder_id: 50
+  visible: 0
+
+dl_buildkim:
+  id: 64
+  title: Build Your Own KIM-1
+  slug: buildkim
+  path: downloads/trainers/buildkim/
+  parent_folder_id: 63
+  visible: 0
+
+dl_kim1:
+  id: 65
+  title: KIM-1
+  slug: kim1
+  path: downloads/trainers/kim1/
+  parent_folder_id: 63
+  visible: 0
+
+dl_synertek:
+  id: 66
+  title: Synertek
+  slug: synertek
+  path: downloads/trainers/synertek/
+  parent_folder_id: 63
+  visible: 0
+
+dl_tutorials:
+  id: 67
+  title: Tutorials
+  slug: tutorials
+  path: downloads/tutorials/
+  parent_folder_id: 50
+  visible: 0

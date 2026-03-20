@@ -7,14 +7,17 @@ class ApplicationHelper extends Mad_View_Helper_Base
         return MAD_ENV == 'production';
     }
 
-    public function emailLink($label, $subject)
+    public function milestoneYears()
     {
-        return $this->mailTo(CONTACT_EMAIL, $label, [
-            'subject' => $subject,
-            'encode'  => 'javascript'
-        ]);
+        $foundedYear = 1999;
+        $foundedMonth = 6;
+        $now = getdate();
+        $years = $now['year'] - $foundedYear;
+        if ($now['mon'] < $foundedMonth) {
+            $years--;
+        }
+        return floor($years / 5) * 5;
     }
-
     public function navLink($label, $urlOptions)
     {
         $controller = $this->controller->getControllerName();
@@ -72,15 +75,27 @@ class ApplicationHelper extends Mad_View_Helper_Base
         return $html;
     }
 
-    public function milestoneYears()
+    public function emailLink($label, $subject)
     {
-        $foundedYear = 1999;
-        $foundedMonth = 6;
-        $now = getdate();
-        $years = $now['year'] - $foundedYear;
-        if ($now['mon'] < $foundedMonth) {
-            $years--;
-        }
-        return floor($years / 5) * 5;
+        return $this->mailTo(CONTACT_EMAIL, $label, [
+            'subject' => $subject,
+            'encode'  => 'javascript'
+        ]);
     }
+
+    /**
+     * Link to a file in the Documents Archive.
+     * Throws an exception if the file does not exist in the database.
+     *
+     *   <?= $this->linkToDocumentFile('microcomputers/synertek-sym1/manuals/sym1_reference_manual.pdf', 'SYM-1 Reference Manual') ?>
+     *   <?= $this->linkToDocumentFile('downloads/mini-projects/datapod/datapod_source_code.zip', 'Download') ?>
+     */
+    public function linkToDocumentFile($path, $label)
+    {
+        if (DocumentFile::findByPath($path) === null) {
+            throw new Exception("linkToDocumentFile: \"$path\" not found");
+        }
+        return $this->linkTo($label, '/documents/' . $path);
+    }
+
 }

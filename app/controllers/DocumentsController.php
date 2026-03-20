@@ -13,6 +13,9 @@ class DocumentsController extends ApplicationController
         // All slugs resolved to folders — display the last one.
         if (count($this->folders) == $expectedCount) {
             $this->folder = end($this->folders);
+            if (!$this->folder->visible && $this->_isProduction()) {
+                $this->redirectTo(['controller' => 'documents', 'action' => 'index']);
+            }
             return;
         }
 
@@ -65,4 +68,5 @@ class DocumentsController extends ApplicationController
 
         $this->render(['text' => $html, 'status' => 500]);
     }
+
 }

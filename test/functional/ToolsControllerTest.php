@@ -10,6 +10,7 @@ class ToolsControllerTest extends Mad_Test_Functional
 {
     public function setUp(): void
     {
+        $this->fixtures('document_folders', 'document_files');
         parent::setUp();
     }
 

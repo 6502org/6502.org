@@ -15,6 +15,25 @@ class DocumentFile extends Mad_Model_Base
         $this->validatesNumericalityOf('filesize');
     }
 
+    /**
+     * Find a file by its full folder path and filename,
+     * e.g. "downloads/mini-projects/datapod/datapod_source_code.zip"
+     */
+    public static function findByPath($path)
+    {
+        $parts = explode('/', trim($path, '/'));
+        $filename = array_pop($parts);
+        $folderPath = implode('/', $parts) . '/';
+
+        return self::find('first', [
+            'conditions' => 'LOWER(filename) = :filename AND folder_id IN '
+                          . '(SELECT id FROM document_folders WHERE path = :folder_path)'
+        ], [
+            ':filename' => strtolower($filename),
+            ':folder_path' => $folderPath
+        ]);
+    }
+
     public function localPath()
     {
         return DOCUMENTS_ROOT

@@ -56,10 +56,9 @@ class DocumentFolderTest extends Mad_Test_Unit
 
     public function testSubfolders(): void
     {
-        $root = DocumentFolder::find($this->document_folders('root')->id);
-        $subfolders = $root->subfolders;
-        $this->assertEquals(1, count($subfolders));
-        $this->assertEquals('Datasheets', $subfolders[0]->title);
+        $datasheets = DocumentFolder::find($this->document_folders('datasheets')->id);
+        $subfolders = $datasheets->subfolders;
+        $this->assertEquals(2, count($subfolders));
     }
 
     public function testDocumentFiles(): void
