@@ -6,6 +6,7 @@
 /public/*.php
 !/public/index.php
 /public/documents/*
+/public/forum
 /public/javascripts/cache
 /public/stylesheets/cache
 /public/users
