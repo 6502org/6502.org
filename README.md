@@ -1,6 +1,6 @@
 # Main Website
 
-This is the source code for the main part of the [6502.org](http://6502.org/) website, which is everything except the forum, users' pages, and the PDF files in the documents archive.
+This is the source code for the main part of the [6502.org](http://6502.org/) website.
 
 The website requires a Unix-like machine (e.g. Linux, macOS) and PHP version 5.4 through 8.4 with the `curl`, `pdo_sqlite`, and `zip` extensions installed.  To run the test suite, `phpunit` is also required.
 
@@ -34,11 +34,11 @@ Open a browser to http://localhost:3000/ to view it.  It will be a fully functio
 
 (To use a port other than the default `3000`, see ``php ./script/server --help``.)
 
-## Documents
+## Documents Achive
 
-The files in the [Documents Archive](http://6502.org/documents), such as the datasheet PDFs, are not included in this repository. When running the website locally, documents will be served from a public mirror if they do not exist on disk.
+6502.org hosts many gigabytes of large files in the [Documents Archive](http://6502.org/documents), such as the datasheet PDFs. These files are not included in this Git repository.
 
-A script is provided to automatically download the documents from the public mirrors to the local disk.  With no arguments, the script will download the entire archive:
+When running the website locally, documents will be served from a public mirror if they do not exist on disk.  A script is provided to automatically download the documents from the public mirrors to the local disk.  With no arguments, the script will download the entire archive:
 
 ```
 $ php script/download_documents
@@ -58,3 +58,24 @@ Use ``--help`` for a list of options.  The ``--filter`` option in particular is 
 ```
 $ php script/download_documents --filter=datasheets
 ```
+
+## Hosted Sites
+
+6502.org also hosts various sub-sites with 6502-related content.  At the time of writing, these are:
+
+- `/users/alexis`: [Alexis Kotlowy-Brown's "ROMless 6502" Project](https://github.com/6502org/alexis)
+- `/users/andre`: [André Fachat's 8-bit Pages](https://github.com/6502org/andre)
+- `/users/obelisk`: [Andrew Jacobs' "Obelisk" Pages](https://github.com/6502org/obelisk)
+- `/users/dallas`: [Dallas Shell's SYM-1 Pages](https://github.com/6502org/dallas)
+- `/users/dieter`: [Dieter Mueller's TTL CPU Pages](https://github.com/6502org/dieter)
+- `/users/garth`: [Garth Wilson's Project Pages](https://github.com/6502org/garth)
+- `/users/idoc`: [Peter Krefting's "iDoc=" Website](https://github.com/6502org/idoc)
+- `/users/krzysztof`: [Krzysztof Swiecicki's Project Pages](https://github.com/6502org/krzysztof)
+- `/users/mike`: [Mike Naberezny's 6504 Project](https://github.com/6502org/mike)
+- `/users/mycorner`: [Lee Davison's "My Corner" Website](https://github.com/6502org/mycorner)
+
+Each link above is a GitHub repository under 6502.org's [GitHub organization](https://github.com/6502org).  To build the complete 6502.org website, each of these websites must be installed under the [`public/users/`](./public/users/) directory.  All of these are static websites but some of the repositories require running a build step to generate the static files.  See the instructions in each repository.
+
+## Forum
+
+The forum runs on [phpBB](https://www.phpbb.com/) and is installed under [`public/forum/`](./public/forum).  Since the forum's phpBB database contains passwords and private messages, it is not included in 6502.org's public GitHub organization.  The phpBB installation must be provided by one of the 6502.org maintainers with access to it.
