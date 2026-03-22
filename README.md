@@ -34,7 +34,7 @@ Open a browser to http://localhost:3000/ to view it.  It will be a fully functio
 
 (To use a port other than the default `3000`, see ``php ./script/server --help``.)
 
-## Documents Achive
+## Documents Archive
 
 6502.org hosts many gigabytes of large files in the [Documents Archive](http://6502.org/documents), such as the datasheet PDFs. These files are not included in this Git repository.
 
