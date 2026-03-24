@@ -1,0 +1,34 @@
+<div class="sidebar-box">
+  <div class="boxtitle">Hosted Sites</div>
+
+  <? /* we show a featured list of hosted sites on the home page 
+        but the complete list on the "about us" page */ ?>
+
+  <? if (!$this->isHomePage()): ?>
+  <p class="box sidebar-note">
+    Sites hosted on 6502 are the work of their respective creators:
+  </p>
+  <? endif ?>
+
+  <ul class="box sidebar-list">
+    <? if (!$this->isHomePage()): ?>
+    <li><a href="/users/alexis/">Alexis Kotlowy-Brown's Pages</a></li>
+    <? endif ?>
+    <li><a href="/users/andre/">Andr&eacute; Fachat's 8-bit Pages</a></li>
+    <li><a href="/users/obelisk/">Andrew Jacobs' Obelisk Website</a></li>
+    <li><a href="/users/dallas/">Dallas Shell's SYM-1 Pages</a></li>
+    <li><a href="/users/dieter/">Dieter M&uuml;ller's TTL CPU Pages</a></li>
+    <li><a href="/users/garth/">Garth Wilson's Projects</a></li>
+    <? if (!$this->isHomePage()): ?>
+    <li><a href="/users/krzysztof/">Krzysztof Swiecicki's Projects</a></li>
+    <? endif ?>
+    <li><a href="/users/mycorner/">Lee Davison's My Corner Website</a></li>
+    <? if ($this->isHomePage()): ?>
+    <li><a href="/users/andre/petindex/index.html">Commodore PET Index</a></li>
+    <li><a href="http://cbm.6502.org/">Commodore Documents</a></li>
+    <? else: ?>
+    <li><a href="http://cbm.6502.org/">Peter Krefting's iDOC= Pages</a></li>
+    <? endif ?>
+
+  </ul>
+</div>

@@ -11,7 +11,7 @@
       6502.org is a resource for people building hardware or writing
       software for the 6502 microprocessor and its many relatives, such
       as the 65C02, 65C816, and Mitsubishi 740 series. For over
-      <?= $this->milestoneYears() ?> years, we have strived to be the largest and best
+      <?= $this->h($this->milestoneYears()) ?> years, we have strived to be the largest and best
       source of 6502-related information in the world.
     </p>
 
@@ -133,31 +133,8 @@
       </ul>
     </div>
 
-    <div class="sidebar-box">
-      <div class="boxtitle">Hosted Sites</div>
-      <ul class="box sidebar-list">
-        <li><a href="/users/andre/">Andr&eacute; Fachat's 8-bit Pages</a></li>
-        <li><a href="/users/obelisk/">Andrew Jacobs' Obelisk Website</a></li>
-        <li><a href="/users/dallas/">Dallas Shell's SYM-1 Pages</a></li>
-        <li><a href="/users/dieter/">Dieter M&uuml;ller's TTL CPU Pages</a></li>
-        <li><a href="/users/garth/">Garth Wilson's Projects</a></li>
-        <li><a href="/users/mycorner/">Lee Davison's My Corner Website</a></li>
-        <li><a href="/users/idoc">Commodore Documents</a></li>
-        <li><a href="/users/andre/petindex/index.html">Commodore PET Index</a></li>
-      </ul>
-    </div>
+    <?= $this->render(['partial' => 'shared/hosted_sites']) ?>
 
-    <div class="sidebar-callout">
-      <strong>Contribute</strong>
-      <p>
-        If you have something to share,
-        even if it's in paper form,
-        <?= $this->emailLink('contact us', '6502.org Submission') ?>.
-      </p>
-      <p>
-        6502.org is developed as an open project
-        <a href="https://github.com/6502org">on GitHub</a>.
-      </p>
-    </div>
+    <?= $this->render(['partial' => 'shared/contribute']) ?>
   </aside>
 </div>

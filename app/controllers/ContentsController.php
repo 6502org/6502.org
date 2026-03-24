@@ -11,4 +11,5 @@ class ContentsController extends ApplicationController
     public function miniProjects() {}
     public function tutorials() {}
     public function repository() {}
+    public function about() {}
 }

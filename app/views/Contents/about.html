@@ -1,0 +1,88 @@
+<? $this->title = 'About 6502.org' ?>
+<? $this->navTitle = '&nbsp;' ?>
+<? $this->description = 'About the 6502.org website and its contributors.' ?>
+
+<div class="two-col-layout">
+  <div class="two-col-main content-page">
+
+  <h2 class="section-heading">About 6502.org</h2>
+
+  <p>
+    6502.org has been a gathering place for 6502 enthusiasts since 1999.  The site is home to a large archive of technical documents, many links to projects and resources, a source code library, tutorials, and a forum where hobbyists and engineers help each other build projects with the 6502 and its relatives.
+  </p>
+
+  <h2 class="section-heading">Maintainers</h2>
+
+  <p class="section-intro">The people who keep 6502.org running:</p>
+
+  <div class="maintainer">
+    <img class="maintainer-photo" src="/images/about/avatars/mikenaberezny.png" alt="Mike Naberezny">
+    <div class="maintainer-info">
+      <b>Mike Naberezny</b> <span class="forum-handle">Mike Naberezny</span>
+      <p>Mike created 6502.org and is still working on it. He made its first HTML pages on his C128 and uploaded them over dial-up.  Mike still uses the C128 sometimes
+        but has broadband now.</p>
+    </div>
+  </div>
+
+  <div class="maintainer">
+    <img class="maintainer-photo" src="/images/about/avatars/garthwilson.png" alt="Garth Wilson">
+    <div class="maintainer-info">
+      <b>Garth Wilson</b> <span class="forum-handle">GARTHWILSON</span>
+      <p>Garth is the moderator of the 6502.org forum. He serves as the first line of defense against the spambots. When he's not doing that, Garth is lending his technical expertise to others.</p>
+    </div>
+  </div>
+
+  <div class="maintainer">
+    <img class="maintainer-photo" src="/images/about/avatars/biged.png" alt="Ed Spittles">
+    <div class="maintainer-info">
+      <b>Ed Spittles</b> <span class="forum-handle">BigEd</span>
+      <p>Ed has been a prolific contributor all over the site, making it a little better with every link he adds or broken one he fixes. Ed is often the first to welcome new members on the forum.</p>
+    </div>
+  </div>
+
+  <h2 class="section-heading">Contributors</h2>
+
+  <p class="section-intro">Thanks to everyone who has contributed to the site or participated in the forum:</p>
+
+  <div class="contributors-grid">
+    <? foreach ($this->getRandomForumContributors(50) as $handle => $image): ?>
+    <img src="/images/about/avatars/<?= $image ?>" alt="<?= $handle ?>" title="<?= $handle ?>">
+    <? endforeach ?>
+  </div>
+
+
+  <h2 class="section-heading">In Memoriam</h2>
+
+  <p class="section-intro">We continue in honor of the friends we have lost:</p>
+
+  <div class="memorial-panels">
+    <div class="memorial-panel">
+      <b><a href="http://forum.6502.org/viewtopic.php?t=6466">Andrew Jacobs</a></b>
+      <span class="forum-handle">BitWise</span>
+      <div class="memorial-date">January 8, 2021</div>
+      <p>Creator of the <a href="/users/obelisk">Obelisk</a> reference pages, development tools, and VHDL models for the 6502.</p>
+    </div>
+
+    <div class="memorial-panel">
+      <b><a href="http://forum.6502.org/viewtopic.php?p=34235">Lee Davison</a></b>
+      <span class="forum-handle">leeeeee</span>
+      <div class="memorial-date">September 21, 2013</div>
+      <p>Creator of EhBASIC and other 6502 projects documented on his
+      <a href="/users/mycorner">My Corner</a> website.</p>
+    </div>
+
+    <div class="memorial-panel">
+      <b>Tony Gonzalez</b>
+      <span class="forum-handle">Nightmaretony</span>
+      <div class="memorial-date">November 2, 2012</div>
+      <p>Creator of the "Pinball Mind" 6502-based SBC and arcade machine expert.</p>
+    </div>
+  </div>
+
+  </div>
+
+  <aside class="two-col-sidebar">
+    <?= $this->render(['partial' => 'shared/hosted_sites']) ?>
+    <?= $this->render(['partial' => 'shared/contribute']) ?>
+  </aside>
+</div>

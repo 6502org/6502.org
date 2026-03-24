@@ -10,6 +10,7 @@ $map->connect('groups',        array('controller' => 'contents', 'action' => 'gr
 $map->connect('mini-projects', array('controller' => 'contents', 'action' => 'mini_projects'));
 $map->connect('tutorials',     array('controller' => 'contents', 'action' => 'tutorials'));
 $map->connect('source',        array('controller' => 'contents', 'action' => 'repository'));
+$map->connect('about',         array('controller' => 'contents', 'action' => 'about'));
 
 $map->connect('documents*path',        array('controller' => 'documents', 'action' => 'index'));
 

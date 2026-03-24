@@ -7,10 +7,16 @@ class ApplicationHelper extends Mad_View_Helper_Base
         return MAD_ENV == 'production';
     }
 
+    public function isHomePage()
+    {
+        return $this->controller->getControllerName() == 'contents'
+            && $this->controller->getActionName() == 'home';
+    }
+
     public function milestoneYears()
     {
         $foundedYear = 1999;
-        $foundedMonth = 6;
+        $foundedMonth = 4; // domain registered 1999-04-20
         $now = getdate();
         $years = $now['year'] - $foundedYear;
         if ($now['mon'] < $foundedMonth) {
@@ -81,6 +87,33 @@ class ApplicationHelper extends Mad_View_Helper_Base
             'subject' => $subject,
             'encode'  => 'javascript'
         ]);
+    }
+
+    /**
+     * Return a <link rel="canonical"> tag for the current page.
+     * Since the URL is user-controlled, it needs to be escaped
+     * for output. If the URL is suspicious, we render nothing.
+     */
+    public function linkToCanonicalUrl()
+    {
+        // Strip query strings and fragments
+        $path = parse_url($this->currentUrl, PHP_URL_PATH);
+        if ($path === false || $path === null) {
+            return '';
+        }
+
+        // Reject path traversal attempts
+        if (strpos($path, '..') !== false) {
+            return '';
+        }
+
+        // Reject anything with characters outside normal URL paths
+        if (!preg_match('#^/[a-zA-Z0-9_./-]*$#', $path)) {
+            return '';
+        }
+
+        $url = 'http://6502.org' . $path;
+        return $this->tag('link', ['rel' => 'canonical', 'href' => $url]);
     }
 
     /**

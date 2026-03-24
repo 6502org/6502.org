@@ -34,7 +34,8 @@
       6502.org is an ongoing project by <a href="https://mikenaberezny.com" title="Mike Naberezny">Mike Naberezny</a> and contributors.
     </div>
     <div>
-      <a href="/news/">News</a> &middot;
+      <?= $this->linkToUnlessCurrent('About', ['controller' => 'contents', 'action' => 'about']) ?> &middot;
+      <?= $this->linkToUnlessCurrent('News', ['controller' => 'contents', 'action' => 'news']) ?> &middot;
       <a href="https://github.com/6502org">GitHub</a>
     </div>
   </footer>
