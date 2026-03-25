@@ -884,6 +884,7 @@ button:focus-visible {
 
 .memorial-panel p {
   margin-top: 8px;
+  text-wrap: balance;
   font-size: 14px;
   color: var(--gray-700);
 }
