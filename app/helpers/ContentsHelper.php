@@ -2,13 +2,12 @@
 
 class ContentsHelper extends ApplicationHelper
 {
-    public function getRandomForumContributors($limit)
+    public function getRandomForumContributors()
     {
-    	$all = $this->_getTop100();
+        $all = $this->_getTop100();
 
         $keys = array_keys($all);
         shuffle($keys);
-        $keys = array_slice($keys, 0, $limit);
 
         $selected = [];
         foreach ($keys as $key) { $selected[$key] = $all[$key]; }

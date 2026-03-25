@@ -819,6 +819,10 @@ button:focus-visible {
   gap: 8px;
 }
 
+.contributor-hidden {
+  display: none;
+}
+
 .contributors-grid a {
   display: block;
 }

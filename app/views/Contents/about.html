@@ -45,11 +45,12 @@
   <p class="section-intro">Thanks to everyone who has contributed to the site or participated in the forum:</p>
 
   <div class="contributors-grid">
-    <? foreach ($this->getRandomForumContributors(50) as $handle => $image): ?>
-    <img src="/images/about/avatars/<?= $image ?>" alt="<?= $handle ?>" title="<?= $handle ?>">
-    <? endforeach ?>
+    <? $i = 0; foreach ($this->getRandomForumContributors() as $handle => $image): ?>
+    <img src="/images/about/avatars/<?= $image ?>" alt="<?= $handle ?>" title="<?= $handle ?>"<? if ($i >= 50): ?> class="contributor-hidden"<? endif ?>>
+    <? $i++; endforeach ?>
   </div>
 
+  <script src="/javascripts/contributors.js"></script>
 
   <h2 class="section-heading">In Memoriam</h2>
 
@@ -67,7 +68,7 @@
       <b><a href="http://forum.6502.org/viewtopic.php?p=34235">Lee Davison</a></b>
       <span class="forum-handle">leeeeee</span>
       <div class="memorial-date">September 21, 2013</div>
-      <p>Creator of EhBASIC and other 6502 projects documented on his
+      <p>Creator of EhBASIC and many other 6502 projects documented on his
       <a href="/users/mycorner">My Corner</a> website.</p>
     </div>
 
