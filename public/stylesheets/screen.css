@@ -836,12 +836,12 @@ button:focus-visible {
 
 /* === About page: In Memoriam === */
 .memorial-panels {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
 .memorial-panel {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -966,7 +966,7 @@ button:focus-visible {
   }
 
   .memorial-panels {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .home-link-item {
